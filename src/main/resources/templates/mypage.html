@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>マイページ</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+  <div>
+    <header th:replace="~{fragments/header :: header}"></header>
+  </div>
+
+  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+  <div class="main-container">
+    <div class="mypage-inner">
+      <div class="inner-title">基本情報</div>
+      <table class="view-table">
+        <tr>
+          <th scope="row" class="view-row-th">ログインID</th>
+          <td th:text="${basicInfoDto.loginId}"></td>
+        </tr>
+        <tr>
+          <th scope="row" class="view-row-th">ユーザー名</th>
+          <td th:text="${basicInfoDto.userName}"></td>
+        </tr>
+        <tr>
+          <th scope="row" class="view-row-th">メールアドレス</th>
+          <td th:text="${basicInfoDto.email}"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="edit-link-td">
+            <a class="edit-link" th:href="@{/mypage/edit}">変更する</a>
+          </td>
+        </tr>
+      </table>
+
+      <div class="inner-title">パスワード情報</div>
+      <table class="view-table">
+        <tr>
+          <th scope="row" class="view-row-th">パスワード</th>
+          <td>＊＊＊＊＊＊＊＊＊＊</td>
+        </tr>
+        <tr>
+          <td colspan="2" class="edit-link-td">
+            <a class="edit-link" th:href="@{/mypage/change_password}">変更する</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

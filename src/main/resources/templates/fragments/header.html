@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<header th:fragment="header">
+  <!-- 全ページ共通のヘッダーバー -->
+  <div class="topbar"></div>
+
+  <!-- ログインページ用のタイトル&サブタイトル -->
+  <div class="header-title" th:if="${isVisible}">
+    <img src="./image/title-logo.svg" alt="">
+    <div class="title-text">
+      <h1>えらいコレクト</h1>
+      <h3>自己肯定感を高める学習記録アプリ</h3>
+    </div>
+  </div>
+</header>
+</html>

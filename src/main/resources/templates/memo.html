@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+  <div>
+    <header th:replace="~{fragments/common-header :: common-header}"></header>
+  </div>
+
+  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+
+  <div class="memo-container">
+    <!-- まだ登録されていない場合 -->
+    <th:block th:unless="${actionDtoList != null}">
+      <div class="empty-memo">
+        <p>まだメモが登録されていません。</p>
+        <div class="register-memo">
+          <a th:href="@{/memo/detail/edit/0}">最初のメモを登録する</a>
+        </div>
+      </div>
+    </th:block>
+
+    <!-- 登録されている場合 -->
+    <th:block th:if="${actionDtoList != null}">
+      <div class="register-memo">
+        <a th:href="@{/memo/detail/edit/0}">メモを追加する</a>
+      </div>
+
+      <div class="memo-content">
+        <div th:each="memo : ${actionDtoList}">
+          <table class="memo-table">
+            <tr>
+              <th scope="row">メモタイトル</th>
+              <td th:text="${memo.title}"></td>
+              <td rowspan="2" class="detail-area">
+                <div class="memo-detail">
+                  <a th:href="@{/memo/detail/{id}(id=${memo.id})}">詳細</a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th:block th:with="rawTag=${memo.tags}">
+                <th scope="row">タグ</th>
+                <td class="tags" th:text="${#strings.replace(rawTag, ',', ' ')}"></td>
+              </th:block>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </th:block>
+  </div>
+</body>

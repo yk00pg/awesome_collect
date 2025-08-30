@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+  <div>
+    <header th:replace="~{fragments/common-header :: common-header}"></header>
+  </div>
+
+  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+
+  <div class="todo-edit-container">
+    <div class="back-indicator">
+      <a th:href="@{/todo/{date}(date=${dailyTodoDto.date})}">
+        <img th:src="@{/image/back-icon.svg}" alt="戻る">
+        <span>戻る</span>
+      </a>
+    </div>
+
+    <div class="todo-edit-inner">
+      <form class="todo-form"
+            th:action="@{/todo/edit/{date}(date=${dailyTodoDto.date})}"
+            th:object="${dailyTodoDto}" method="post">
+        <div class="todo-form-title">やることリスト</div>
+        <div class="input-date">
+          <p>日付</p>
+          <input type="date" class="input-todo-date" th:field="*{date}" required/>
+        </div>
+        <div class="input-content">
+          <p>やること</p>
+          <div th:each="content, iterStat:*{contentList}">
+            <input type="hidden" th:field="*{idList[__${iterStat.index}__]}"/>
+            <ul class="content-list">
+              <li>
+                <input type="text" class="input-todo-content"
+                       th:field="*{contentList[__${iterStat.index}__]}"
+                       th:attr="required=${iterStat.index == 0}"/>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="button-area">
+          <button type="submit" class="register-button">登録</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>

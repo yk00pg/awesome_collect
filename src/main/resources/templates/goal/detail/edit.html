@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+  <div>
+    <header th:replace="~{fragments/common-header :: common-header}"></header>
+  </div>
+
+  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+
+  <div class="goal-container">
+    <div class="back-indicator">
+      <a th:href="@{/goal/detail/{id}(id=${actionDto.id})}">
+        <img th:src="@{/image/back-icon.svg}" alt="戻る">
+        <span>戻る</span>
+      </a>
+    </div>
+
+    <form class="goal-form"
+          th:action="@{/goal/detail/edit/{id}(id=${actionDto.id})}"
+          th:object="${actionDto}" method="post">
+      <div class="goal-form-title">目標</div>
+      <div class="input-content">
+        <table class="goal-table">
+          <tr>
+            <th colspan="2" scope="col">タイトル</th>
+            <th scope="row">達成状況</th>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <input type="text" class="input-goal-title" th:field="*{title}" required />
+            </td>
+            <td>
+              <select class="select-goal-status" th:field="*{status}">
+                <option value="">選択してください</option>
+                <option value="doing">取組中</option>
+                <option value="achieved">達成！</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">内容</th>
+            <td colspan="3">
+              <textarea type="text" class="input-goal-content" th:field="*{content}" required></textarea>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">タグ</th>
+            <td colspan="3">
+              <input type="text" class="tags-input" th:id="tags-input" th:field="*{tags}" />
+            </td>
+          </tr>
+        </table>
+
+        <script th:inline="javascript">
+          /*<![CDATA[*/
+            const tagNameList = /*[[${tagNameList}]]*/ [];
+            const input = document.querySelector("#tags-input");
+
+            new Tagify(input, {
+                pattern: /#/,
+                whitelist: tagNameList,
+                dropdown: {
+                  enabled: 0,
+                  classname: "tags-look",
+                  maxItems: 10,
+                  closeOnSelect: false
+                  },
+                  enforceWhitelist: false,
+            });
+          /*]]>*/
+        </script>
+      </div>
+      <div class="button-area">
+        <button type="submit" class="register-button">登録</button>
+      </div>
+    </form>
+  </div>
+</body>

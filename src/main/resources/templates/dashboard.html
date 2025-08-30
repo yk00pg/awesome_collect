@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+<head>
+  <meta charset="UTF-8">
+  <title>ダッシュボード</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+  <div>
+    <header th:replace="~{fragments/common-header :: common-header}"></header>
+  </div>
+
+  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+
+  <div class="dashboard-container">
+    <div class="top-container">
+      <div class="total-awesome-container">
+        <p>これまでに貯めた<span>えらい！</span>の数</p>
+        <p class="total-awesome" th:text="${totalAwesome}"></p>
+      </div>
+      <div class="total-hours-container">
+        <p>これまでの<span>累計学習時間</span>（時間）</p>
+        <p class="total-hours" th:text="${totalHours}"></p>
+      </div>
+    </div>
+
+    <div class="bottom-container">
+      <div class="daily-hours">
+        <p>日別学習時間（過去7日分）</p>
+        <canvas id="dailyHours"></canvas>
+      </div>
+      <div class="monthly-hours">
+        <p>月別学習時間（過去6ヶ月分）</p>
+        <canvas id="monthlyHours"></canvas>
+      </div>
+      <div class="tag-hours">
+        <p>タグ別学習時間（累計・上位抜粋）</p>
+        <canvas id="tagHours"></canvas>
+        <a th:href="@{/dashboard/tag-hours/all}">すべてのタグを確認する</a>
+      </div>
+    </div>
+
+    <!-- Chart.js用にデータだけ埋め込み -->
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+        const dailyHoursList = /*[[${dailyHoursList}]]*/ [];
+        const monthlyHoursList = /*[[${monthlyHoursList}]]*/ [];
+        const tagHoursList = /*[[${totalHoursByTag}]]*/ [];
+      /*]]>*/
+    </script>
+
+    <!-- Chart.jsの設定はJSで行う -->
+    <script th:src="@{/js/dashboard-top-page-charts.js}"></script>
+  </div>
+</body>

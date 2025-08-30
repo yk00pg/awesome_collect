@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+  <div>
+    <header th:replace="~{fragments/common-header :: common-header}"></header>
+  </div>
+
+  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+
+  <div class="goal-container">
+    <!-- まだ登録されていない場合 -->
+    <th:block th:unless="${actionDtoList != null}">
+      <div class="empty-goal">
+        <p>まだ目標が登録されていません。</p>
+        <div class="register-goal">
+          <a th:href="@{/goal/detail/edit/0}">最初の目標を登録する</a>
+        </div>
+      </div>
+    </th:block>
+
+    <!-- 登録されている場合 -->
+    <th:block th:if="${actionDtoList != null}">
+      <div class="register-goal">
+        <a th:href="@{/goal/detail/edit/0}">目標を追加する</a>
+      </div>
+
+      <div class="goal-content">
+        <div th:each="goal : ${actionDtoList}">
+          <table class="goal-table">
+            <tr>
+              <th scope="row">目標タイトル</th>
+              <td th:text="${goal.title}"></td>
+              <td rowspan="3" class="detail-area">
+                <div class="goal-detail">
+                  <a th:href="@{/goal/detail/{id}(id=${goal.id})}">詳細</a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">達成状況</th>
+              <td th:text="${goal.statusLabel}"></td>
+            </tr>
+            <tr>
+              <th:block th:with="rawTag=${goal.tags}">
+                <th scope="row">タグ</th>
+                <td class="tags" th:text="${#strings.replace(rawTag, ',', ' ')}"></td>
+              </th:block>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </th:block>
+  </div>
+</body>

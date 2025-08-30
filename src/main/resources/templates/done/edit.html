@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+  <div>
+    <header th:replace="~{fragments/common-header :: common-header}"></header>
+  </div>
+
+  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+
+  <div class="todo-container">
+    <div class="todo-inner">
+      <div class="todo-date">
+        <p th:text="${formattedDate}"></p>
+      </div>
+
+      <!-- 登録されていない場合 -->
+      <th:block th:if="${!hasTodoContent}">
+        <div class="empty-todo">
+          <p>この日の<span>やることリスト</span>は登録されていません。</p>
+        </div>
+      </th:block>
+
+      <!-- 登録されている場合 -->
+      <th:block th:if="${hasTodoContent}">
+        <div class="current-todo">
+          <div class="todo-content">
+            <div th:each="content, iterStat : ${dailyTodoDto.contentList}">
+              <ul>
+                <input type="hidden" th:field="${dailyTodoDto.idList[__${iterStat.index}__]}" />
+                <li class="content"
+                    th:if="${content != null and !#strings.isEmpty(content)}"
+                    th:text="${dailyTodoDto.contentList[__${iterStat.index}__]}"></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </th:block>
+    </div>
+  </div>
+
+  <div class="done-edit-container">
+    <div class="back-indicator">
+      <a th:href="@{/done/{date}(date=${dailyDoneDto.date})}">
+        <img th:src="@{/image/back-icon.svg}" alt="戻る">
+        <span>戻る</span>
+      </a>
+    </div>
+
+    <div class="done-edit-inner">
+      <form class="done-form"
+            th:action="@{/done/edit/{date}(date=${dailyDoneDto.date})}"
+            th:object="${dailyDoneDto}" method="post">
+        <div class="done-form-title">できたことリスト</div>
+        <div class="input-date">
+          <p>日付</p>
+          <input type="date" class="input-done-date" th:field="*{date}" required/>
+          <div class="failure-message" th:if="${failureMessage != null}" th:text="${failureMessage}"></div>
+        </div>
+        <div class="input-content">
+          <div th:each="content, iterStat:*{contentList}">
+            <input type="hidden" th:field="*{idList[__${iterStat.index}__]}"/>
+            <table class="done-table">
+              <tr>
+                <th scope="row">できたこと</th>
+                <td class="content">
+                  <input type="text" class="input-done-content"
+                         th:field="*{contentList[__${iterStat.index}__]}"
+                         th:attr="required=${iterStat.index == 0}" />
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">学習時間</th>
+                <td class="hours">
+                  <input type="text" class="input-done-hours"
+                         th:field="*{hoursList[__${iterStat.index}__]}"
+                         th:attr="required=${iterStat.index == 0}" />
+                </td>
+              </tr>
+              <tr>
+                <th colspan="2" scope="col" class="memo-th">メモ</th>
+              </tr>
+              <tr>
+                <td colspan="2" class="memo">
+                  <textarea class="input-done-memo" th:field="*{memoList[__${iterStat.index}__]}"></textarea>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">タグ</th>
+                <td>
+                  <input type="text" class="tags-input"
+                            th:id="'tags-input-' + ${iterStat.index}"
+                            th:field="*{tagsList[__${iterStat.index}__]}" />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- ↓ ループ外で一括初期化（JS実行は一度だけ！） -->
+        <script th:inline="javascript">
+          /*<![CDATA[*/
+            const tagNameList = /*[[${tagNameList}]]*/ [];
+
+            window.addEventListener("DOMContentLoaded", () => {
+              document.querySelectorAll(".tags-input").forEach(input => {
+                new Tagify(input, {
+                  pattern: /#/,
+                  whitelist: tagNameList,
+                  dropdown: {
+                    enabled: 0,
+                    classname: "tagsList-look",
+                    maxItems: 10,
+                    closeOnSelect: false
+                  },
+                  enforceWhitelist: false,
+                });
+              });
+            });
+          /*]]>*/
+        </script>
+        <div class="button-area">
+          <button type="submit" class="register-button">登録</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>

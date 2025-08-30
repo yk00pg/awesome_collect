@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+  <div>
+    <header th:replace="~{fragments/common-header :: common-header}"></header>
+  </div>
+
+  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+
+  <div class="done-container">
+    <div class="date-index">
+      <a th:href="@{/done/{date}(date=${prevDate})}">◀︎ 前の日</a>
+      <form method="get" th:action="@{/done}" style="display:inline;">
+        <input type="date" name="date" th:value="${dailyDoneDto.date}">
+        <button type="submit">移動</button>
+      </form>
+      <a th:href="@{/done/{date}(date=${nextDate})}">次の日 ▶︎</a>
+    </div>
+
+    <div class="done-inner">
+      <div class="done-date">
+        <p th:text="${formattedDate}"></p>
+      </div>
+
+      <!-- まだ登録されていない場合 -->
+      <th:block th:if="${!hasDoneContent}">
+        <div class="empty-done">
+          <p>まだ登録されていません。</p>
+          <div class="register-done">
+            <a th:href="@{/done/edit/{date}(date=${dailyDoneDto.date})}">新規登録</a>
+          </div>
+        </div>
+      </th:block>
+
+      <!-- 登録されている場合 -->
+      <th:block th:if="${hasDoneContent}">
+        <div class="current-done">
+          <div class="done-header">
+            <div class="at-info">
+              <p th:text="'登録日時: ' + ${dailyDoneDto.registeredAt}"></p>
+              <p th:if="${dailyDoneDto.updatedAt} != null" th:text="'更新日時: ' + ${dailyDoneDto.updatedAt}"></p>
+            </div>
+
+            <div class="edit-delete">
+              <a th:href="@{/done/edit/{date}(date=${dailyDoneDto.date})}">
+                <img th:src="@{/image/edit-icon.svg}" alt="編集">
+              </a>
+              <a href="#"
+                 onclick="if(confirm('この日のやることリストを削除しますか？')) {
+                              document.getElementById('deleteDailyDone').submit();
+                          } return false;">
+                <img th:src="@{/image/delete-icon.svg}" alt="削除">
+              </a>
+            </div>
+          </div>
+
+          <div class="done-content">
+            <div th:each="content, iterStat : ${dailyDoneDto.contentList}">
+              <th:block th:if="${dailyDoneDto.contentList[__${iterStat.index}__]} !=''">
+                <table class="done-table">
+                  <tr>
+                    <th scope="row">できたこと</th>
+                    <td class="content" th:text="${dailyDoneDto.contentList[__${iterStat.index}__]}"></td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="hours-th">学習時間</th>
+                    <td class="hours" th:text="${dailyDoneDto.hoursList[__${iterStat.index}__]}"></td>
+                  </tr>
+                  <tr>
+                    <th colspan="2" scope="col" class="memo-th">メモ</th>
+                  </tr>
+                  <tr>
+                    <td colspan="2" class="memo">
+                      <div th:text="${dailyDoneDto.memoList[__${iterStat.index}__]}"></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th:block th:with="rawTag=${dailyDoneDto.tagsList[__${iterStat.index}__]}">
+                      <th scope="row">タグ</th>
+                      <td class="tags" th:text="${#strings.replace(rawTag, ',', ' ')}"></td>
+                    </th:block>
+                  </tr>
+                </table>
+              </th:block>
+            </div>
+            <table class="hours-table">
+              <th scope="row">この日の合計学習時間</th>
+              <td th:text="${dailyDoneDto.totalHours}"></td>
+            </table>
+          </div>
+        </div>
+
+        <form id="deleteDailyDone" th:action="@{/done/{date}(date=${dailyDoneDto.date})}" method="post" style="display:none;">
+          <input type="hidden" name="_method" value="delete">
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+        </form>
+      </th:block>
+    </div>
+  </div>
+</body>

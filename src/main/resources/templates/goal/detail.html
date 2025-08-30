@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+  <div>
+    <header th:replace="~{fragments/common-header :: common-header}"></header>
+  </div>
+
+  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+
+  <div class="goal-container">
+    <div class="back-indicator">
+      <a th:href="@{/goal}">
+        <img th:src="@{/image/back-icon.svg}" alt="戻る">
+        <span>戻る</span>
+      </a>
+    </div>
+
+    <div class="goal-header">
+      <div class="at-info">
+        <p th:text="'登録日時: ' + ${actionDto.registeredAt}"></p>
+        <p th:if="${actionDto.updatedAt} != null" th:text="'更新日時: ' + ${actionDto.updatedAt}"></p>
+      </div>
+
+      <div class="edit-delete">
+        <a th:href="@{/goal/detail/edit/{id}(id=*{id})}">
+          <img th:src="@{/image/edit-icon.svg}" alt="編集">
+        </a>
+        <a href="#"
+           onclick="if(confirm('この目標を削除しますか？')) {
+                              document.getElementById('deleteGoal').submit();
+                          } return false;">
+          <img th:src="@{/image/delete-icon.svg}" alt="削除">
+        </a>
+      </div>
+    </div>
+
+    <div class="goal-content">
+      <table class="goal-table">
+        <tr>
+          <th colspan="2" scope="col">目標タイトル</th>
+          <th scope="col">達成状況</th>
+        </tr>
+        <tr>
+          <td colspan="2" th:text="${actionDto.title}"></td>
+          <td th:text="${actionDto.statusLabel}"></td>
+        </tr>
+        <tr>
+          <th scope="row">内容</th>
+          <td colspan="3" th:text="${actionDto.content}"></td>
+        </tr>
+        <tr>
+          <th:block th:with="rawTag=${actionDto.tags}">
+            <th scope="row">タグ</th>
+            <td colspan="3" class="tags" th:text="${#strings.replace(rawTag, ',', ' ')}"></td>
+          </th:block>
+        </tr>
+      </table>
+    </div>
+
+    <form id="deleteGoal" th:action="@{/goal/detail/{id}(id=${actionDto.id})}" method="post" style="display:none;">
+      <input type="hidden" name="_method" value="delete">
+      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+    </form>
+  </div>
+</body>

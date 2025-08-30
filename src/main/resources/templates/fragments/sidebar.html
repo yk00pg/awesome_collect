@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<div class="sidebar" th:fragment="sidebar">
+  <a th:href="@{/home}">
+    <img th:src="@{/image/title-logo.svg}" alt="">
+  </a>
+  <nav class="sidebar-menu">
+    <a th:href="@{/mypage}" class="sidebar-item">
+      <img th:src="@{/image/member-icon.svg}" alt="マイページ">
+      <span>マイページ</span>
+    </a>
+    <a th:href="@{/dashboard}" class="sidebar-item">
+      <img th:src="@{/image/dashboard-icon.svg}" alt="ダッシュボード">
+      <span>ダッシュボード</span>
+    </a>
+    <a th:href="@{/todo/{date}(date=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')})}"
+       class="sidebar-item">
+      <img th:src="@{/image/todo-icon.svg}" alt="やること">
+      <span>やること</span>
+    </a>
+    <a th:href="@{/done/{date}(date=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')})}"
+       class="sidebar-item">
+      <img th:src="@{/image/done-icon.svg}" alt="できたこと">
+      <span>できたこと</span>
+    </a>
+    <a th:href="@{/goal}" class="sidebar-item">
+      <img th:src="@{/image/goal-icon.svg}" alt="目標">
+      <span>目標</span>
+    </a>
+    <a th:href="@{/memo}" class="sidebar-item">
+      <img th:src="@{/image/memo-icon.svg}" alt="メモ">
+      <span>メモ</span>
+    </a>
+    <a th:href="@{/article_stock}" class="sidebar-item">
+      <img th:src="@{/image/article-icon.svg}" alt="記事ストック">
+      <span>記事ストック</span>
+    </a>
+    <a href="#"
+       onclick="if(confirm('ログアウトしますか？')) {
+                  document.getElementById('logoutForm').submit();
+                } return false;"
+       class="sidebar-item">
+      <img th:src="@{/image/logout-icon.svg}" alt="ログアウト">
+      <span>ログアウト</span>
+    </a>
+  </nav>
+
+  <form id="logoutForm" th:action="@{/logout}" method="post" style="display:none;">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+  </form>
+
+  <!-- 開いているページと同じ親階層パスをリンクとして持つメニューにactiveをつける -->
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+      document.querySelectorAll('.sidebar-item').forEach(link => {
+        if(link.getAttribute('href') === '#') return;
+
+        const linkPath = new URL(link.href).pathname.split('/')[1];
+        const currentPath = window.location.pathname.split('/')[1];
+
+        if (linkPath && linkPath === currentPath) {
+          link.classList.add('active');
+        }
+      });
+    /*]]>*/
+  </script>
+</div>
