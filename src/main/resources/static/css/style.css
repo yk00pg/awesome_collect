@@ -136,6 +136,104 @@
   color: var(--pink-cream);
 }
 
+/* =========================
+  ポップアップメッセージの設定
+========================= */
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-top: 300px;
+  padding: 5px 20px;
+  background-color: var(--cherry-blossom);
+  border-radius: 15px;
+  box-shadow: 0 10px 10px 0 var(--bordeaux);
+  z-index: 100;
+  text-align: center;
+  animation: popupIn 0.5s ease forwards;
+}
+
+@keyframes popupIn {
+  0%   { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+  60%  { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+.popup.hide {
+  animation: popupOut 0.5s ease forwards;
+}
+
+@keyframes popupOut {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+}
+
+.popup-message {
+  display: flex;
+  gap: 0;
+  align-items: center;
+}
+
+.action-text {
+  margin: auto 0 auto 10px;
+  font-family: var(--highlight-font-set);
+  color: var(--reddish-brown);
+}
+
+.awesome-word {
+  margin: 0;
+  font-size: 3em;
+  font-family: var(--highlight-font-set);
+  text-weight: bold;
+  color: var(--bordeaux);
+  text-shadow: 1px 2px 3px var(--bordeaux);
+}
+
+.awesome-stamp {
+  position: relative;
+  display: inline-block;
+  transform: scale(0);
+}
+
+.awesome-stamp.pop {
+  animation: stamp-pop 0.5s forwards;
+}
+
+@keyframes stamp-pop {
+  0%   { transform: scale(0); }
+  60%  { transform: scale(2.5); }
+  80%  { transform: scale(0.5); }
+  100% { transform: scale(1); }
+}
+
+.stamp-bg {
+  width: 120px;
+  height: 120px;
+  display: block;
+  transform: rotate(10deg);
+  filter: drop-shadow(1px 1px 2px var(--ruby-red));
+}
+
+.stamp-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(10deg);
+  font-size: 1.5rem;
+  font-weight: bold;
+  font-family: var(--highlight-font-set);
+  color: var(--ruby-red);
+  text-shadow: 1px 2px 3px var(--ruby-red);
+}
+
+
+
 /* ========================================
   全体の共通設定
   (body, input, textarea, select, option)
@@ -152,7 +250,6 @@ input, textarea {
   appearance: none;
   box-sizing: border-box;
   width: 100%;
-  min-height: 50px;
   padding: 5px 20px;
   font-size: 14px;
   color: var(--reddish-brown);
@@ -177,8 +274,8 @@ select,
 }
 
 select {
-  font-family: var(--normal-font-set);
   gap: 3px;
+  font-family: var(--normal-font-set);
   padding-inline: 15px;
 }
 
@@ -205,9 +302,9 @@ option:focus-visible {
 /* 共通コンテナ */
 .main-container {
   width: 500px;
-  font-size: 14px;
   margin: 120px auto;
   padding: 30px;
+  font-size: 14px;
   background-color: white;
   border: 3px solid var(--reddish-brown);
   border-radius: 30px;
@@ -221,18 +318,18 @@ option:focus-visible {
 }
 
 .form-title {
+  text-align: center;
   font-size: 18px;
   font-weight: bold;
   color: var(--reddish-brown);
-  text-align: center;
 }
 
 .inner-title {
+  text-align: center;
+  margin: 15px auto;
   font-size: 18px;
   font-weight: bold;
   color: var(--reddish-brown);
-  text-align: center;
-  margin: 15px auto;
 }
 
 .form-border {
@@ -252,6 +349,14 @@ table th {
   padding-top: 10px;
   padding-bottom: 15px;
   margin: 30px auto;
+}
+
+.variable-input-table {
+  box-sizing: border-box;
+  width: 100%;
+  overflow-wrap: anywhere;
+  padding-top: 10px;
+  margin: 30px auto 0;
 }
 
 .view-table {
@@ -279,8 +384,8 @@ table th {
 
 .view-row-th {
   box-sizing: border-box;
-  height: 50px;
   width: 130px;
+  height: 50px;
 }
 
 .input-col-th {
@@ -290,8 +395,20 @@ table th {
   border-top-right-radius: 10px;
 }
 
+.view-col-th {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.index-th {
+  box-sizing: border-box;
+  width: 50px;
+  height: 50px;
+}
+
 /* 共通インプットエリア */
 .input-area {
+  min-height: 50px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 }
@@ -302,6 +419,19 @@ table th {
 }
 
 /* フォーム内各種メッセージ */
+.message-area {
+  box-sizing: border-box;
+  width: 100%;
+  text-align: left;
+}
+
+.task-message-area {
+  box-sizing: border-box;
+  width: 100%;
+  text-align: left;
+  padding-left: 20px;
+}
+
 .failure-message, .failure-hint,
 .success-message, .error-message {
   font-size: 12px;
@@ -310,21 +440,65 @@ table th {
 }
 
 /* 共通ボタン・リンクボタン */
-.button-area {
-  margin: 20px auto;
+.back-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.back-indicator a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.back-indicator img {
+  width: 5%;
+}
+
+.back-indicator span {
   text-align: center;
+  margin-top: 5px;
+}
+
+.button-area {
+  text-align: center;
+  margin: 20px auto;
+}
+
+.add-button-area {
+  text-align: center;
+  margin-top: 5px;
+  margin-bottom: 30px;
 }
 
 .link-button-area {
-  margin: 35px auto;
   text-align: center;
+  margin: 35px auto;
 }
 
 .login-button, .register-button,
 .save-button,
 .signup-link, .edit-link {
-  font-weight: bold;
   padding: 15px 40px;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+.add-button {
+  padding: 5px 10px;
+  color: var(--reddish-brown);
+  background-color: var(--cherry-blossom);
+  border: 1px solid var(--brown-grey);
+  border-radius: 10px;
+}
+
+.remove-row-button {
+  margin: auto 5px;
+  padding: 5px 10px;
+  color: var(--reddish-brown);
+  background-color: var(--cherry-blossom);
+  border: 1px solid var(--brown-grey);
   border-radius: 10px;
 }
 
@@ -342,15 +516,27 @@ table th {
   border: 3px solid var(--reddish-brown);
 }
 
-/* ==============================
-  ログインページの設定（home.html）
-============================== */
+.new-registration-link {
+  font-weight: bold;
+  color: var(--pink-cream);
+  text-align: center;
+  text-decoration: none;
+  padding: 15px 40px;
+  margin: 10px auto;
+  background-color: var(--bordeaux);
+  border: 3px solid var(--reddish-brown);
+  border-radius: 10px;
+}
+
+/* ==================
+  ログインページの設定
+================== */
 
 .login-container {
   width: 500px;
-  font-size: 14px;
   margin: 300px auto;
   padding: 30px;
+  font-size: 14px;
   background-color: white;
   border: 3px solid var(--reddish-brown);
   border-radius: 30px;
@@ -358,13 +544,13 @@ table th {
 }
 
 .login-container p {
-  margin: 15px 0;
   text-align: center;
+  margin: 15px 0;
 }
 
-/* ============================
-  ホームページの設定（home.html）
-============================ */
+/* =================
+  ホームページの設定
+================= */
 
 .home-container {
   display: flex;
@@ -426,9 +612,9 @@ table th {
   height: auto;
 }
 
-/* ==============================
-  マイページの設定（mypage.html）
-============================== */
+/* ===============
+  マイページの設定
+=============== */
 
 .mypage-inner {
   display: flex;
@@ -458,25 +644,25 @@ table th {
   margin: 0;
 }
 
-/* ==============================
-  やることページの設定（todo.html）
-============================== */
+/* =================================
+  やることページ、できたことページの設定
+================================= */
 
-.todo-container, .done-container {
+.task-container {
   width: 500px;
-  margin: 115px auto 0 auto;
   font-size: 14px;
-  color: #664B4F;
+  margin: 120px auto;
+  color: var(--reddish-brown);
 }
 
 .date-index {
-  margin-bottom: 10px;
+  box-sizing: border-box;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: center;
-  box-sizing: border-box;
-  font-size: 16px;
+  margin-bottom: 10px;
 }
 
 .date-index a {
@@ -484,18 +670,20 @@ table th {
 }
 
 .date-index input {
-  color: var(--reddish-brown);
+  width: 150px;
+  background-color: white;
+  border-radius: 8px;
 }
 
 .date-index button {
   font-size: 12px;
-  color: #FFF6EE;
+  color: var(--pink-cream);
   padding: 1px 6px;
-  background-color: #AA4D53;
+  background-color: var(--bordeaux);
   border-radius: 5px;
 }
 
-.todo-inner, .done-inner {
+.task-inner {
   padding: 20px 0;
   background-color: white;
   border: 3px solid #664B4F;
@@ -503,87 +691,35 @@ table th {
   box-shadow: 10px 10px 10px #8F8484;
 }
 
-.todo-date, .done-date {
+.date-label {
   display: flex;
   align-items: center;
   height: 40px;
-  background-color: #DC9F95;
+  margin-top: 10px;
+  background-color: var(--pink-beige);
 }
 
-.todo-date p, .done-date p {
-  font-size: 16px;
+.date-label p {
+  font-size: 18px;
   font-weight: bold;
-  padding-left: 10px;
-}
-
-.empty-todo, .current-todo,
-.empty-done, .current-done,
-.empty-goal, .current-goal,
-.empty-memo, .empty-stock {
-  font-size: 14px;
-}
-
-.empty-goal, .empty-memo,
-.empty-stock {
-  text-align: center;
-}
-
-.empty-todo p, .empty-done p {
   padding-left: 20px;
 }
 
-.empty-todo span {
-  font-weight: bold;
-}
-
-.register-todo, .register-done,
-.register-goal, .goal-detail,
-.register-memo, .memo-detail,
-.register-stock, .edit-area {
-  display: flex;
-  align-items: center;
-}
-
-.register-todo a, .register-done a,
-.register-goal a, .register-memo a,
-.register-stock a {
-  font-weight: bold;
-  color: #FFF6EE;
+.empty-content {
   text-align: center;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin: 10px auto;
-  background-color: #AA4D53;
-  border: 3px solid #664B4F;
-  border-radius: 10px;
+  font-size: 14px;
 }
 
-.goal-detail a, .memo-detail a,
-.edit-area a {
-  font-weight: bold;
-  color: var(--reddish-brown);
-  text-align: center;
-  text-decoration: none;
-  padding: 1px 10px;
-  margin: 1px auto;
-  background-color: var(--pink-beige);
-  border: 2px solid var(--reddish-brown);
-  border-radius: 5px;
+.empty-content p {
+  margin-top: 35px;
 }
 
-.todo-header, .done-header,
-.goal-header, .memo-header {
+.content-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 5px;
   padding-left: 20px;
-}
-
-.stock-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .at-info {
@@ -600,7 +736,9 @@ table th {
   padding: 0;
 }
 
-.edit-delete {
+.edit-delete-area {
+  box-sizing: border-box;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -608,30 +746,104 @@ table th {
   margin: 0 15px 0 auto;
 }
 
+.edit-link-area, .delete-area, .edit-delete-stock a  {
+  width: 20px;
+  height: 20px;
+  text-decoration: none;
+  margin: 10px;
+}
+
+.edit-delete-area img, .edit-delete-stock img {
+  width: 100%;
+  height: auto;
+}
+
+.content-inner {
+  margin-top: 25px;
+  padding: 0 20px;
+}
+
+.task-th {
+  box-sizing: border-box;
+  width: 90px;
+  height: 50px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.date-input-area {
+  width: 150px;
+  min-height: 50px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.delete-check-td {
+  width: 50px;
+}
+
+.delete-check-area {
+  box-sizing: border-box;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-icon-area {
+  height: 45px;
+  display: flex;
+}
+
+.delete-icon {
+  width: 100%;
+  height: auto;
+}
+
+.delete-check {
+  appearance: auto;
+  height: 100%;
+  accent-color: var(--reddish-brown);
+  border: 1px solid var(--brown-grey);
+  border-radius: 5px
+}
+
+.error-message-td {
+  width: 90px;
+}
+
+.empty-goal, .empty-memo,
+.empty-stock {
+  text-align: center;
+}
+
+.goal-detail a, .memo-detail a,
+.edit-area a {
+  font-weight: bold;
+  color: var(--reddish-brown);
+  text-align: center;
+  text-decoration: none;
+  padding: 1px 10px;
+  margin: 1px auto;
+  background-color: var(--pink-beige);
+  border: 2px solid var(--reddish-brown);
+  border-radius: 5px;
+}
+
+
+.stock-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+
 .edit-delete-stock {
   display:flex;
   align-items: center;
   justify-content: flex-end;
   gap: 5px;
-}
-
-.edit-delete a, .edit-delete-stock a  {
-  width: 20px;
-  height: 20px;
-  margin: 10px;
-  text-decoration: none;
-}
-
-.edit-delete img, .edit-delete-stock img {
-  width: 100%;
-  height: auto;
-}
-
-.todo-content, .done-content,
-.goal-content, .memo-content,
-.article-stock-content {
-  margin-top: 25px;
-  padding: 0 20px;
 }
 
 /* ==============================
@@ -759,27 +971,6 @@ table th {
 .all-tag-container {
   box-sizing: border-box;
   width: 100%;
-}
-
-.back-indicator {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-}
-
-.back-indicator a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.back-indicator img {
-  width: 5%;
-}
-
-.back-indicator span {
-  text-align: center;
-  margin-top: 5px;
 }
 
 .todo-form-title, .done-form-title,

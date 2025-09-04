@@ -16,6 +16,12 @@
 
   <div class="main-container">
     <div class="mypage-inner">
+      <div class="message-area">
+        <div class="success-message"
+             th:if="${successMessage != null}"
+             th:text="${successMessage}"></div>
+      </div>
+
       <div class="inner-title">基本情報</div>
       <table class="view-table">
         <tr>

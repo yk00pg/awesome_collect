@@ -8,9 +8,7 @@ import org.springframework.ui.Model;
 import webapp.AwesomeCollect.common.util.DateTimeFormatUtil;
 import webapp.AwesomeCollect.dto.action.BaseActionDto;
 import webapp.AwesomeCollect.dto.action.DailyDoneDto;
-import webapp.AwesomeCollect.dto.action.DailyTodoDto;
 import webapp.AwesomeCollect.entity.action.DailyDone;
-import webapp.AwesomeCollect.entity.action.DailyTodo;
 import webapp.AwesomeCollect.service.TagService;
 import webapp.AwesomeCollect.service.junction.BaseActionTagJunctionService;
 import webapp.AwesomeCollect.service.junction.DoneTagJunctionService;
@@ -57,29 +55,6 @@ public class ActionViewPreparator {
 
     List<Integer> tagIdList = junctionService.searchTagIdsByActionId(currentDto.getId());
     currentDto.setTags(tagService.getTagName(tagIdList));
-  }
-
-  public void prepareBlankTodoView(
-      LocalDate date, DailyTodoDto dto, Model model) {
-
-    dto.setDate(date);
-    model.addAttribute("dailyTodoDto", dto);
-    model.addAttribute("hasTodoContent", false);
-    model.addAttribute("prevDate", date.minusDays(1));
-    model.addAttribute("nextDate", date.plusDays(1));
-    model.addAttribute("formattedDate", DateTimeFormatUtil.formatDate(date));
-  }
-
-  public void prepareCurrentTodoView(
-      LocalDate date, DailyTodoDto dto,
-      Model model, List<DailyTodo> dailyTodoList) {
-
-    DailyTodoDto currentDto = dto.fromDailyTodo(dailyTodoList);
-    model.addAttribute("dailyTodoDto", currentDto);
-    model.addAttribute("hasTodoContent", true);
-    model.addAttribute("prevDate", date.minusDays(1));
-    model.addAttribute("nextDate", date.plusDays(1));
-    model.addAttribute("formattedDate", DateTimeFormatUtil.formatDate(date));
   }
 
   public void prepareBlankDoneView(

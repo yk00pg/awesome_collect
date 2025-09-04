@@ -1,82 +1,114 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
+  <title>やることリスト</title>
   <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
   <div>
-    <header th:replace="~{fragments/common-header :: common-header}"></header>
+    <header th:replace="~{fragments/header :: header}"></header>
   </div>
 
-  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-  <div class="todo-container">
+  <div class="task-container">
     <div class="date-index">
-      <a th:href="@{/todo/{date}(date=${prevDate})}">◀︎ 前の日</a>
+      <a th:href="@{/todo/{date}(date=${todoResponseDto.prevDate})}">◀︎ 前の日</a>
         <form method="get" th:action="@{/todo}" style="display:inline;">
-          <input type="date" name="date" th:value="${dailyTodoDto.date}">
+          <input type="date" name="date" th:value="${todoResponseDto.date}">
           <button type="submit">移動</button>
         </form>
-      <a th:href="@{/todo/{date}(date=${nextDate})}">次の日 ▶︎</a>
+      <a th:href="@{/todo/{date}(date=${todoResponseDto.nextDate})}">次の日 ▶︎</a>
     </div>
 
-    <div class="todo-inner">
-      <div class="todo-date">
-        <p th:text="${formattedDate}"></p>
+    <div class="task-inner">
+      <div class="task-message-area">
+        <div class="success-message"
+             th:if="${successMessage != null}"
+             th:text="${successMessage}"></div>
+      </div>
+
+      <div class="date-label">
+        <p th:text="${todoResponseDto.formattedDate}"></p>
       </div>
 
       <!-- まだ登録されていない場合 -->
-      <th:block th:if="${!hasTodoContent}">
-        <div class="empty-todo">
-          <p>まだ登録されていません。</p>
-          <div class="register-todo">
-            <a th:href="@{/todo/edit/{date}(date=${dailyTodoDto.date})}">新規登録</a>
+      <th:block th:if="${!todoResponseDto.hasContent}">
+        <div class="empty-content">
+          <p th:text="#{unregistered.task('やること')}"></p>
+          <div class="link-button-area">
+            <a th:href="@{/todo/edit/{date}(date=${todoResponseDto.date})}"
+               class="new-registration-link">新規登録</a>
           </div>
         </div>
       </th:block>
 
       <!-- 登録されている場合 -->
-      <th:block th:if="${hasTodoContent}">
-        <div class="current-todo">
-          <div class="todo-header">
+      <th:block th:if="${todoResponseDto.hasContent}">
+        <div class="current-content">
+          <div class="content-header">
             <div class="at-info">
-              <p th:text="'登録日時: ' + ${dailyTodoDto.registeredAt}"></p>
-              <p th:if="${dailyTodoDto.updatedAt} != null" th:text="'更新日時: ' + ${dailyTodoDto.updatedAt}"></p>
+              <p th:text="'登録日時: ' + ${todoResponseDto.registeredAt}"></p>
+              <p th:if="${todoResponseDto.updatedAt} != null"
+                 th:text="'更新日時: ' + ${todoResponseDto.updatedAt}"></p>
             </div>
 
-            <div class="edit-delete">
-              <a th:href="@{/todo/edit/{date}(date=${dailyTodoDto.date})}">
+            <div class="edit-delete-area">
+              <a th:href="@{/todo/edit/{date}(date=${todoResponseDto.date})}"
+                 class="edit-link-area">
                 <img th:src="@{/image/edit-icon.svg}" alt="編集">
               </a>
-              <a href="#"
-                 onclick="if(confirm('この日のやることリストを削除しますか？')) {
-                              document.getElementById('deleteDailyTodo').submit();
-                           } return false;">
+              <a href="#" class="delete-area" id="delete-link">
                 <img th:src="@{/image/delete-icon.svg}" alt="削除">
               </a>
             </div>
           </div>
 
-          <div class="todo-content">
-            <div th:each="content, iterStat : ${dailyTodoDto.contentList}">
-              <ul>
-                <input type="hidden" th:field="${dailyTodoDto.idList[__${iterStat.index}__]}" />
-                <li class="content"
-                    th:if="${content != null and !#strings.isEmpty(content)}"
-                    th:text="${dailyTodoDto.contentList[__${iterStat.index}__]}"></li>
-              </ul>
-            </div>
+          <div class="content-inner">
+            <div class="inner-title">やることリスト</div>
+            <table class="view-table">
+              <tr th:each="content, iterStat : ${todoResponseDto.contentList}">
+                <div th:if="${content != null and !#strings.isEmpty(content)}">
+                  <th scope="row" class="index-th"
+                      th:text="${iterStat.index + 1}"></th>
+                  <td th:text="${todoResponseDto.contentList[__${iterStat.index}__]}"></td>
+                </div>
+              </tr>
+            </table>
           </div>
         </div>
 
-        <form id="deleteDailyTodo" th:action="@{/todo/{date}(date=${dailyTodoDto.date})}" method="post" style="display:none;">
+        <form id="deleteDailyTodo"
+              th:action="@{/todo/{date}(date=${todoResponseDto.date})}"
+              method="post" style="display:none;">
           <input type="hidden" name="_method" value="delete">
           <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
         </form>
+
+        <!-- 削除ボタンクリック時にダイアログを表示 -->
+        <script th:inline="javascript">
+          /*<![CDATA[*/
+            const deleteMsg = /*[[#{task.delete.confirm('やること')}]]*/;
+
+            document.getElementById('delete-link').addEventListener('click', function(e){
+              e.preventDefault();
+              if(confirm(deleteMsg)){
+                document.getElementById('deleteDailyTodo').submit();
+              }
+            });
+          /*]]>*/
+        </script>
       </th:block>
     </div>
   </div>
+
+  <!-- 初回登録時のみ表示するポップアップウィンドウ -->
+  <div th:if="${achievementPopup != null}">
+    <div class="popup"
+       th:replace="~{fragments/popup :: popup}"></div>
+  </div>
 </body>
+</html>

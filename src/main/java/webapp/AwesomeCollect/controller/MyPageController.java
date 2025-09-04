@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.MessageKeys;
+import webapp.AwesomeCollect.common.constant.ViewNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
+import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.user.UserBasicInfoDto;
-import webapp.AwesomeCollect.dto.user.UserInfoDto;
 import webapp.AwesomeCollect.dto.user.UserPasswordDto;
 import webapp.AwesomeCollect.exception.DuplicateException;
 import webapp.AwesomeCollect.exception.IncorrectPasswordException;
@@ -29,43 +32,44 @@ public class MyPageController {
   private final UserInfoService userInfoService;
   private final MessageUtil messageUtil;
 
-  public MyPageController(UserInfoService userInfoService, MessageUtil messageUtil) {
+  public MyPageController(
+      UserInfoService userInfoService, MessageUtil messageUtil) {
+
     this.userInfoService = userInfoService;
     this.messageUtil = messageUtil;
   }
 
   // ユーザー登録情報を表示
-  @GetMapping(value = "/mypage")
+  @GetMapping(ViewNames.MY_PAGE)
   public String showUserBasicInfo(
       @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
 
     prepareUserInfoView(customUserDetails, model);
-    return "/mypage";
+    return ViewNames.MY_PAGE;
   }
 
   // ユーザー登録情報の編集フォームを表示
-  @GetMapping(value = "/mypage/edit")
+  @GetMapping(ViewNames.MY_PAGE_EDIT)
   public String showUserBasicInfoEditForm(
       @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
 
     prepareUserInfoView(customUserDetails, model);
-    return "/mypage/edit";
+    return ViewNames.MY_PAGE_EDIT;
   }
-
 
   private void prepareUserInfoView(
       CustomUserDetails customUserDetails, Model model) {
 
     UserBasicInfoDto basicInfoDto =
         userInfoService.prepareUserInfoDto(customUserDetails.getId());
-    model.addAttribute("basicInfoDto", basicInfoDto);
+    model.addAttribute(AttributeNames.BASIC_INFO_DTO, basicInfoDto);
   }
 
   // パスワード変更フォームを表示
-  @GetMapping(value = "/mypage/change_password")
+  @GetMapping(ViewNames.MY_PAGE_CHANGE_PASSWORD)
   public String showPasswordChangeForm(Model model){
-    model.addAttribute("passwordDto", new UserPasswordDto());
-    return "/mypage/change_password";
+    model.addAttribute(AttributeNames.PASSWORD_DTO, new UserPasswordDto());
+    return ViewNames.MY_PAGE_CHANGE_PASSWORD;
   }
 
   /**
@@ -79,17 +83,18 @@ public class MyPageController {
    * @param redirectAttributes  リダイレクト後に一度だけ表示されるデータをViewに渡すインターフェース
    * @return  マイページ
    */
-  @PostMapping(value = "/mypage/edit")
+  @PostMapping(ViewNames.MY_PAGE_EDIT)
   public String updateUserBasicInfo(
-      @Valid @ModelAttribute("basicInfoDto") UserBasicInfoDto dto,
+      @Valid @ModelAttribute(AttributeNames.BASIC_INFO_DTO) UserBasicInfoDto dto,
       BindingResult result,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes) {
 
     if(result.hasErrors()){
-      return "/mypage/edit";
+      return ViewNames.MY_PAGE_EDIT;
     }
 
+    // ログインIDまたはメールアドレスが重複している場合はエラーに追加
     try{
       userInfoService.updateUserInfo(dto, customUserDetails.getId());
     }catch(DuplicateException ex) {
@@ -97,13 +102,14 @@ public class MyPageController {
             ex.getType().getFieldName(), "duplicate",
             messageUtil.getMessage(ex.getType().getMessageKey()));
 
-      return "/mypage/edit";
+      return ViewNames.MY_PAGE_EDIT;
     }
 
     redirectAttributes.addFlashAttribute(
-        "successMessage", messageUtil.getMessage("userInfo.edit.success"));
+        AttributeNames.SUCCESS_MESSAGE,
+        messageUtil.getMessage(MessageKeys.USERINFO_EDIT_SUCCESS));
 
-    return "redirect:/mypage";
+    return RedirectUtil.redirectView(ViewNames.MY_PAGE);
   }
 
   /**
@@ -118,34 +124,37 @@ public class MyPageController {
    * @param request クライアントからサーバーに送られたリクエスト情報を保持するオブジェクト
    * @return  ログインページ
    */
-  @PostMapping(value = "/mypage/change_password")
+  @PostMapping(ViewNames.MY_PAGE_CHANGE_PASSWORD)
   public String changePassword(
-      @Valid @ModelAttribute("passwordDto") UserPasswordDto dto, BindingResult result,
+      @Valid @ModelAttribute(AttributeNames.PASSWORD_DTO) UserPasswordDto dto, BindingResult result,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
     if(result.hasErrors()){
-      return "/mypage/change_password";
+      return ViewNames.MY_PAGE_CHANGE_PASSWORD;
     }
 
     // 現在のパスワードには@NotBlankをつけていないので念のため確認し、空欄の場合はエラーに追加
     if(dto.isBlankCurrentPassword()){
-      result.rejectValue("currentPassword", "currentPassword.blank");
-      return "mypage/change_password";
+      result.rejectValue("currentPassword", "blankCurrentPassword",
+          messageUtil.getMessage(MessageKeys.CURRENT_PASSWORD_BLANK));
+
+      return ViewNames.MY_PAGE_CHANGE_PASSWORD;
     }
 
     // パスワードと確認用パスワードが一致しない場合はエラーに追加
     if(dto.isPasswordMismatch()){
       result.rejectValue(
           "password", "mismatchPassword",
-          messageUtil.getMessage("password.mismatch"));
+          messageUtil.getMessage(MessageKeys.PASSWORD_MISMATCH));
       result.rejectValue(
           "confirmPassword", "mismatchPassword",
-          messageUtil.getMessage("password.mismatch"));
+          messageUtil.getMessage(MessageKeys.PASSWORD_MISMATCH));
 
-      return "/mypage/change_password";
+      return ViewNames.MY_PAGE_CHANGE_PASSWORD;
     }
 
+    // 現在のパスワードが間違っている場合はエラーに追加
     try{
       userInfoService.updatePassword(dto, customUserDetails.getId());
     }catch(IncorrectPasswordException ex){
@@ -153,7 +162,7 @@ public class MyPageController {
           ex.getFieldName(), ex.getMessageKey(),
           messageUtil.getMessage(ex.getMessageKey()));
 
-      return "/mypage/change_password";
+      return ViewNames.MY_PAGE_CHANGE_PASSWORD;
     }
 
     // セキュリティ情報を消去し、セッションを破棄してログアウトする
@@ -161,9 +170,9 @@ public class MyPageController {
     request.getSession().invalidate();
 
     redirectAttributes.addFlashAttribute(
-        "successMessage",
-        messageUtil.getMessage("password.change.success"));
+        AttributeNames.SUCCESS_MESSAGE,
+        messageUtil.getMessage(MessageKeys.PASSWORD_CHANGE_SUCCESS));
 
-    return "redirect:/login";
+    return RedirectUtil.redirectView(ViewNames.LOGIN_PAGE);
   }
 }

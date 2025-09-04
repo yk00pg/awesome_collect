@@ -8,7 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.MessageKeys;
+import webapp.AwesomeCollect.common.constant.ViewNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
+import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.user.UserInfoDto;
 import webapp.AwesomeCollect.exception.DuplicateException;
 import webapp.AwesomeCollect.service.UserInfoService;
@@ -29,10 +33,10 @@ public class SignupController {
   }
 
   // 新規登録フォームを表示
-  @GetMapping(value = "/signup")
+  @GetMapping(ViewNames.SIGNUP_PAGE)
   public String showSignUpForm(Model model){
-    model.addAttribute("userInfoDto", new UserInfoDto());
-    return "/signup";
+    model.addAttribute(AttributeNames.USER_INFO_DTO, new UserInfoDto());
+    return ViewNames.SIGNUP_PAGE;
   }
 
   /**
@@ -45,27 +49,28 @@ public class SignupController {
    * @param redirectAttributes  リダイレクト後に一度だけ表示されるデータをViewに渡すインターフェース
    * @return  ログインページ
    */
-  @PostMapping(value = "/signup")
+  @PostMapping(ViewNames.SIGNUP_PAGE)
   public String registerUserInfo(
-      @Valid @ModelAttribute("userInfoDto") UserInfoDto dto,
+      @Valid @ModelAttribute(AttributeNames.USER_INFO_DTO) UserInfoDto dto,
       BindingResult result, RedirectAttributes redirectAttributes) {
 
     if(result.hasErrors()){
-      return "/signup";
+      return ViewNames.SIGNUP_PAGE;
     }
 
     // パスワードと確認用パスワードが一致しない場合はエラーに追加
     if(dto.getPasswordDto().isPasswordMismatch()){
       result.rejectValue(
-          "passwordDto.password", "password.mismatch",
-          messageUtil.getMessage("password.mismatch"));
+          "passwordDto.password", "mismatchPassword",
+          messageUtil.getMessage(MessageKeys.PASSWORD_MISMATCH));
       result.rejectValue(
-          "passwordDto.confirmPassword", "password.mismatch",
-          messageUtil.getMessage("password.mismatch"));
+          "passwordDto.confirmPassword", "mismatchPassword",
+          messageUtil.getMessage(MessageKeys.PASSWORD_MISMATCH));
 
-      return "/signup";
+      return ViewNames.SIGNUP_PAGE;
     }
 
+    // ログインIDまたはメールアドレスが重複している場合はエラーに追加
     try {
       userInfoService.registerNewUser(dto);
     }catch(DuplicateException ex){
@@ -74,13 +79,13 @@ public class SignupController {
           ex.getType().getCompositeFiledName(),
           messageUtil.getMessage(ex.getType().getMessageKey()));
 
-      return "/signup";
+      return ViewNames.SIGNUP_PAGE;
     }
 
     redirectAttributes.addFlashAttribute(
-        "successMessage",
-        messageUtil.getMessage("signup.success"));
+        AttributeNames.SUCCESS_MESSAGE,
+        messageUtil.getMessage(MessageKeys.SIGNUP_SUCCESS));
 
-    return "redirect:/login";
+    return RedirectUtil.redirectView(ViewNames.LOGIN_PAGE);
   }
 }

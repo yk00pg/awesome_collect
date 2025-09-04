@@ -3,6 +3,7 @@ package webapp.AwesomeCollect.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import webapp.AwesomeCollect.common.constant.ViewNames;
 
 /**
  * ホーム画面のコントローラークラス。
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
   // ホーム画面を表示
-  @GetMapping(value = "/home")
+  @GetMapping(ViewNames.HOME_PAGE)
   public String showHomeView(){
-    return "/home";
+    return ViewNames.HOME_PAGE;
   }
 }

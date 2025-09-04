@@ -14,16 +14,18 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import webapp.AwesomeCollect.common.constant.AttributeNames;
 import webapp.AwesomeCollect.common.util.JsonConverter;
 import webapp.AwesomeCollect.common.TaggingManager;
 import webapp.AwesomeCollect.common.ActionViewPreparator;
 import webapp.AwesomeCollect.dto.action.DailyDoneDto;
-import webapp.AwesomeCollect.dto.action.DailyTodoDto;
+import webapp.AwesomeCollect.dto.action.TodoResponseDto;
 import webapp.AwesomeCollect.entity.action.DailyDone;
 import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.UserProgressService;
 import webapp.AwesomeCollect.service.action.DailyDoneService;
+import webapp.AwesomeCollect.service.action.DailyTodoService;
 import webapp.AwesomeCollect.service.junction.DoneTagJunctionService;
 import webapp.AwesomeCollect.service.TagService;
 
@@ -31,7 +33,7 @@ import webapp.AwesomeCollect.service.TagService;
 public class DailyDoneController {
 
   private final DailyDoneService dailyDoneService;
-  private final DailyTodoController dailyTodoController;
+  private final DailyTodoService dailyTodoService;
   private final ActionViewPreparator actionViewPreparator;
   private final TagService tagService;
   private final DoneTagJunctionService doneTagJunctionService;
@@ -39,12 +41,12 @@ public class DailyDoneController {
   private final UserProgressService userProgressService;
 
   public DailyDoneController(
-      DailyDoneService dailyDoneService, DailyTodoController dailyTodoController,
+      DailyDoneService dailyDoneService, DailyTodoService dailyTodoService,
       ActionViewPreparator actionViewPreparator, TagService tagService, DoneTagJunctionService doneTagJunctionService,
       TaggingManager taggingManager, UserProgressService userProgressService){
 
     this.dailyDoneService = dailyDoneService;
-    this.dailyTodoController = dailyTodoController;
+    this.dailyTodoService = dailyTodoService;
     this.actionViewPreparator = actionViewPreparator;
     this.tagService = tagService;
     this.doneTagJunctionService = doneTagJunctionService;
@@ -88,7 +90,9 @@ public class DailyDoneController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       DailyDoneDto dto, Model model) {
 
-    dailyTodoController.showDailyTodoView(date, customUserDetails, new DailyTodoDto(), model);
+    TodoResponseDto currentDto =
+        dailyTodoService.prepareResponseDto(customUserDetails.getId(), date);
+    model.addAttribute(AttributeNames.TODO_RESPONSE_DTO, currentDto);
     showDoneView(date, customUserDetails, dto, model);
 
     return "/done/edit";

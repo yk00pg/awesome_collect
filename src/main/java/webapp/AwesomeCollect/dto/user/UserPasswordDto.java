@@ -14,16 +14,17 @@ public class UserPasswordDto {
 
   private static final String PASSWORD_PATTERN =
       "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[*_-])[A-Za-z0-9*_-]{8,32}$";
+  private static final String PASSWORD_INVALID = "{password.invalid}";
 
   @NotBlank
-  @Pattern(regexp = PASSWORD_PATTERN, message = "{password.invalid}")
+  @Pattern(regexp = PASSWORD_PATTERN, message = PASSWORD_INVALID)
   private String password;
 
   @NotBlank
-  @Pattern(regexp = PASSWORD_PATTERN, message = "{password.invalid}")
+  @Pattern(regexp = PASSWORD_PATTERN, message = PASSWORD_INVALID)
   private String confirmPassword;
 
-  @Pattern(regexp = PASSWORD_PATTERN, message = "{password.invalid}")
+  @Pattern(regexp = PASSWORD_PATTERN, message = PASSWORD_INVALID)
   private String currentPassword;
 
   // 現在のパスワードが空欄か確認

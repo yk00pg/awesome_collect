@@ -3,6 +3,9 @@ package webapp.AwesomeCollect.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.MessageKeys;
+import webapp.AwesomeCollect.common.constant.ViewNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 
 /**
@@ -18,18 +21,18 @@ public class LoginController {
   }
 
   // ログインフォームを表示
-  @GetMapping("/login")
+  @GetMapping(ViewNames.LOGIN_PAGE)
   public String showLoginForm() {
-    return "/login";
+    return ViewNames.LOGIN_PAGE;
   }
 
   // ログイン失敗時にエラーメッセージとヒントを表示
-  @GetMapping(value = "/login", params = "error")
+  @GetMapping(value = ViewNames.LOGIN_PAGE, params = "error")
   public String showLoginFailureMessage(Model model){
     model.addAttribute(
-        "failureMessage", messageUtil.getMessage("login.failure"));
+        AttributeNames.FAILURE_MESSAGE, messageUtil.getMessage(MessageKeys.LOGIN_FAILURE));
     model.addAttribute(
-        "failureHint", messageUtil.getMessage("login.failure.hint"));
-    return "/login";
+        AttributeNames.FAILURE_HINT, messageUtil.getMessage(MessageKeys.LOGIN_FAILURE_HINT));
+    return ViewNames.LOGIN_PAGE;
   }
 }
