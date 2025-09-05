@@ -17,4 +17,8 @@ public class ViewNames {
   public static final String DAILY_TODO_VIEW_PAGE = TODO_PAGE + DATE;
   public static final String DAILY_TODO_EDIT_PAGE = TODO_EDIT_PAGE + DATE;
 
+  public static final String DONE_PAGE = "/done";
+  public static final String DONE_EDIT_PAGE = "/done/edit";
+  public static final String DAILY_DONE_VIEW_PAGE = DONE_PAGE + DATE;
+  public static final String DAILY_DONE_EDIT_PAGE = DONE_EDIT_PAGE + DATE;
 }

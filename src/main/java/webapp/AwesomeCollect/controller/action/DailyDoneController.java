@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.ViewNames;
 import webapp.AwesomeCollect.common.util.JsonConverter;
 import webapp.AwesomeCollect.common.TaggingManager;
-import webapp.AwesomeCollect.common.ActionViewPreparator;
-import webapp.AwesomeCollect.dto.action.DailyDoneDto;
+import webapp.AwesomeCollect.common.util.RedirectUtil;
+import webapp.AwesomeCollect.dto.action.DoneRequestDto;
+import webapp.AwesomeCollect.dto.action.DoneResponseDto;
 import webapp.AwesomeCollect.dto.action.TodoResponseDto;
 import webapp.AwesomeCollect.entity.action.DailyDone;
 import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
@@ -27,105 +29,64 @@ import webapp.AwesomeCollect.service.UserProgressService;
 import webapp.AwesomeCollect.service.action.DailyDoneService;
 import webapp.AwesomeCollect.service.action.DailyTodoService;
 import webapp.AwesomeCollect.service.junction.DoneTagJunctionService;
-import webapp.AwesomeCollect.service.TagService;
 
 @Controller
 public class DailyDoneController {
 
   private final DailyDoneService dailyDoneService;
   private final DailyTodoService dailyTodoService;
-  private final ActionViewPreparator actionViewPreparator;
-  private final TagService tagService;
   private final DoneTagJunctionService doneTagJunctionService;
   private final TaggingManager taggingManager;
   private final UserProgressService userProgressService;
 
   public DailyDoneController(
       DailyDoneService dailyDoneService, DailyTodoService dailyTodoService,
-      ActionViewPreparator actionViewPreparator, TagService tagService, DoneTagJunctionService doneTagJunctionService,
+      DoneTagJunctionService doneTagJunctionService,
       TaggingManager taggingManager, UserProgressService userProgressService){
 
     this.dailyDoneService = dailyDoneService;
     this.dailyTodoService = dailyTodoService;
-    this.actionViewPreparator = actionViewPreparator;
-    this.tagService = tagService;
     this.doneTagJunctionService = doneTagJunctionService;
     this.taggingManager = taggingManager;
     this.userProgressService = userProgressService;
   }
 
-  /**
-   * 日付別の「できたこと」画面を表示する。
-   *
-   * @param date  選択した日付
-   * @param customUserDetails ログイン中のユーザー情報
-   * @param dto 「できたこと」のデータオブジェクト
-   * @param model HTMLにデータを渡すオブジェクト
-   * @return  done.html
-   */
-  @GetMapping(value = "/done/{date}")
+  // できたことリストの閲覧ページを表示
+  @GetMapping(ViewNames.DAILY_DONE_VIEW_PAGE)
   public String showDailyDone(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      DailyDoneDto dto, Model model){
+      Model model){
 
-    showDoneView(date, customUserDetails, dto, model);
+    DoneResponseDto currentDto =
+        dailyDoneService.prepareResponseDto(customUserDetails.getId(), date);
+    model.addAttribute(AttributeNames.DONE_RESPONSE_DTO, currentDto);
 
-    return "/done";
+    return ViewNames.DONE_PAGE;
   }
 
-  /**
-   * 日付別の「できたこと」の編集画面を表示する。<br>
-   * 入力補助として日付別の「やること」も併せて表示する。
-   *
-   * @param date  選択した日付
-   * @param customUserDetails ログイン中のユーザー情報
-   * @param dto 「できたこと」のデータオブジェクト
-   * @param model HTMLにデータを渡すオブジェクト
-   * @return  done/edit.html
-   */
-  @GetMapping(value = "/done/edit/{date}")
+  // できたことリストの編集ページを表示
+  @GetMapping(ViewNames.DAILY_DONE_EDIT_PAGE)
   public String showDailyDoneForm(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      DailyDoneDto dto, Model model) {
+      Model model) {
 
-    TodoResponseDto currentDto =
+    TodoResponseDto currentTodoDto =
         dailyTodoService.prepareResponseDto(customUserDetails.getId(), date);
-    model.addAttribute(AttributeNames.TODO_RESPONSE_DTO, currentDto);
-    showDoneView(date, customUserDetails, dto, model);
+    DoneRequestDto currentDoneDto =
+        dailyDoneService.prepareRequestDto(customUserDetails.getId(), date);
 
-    return "/done/edit";
+    model.addAttribute(AttributeNames.TODO_RESPONSE_DTO, currentTodoDto);
+    model.addAttribute(AttributeNames.DONE_REQUEST_DTO, currentDoneDto);
+
+    return ViewNames.DAILY_DONE_EDIT_PAGE;
   }
 
-  @GetMapping(value = "/done")
+  // できたことリストの閲覧ページにリダイレクト
+  @GetMapping(ViewNames.DONE_PAGE)
   public String redirectByDate(@RequestParam LocalDate date) {
-    return "redirect:/done/" + date;
-  }
-
-  /**
-   * ログイン中のユーザーのユーザーIDを取得し、ユーザーIDを基にDBからタグリストを取得する。<br>
-   * ユーザーIDと日付を基にDBからできたことリストを取得する。<br>
-   * できたことリストが空（未登録）の場合は空のデータオブジェクト（日付のみ含む）とタグリストをモデルに追加し、
-   * そうでない場合は登録済みデータを入れたデータオブジェクトとタグリストをモデルに追加する。
-   *
-   * @param date  選択した日付
-   * @param customUserDetails ログイン中のユーザー情報
-   * @param dto 「できたこと」のデータオブジェクト
-   * @param model HTMLにデータを渡すオブジェクト
-   */
-  private void showDoneView(
-      LocalDate date, CustomUserDetails customUserDetails, DailyDoneDto dto, Model model) {
-
-    int userId = customUserDetails.getId();
-    List<String> tagNameList = tagService.getTagNameList(userId);
-    List<DailyDone> dailyDoneList = dailyDoneService.searchDailyDone(userId, date);
-    if(dailyDoneList.isEmpty()){
-      actionViewPreparator.prepareBlankDoneView(date, dto, model, tagNameList);
-    }else{
-      actionViewPreparator.prepareCurrentDoneView(
-          date, dto, model, dailyDoneList, tagNameList, doneTagJunctionService);
-    }
+    return RedirectUtil.redirectView(ViewNames.DONE_PAGE, date);
   }
 
   /**
@@ -144,7 +105,7 @@ public class DailyDoneController {
   @PostMapping(value = "/done/edit/{date}")
   public String editDailyTodo(
       @PathVariable LocalDate date,
-      @Valid @ModelAttribute("dailyDoneDto") DailyDoneDto dto, BindingResult result,
+      @Valid @ModelAttribute("dailyDoneDto") DoneRequestDto dto, BindingResult result,
       @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model, HttpSession httpSession) {
 
     if(result.hasErrors()){
@@ -159,7 +120,7 @@ public class DailyDoneController {
     }
 
     // TODO: 最終的にはJSで空欄チェックをして弾くようにしたい
-    if (!dto.hasAtLeastOneContent()) {
+    if (!dto.isContentListEmpty()) {
       result.rejectValue("contentList", "content.empty", "内容をひとつ以上入力してください");
     }
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import webapp.AwesomeCollect.common.util.DateTimeFormatUtil;
 import webapp.AwesomeCollect.dto.action.BaseActionDto;
-import webapp.AwesomeCollect.dto.action.DailyDoneDto;
+import webapp.AwesomeCollect.dto.action.DoneRequestDto;
 import webapp.AwesomeCollect.entity.action.DailyDone;
 import webapp.AwesomeCollect.service.TagService;
 import webapp.AwesomeCollect.service.junction.BaseActionTagJunctionService;
@@ -57,23 +57,11 @@ public class ActionViewPreparator {
     currentDto.setTags(tagService.getTagName(tagIdList));
   }
 
-  public void prepareBlankDoneView(
-      LocalDate date, DailyDoneDto dto, Model model, List<String> tagNameList){
-
-    dto.setDate(date);
-    model.addAttribute("dailyDoneDto", dto);
-    model.addAttribute("hasDoneContent", false);
-    model.addAttribute("prevDate", date.minusDays(1));
-    model.addAttribute("nextDate", date.plusDays(1));
-    model.addAttribute("formattedDate", DateTimeFormatUtil.formatDate(date));
-    model.addAttribute("tagNameList", tagNameList);
-  }
-
   public void prepareCurrentDoneView(
-      LocalDate date,DailyDoneDto dto, Model model, List<DailyDone> dailyDoneList,
+      LocalDate date, DoneRequestDto dto, Model model, List<DailyDone> dailyDoneList,
       List<String> tagNameList, DoneTagJunctionService doneTagJunctionService) {
 
-    DailyDoneDto currentDto = dto.fromDailyDone(dailyDoneList);
+    DoneRequestDto currentDto = dto.fromDailyDone(dailyDoneList);
     List<String> currentTagList = new ArrayList<>();
     List<Integer> doneIds = currentDto.getIdList();
     for(int doneId : doneIds){
