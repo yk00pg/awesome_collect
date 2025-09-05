@@ -1,49 +1,40 @@
 package webapp.AwesomeCollect.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import webapp.AwesomeCollect.mapper.TagMapper;
 import webapp.AwesomeCollect.entity.Tag;
+import webapp.AwesomeCollect.repository.TagRepository;
 
 @Service
 public class TagService {
 
-  private final TagMapper mapper;
+  private final TagRepository tagRepository;
 
-  public TagService(TagMapper mapper){
-    this.mapper = mapper;
+  public TagService(TagRepository tagRepository){
+    this.tagRepository = tagRepository;
   }
 
-  public List<String> getTagNameList(int userId){
-    return mapper.selectTagList(userId);
+  public String getTagName(int tagId){
+    return tagRepository.searchTagName(tagId);
   }
 
-  public String getTagName(List<Integer> tagIds){
-    List<String> tagNameList = new ArrayList<>();
-    for(int tagId : tagIds){
-      tagNameList.add(mapper.selectTagName(tagId));
-    }
-    return String.join(",",tagNameList);
+  public List<String> prepareTagListByUserId(int userId){
+    return tagRepository.searchTagNameList(userId);
+  }
+
+  public List<String> prepareTagListByTagIdList(List<Integer> tagIdList){
+    return tagRepository.searchTagNameListByTagIdList(tagIdList);
   }
 
   @Transactional
-  public int resolveTagIds(Tag tag) {
-    Integer tagId = mapper.selectIdByUserIdAndTagName(tag.getUserId(), tag.getName());
+  public int resolveTagId(Tag tag) {
+    Integer tagId = tagRepository.searchTagIdByUserIdAndTagName(tag);
     if (tagId == null) {
-      mapper.insertTag(tag);
+      tagRepository.registerTag(tag);
       return tag.getId();
     } else {
       return tagId;
     }
-  }
-
-  public void updateTag(Tag tag){
-    mapper.updateTag(tag);
-  }
-
-  public void deleteTagById(Tag tag){
-    mapper.deleteTag(tag);
   }
 }

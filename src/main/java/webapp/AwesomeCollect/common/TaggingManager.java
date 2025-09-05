@@ -40,7 +40,7 @@ public class TaggingManager {
     if(pureTagList != null){
       for(String tagName : pureTagList){
         Tag tag = TagDto.toTag(userId, tagName);
-        int tagId = tagService.resolveTagIds(tag);
+        int tagId = tagService.resolveTagId(tag);
         T relation = relationFactory.apply(actionId, tagId);
         junctionService.registerRelationIfNotExist(relation);
       }
@@ -86,7 +86,7 @@ public class TaggingManager {
 
     for(String tagName : pureTagList){
       Tag tag = TagDto.toTag(userId, tagName);
-      int tagId = tagService.resolveTagIds(tag);
+      int tagId = tagService.resolveTagId(tag);
       newTagIdList.add(tagId);
     }
   }
