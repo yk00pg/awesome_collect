@@ -69,37 +69,40 @@
 
           <div class="content-inner">
             <div class="inner-title">できたことリスト</div>
-            <table class="view-table">
-              <div th:each="content, iterStat : ${doneResponseDto.contentList}">
-                <th:block th:if="${content != null and !#strings.isEmpty(content)}">
-                  <tbody>
-                    <tr>
-                      <th colspan="2" scope="col"
-                          th:text="${iterStat.index + 1}"></th>
-                    </tr>
-                    <tr>
-                      <th scope="row" class="row-th">内容</th>
-                      <td th:text="${doneResponseDto.contentList[__${iterStat.index}__]}"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row" class="row-th">学習時間</th>
-                      <td th:text="${doneResponseDto.hoursList[__${iterStat.index}__]}"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row" class="row-th">メモ</th>
-                      <td th:text="${doneResponseDto.memoList[__${iterStat.index}__]}"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row" class="row-th">タグ</th>
-                      <td th:text="${doneResponseDto.tagsList[__${iterStat.index}__]}"></td>
-                    </tr>
-                  </tbody>
-                </th:block>
-              </div>
-            </table>
+            <div th:each="content, iterStat : ${doneResponseDto.contentList}">
+              <table class="done-view-table">
+                  <th:block th:if="${content != null and !#strings.isEmpty(content)}">
+                    <tbody>
+                      <tr>
+                        <th colspan="2" scope="col" class="view-col-th"
+                            th:text="${iterStat.index + 1}"></th>
+                      </tr>
+                      <tr>
+                        <th scope="row" class="view-row-th">内容</th>
+                        <td th:text="${doneResponseDto.contentList[__${iterStat.index}__]}"></td>
+                      </tr>
+                      <tr>
+                        <th scope="row" class="view-row-th">学習時間</th>
+                        <td th:text="${doneResponseDto.hoursList[__${iterStat.index}__]}"></td>
+                      </tr>
+                      <tr>
+                        <th scope="row" class="view-row-th">メモ</th>
+                        <td th:text="${doneResponseDto.memoList[__${iterStat.index}__]}"></td>
+                      </tr>
+                      <tr>
+                        <th scope="row" class="view-row-th">タグ</th>
+                        <td>
+                          <span th:each="tag : ${doneResponseDto.tagsList[__${iterStat.index}__]}"
+                                th:text="${tag}"></span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </th:block>
+              </table>
+            </div>
 
             <table class="hours-table">
-              <th scope="row" class="row-th">この日の合計学習時間</th>
+              <th scope="row">この日の合計学習時間</th>
               <td th:text="${doneResponseDto.totalHours}"></td>
             </table>
           </div>

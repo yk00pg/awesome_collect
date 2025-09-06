@@ -30,7 +30,8 @@ public class DoneResponseDto {
   private LocalDate nextDate;
   private boolean hasContent;
 
-  public static DoneResponseDto fromDailyDone(List<DailyDone> doneList){
+  public static DoneResponseDto fromDailyDone(
+      List<DailyDone> doneList, List<List<String>> tagNamesList){
     DoneResponseDto dto = new DoneResponseDto();
     dto.date = doneList.getFirst().getDate();
     doneList.forEach(done -> {
@@ -39,6 +40,8 @@ public class DoneResponseDto {
       dto.memoList.add(done.getMemo());
       dto.tagsList.add(Collections.emptyList());
     });
+
+    dto.tagsList = tagNamesList;
 
     // 初回登録日を設定
     dto.registeredAt = doneList.stream()
