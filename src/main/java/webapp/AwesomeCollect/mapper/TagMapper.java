@@ -4,8 +4,11 @@ import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 import webapp.AwesomeCollect.entity.Tag;
+import webapp.AwesomeCollect.provider.TagProvider;
 
 @Mapper
 public interface TagMapper {
@@ -22,11 +25,9 @@ public interface TagMapper {
       """)
   String findTagNameById(int id);
 
-  @Select("""
-      SELECT name FROM tag
-      WHERE id IN #{tagIdList}
-      """)
-  List<String> selectTagNameListByTagIdList(List<Integer> tagIdList);
+  // WHERE IN句に変数を用いるためにプロバイダを通す
+  @SelectProvider(type = TagProvider.class, method = "selectIdsByTagIdList")
+  List<String> selectTagNameListByTagIdList(@Param("tagIdList") List<Integer> tagIdList);
 
   @Select("""
       SELECT id FROM tag
