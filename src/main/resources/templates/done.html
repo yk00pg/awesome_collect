@@ -57,11 +57,11 @@
             </div>
 
             <div class="edit-delete-area">
-              <a th:href="@{/done/edit/{date}(date=${doneResponseDto.date})}">
+              <a th:href="@{/done/edit/{date}(date=${doneResponseDto.date})}"
+                 class="edit-link-area">
                 <img th:src="@{/image/edit-icon.svg}" alt="編集">
               </a>
-              <a href="#"
-                 class="delete-area" id="delete-link">
+              <a href="#" class="delete-area" id="delete-link">
                 <img th:src="@{/image/delete-icon.svg}" alt="削除">
               </a>
             </div>
@@ -91,9 +91,11 @@
                       </tr>
                       <tr>
                         <th scope="row" class="view-row-th">タグ</th>
-                        <td>
-                          <span th:each="tag : ${doneResponseDto.tagsList[__${iterStat.index}__]}"
-                                th:text="${tag}"></span>
+                        <td class="tag-td">
+                          <div class="tag-area">
+                            <span th:each="tag : ${doneResponseDto.tagsList[__${iterStat.index}__]}"
+                                  th:text="${tag}" class="tag-badge"></span>
+                          </div>
                         </td>
                       </tr>
                     </tbody>

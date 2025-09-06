@@ -4,6 +4,7 @@
 
 :root {
   --olive: #627962;
+  --mint: #BDDDC4;
   --reddish-brown: #664B4F;
   --brown-grey: #9C918B;
   --bordeaux: #AA4D53;
@@ -394,7 +395,13 @@ table th {
   border: 1px solid var(--brown-grey);
 }
 
+.hours-table th {
+  height: 50px;
+}
 
+.hours-table td {
+  text-align: center
+}
 
 .input-row-th {
   box-sizing: border-box;
@@ -425,6 +432,10 @@ table th {
   box-sizing: border-box;
   width: 50px;
   height: 50px;
+}
+
+.tag-td {
+  padding: 5px 15px !important;
 }
 
 /* 共通インプットエリア */
@@ -547,6 +558,28 @@ table th {
   background-color: var(--bordeaux);
   border: 3px solid var(--reddish-brown);
   border-radius: 10px;
+}
+
+.tag-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+  text-align: center;
+}
+
+.tag-badge {
+  box-sizing: border-box;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 15px;
+  white-space: nowrap;
+  color: var(--olive);
+  background-color: var(--mint);
+  border: 1px solid var(--mint);
+  border-radius: 20px;
 }
 
 /* ==================
@@ -1204,7 +1237,7 @@ table th {
   background-color: var(--pink-cream);
   --tag-text-color: var(--olive);
   --tag-text-color--edit: var(--olive);
-  --tag-bg: #BDDDC4;
+  --tag-bg: var(--mint);
   --tag-border-radius: 5px;
   padding: 3px 0;
   padding-left: 10px;

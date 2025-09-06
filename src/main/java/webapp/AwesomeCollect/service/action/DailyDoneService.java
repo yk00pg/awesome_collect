@@ -44,7 +44,10 @@ public class DailyDoneService {
                 ? Collections.emptyList()
                 : tagService.prepareTagListByTagIdList(tagIdList));
       }
-      return DoneResponseDto.fromDailyDone(dailyDoneList, tagNamesList);
+
+      DoneResponseDto dto = DoneResponseDto.fromDailyDone(dailyDoneList);
+      dto.setTagsList(tagNamesList);
+      return dto;
     }
   }
 
