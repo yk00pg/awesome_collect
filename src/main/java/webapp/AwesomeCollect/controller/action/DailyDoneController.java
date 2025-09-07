@@ -25,6 +25,7 @@ import webapp.AwesomeCollect.dto.action.TodoResponseDto;
 import webapp.AwesomeCollect.entity.action.DailyDone;
 import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
 import webapp.AwesomeCollect.security.CustomUserDetails;
+import webapp.AwesomeCollect.service.TagService;
 import webapp.AwesomeCollect.service.UserProgressService;
 import webapp.AwesomeCollect.service.action.DailyDoneService;
 import webapp.AwesomeCollect.service.action.DailyTodoService;
@@ -35,17 +36,19 @@ public class DailyDoneController {
 
   private final DailyDoneService dailyDoneService;
   private final DailyTodoService dailyTodoService;
+  private final TagService tagService;
   private final DoneTagJunctionService doneTagJunctionService;
   private final TaggingManager taggingManager;
   private final UserProgressService userProgressService;
 
   public DailyDoneController(
       DailyDoneService dailyDoneService, DailyTodoService dailyTodoService,
-      DoneTagJunctionService doneTagJunctionService,
+      TagService tagService, DoneTagJunctionService doneTagJunctionService,
       TaggingManager taggingManager, UserProgressService userProgressService){
 
     this.dailyDoneService = dailyDoneService;
     this.dailyTodoService = dailyTodoService;
+    this.tagService = tagService;
     this.doneTagJunctionService = doneTagJunctionService;
     this.taggingManager = taggingManager;
     this.userProgressService = userProgressService;
@@ -72,15 +75,20 @@ public class DailyDoneController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model) {
 
+    int userId = customUserDetails.getId();
+
     TodoResponseDto currentTodoDto =
-        dailyTodoService.prepareResponseDto(customUserDetails.getId(), date);
+        dailyTodoService.prepareResponseDto(userId, date);
     DoneRequestDto currentDoneDto =
-        dailyDoneService.prepareRequestDto(customUserDetails.getId(), date);
+        dailyDoneService.prepareRequestDto(userId, date);
+
+    List<String> tagNameList = tagService.prepareTagListByUserId(userId);
 
     model.addAttribute(AttributeNames.TODO_RESPONSE_DTO, currentTodoDto);
     model.addAttribute(AttributeNames.DONE_REQUEST_DTO, currentDoneDto);
+    model.addAttribute("tagNameList", tagNameList);
 
-    return ViewNames.DAILY_DONE_EDIT_PAGE;
+    return ViewNames.DONE_EDIT_PAGE;
   }
 
   // できたことリストの閲覧ページにリダイレクト
