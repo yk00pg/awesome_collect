@@ -15,16 +15,16 @@ public class TagService {
     this.tagRepository = tagRepository;
   }
 
-  public String getTagName(int tagId){
-    return tagRepository.searchTagName(tagId);
-  }
-
   public List<String> prepareTagListByUserId(int userId){
     return tagRepository.searchTagNameList(userId);
   }
 
   public List<String> prepareTagListByTagIdList(List<Integer> tagIdList){
     return tagRepository.searchTagNameListByTagIdList(tagIdList);
+  }
+
+  public String getCombinedTagName(List<Integer> tagIdList){
+    return String.join(",", prepareTagListByTagIdList(tagIdList));
   }
 
   @Transactional
