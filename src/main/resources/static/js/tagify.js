@@ -12,8 +12,12 @@ function initTagify(input){
     });
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+const tagifyMap = new WeakMap();
+
+function initAllTagify(){
     document.querySelectorAll(".tags-input").forEach(input => {
-        initTagify(input);
+        if (!tagifyMap.has(input)) {
+            tagifyMap.set(input, initTagify(input));
+        }
     });
-});
+}

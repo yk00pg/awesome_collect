@@ -20,6 +20,8 @@ public class DoneRequestDto {
   private static final String HOURS_PATTERN = "^$|^\\d{1,2}(\\.\\d{1,2})?$";
   private static final int MEMO_MAX_SIZE = 500;
 
+  private TodoResponseDto todoResponseDto;
+
   @NotNull(message = "{date.blank}")
   @DateTimeFormat(pattern = DATE_PATTERN)
   private LocalDate date;
@@ -38,55 +40,19 @@ public class DoneRequestDto {
 
   private List<Boolean> deletableList = new ArrayList<>();
 
-
-  // 内容がすべて空か確認
-  public boolean isContentListEmpty(){
-    return contentList == null ||
-        contentList.stream()
-            .allMatch(content -> content == null || content.isBlank());
-  }
-
   // 削除チェックが入っているか確認
   public boolean isDeletable(int index){
     return Boolean.TRUE.equals(deletableList.get(index));
   }
 
-  /**
-   * 学習時間の合計が24時間以内かどうか判定する。
-   * 
-   * @return  学習時間の合計が24時間以内かどうか。
-   */
-  public boolean isTotalHoursValid(){
-    BigDecimal totalHours = BigDecimal.ZERO;
-    for(String hourStr : hoursList){
-      totalHours = totalHours.add(new BigDecimal(hourStr));
-    }
-    return totalHours.compareTo(new BigDecimal("24.00")) <= 0;
-  }
-
-  public boolean isContentEmpty(int i){
-    return contentList.get(i) == null || contentList.get(i).trim().isEmpty();
-  }
-
-  public boolean isFutureDate(){
-    LocalDate today = LocalDate.now();
-    return date.isAfter(today);
-  }
-
-  /**
-   * データオブジェクトをエンティティに変換する。
-   * 
-   * @param i できたことのインデックス
-   * @param userId  ユーザーID
-   * @return  変換後のエンティティ
-   */
-  public DailyDone toDailyDone(int i, int userId){
+  // 新規登録用のデータを詰めたエンティティに変換
+  public DailyDone toDailyDone(int userId, int index){
     DailyDone dailyDone = new DailyDone();
     dailyDone.setUserId(userId);
     dailyDone.setDate(this.date);
-    dailyDone.setContent(contentList.get(i).trim());
-    dailyDone.setHours(new BigDecimal(hoursList.get(i)));
-    dailyDone.setMemo(memoList.get(i).trim());
+    dailyDone.setContent(contentList.get(index).trim());
+    dailyDone.setHours(new BigDecimal(hoursList.get(index)));
+    dailyDone.setMemo(memoList.get(index).trim());
     dailyDone.setRegisteredAt(LocalDateTime.now());
     return dailyDone;
   }

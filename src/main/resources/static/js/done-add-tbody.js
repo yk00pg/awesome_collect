@@ -1,6 +1,7 @@
-document.addEventListener("DOMContentLoaded", () => {
+function initDoneAddTbody() {
     const table = document.getElementById("variable-table");
     const addButton = document.getElementById("add-row");
+    if (!table || !addButton) return;
 
     // 追加する行ブロックの中身
     const createBlock = (index) => {
@@ -75,32 +76,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return tbody;
     };
 
-    // 行ブロックを追加
-    addButton.addEventListener("click", () => {
+    addButton.onclick = () => {
         const blocks = table.querySelectorAll("tbody[data-row-id]");
         const index = blocks.length;
         const newBlock = createBlock(index);
         table.appendChild(newBlock);
-    })
+    };
 
-    // 追加した行ブロックを削除
-    table.addEventListener("click", (e) => {
+    table.onclick = (e) => {
         if(e.target.classList.contains("remove-row-button")) {
-            const tbody = e.target.closest("tbody");
-            tbody.remove();
-
-            updateLabels();
+            e.target.closest("tbody").remove();
         }
-    });
-
-    // ラベルの番号を振り直す
-    function updateLabels() {
-        const blocks = table.querySelectorAll("tbody[data-row-id]");
-        blocks.forEach((block, i) => {
-            block.querySelector(".content-row > .task-th").textContent = "内容 " + (i + 1);
-            block.querySelector(".hours-row > .task-th").textContent = "学習時間 " + (i + 1);
-            block.querySelector(".memo-row > .task-th").textContent = "メモ " + (i + 1);
-            block.querySelector(".tag-row > .task-th").textContent = "タグ " + (i + 1);
-        });
-    }
-});
+    };
+}

@@ -66,6 +66,7 @@
           <div class="notice-message">
             <p th:text="#{task.edit.notice1}"></p>
             <p th:if="${doneRequestDto.idList[0] != 0}" th:text="#{task.edit.notice2}"></p>
+            <p th:text="#{tag.input.notice}"></p>
           </div>
         </div>
 
@@ -145,18 +146,18 @@
                 <div class="error-message" th:errors="*{hoursList}"></div>
               </td>
             </tr>
+            <tr th:if="${#fields.hasErrors('hoursList[' + iterStat.index + ']')}">
+              <td class="error-message-td"></td>
+              <td class="blank-cell"></td>
+              <td>
+                <div class="error-message" th:errors="*{hoursList[__${iterStat.index}__]}"></div>
+              </td>
+            </tr>
             <tr th:if="${#fields.hasErrors('memoList')}">
               <td class="error-message-td"></td>
               <td class="blank-cell"></td>
               <td>
                 <div class="error-message" th:errors="*{memoList}"></div>
-              </td>
-            </tr>
-            <tr th:if="${#fields.hasErrors('tagsList')}">
-              <td class="error-message-td"></td>
-              <td class="blank-cell"></td>
-              <td>
-                <div class="error-message" th:errors="*{tagsList}"></div>
               </td>
             </tr>
             <tr class="border-row">
@@ -170,23 +171,23 @@
         <div class="add-button-area">
           <button type="button" id="add-row" class="add-button">＋</button>
         </div>
-        <script th:src="@{/js/done-add-tbody.js}"></script>
 
         <div class="button-area">
           <button type="submit" class="register-button">登録</button>
         </div>
       </form>
 
-        <!-- Tagify用にデータだけ埋め込み -->
-        <script th:inline="javascript">
-          /*<![CDATA[*/
-            const tagNameList = /*[[${tagNameList}]]*/ [];
-          /*]]>*/
-        </script>
-
-        <!-- Tagifyの設定はJSで行う -->
-        <script th:src="@{/js/tagify.js}"></script>
-
     </div>
   </div>
+  <script th:src="@{/js/done-add-tbody.js}"></script>
+  <!-- Tagifyの設定はJSで行う -->
+  <script th:src="@{/js/tagify.js}"></script>
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    const tagNameList = /*[[${tagNameList}]]*/ [];
+    initDoneAddTbody();
+    initAllTagify();
+    /*]]>*/
+  </script>
 </body>
+</html>
