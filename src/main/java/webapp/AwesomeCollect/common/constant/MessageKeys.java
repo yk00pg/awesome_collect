@@ -24,4 +24,5 @@ public class MessageKeys {
 
   // awesome
   public static final String TODO_AWESOME = "todo.awesome";
+  public static final String DONE_AWESOME = "done.awesome";
 }

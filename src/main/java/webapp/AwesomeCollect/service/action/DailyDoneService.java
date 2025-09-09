@@ -12,7 +12,6 @@ import webapp.AwesomeCollect.common.util.JsonConverter;
 import webapp.AwesomeCollect.dto.action.DoneRequestDto;
 import webapp.AwesomeCollect.dto.action.DoneResponseDto;
 import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
-import webapp.AwesomeCollect.mapper.action.DailyDoneMapper;
 import webapp.AwesomeCollect.entity.action.DailyDone;
 import webapp.AwesomeCollect.repository.DailyDoneRepository;
 import webapp.AwesomeCollect.service.TagService;
@@ -172,7 +171,9 @@ public class DailyDoneService {
 
   // 指定の日付のできたことをすべて削除
   public void deleteDailyDoneByDate(int userId, LocalDate date){
+    doneTagJunctionService.deleteRelationByDate(userId, date);
     dailyDoneRepository.deleteDailyDoneByDate(userId, date);
+
     sessionManager.setHasUpdatedRecordCount(true);
     sessionManager.setHasUpdateHours(true);
   }
