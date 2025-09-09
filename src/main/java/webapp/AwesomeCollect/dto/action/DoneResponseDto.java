@@ -1,14 +1,15 @@
 package webapp.AwesomeCollect.dto.action;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.Data;
 import webapp.AwesomeCollect.common.util.DateTimeFormatUtil;
+import webapp.AwesomeCollect.common.util.LearningTimeConverter;
 import webapp.AwesomeCollect.entity.action.DailyDone;
 
 @Data
@@ -16,14 +17,14 @@ public class DoneResponseDto {
 
   private LocalDate date;
   private List<String> contentList = new ArrayList<>();
-  private List<String> hoursList = new ArrayList<>();
+  private List<String> learningTimeList = new ArrayList<>();
   private List<String> memoList = new ArrayList<>();
   private List<List<String>> tagsList = new ArrayList<>();
 
   private String registeredAt;
   private String updatedAt;
 
-  private BigDecimal totalHours;
+  private String totalLearningTime;
 
   private String formattedDate;
   private LocalDate prevDate;
@@ -33,11 +34,15 @@ public class DoneResponseDto {
   public static DoneResponseDto fromDailyDone(List<DailyDone> doneList){
     DoneResponseDto dto = new DoneResponseDto();
     dto.date = doneList.getFirst().getDate();
+
+    AtomicInteger totalMinute = new AtomicInteger();
     doneList.forEach(done -> {
       dto.contentList.add(done.getContent());
-      dto.hoursList.add(String.valueOf(done.getHours()));
+      dto.learningTimeList.add(
+          LearningTimeConverter.formatAsJpString(done.getMinutes()));
       dto.memoList.add(done.getMemo());
       dto.tagsList.add(Collections.emptyList());
+      totalMinute.addAndGet(done.getMinutes());
     });
 
     // 初回登録日を設定
@@ -55,12 +60,8 @@ public class DoneResponseDto {
         .map(DateTimeFormatUtil :: formatDateTime)
         .orElse(null);
 
-    // 1日の合計学習時間を設定
-    BigDecimal totalHours = BigDecimal.ZERO;
-    for(String hourStr : dto.hoursList){
-      totalHours = totalHours.add(new BigDecimal(hourStr));
-    }
-    dto.totalHours = totalHours;
+    dto.totalLearningTime =
+        LearningTimeConverter.formatAsJpString(totalMinute.intValue());
 
     dto.formattedDate = DateTimeFormatUtil.formatDate(dto.date);
     dto.prevDate = dto.date.minusDays(1);

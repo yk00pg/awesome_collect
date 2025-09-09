@@ -16,7 +16,7 @@ public class DailyDone {
   private int userId;
   private LocalDate date;
   private String content;
-  private BigDecimal hours;
+  private int minutes;
   private String memo;
   private LocalDateTime registeredAt;
   private LocalDateTime updatedAt;

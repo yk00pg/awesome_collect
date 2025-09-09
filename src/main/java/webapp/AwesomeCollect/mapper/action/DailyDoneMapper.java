@@ -28,15 +28,15 @@ public interface DailyDoneMapper {
 
   // @OptionsをつけてDBで自動採番されるIDを取得してエンティティに付与
   @Insert("""
-      INSERT daily_done(user_id, date, content, hours, memo, registered_at)
-      VALUES(#{userId}, #{date}, #{content}, #{hours}, #{memo}, #{registeredAt})
+      INSERT daily_done(user_id, date, content, minutes, memo, registered_at)
+      VALUES(#{userId}, #{date}, #{content}, #{minutes}, #{memo}, #{registeredAt})
       """)
   @Options(useGeneratedKeys = true, keyProperty = "id")
   int insertDone(DailyDone done);
 
   @Update("""
       UPDATE daily_done
-      SET date=#{date}, content=#{content}, hours=#{hours}, memo=#{memo}, updated_at=#{updatedAt}
+      SET date=#{date}, content=#{content}, minutes=#{minutes}, memo=#{memo}, updated_at=#{updatedAt}
       WHERE id=#{id}
       """)
   int updateDone(DailyDone done);
