@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.constant.ViewNames;
@@ -44,19 +45,17 @@ public class DailyDoneController {
   private final TagService tagService;
   private final DailyDoneValidator dailyDoneValidator;
   private final MessageUtil messageUtil;
-  private final DoneTagJunctionService doneTagJunctionService;
 
   public DailyDoneController(
       DailyDoneService dailyDoneService, DailyTodoService dailyTodoService,
       TagService tagService, DailyDoneValidator dailyDoneValidator,
-      MessageUtil messageUtil, DoneTagJunctionService doneTagJunctionService){
+      MessageUtil messageUtil){
 
     this.dailyDoneService = dailyDoneService;
     this.dailyTodoService = dailyTodoService;
     this.tagService = tagService;
     this.dailyDoneValidator = dailyDoneValidator;
     this.messageUtil = messageUtil;
-    this.doneTagJunctionService = doneTagJunctionService;
   }
 
   // できたことリストの閲覧ページを表示
@@ -66,9 +65,9 @@ public class DailyDoneController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model){
 
-    DoneResponseDto currentDto =
-        dailyDoneService.prepareResponseDto(customUserDetails.getId(), date);
-    model.addAttribute(AttributeNames.DONE_RESPONSE_DTO, currentDto);
+    model.addAttribute(
+        AttributeNames.DONE_RESPONSE_DTO,
+        dailyDoneService.prepareResponseDto(customUserDetails.getId(), date));
 
     return ViewNames.DONE_PAGE;
   }
@@ -87,16 +86,15 @@ public class DailyDoneController {
       Model model) {
 
     int userId = customUserDetails.getId();
-
-    TodoResponseDto currentTodoDto =
-        dailyTodoService.prepareResponseDto(userId, date);
-    DoneRequestDto currentDoneDto =
-        dailyDoneService.prepareRequestDto(userId, date);
-    List<String> tagNameList = tagService.prepareTagListByUserId(userId);
-
-    model.addAttribute(AttributeNames.TODO_RESPONSE_DTO, currentTodoDto);
-    model.addAttribute(AttributeNames.DONE_REQUEST_DTO, currentDoneDto);
-    model.addAttribute(AttributeNames.TAG_NAME_LIST, tagNameList);
+    model.addAttribute(
+        AttributeNames.TODO_RESPONSE_DTO,
+        dailyTodoService.prepareResponseDto(userId, date));
+    model.addAttribute(
+        AttributeNames.DONE_REQUEST_DTO,
+        dailyDoneService.prepareRequestDto(userId, date));
+    model.addAttribute(
+        AttributeNames.TAG_NAME_LIST,
+        tagService.prepareTagListByUserId(userId));
 
     return ViewNames.DONE_EDIT_PAGE;
   }
@@ -108,27 +106,27 @@ public class DailyDoneController {
   }
 
   /**
-   * 登録状況に応じて分岐し、入力された内容を登録/更新/削除する。<br>
-   * データオブジェクトからコンテンツリストを取得し、空欄チェックを行い、学習時間の合計もチェックする。<br>
-   * 入力されたハッシュタグ（JSON形式）を文字列に変換し、リスト形式で取得する。<br>
-   * ログイン中のユーザーのユーザーIDを取得し、データオブジェクトからできたことのIDリストを取得する。<br>
-   * 入力された内容の登録/更新/削除処理を行う。
+   * 入力されたデータを確認し、できたことを編集する。<br>
+   * バインディングエラーが発生した場合は参考用やることリストとタグリストを詰め直して編集ページに戻り、
+   * そうでない場合はDBの登録・更新・削除処理を行い、閲覧ページに遷移してサクセスメッセージを表示する。
    *
-   * @param date  選択した日付
-   * @param dto 「できたこと」のデータオブジェクト
-   * @param result  データバインディングの結果
-   * @param customUserDetails ログイン中のユーザー情報
-   * @return  done/edit.html
+   * @param date  日付
+   * @param dto できたことのデータオブジェクト
+   * @param result  バインディングの結果
+   * @param model データをViewに渡すオブジェクト
+   * @param customUserDetails カスタムユーザー情報
+   * @param redirectAttributes  リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
+   * @return  できたこと閲覧ページ
    */
   @PostMapping(ViewNames.DAILY_DONE_EDIT_PAGE)
   public String editDailyTodo(
       @PathVariable LocalDate date,
       @Valid @ModelAttribute(AttributeNames.DONE_REQUEST_DTO) DoneRequestDto dto,
       BindingResult result, Model model,
-      @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      RedirectAttributes redirectAttributes) {
 
     if(result.hasErrors()){
-      // 参考用のやることリストとタグリストを詰め直す
       model.addAttribute(
           AttributeNames.TODO_RESPONSE_DTO,
           dailyTodoService.prepareResponseDto(customUserDetails.getId(), date));
@@ -141,20 +139,38 @@ public class DailyDoneController {
 
     dailyDoneService.saveDailyDone(customUserDetails.getId(), dto);
 
+    boolean isUpdatedRecord = dto.getIdList().getFirst() != 0;
+
+    // 新規登録か更新（削除含む）かを判定してサクセスメッセージを表示
+    if(isUpdatedRecord){
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
+    }else{
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.ACHIEVEMENT_POPUP,
+          messageUtil.getMessage(MessageKeys.DONE_AWESOME));
+    }
+
     return RedirectUtil.redirectView(ViewNames.DONE_PAGE, date);
   }
 
-  @DeleteMapping(value = "/done/{date}")
+  // 指定の日付のできたことリストを削除して閲覧ページにリダイレクト
+  @DeleteMapping(ViewNames.DAILY_DONE_VIEW_PAGE)
   public String deleteDone(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      HttpSession httpSession){
+      RedirectAttributes redirectAttributes){
 
-    int userId = customUserDetails.getId();
-    doneTagJunctionService.deleteRelationByDate(userId, date);
-    dailyDoneService.deleteDailyDoneByDate(userId, date);
-    httpSession.setAttribute("hasNewRecord", true);
+    dailyDoneService.deleteDailyDoneByDate(customUserDetails.getId(), date);
 
-    return "redirect:/done/" + date;
+    redirectAttributes.addFlashAttribute(
+        AttributeNames.SUCCESS_MESSAGE,
+        messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
+
+    return RedirectUtil.redirectView(ViewNames.DONE_PAGE, date);
   }
 }

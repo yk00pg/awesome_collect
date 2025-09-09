@@ -131,5 +131,11 @@
       </th:block>
     </div>
   </div>
+
+  <!-- 初回登録時のみ表示するポップアップウィンドウ -->
+  <div th:if="${achievementPopup != null}">
+    <div class="popup"
+         th:replace="~{fragments/popup :: popup}"></div>
+  </div>
 </body>
 </html>
