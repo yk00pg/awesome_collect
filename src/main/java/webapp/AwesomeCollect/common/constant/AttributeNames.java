@@ -18,4 +18,7 @@ public class AttributeNames {
 
   public static final String DONE_RESPONSE_DTO = "doneResponseDto";
   public static final String DONE_REQUEST_DTO = "doneRequestDto";
+
+  // OTHERS
+  public static final String TAG_NAME_LIST = "tagNameList";
 }
