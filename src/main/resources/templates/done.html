@@ -82,7 +82,7 @@
                     </tr>
                     <tr>
                       <th scope="row" class="view-row-th">学習時間</th>
-                      <td th:text="${doneResponseDto.hoursList[__${iterStat.index}__]}"></td>
+                      <td th:text="${doneResponseDto.learningTimeList[__${iterStat.index}__]}"></td>
                     </tr>
                     <tr>
                       <th scope="row" class="view-row-th">メモ</th>
@@ -103,7 +103,7 @@
 
             <table class="hours-table">
               <th scope="row">この日の合計学習時間</th>
-              <td th:text="${doneResponseDto.totalHours}"></td>
+              <td th:text="${doneResponseDto.totalLearningTime}"></td>
             </table>
           </div>
         </div>

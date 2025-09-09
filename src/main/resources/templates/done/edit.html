@@ -80,7 +80,7 @@
           </tr>
           <tr>
             <td colspan="2"></td>
-            <td colspan="2">
+            <td colspan="4">
               <div class="error-message"
                    th:if="${#fields.hasErrors('date')}"
                    th:errors="*{date}"></div>
@@ -93,11 +93,11 @@
               <td class="blank-cell">
                 <input type="hidden" th:field="*{idList[__${iterStat.index}__]}" />
               </td>
-              <td>
+              <td colspan="3">
                 <input type="text" class="input-area"
                        th:field="*{contentList[__${iterStat.index}__]}" />
               </td>
-              <td rowspan="2" class="delete-check-td">
+              <td class="delete-check-td">
                 <label class="delete-check-area" th:if="*{idList[__${iterStat.index}__] > 0}">
                   <input type="checkbox" class="delete-check"
                          th:field="*{deletableList[__${iterStat.index}__]}" value="true" />
@@ -108,25 +108,37 @@
                 </label>
               </td>
             </tr>
-            <tr class="hours-row">
+            <tr class="time-row">
               <th scope="row" class="task-th" th:text="'学習時間 ' + ${iterStat.index + 1}"></th>
               <td class="blank-cell"></td>
+              <td class="input-time-area">
+                <input type="number" class="input-area"
+                       th:field="*{hoursList[__${iterStat.index}__]}"
+                       min="0" max="24" value="0" />
+              </td>
               <td>
-                <input type="text" class="input-area"
-                       th:field="*{hoursList[__${iterStat.index}__]}" />
+                <span>時間</span>
+              </td>
+              <td class="input-time-area">
+                <input type="number" class="input-area"
+                       th:field="*{minutesList[__${iterStat.index}__]}"
+                       min="0" max="59" value="0" />
+              </td>
+              <td>
+                <span>分</span>
               </td>
             </tr>
             <tr class="memo-row">
               <th scope="row" class="task-th" th:text="'メモ ' + ${iterStat.index + 1}"></th>
               <td class="blank-row"></td>
-              <td colspan="2" class="done-memo-area">
+              <td colspan="4" class="done-memo-area">
                 <textarea class="input-done-memo-area" th:field="*{memoList[__${iterStat.index}__]}"></textarea>
               </td>
             </tr>
             <tr class="tag-row">
               <th scope="row" class="task-th" th:text="'タグ ' + ${iterStat.index + 1}"></th>
               <td class="blank-cell"></td>
-              <td colspan="2">
+              <td colspan="4">
                 <input type="text" class="tags-input"
                        th:id="'tags-input-' + ${iterStat.index}"
                        th:field="*{tagsList[__${iterStat.index}__]}" />
@@ -135,33 +147,40 @@
             <tr th:if="${#fields.hasErrors('contentList')}">
               <td class="error-message-td"></td>
               <td class="blank-cell"></td>
-              <td>
+              <td colspan="4">
                 <div class="error-message" th:errors="*{contentList}"></div>
               </td>
             </tr>
             <tr th:if="${#fields.hasErrors('hoursList')}">
               <td class="error-message-td"></td>
               <td class="blank-cell"></td>
-              <td>
+              <td colspan="4">
                 <div class="error-message" th:errors="*{hoursList}"></div>
+              </td>
+            </tr>
+            <tr th:if="${#fields.hasErrors('minutesList')}">
+              <td class="error-message-td"></td>
+              <td class="blank-cell"></td>
+              <td colspan="4">
+                <div class="error-message" th:errors="*{minutesList}"></div>
               </td>
             </tr>
             <tr th:if="${#fields.hasErrors('hoursList[' + iterStat.index + ']')}">
               <td class="error-message-td"></td>
               <td class="blank-cell"></td>
-              <td>
+              <td colspan="4">
                 <div class="error-message" th:errors="*{hoursList[__${iterStat.index}__]}"></div>
               </td>
             </tr>
             <tr th:if="${#fields.hasErrors('memoList')}">
               <td class="error-message-td"></td>
               <td class="blank-cell"></td>
-              <td>
+              <td colspan="4">
                 <div class="error-message" th:errors="*{memoList}"></div>
               </td>
             </tr>
             <tr class="border-row">
-              <td colspan="4">
+              <td colspan="6">
                 <div class="border-line"></div>
               </td>
             </tr>

@@ -1,8 +1,6 @@
 package webapp.AwesomeCollect.validation;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -15,6 +13,9 @@ import webapp.AwesomeCollect.dto.action.DoneRequestDto;
 public class DailyDoneValidator implements Validator {
 
   private final MessageUtil messageUtil;
+
+  private static final int MINUTES = 60;
+  private static final int HOURS = 24;
 
   public DailyDoneValidator(MessageUtil messageUtil){
     this.messageUtil = messageUtil;
@@ -30,8 +31,8 @@ public class DailyDoneValidator implements Validator {
     DoneRequestDto dto = (DoneRequestDto)  target;
     validateDate(dto, errors);
     validateContent(dto, errors);
-    validateHours(dto, errors);
-    validateTotalHours(dto, errors);
+    validateLearningTime(dto, errors);
+    validateTotalLearningTime(dto, errors);
   }
 
   private void validateDate(DoneRequestDto dto, Errors errors){
@@ -53,45 +54,33 @@ public class DailyDoneValidator implements Validator {
     }
   }
 
-  private void validateHours(DoneRequestDto dto, Errors errors){
+  private void validateLearningTime(DoneRequestDto dto, Errors errors){
     for(int i = 0; i < dto.getContentList().size(); i++){
       String content = dto.getContentList().get(i);
-      String hours = dto.getHoursList().get(i);
 
       if(content != null && !content.isBlank()
-          && (hours == null || hours.isBlank()
-          || new BigDecimal(hours).compareTo(BigDecimal.ZERO) == 0)){
-
+          && dto.getHoursList().get(i) == 0 && dto.getMinutesList().get(i) == 0){
+        // エラーメッセージを重複して表示しないように、minutesListフィールには追加しない
         errors.rejectValue(
-            "hoursList[" + i + "]", "hours.blank",
-            messageUtil.getMessage(MessageKeys.HOURS_BLANK));
+            "hoursList[" + i + "]", "blankLearningTime",
+            messageUtil.getMessage(MessageKeys.LEARNING_TIME_BLANK));
       }
     }
   }
 
-  private void validateTotalHours(DoneRequestDto dto, Errors errors){
-    List<String> hoursList = dto.getHoursList();
-    if(hoursList == null
-        || hoursList.stream()
-        .allMatch(hours -> hours == null || hours.isBlank())){
-      return;
-    }
+  private void validateTotalLearningTime(DoneRequestDto dto, Errors errors){
+    int totalHours = dto.getHoursList().stream()
+        .mapToInt(Integer::intValue)
+        .sum();
+    int totalMinutes = dto.getMinutesList().stream()
+        .mapToInt(Integer::intValue)
+        .sum();
 
-    boolean hasExceptZero = hoursList.stream()
-        .noneMatch(str -> str.equals("0") || str.equals("0.0") || str.equals("0.00"));
-    if(!hasExceptZero){
-      return;
-    }
-
-    BigDecimal totalHours = BigDecimal.ZERO;
-    for(String hourStr : hoursList){
-      totalHours = totalHours.add(new BigDecimal(hourStr));
-    }
-
-    if(totalHours.compareTo(new BigDecimal("24.00")) > 0){
+    if((totalHours * MINUTES) + totalMinutes > HOURS * MINUTES){
+      // エラーメッセージを重複して表示しないように、minutesListフィールには追加しない
       errors.rejectValue(
-          "hoursList", "exceededTotalHours",
-          messageUtil.getMessage(MessageKeys.TOTAL_HOURS_EXCEEDED));
+          "hoursList", "exceededTotalLearningTime",
+          messageUtil.getMessage(MessageKeys.TOTAL_LEARNING_TIME_EXCEEDED));
     }
   }
 }

@@ -15,34 +15,46 @@ function initDoneAddTbody() {
             <td class="blank-cell">
               <input type="hidden" name="idList[${index}]" value="0" />
             </td>
-            <td>
+            <td colspan="3">
               <input type="text" class="input-area"
                      name="contentList[${index}]" />
             </td>
-            <td rowspan="2">
+            <td>
               <button type="button" class="remove-row-button">×</button>
             </td>
         `;
         tbody.appendChild(contentRow);
 
-        const hoursRow = document.createElement("tr");
-        hoursRow.className = "hours-row";
-        hoursRow.innerHTML = `
+        const timeRow = document.createElement("tr");
+        timeRow.className = "time-row";
+        timeRow.innerHTML = `
             <th scope="row" class="task-th">学習時間 ${index + 1}</th>
             <td class="blank-cell"></td>
             <td>
-              <input type="text" class="input-area"
-                     name="hoursList[${index}]" />
+              <input type="number" class="input-area"
+                     name="hoursList[${index}]"
+                     min="0" max="24" value="0" />
+            </td>
+            <td>
+              <span>時間</span>
+            </td>
+            <td>
+              <input type="number" class="input-area"
+                     name="minutesList[${index}]"
+                     min="0" max="59" value="0" />
+            </td>
+            <td>
+              <span>分</span>
             </td>
         `;
-        tbody.appendChild(hoursRow);
+        tbody.appendChild(timeRow);
 
         const memoRow = document.createElement("tr");
         memoRow.className = "memo-row";
         memoRow.innerHTML = `
             <th scope="row" class="task-th">メモ ${index + 1}</th>
             <td class="blank-row"></td>
-            <td colspan="2" class="done-memo-area">
+            <td colspan="4" class="done-memo-area">
               <textarea class="input-done-memo-area" name="memoList[${index}]"></textarea>
             </td>
         `;
@@ -53,7 +65,7 @@ function initDoneAddTbody() {
         tagRow.innerHTML = `
             <th scope="row" class="task-th">タグ ${index + 1}</th>
             <td class="blank-cell"></td>
-            <td colspan="2">
+            <td colspan="4">
               <input type="text" class="tags-input"
                      id="tags-input-${index}"
                      name="tagsList[${index}]" />
@@ -67,7 +79,7 @@ function initDoneAddTbody() {
         const borderRow = document.createElement("tr");
         borderRow.className = "border-row";
         borderRow.innerHTML = `
-            <td colspan="4">
+            <td colspan="6">
               <div class="border-line"></div>
             </td>
         `;
@@ -86,6 +98,18 @@ function initDoneAddTbody() {
     table.onclick = (e) => {
         if(e.target.classList.contains("remove-row-button")) {
             e.target.closest("tbody").remove();
+            updateLabels();
         }
     };
+
+    // ラベルの番号を振り直す
+    function updateLabels() {
+        const blocks = table.querySelectorAll("tbody[data-row-id]");
+        blocks.forEach((block, i) => {
+            block.querySelector(".content-row > .task-th").textContent = "内容 " + (i + 1);
+            block.querySelector(".time-row > .task-th").textContent = "学習時間 " + (i + 1);
+            block.querySelector(".memo-row > .task-th").textContent = "メモ " + (i + 1);
+            block.querySelector(".tag-row > .task-th").textContent = "タグ " + (i + 1);
+        });
+    }
 }

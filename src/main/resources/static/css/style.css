@@ -151,8 +151,9 @@
   justify-content: center;
   gap: 0;
   margin-top: 300px;
-  padding: 5px 20px;
-  background-color: var(--cherry-blossom);
+  padding: 5px 25px;
+  background-color: white;
+  border: 20px double gold;
   border-radius: 15px;
   box-shadow: 0 10px 10px 0 var(--bordeaux);
   z-index: 100;
@@ -208,7 +209,7 @@
 
 @keyframes stamp-pop {
   0%   { transform: scale(0); }
-  60%  { transform: scale(2.5); }
+  60%  { transform: scale(3.0); }
   80%  { transform: scale(0.5); }
   100% { transform: scale(1); }
 }
@@ -396,7 +397,7 @@ table th {
 }
 
 .hours-table th {
-  width: 350px;
+  width: 300px;
   height: 50px;
 }
 
@@ -839,8 +840,13 @@ table th {
   border-bottom-right-radius: 10px;
 }
 
+.input-time-area {
+  width: 150px;
+  height: 50px;
+}
+
 .delete-check-td {
-  width: 50px;
+  width: 43px;
 }
 
 .delete-check-area {
@@ -903,6 +909,8 @@ table th {
   justify-content: flex-end;
   gap: 5px;
 }
+
+
 
 /* ==============================
   やること編集ページの設定（todo/edit.html）
