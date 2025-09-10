@@ -22,23 +22,23 @@ public interface MemoTagJunctionMapper extends BaseActionTagJunctionMapper<MemoT
         WHERE memo_id=#{memoId} AND tag_id=#{tagId}
         )
       """)
-  boolean isRegisteredRelation(MemoTagJunction junction);
+  boolean isRegisteredRelation(MemoTagJunction relation);
 
   @Insert("""
       INSERT memo_tag(memo_id, tag_id)
       VALUES(#{memoId}, #{tagId})
       """)
-  int insertRelation(MemoTagJunction junction);
+  void insertRelation(MemoTagJunction relation);
 
   @Delete("""
       DELETE FROM memo_tag
       WHERE memo_id=#{memoId}
       """)
-  int deleteRelationByActionId(int memoId);
+  void deleteRelationByActionId(int memoId);
 
   @Delete("""
       DELETE FROM memo_tag
       WHERE memo_id=#{memoId} AND tag_id=#{tagId}
       """)
-  int deleteRelationByRelatedId(MemoTagJunction junction);
+  void deleteRelationByRelatedId(MemoTagJunction relation);
 }

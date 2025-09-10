@@ -68,7 +68,7 @@ public class DailyDoneService {
     List<List<String>> tagNamesList = new ArrayList<>();
     for(DailyDone done : dailyDoneList){
       List<Integer> tagIdList =
-          doneTagJunctionService.searchTagIdsByActionId(done.getId());
+          doneTagJunctionService.prepareTagIdLitByActionId(done.getId());
 
       tagNamesList.add(
           tagIdList == null || tagIdList.isEmpty()
@@ -88,7 +88,7 @@ public class DailyDoneService {
     List<String> tagNameList = new ArrayList<>();
     for(DailyDone done : dailyDoneList){
       List<Integer> tagIdList =
-          doneTagJunctionService.searchTagIdsByActionId(done.getId());
+          doneTagJunctionService.prepareTagIdLitByActionId(done.getId());
 
       tagNameList.add(
           tagIdList == null || tagIdList.isEmpty()

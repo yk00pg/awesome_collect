@@ -80,7 +80,7 @@ public class TagService {
     }
 
     List<Integer> newTagIdList = resolveTagIdList(userId, pureTagList);
-    List<Integer> currentTagIdList = junctionService.searchTagIdsByActionId(actionId);
+    List<Integer> currentTagIdList = junctionService.prepareTagIdLitByActionId(actionId);
 
     registerNewRelations(
         actionId, newTagIdList, currentTagIdList, relationFactory, junctionService);

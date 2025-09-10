@@ -4,19 +4,22 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.entity.junction.MemoTagJunction;
-import webapp.AwesomeCollect.mapper.junction.BaseActionTagJunctionMapper;
 import webapp.AwesomeCollect.mapper.junction.MemoTagJunctionMapper;
+import webapp.AwesomeCollect.repository.junction.MemoTagJunctionRepository;
 
+/**
+ * メモタグのサービスクラス。
+ */
 @Service
 public class MemoTagJunctionService extends BaseActionTagJunctionService<MemoTagJunction> {
 
-  public MemoTagJunctionService(MemoTagJunctionMapper mapper) {
-    super(mapper);
+  public MemoTagJunctionService(MemoTagJunctionRepository repository) {
+    super(repository);
   }
 
   @Override
-  public List<Integer> searchTagIdsByActionId(int memoId) {
-    return super.searchTagIdsByActionId(memoId);
+  public List<Integer> prepareTagIdLitByActionId(int memoId) {
+    return super.prepareTagIdLitByActionId(memoId);
   }
 
   @Override
