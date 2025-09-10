@@ -32,24 +32,24 @@ public interface DailyDoneMapper {
       VALUES(#{userId}, #{date}, #{content}, #{minutes}, #{memo}, #{registeredAt})
       """)
   @Options(useGeneratedKeys = true, keyProperty = "id")
-  int insertDone(DailyDone done);
+  void insertDone(DailyDone done);
 
   @Update("""
       UPDATE daily_done
       SET date=#{date}, content=#{content}, minutes=#{minutes}, memo=#{memo}, updated_at=#{updatedAt}
       WHERE id=#{id}
       """)
-  int updateDone(DailyDone done);
+  void updateDone(DailyDone done);
 
   @Delete("""
       DELETE FROM daily_done
       WHERE id=#{id}
       """)
-  int deleteDoneById(int id);
+  void deleteDoneById(int id);
 
   @Delete("""
       DELETE FROM daily_done
       WHERE user_id=#{userId} AND date=#{date}
       """)
-  int deleteDoneByDate(int userId, LocalDate date);
+  void deleteDoneByDate(int userId, LocalDate date);
 }

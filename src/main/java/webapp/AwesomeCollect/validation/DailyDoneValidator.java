@@ -9,6 +9,10 @@ import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.dto.action.DoneRequestDto;
 
+/**
+ * できたことのカスタムバリデータクラス。<br>
+ * DTOアノテーションで制御できないバリデーションを確認する。
+ */
 @Component
 public class DailyDoneValidator implements Validator {
 
@@ -26,6 +30,7 @@ public class DailyDoneValidator implements Validator {
     return DoneRequestDto.class.isAssignableFrom(clazz);
   }
 
+  // カスタムバリデーションをチェック
   @Override
   public void validate(@NotNull Object target, @NotNull Errors errors) {
     DoneRequestDto dto = (DoneRequestDto)  target;
@@ -35,6 +40,7 @@ public class DailyDoneValidator implements Validator {
     validateTotalLearningTime(dto, errors);
   }
 
+  // 未来の日付の場合にエラーに追加
   private void validateDate(DoneRequestDto dto, Errors errors){
     if(dto.getDate().isAfter(LocalDate.now())){
       errors.rejectValue(
@@ -43,6 +49,7 @@ public class DailyDoneValidator implements Validator {
     }
   }
 
+  // すべての内容が空欄の場合にエラーに追加
   private void validateContent(DoneRequestDto dto, Errors errors){
     if(dto.getContentList() == null ||
         dto.getContentList().stream()
@@ -54,6 +61,7 @@ public class DailyDoneValidator implements Validator {
     }
   }
 
+  // 内容が入力されていて、学習時間が入力されていない場合にエラーに追加
   private void validateLearningTime(DoneRequestDto dto, Errors errors){
     for(int i = 0; i < dto.getContentList().size(); i++){
       String content = dto.getContentList().get(i);
@@ -68,6 +76,7 @@ public class DailyDoneValidator implements Validator {
     }
   }
 
+  // 1日の学習時間尾合計が24時間を超える場合にエラーに追加
   private void validateTotalLearningTime(DoneRequestDto dto, Errors errors){
     int totalHours = dto.getHoursList().stream()
         .mapToInt(Integer::intValue)
