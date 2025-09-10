@@ -562,7 +562,8 @@ table th {
   border: 3px solid var(--reddish-brown);
 }
 
-.new-registration-link {
+.new-registration-link,
+.additional-registration-link {
   font-weight: bold;
   color: var(--pink-cream);
   text-align: center;
@@ -889,22 +890,25 @@ table th {
   width: 90px;
 }
 
-.empty-goal, .empty-memo,
-.empty-stock {
-  text-align: center;
+.detail-link-td {
+  width: 60px;
+  padding: 0 !important;
 }
 
-.goal-detail a, .memo-detail a,
-.edit-area a {
+.detail-link-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-link-button {
+  padding: 3px 8px;
   font-weight: bold;
-  color: var(--reddish-brown);
-  text-align: center;
   text-decoration: none;
-  padding: 1px 10px;
-  margin: 1px auto;
+  color: var(--reddish-brown);
   background-color: var(--pink-beige);
   border: 2px solid var(--reddish-brown);
-  border-radius: 5px;
+  border-radius: 8px;
 }
 
 .stock-header {
