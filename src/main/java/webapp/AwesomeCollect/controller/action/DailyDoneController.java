@@ -1,9 +1,7 @@
 package webapp.AwesomeCollect.controller.action;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
-import java.util.List;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,23 +18,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.constant.ViewNames;
-import webapp.AwesomeCollect.common.util.JsonConverter;
-import webapp.AwesomeCollect.common.TaggingManager;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.action.DoneRequestDto;
-import webapp.AwesomeCollect.dto.action.DoneResponseDto;
-import webapp.AwesomeCollect.dto.action.TodoResponseDto;
-import webapp.AwesomeCollect.entity.action.DailyDone;
-import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.TagService;
-import webapp.AwesomeCollect.service.UserProgressService;
 import webapp.AwesomeCollect.service.action.DailyDoneService;
 import webapp.AwesomeCollect.service.action.DailyTodoService;
-import webapp.AwesomeCollect.service.junction.DoneTagJunctionService;
 import webapp.AwesomeCollect.validation.DailyDoneValidator;
 
+/**
+ * できたことのコントローラークラス。
+ */
 @Controller
 public class DailyDoneController {
 
@@ -86,6 +79,7 @@ public class DailyDoneController {
       Model model) {
 
     int userId = customUserDetails.getId();
+
     model.addAttribute(
         AttributeNames.TODO_RESPONSE_DTO,
         dailyTodoService.prepareResponseDto(userId, date));

@@ -3,14 +3,19 @@
 
 <!-- 日ごとの初回登録時のみ表示するポップアップウィンドウ -->
 <div id="popup" class="popup" role="alert" th:fragment="popup">
-  <div class="popup-message">
-    <h1 class="action-text" th:text="${achievementPopup}"></h1>
-    <span class="awesome-word" th:text="#{awesome.word}"></span>
+  <div class="outside-border">
+    <div class="inside-border">
+      <div class="popup-message">
+        <h1 class="action-text" th:text="${achievementPopup}"></h1>
+        <span class="awesome-word" th:text="#{awesome.word}"></span>
+      </div>
+      <div class="awesome-stamp">
+        <img th:src="@{/image/awesome-stamp.svg}" class="stamp-bg">
+        <span class="stamp-text" th:text="#{awesome.word}"></span>
+      </div>
+    </div>
   </div>
-  <div class="awesome-stamp">
-    <img th:src="@{/image/awesome-stamp.svg}" class="stamp-bg">
-    <span class="stamp-text" th:text="#{awesome.word}"></span>
-  </div>
+
 
   <!-- ポップアップウィンドウの動きを設定 -->
   <script>

@@ -12,6 +12,9 @@ import webapp.AwesomeCollect.common.util.DateTimeFormatUtil;
 import webapp.AwesomeCollect.common.util.LearningTimeConverter;
 import webapp.AwesomeCollect.entity.action.DailyDone;
 
+/**
+ * できたことの表示用データオブジェクト。
+ */
 @Data
 public class DoneResponseDto {
 

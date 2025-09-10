@@ -13,6 +13,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import webapp.AwesomeCollect.common.util.LearningTimeConverter;
 import webapp.AwesomeCollect.entity.action.DailyDone;
 
+/**
+ * できたことの入力用データオブジェクト。
+ */
 @Data
 public class DoneRequestDto {
 

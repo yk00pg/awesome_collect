@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 import webapp.AwesomeCollect.entity.action.DailyDone;
 import webapp.AwesomeCollect.mapper.action.DailyDoneMapper;
 
+/**
+ * できたことのリポジトリクラス。
+ */
 @Repository
 public class DailyDoneRepository {
 
