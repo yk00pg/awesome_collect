@@ -12,4 +12,9 @@ public class Tag {
   private int id;
   private int userId;
   private String name;
+
+  public Tag(int userId, String name){
+    this.userId = userId;
+    this.name = name;
+  }
 }
