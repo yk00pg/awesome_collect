@@ -469,7 +469,7 @@ table th {
   text-align: left;
 }
 
-.task-message-area {
+.task-message-area, .action-message-area {
   box-sizing: border-box;
   width: 100%;
   text-align: left;
@@ -519,6 +519,12 @@ table th {
 .link-button-area {
   text-align: center;
   margin: 35px auto;
+}
+
+.add-link-button-area {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 25px;
 }
 
 .login-button, .register-button,
@@ -1049,17 +1055,6 @@ table th {
   width: 100%;
 }
 
-.todo-form-title, .done-form-title,
-.goal-form-title, .memo-form-title,
-.article-stock-form-title,
-.password-change-form-title,
-.mypage-edit-form-title {
-  font-size: 18px;
-  font-weight: bold;
-  color: var(--reddish-brown);
-  text-align: center;
-}
-
 .input-date p, .input-content p {
   font-size: 16px;
   padding-top: 10px;
@@ -1353,6 +1348,11 @@ table th {
 
 .border-row {
   height: 50px;
+}
+
+.border-line-area {
+  padding-top: 20px;
+  padding-bottom: 10px;
 }
 
 .border-line {

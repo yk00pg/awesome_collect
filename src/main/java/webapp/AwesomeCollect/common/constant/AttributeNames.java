@@ -19,6 +19,10 @@ public class AttributeNames {
   public static final String DONE_RESPONSE_DTO = "doneResponseDto";
   public static final String DONE_REQUEST_DTO = "doneRequestDto";
 
+  public static final String GOAL_RESPONSE_DTO_LIST = "goalResponseDtoList";
+  public static final String GOAL_RESPONSE_DTO = "goalResponseDto";
+  public static final String GOAL_REQUEST_DTO = "goalRequestDto";
+
   // OTHERS
   public static final String TAG_NAME_LIST = "tagNameList";
 }

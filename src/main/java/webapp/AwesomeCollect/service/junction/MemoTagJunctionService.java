@@ -18,8 +18,8 @@ public class MemoTagJunctionService extends BaseActionTagJunctionService<MemoTag
   }
 
   @Override
-  public List<Integer> prepareTagIdLitByActionId(int memoId) {
-    return super.prepareTagIdLitByActionId(memoId);
+  public List<Integer> prepareTagIdListByActionId(int memoId) {
+    return super.prepareTagIdListByActionId(memoId);
   }
 
   @Override

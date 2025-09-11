@@ -18,8 +18,8 @@ public class ArticleTagJunctionService extends BaseActionTagJunctionService<Arti
   }
 
   @Override
-  public List<Integer> prepareTagIdLitByActionId(int articleId) {
-    return super.prepareTagIdLitByActionId(articleId);
+  public List<Integer> prepareTagIdListByActionId(int articleId) {
+    return super.prepareTagIdListByActionId(articleId);
   }
 
   @Override

@@ -1,32 +1,33 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
 <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
 
 <head>
   <meta charset="UTF-8">
+  <title>目標・編集</title>
   <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
   <div>
-    <header th:replace="~{fragments/common-header :: common-header}"></header>
+    <header th:replace="~{fragments/header :: header}"></header>
   </div>
 
-  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
 
   <div class="goal-container">
     <div class="back-indicator">
-      <a th:href="@{/goal/detail/{id}(id=${actionDto.id})}">
+      <a th:href="@{/goal/detail/{id}(id=${goalRequestDto.id})}">
         <img th:src="@{/image/back-icon.svg}" alt="戻る">
         <span>戻る</span>
       </a>
     </div>
 
     <form class="goal-form"
-          th:action="@{/goal/detail/edit/{id}(id=${actionDto.id})}"
-          th:object="${actionDto}" method="post">
+          th:action="@{/goal/detail/edit/{id}(id=${goalRequestDto.id})}"
+          th:object="${goalRequestDto}" method="post">
       <div class="goal-form-title">目標</div>
       <div class="input-content">
         <table class="goal-table">
