@@ -2,6 +2,7 @@ package webapp.AwesomeCollect.service.junction;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.BiFunction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
@@ -27,8 +28,16 @@ public class DoneTagJunctionService extends BaseActionTagJunctionService<DoneTag
 
   @Override
   @Transactional
-  public void registerRelationIfNotExist(DoneTagJunction relation) {
-    super.registerRelationIfNotExist(relation);
+  public void saveRelations(
+      int actionId, BiFunction<Integer, Integer, DoneTagJunction> relationFactory,
+      List<Integer> newTagIdList) {
+
+    super.saveRelations(actionId, relationFactory, newTagIdList);
+  }
+
+  @Override
+  public void registerRelation(DoneTagJunction relation) {
+    super.registerRelation(relation);
   }
 
   @Override
