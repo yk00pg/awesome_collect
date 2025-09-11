@@ -23,7 +23,17 @@ public abstract class BaseActionTagJunctionService<T> {
     return repository.searchTagIdsByActionId(actionId);
   }
 
-  public void saveRelations(
+  public void registerNewRelations(
+      int actionId, BiFunction<Integer, Integer, T> relationFactory,
+      List<Integer> tagIdList){
+
+    for(int tagId : tagIdList){
+      T relation = relationFactory.apply(actionId, tagId);
+      registerRelation(relation);
+    }
+  }
+
+  public void updateRelations(
       int actionId, BiFunction<Integer, Integer, T> relationFactory,
       List<Integer> newTagIdList){
 
@@ -59,8 +69,7 @@ public abstract class BaseActionTagJunctionService<T> {
     }
   }
 
-
-  public void registerRelation(T relation){
+  protected void registerRelation(T relation){
     repository.registerRelation(relation);
   }
 
