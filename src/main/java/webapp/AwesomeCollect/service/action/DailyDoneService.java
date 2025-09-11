@@ -148,8 +148,10 @@ public class DailyDoneService {
 
     DailyDone dailyDone = dto.toDailyDone(userId, index);
     dailyDoneRepository.registerDailyDone(dailyDone);
-    tagService.resolveTagsAndRelations(
-        dailyDone.getId(), pureTagList, userId, DoneTagJunction :: new, doneTagJunctionService);
+
+    if(pureTagList != null){
+      List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
+    }
     sessionManager.setHasUpdatedRecordCount(true);
     sessionManager.setHasUpdateHours(true);
 
@@ -184,8 +186,12 @@ public class DailyDoneService {
 
     DailyDone dailyDone = dto.toDailyDoneWithId(userId, index);
     dailyDoneRepository.updateDailyDone(dailyDone);
-    tagService.updateTagsAndRelations(
-        id, pureTagList, userId, DoneTagJunction :: new, doneTagJunctionService);
+
+    if(pureTagList != null){
+      List<Integer> newTagIdList = tagService.resolveTagIdList(userId,pureTagList);
+      doneTagJunctionService.saveRelations(id, DoneTagJunction :: new, newTagIdList);
+    }
+
     sessionManager.setHasUpdateHours(true);
   }
 
