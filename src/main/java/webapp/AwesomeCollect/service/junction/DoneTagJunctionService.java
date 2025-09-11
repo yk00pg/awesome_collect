@@ -22,8 +22,8 @@ public class DoneTagJunctionService extends BaseActionTagJunctionService<DoneTag
   }
 
   @Override
-  public List<Integer> prepareTagIdLitByActionId(int doneId) {
-    return super.prepareTagIdLitByActionId(doneId);
+  public List<Integer> prepareTagIdListByActionId(int doneId) {
+    return super.prepareTagIdListByActionId(doneId);
   }
 
   @Override

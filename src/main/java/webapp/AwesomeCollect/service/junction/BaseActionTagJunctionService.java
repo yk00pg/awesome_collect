@@ -19,7 +19,7 @@ public abstract class BaseActionTagJunctionService<T> {
     this.repository = repository;
   }
 
-  public List<Integer> prepareTagIdLitByActionId(int actionId){
+  public List<Integer> prepareTagIdListByActionId(int actionId){
     return repository.searchTagIdsByActionId(actionId);
   }
 
@@ -37,7 +37,7 @@ public abstract class BaseActionTagJunctionService<T> {
       int actionId, BiFunction<Integer, Integer, T> relationFactory,
       List<Integer> newTagIdList){
 
-    List<Integer> currentTagIdList = prepareTagIdLitByActionId(actionId);
+    List<Integer> currentTagIdList = prepareTagIdListByActionId(actionId);
 
     registerRelations(actionId, relationFactory, newTagIdList, currentTagIdList);
     deleteRelations(actionId, relationFactory, newTagIdList, currentTagIdList);

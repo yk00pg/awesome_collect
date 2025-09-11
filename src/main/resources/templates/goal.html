@@ -16,7 +16,7 @@
 
   <div class="main-container">
     <!-- まだ登録されていない場合 -->
-    <th:block th:unless="${actionDtoList != null}">
+    <th:block th:unless="${goalResponseDtoList != null}">
       <div class="empty-content">
         <p th:text="#{unregistered.action('目標')}"></p>
         <div class="link-button-area">
@@ -28,17 +28,19 @@
     </th:block>
 
     <!-- 登録されている場合 -->
-    <th:block th:if="${actionDtoList != null}">
-      <div class="link-button-area">
+    <th:block th:if="${goalResponseDtoList != null}">
+      <div class="add-link-button-area">
         <a th:href="@{/goal/detail/edit/0}"
            th:text="#{register.additional.action('目標')}"
            class="additional-registration-link"></a>
       </div>
-
+      <div class="border-line-area">
+        <div class="border-line"></div>
+      </div>
       <div class="action-content">
         <div class="content-inner">
           <div class="inner-title">目標リスト</div>
-          <div th:each="goal : ${actionDtoList}">
+          <div th:each="goal : ${goalResponseDtoList}">
             <table class="view-table">
               <tr>
                 <th scope="row" class="view-row-th">目標タイトル</th>
@@ -55,10 +57,13 @@
                 <td th:text="${goal.statusLabel}"></td>
               </tr>
               <tr>
-                <th:block th:with="rawTag=${goal.tags}">
-                  <th scope="row" class="view-row-th">タグ</th>
-                  <td class="tags" th:text="${#strings.replace(rawTag, ',', ' ')}"></td>
-                </th:block>
+                <th scope="row" class="view-row-th">タグ</th>
+                <td class="tag-td">
+                  <div class="tag-area">
+                          <span th:each="tag : ${goal.tagList}"
+                                th:text="${tag}" class="tag-badge"></span>
+                  </div>
+                </td>
               </tr>
             </table>
           </div>

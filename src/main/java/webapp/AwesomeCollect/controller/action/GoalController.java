@@ -2,7 +2,6 @@ package webapp.AwesomeCollect.controller.action;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -13,149 +12,91 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.ViewNames;
 import webapp.AwesomeCollect.common.util.JsonConverter;
-import webapp.AwesomeCollect.common.TaggingManager;
 import webapp.AwesomeCollect.common.ActionViewPreparator;
+import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.action.GoalDto;
+import webapp.AwesomeCollect.dto.action.GoalRequestDto;
+import webapp.AwesomeCollect.dto.action.GoalResponseDto;
 import webapp.AwesomeCollect.entity.action.Goal;
-import webapp.AwesomeCollect.entity.junction.GoalTagJunction;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.UserProgressService;
 import webapp.AwesomeCollect.service.action.GoalService;
 import webapp.AwesomeCollect.service.junction.GoalTagJunctionService;
 import webapp.AwesomeCollect.service.TagService;
 
+/**
+ * 目標のコントローラークラス。
+ */
 @Controller
 public class GoalController {
 
   private final GoalService goalService;
-  private final TagService tagService;
-  private final ActionViewPreparator actionViewPreparator;
   private final GoalTagJunctionService goalTagJunctionService;
-  private final TaggingManager taggingManager;
-  private final UserProgressService userProgressService;
 
   public GoalController(
-      GoalService goalService, TagService tagService, ActionViewPreparator actionViewPreparator,
-      GoalTagJunctionService goalTagJunctionService, TaggingManager taggingManager,
-      UserProgressService userProgressService){
+      GoalService goalService, GoalTagJunctionService goalTagJunctionService){
 
     this.goalService = goalService;
-    this.tagService = tagService;
-    this.actionViewPreparator = actionViewPreparator;
     this.goalTagJunctionService = goalTagJunctionService;
-    this.taggingManager = taggingManager;
-    this.userProgressService = userProgressService;
   }
 
-  /**
-   * 「目標」の一覧画面を表示する。<br>
-   * ログイン中のユーザーのユーザーIDを取得し、ユーザーIDを基にDBから目標リストを取得する。<br>
-   * 目標リストが空（未登録）の場合は空のデータオブジェクトをモデルに追加し、
-   * そうでない場合は登録済みデータを入れたデータオブジェクトをモデルに追加する。
-   *
-   * @param customUserDetails ログイン中のユーザー情報
-   * @param dto 「目標」のデータオブジェクト
-   * @param model HTMLにデータを渡すオブジェクト
-   * @return  goal.html
-   */
-  @GetMapping(value = "/goal")
+  // 目標リストの閲覧ページを表示
+  @GetMapping(ViewNames.GOAL_PAGE)
   public String showGoal(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      GoalDto dto, Model model){
+      Model model){
 
-    int userId = customUserDetails.getId();
-    List<Goal> goalList = goalService.searchGoal(userId);
-    if(!goalList.isEmpty()){
-      actionViewPreparator.prepareCurrentDataListView(
-          dto, model, goalList, goalTagJunctionService);
-    }
-    return "/goal";
+    model.addAttribute(
+        AttributeNames.GOAL_RESPONSE_DTO_LIST,
+        goalService.prepareResponseDtoList(customUserDetails.getId()));
+
+    return ViewNames.GOAL_PAGE;
   }
 
-  /**
-   * ID別の「目標」の詳細画面を表示する。
-   *
-   * @param id  目標ID
-   * @param customUserDetails ログイン中のユーザー情報
-   * @param dto 「目標」のデータオブジェクト
-   * @param model HTMLにデータを渡すオブジェクト
-   * @return  goal/detail.html
-   * @throws AccessDeniedException 登録していないIDのページを開こうとした場合
-   */
-  @GetMapping(value = "/goal/detail/{id}")
+  // 目標の詳細ページを表示
+  @GetMapping(ViewNames.GOAL_DETAIL_BY_ID)
   public String showGoalDetail(
       @PathVariable int id,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      GoalDto dto, Model model) throws AccessDeniedException {
+      Model model) {
 
-    String result = showGoalDetailView(id, customUserDetails, dto, model);
-    if(result != null){
-      return result;
+    GoalResponseDto goalResponseDto =
+        goalService.prepareResponseDto(id, customUserDetails.getId());
+
+    if (goalResponseDto == null) {
+      return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
+    } else {
+      model.addAttribute(AttributeNames.GOAL_RESPONSE_DTO, goalResponseDto);
+      return ViewNames.GOAL_DETAIL_PAGE;
     }
-    return "/goal/detail";
   }
 
-  /**
-   * ID別の「目標」の編集画面を表示する。
-   *
-   * @param id  目標ID
-   * @param customUserDetails ログイン中のユーザー情報
-   * @param dto 「目標」のデータオブジェクト
-   * @param model HTMLにデータを渡すオブジェクト
-   * @return  goal/detail/edit.html
-   * @throws AccessDeniedException 登録していないIDのページを開こうとした場合
-   */
-  @GetMapping(value = "/goal/detail/edit/{id}")
+  // 目標の編集ページを表示
+  @GetMapping(ViewNames.GOAL_EDIT_BY_ID)
   public String showGoalForm(
       @PathVariable int id,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      GoalDto dto, Model model) throws AccessDeniedException {
+      Model model) {
 
-    String result = showGoalDetailView(id, customUserDetails, dto, model);
-    if(result != null){
-      return result;
-    }
-    return "/goal/detail/edit";
-  }
+    GoalRequestDto goalRequestDto =
+        id == 0
+            ? new GoalRequestDto()
+            : goalService.prepareRequestDto(id, customUserDetails.getId());
 
-  /**
-   * ログイン中のユーザーのユーザーIDを取得し、ユーザーIDを基にDBからタグリストを取得する。<br>
-   * 目標IDが0（新規登録）の場合は空のデータオブジェクトとタグリストをモデルに追加し、
-   * そうでない場合は、目標IDとユーザーIDを基にDBを検索し、レコードがない場合は例外処理をする。<br>
-   * レコートがある場合は登録済みデータを入れたデータオブジェクトとタグリストをモデルに追加する。
-   *
-   * @param id  目標ID
-   * @param customUserDetails ログイン中のユーザー情報
-   * @param dto 「目標」のデータオブジェクト
-   * @param model HTMLにデータを渡すオブジェクト
-   * @throws AccessDeniedException  登録していないIDのページを開こうとした場合
-   */
-  private String showGoalDetailView(
-      int id, CustomUserDetails customUserDetails,
-      GoalDto dto, Model model) throws AccessDeniedException {
-
-    int userId = customUserDetails.getId();
-    List<String> tagNameList = tagService.getTagNameList(userId);
-
-    if(id == 0){
-      actionViewPreparator.prepareBlankDoneView(id, dto, model, tagNameList);
-      return null;
-    }else {
-      Goal goal = goalService.findGoalByIds(id,userId);
-      if (goal == null) {
-        return "redirect:/error/not-accessible";
-      } else {
-        actionViewPreparator.prepareCurrentDataView(
-            dto, model, goal, tagNameList, goalTagJunctionService);
-        return null;
-      }
+    if(goalRequestDto == null) {
+      return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
+    }else{
+      model.addAttribute(AttributeNames.GOAL_REQUEST_DTO, goalRequestDto);
+      return ViewNames.GOAL_EDIT_PAGE;
     }
   }
 
-  @GetMapping(value = "/error/not-accessible")
+  @GetMapping(ViewNames.ERROR_NOT_ACCESSIBLE)
   public String showNotAccessibleView(){
-    return "/error/not-accessible";
+    return ViewNames.ERROR_NOT_ACCESSIBLE;
   }
 
   /**
@@ -181,14 +122,14 @@ public class GoalController {
     List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
 
     int userId = customUserDetails.getId();
-    if(id == 0){
-      if(dto.isContentEmpty()){
+    if(id == 0) {
+      if (dto.isContentEmpty()) {
         result.rejectValue("content", "content.empty", "内容を入力してください");
-      }else {
+      } else {
         Goal goal = dto.toGoal(userId);
         goalService.registerGoal(goal);
         id = goal.getId();
-        taggingManager.resolveTagsAndRelations(
+/*        taggingManager.resolveTagsAndRelations(
             id, pureTagList, userId, GoalTagJunction::new, goalTagJunctionService);
         userProgressService.updateUserProgress(userId);
         httpSession.setAttribute("hasNewRecord", true);
@@ -198,6 +139,8 @@ public class GoalController {
         goalService.updateGoal(dto.toGoalWithId(userId));
         taggingManager.updateTagsAndRelations(
             id, pureTagList, userId, GoalTagJunction::new, goalTagJunctionService);
+      }
+    } */
       }
     }
     return "redirect:/goal/detail/" + id;
