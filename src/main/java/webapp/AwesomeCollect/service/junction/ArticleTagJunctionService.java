@@ -1,27 +1,39 @@
 package webapp.AwesomeCollect.service.junction;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.entity.junction.ArticleTagJunction;
-import webapp.AwesomeCollect.mapper.junction.ArticleTagsJunctionMapper;
+import webapp.AwesomeCollect.repository.junction.ArticleTagJunctionRepository;
 
+/**
+ * 記事ストックタグのサービスクラス。
+ */
 @Service
 public class ArticleTagJunctionService extends BaseActionTagJunctionService<ArticleTagJunction> {
 
-  public ArticleTagJunctionService(ArticleTagsJunctionMapper mapper) {
-    super(mapper);
+  public ArticleTagJunctionService(ArticleTagJunctionRepository repository) {
+    super(repository);
   }
 
   @Override
-  public List<Integer> searchTagIdsByActionId(int articleId) {
-    return super.searchTagIdsByActionId(articleId);
+  public List<Integer> prepareTagIdLitByActionId(int articleId) {
+    return super.prepareTagIdLitByActionId(articleId);
   }
 
   @Override
   @Transactional
-  public void registerRelationIfNotExist(ArticleTagJunction relation) {
-    super.registerRelationIfNotExist(relation);
+  public void saveRelations(
+      int actionId, BiFunction<Integer, Integer, ArticleTagJunction> relationFactory,
+      List<Integer> newTagIdList) {
+
+    super.saveRelations(actionId, relationFactory, newTagIdList);
+  }
+
+  @Override
+  public void registerRelation(ArticleTagJunction relation) {
+    super.registerRelation(relation);
   }
 
   @Override
