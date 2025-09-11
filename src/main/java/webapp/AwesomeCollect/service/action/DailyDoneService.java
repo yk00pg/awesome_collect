@@ -151,6 +151,8 @@ public class DailyDoneService {
 
     if(pureTagList != null){
       List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
+      doneTagJunctionService.registerNewRelations(
+          dailyDone.getId(), DoneTagJunction::new, tagIdList);
     }
     sessionManager.setHasUpdatedRecordCount(true);
     sessionManager.setHasUpdateHours(true);
@@ -182,14 +184,16 @@ public class DailyDoneService {
    * @param pureTagList コンバート済みタグリスト
    */
   private void updateDone(
-      int userId, DoneRequestDto dto, int id, int index, List<String> pureTagList) {
+      int userId, DoneRequestDto dto, int id,
+      int index, List<String> pureTagList) {
 
     DailyDone dailyDone = dto.toDailyDoneWithId(userId, index);
     dailyDoneRepository.updateDailyDone(dailyDone);
 
     if(pureTagList != null){
       List<Integer> newTagIdList = tagService.resolveTagIdList(userId,pureTagList);
-      doneTagJunctionService.saveRelations(id, DoneTagJunction :: new, newTagIdList);
+      doneTagJunctionService.updateRelations(
+          id, DoneTagJunction :: new, newTagIdList);
     }
 
     sessionManager.setHasUpdateHours(true);
