@@ -1,10 +1,10 @@
 package webapp.AwesomeCollect.service.junction;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.entity.junction.MemoTagJunction;
-import webapp.AwesomeCollect.mapper.junction.MemoTagJunctionMapper;
 import webapp.AwesomeCollect.repository.junction.MemoTagJunctionRepository;
 
 /**
@@ -24,8 +24,16 @@ public class MemoTagJunctionService extends BaseActionTagJunctionService<MemoTag
 
   @Override
   @Transactional
-  public void registerRelationIfNotExist(MemoTagJunction relation) {
-    super.registerRelationIfNotExist(relation);
+  public void saveRelations(
+      int actionId, BiFunction<Integer, Integer, MemoTagJunction> relationFactory,
+      List<Integer> newTagIdList) {
+
+    super.saveRelations(actionId, relationFactory, newTagIdList);
+  }
+
+  @Override
+  public void registerRelation(MemoTagJunction relation) {
+    super.registerRelation(relation);
   }
 
   @Override

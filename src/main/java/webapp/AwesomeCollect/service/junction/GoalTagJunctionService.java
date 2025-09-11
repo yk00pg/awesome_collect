@@ -1,10 +1,10 @@
 package webapp.AwesomeCollect.service.junction;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.entity.junction.GoalTagJunction;
-import webapp.AwesomeCollect.mapper.junction.GoalTagJunctionMapper;
 import webapp.AwesomeCollect.repository.junction.GoalTagJunctionRepository;
 
 /**
@@ -24,8 +24,16 @@ public class GoalTagJunctionService extends BaseActionTagJunctionService<GoalTag
 
   @Override
   @Transactional
-  public void registerRelationIfNotExist(GoalTagJunction relation) {
-    super.registerRelationIfNotExist(relation);
+  public void saveRelations(
+      int actionId, BiFunction<Integer, Integer, GoalTagJunction> relationFactory,
+      List<Integer> newTagIdList) {
+
+    super.saveRelations(actionId, relationFactory, newTagIdList);
+  }
+
+  @Override
+  public void registerRelation(GoalTagJunction relation) {
+    super.registerRelation(relation);
   }
 
   @Override
