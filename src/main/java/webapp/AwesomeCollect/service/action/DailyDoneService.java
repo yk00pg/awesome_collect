@@ -70,10 +70,7 @@ public class DailyDoneService {
       List<Integer> tagIdList =
           doneTagJunctionService.prepareTagIdListByActionId(done.getId());
 
-      tagNamesList.add(
-          tagIdList == null || tagIdList.isEmpty()
-              ? Collections.emptyList()
-              : tagService.prepareTagListByTagIdList(tagIdList));
+      tagNamesList.add(tagService.prepareTagNameListByTagIdList(tagIdList));
     }
 
     DoneResponseDto dto = DoneResponseDto.fromDailyDone(dailyDoneList);
@@ -90,10 +87,7 @@ public class DailyDoneService {
       List<Integer> tagIdList =
           doneTagJunctionService.prepareTagIdListByActionId(done.getId());
 
-      tagNameList.add(
-          tagIdList == null || tagIdList.isEmpty()
-              ? ""
-              : tagService.getCombinedTagName(tagIdList));
+      tagNameList.add(tagService.prepareCombinedTagName(tagIdList));
     }
 
     DoneRequestDto dto = DoneRequestDto.fromDailyDone(dailyDoneList);
