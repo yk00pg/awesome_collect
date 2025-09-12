@@ -7,8 +7,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +28,7 @@ import webapp.AwesomeCollect.service.UserProgressService;
 import webapp.AwesomeCollect.service.action.GoalService;
 import webapp.AwesomeCollect.service.junction.GoalTagJunctionService;
 import webapp.AwesomeCollect.service.TagService;
+import webapp.AwesomeCollect.validation.GoalValidator;
 
 /**
  * 目標のコントローラークラス。
@@ -35,12 +38,17 @@ public class GoalController {
 
   private final GoalService goalService;
   private final GoalTagJunctionService goalTagJunctionService;
+  private final TagService tagService;
+  private final GoalValidator goalValidator;
 
   public GoalController(
-      GoalService goalService, GoalTagJunctionService goalTagJunctionService){
+      GoalService goalService, GoalTagJunctionService goalTagJunctionService,
+      TagService tagService, GoalValidator goalValidator){
 
     this.goalService = goalService;
     this.goalTagJunctionService = goalTagJunctionService;
+    this.tagService = tagService;
+    this.goalValidator = goalValidator;
   }
 
   // 目標リストの閲覧ページを表示
@@ -81,15 +89,21 @@ public class GoalController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model) {
 
+    int userId = customUserDetails.getId();
+
     GoalRequestDto goalRequestDto =
         id == 0
             ? new GoalRequestDto()
-            : goalService.prepareRequestDto(id, customUserDetails.getId());
+            : goalService.prepareRequestDto(id, userId);
 
     if(goalRequestDto == null) {
       return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
     }else{
       model.addAttribute(AttributeNames.GOAL_REQUEST_DTO, goalRequestDto);
+      model.addAttribute(
+          AttributeNames.TAG_NAME_LIST,
+          tagService.prepareTagListByUserId(userId));
+
       return ViewNames.GOAL_EDIT_PAGE;
     }
   }
@@ -97,6 +111,11 @@ public class GoalController {
   @GetMapping(ViewNames.ERROR_NOT_ACCESSIBLE)
   public String showNotAccessibleView(){
     return ViewNames.ERROR_NOT_ACCESSIBLE;
+  }
+
+  @InitBinder(AttributeNames.GOAL_REQUEST_DTO)
+  public void initBinder(WebDataBinder dataBinder){
+    dataBinder.addValidators(goalValidator);
   }
 
   /**
@@ -113,15 +132,25 @@ public class GoalController {
    * @param customUserDetails ログイン中のユーザー情報
    * @return  goal/detail/edit.html
    */
-  @PostMapping(value = "/goal/detail/edit/{id}")
+  @PostMapping(ViewNames.GOAL_EDIT_BY_ID)
   public String editGoal(
       @PathVariable int id,
-      @Valid @ModelAttribute("goalDto") GoalDto dto, BindingResult result,
+      @Valid @ModelAttribute(AttributeNames.GOAL_REQUEST_DTO) GoalRequestDto dto,
+      BindingResult result, Model model,
       @AuthenticationPrincipal CustomUserDetails customUserDetails, HttpSession httpSession) {
+
+    if(result.hasErrors()){
+      model.addAttribute(
+          AttributeNames.TAG_NAME_LIST,
+          tagService.prepareTagListByUserId(customUserDetails.getId()));
+
+      return ViewNames.GOAL_EDIT_PAGE;
+    }
 
     List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
 
     int userId = customUserDetails.getId();
+
     if(id == 0) {
       if (dto.isContentEmpty()) {
         result.rejectValue("content", "content.empty", "内容を入力してください");
