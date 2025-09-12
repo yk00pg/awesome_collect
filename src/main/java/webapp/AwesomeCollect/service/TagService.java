@@ -1,12 +1,11 @@
 package webapp.AwesomeCollect.service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.entity.Tag;
-import webapp.AwesomeCollect.entity.junction.ActionTagJunction;
 import webapp.AwesomeCollect.repository.TagRepository;
 
 @Service
@@ -22,12 +21,16 @@ public class TagService {
     return tagRepository.searchTagNameList(userId);
   }
 
-  public List<String> prepareTagListByTagIdList(List<Integer> tagIdList){
-    return tagRepository.searchTagNameListByTagIdList(tagIdList);
+  public List<String> prepareTagNameListByTagIdList(List<Integer> tagIdList){
+    return tagIdList == null || tagIdList.isEmpty()
+        ? Collections.emptyList()
+        : tagRepository.searchTagNameListByTagIdList(tagIdList);
   }
 
-  public String getCombinedTagName(List<Integer> tagIdList){
-    return String.join(",", prepareTagListByTagIdList(tagIdList));
+  public String prepareCombinedTagName(List<Integer> tagIdList){
+    return tagIdList == null || tagIdList.isEmpty()
+        ? ""
+        : String.join(",", prepareTagNameListByTagIdList(tagIdList));
   }
 
   // タグIDをリスト形式で取得（登録されていなければ登録して取得）

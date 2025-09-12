@@ -1,11 +1,8 @@
 package webapp.AwesomeCollect.service.action;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import webapp.AwesomeCollect.dto.action.GoalDto;
 import webapp.AwesomeCollect.dto.action.GoalRequestDto;
 import webapp.AwesomeCollect.dto.action.GoalResponseDto;
 import webapp.AwesomeCollect.mapper.action.GoalMapper;
@@ -41,11 +38,8 @@ public class GoalService {
       for(Goal goal : goalList){
         List<Integer> tagIdList =
             goalTagJunctionService.prepareTagIdListByActionId(goal.getId());
-
         List<String> tagNameList =
-            tagIdList == null || tagIdList.isEmpty()
-                ? Collections.emptyList()
-                : tagService.prepareTagListByTagIdList(tagIdList);
+            tagService.prepareTagNameListByTagIdList(tagIdList);
 
         GoalResponseDto dto = GoalResponseDto.fromEntity(goal);
         dto.setTagList(tagNameList);
@@ -62,11 +56,8 @@ public class GoalService {
     }else{
       List<Integer> tagIdList =
           goalTagJunctionService.prepareTagIdListByActionId(goalId);
-
       List<String> tagNameList =
-          tagIdList == null || tagIdList.isEmpty()
-              ? Collections.emptyList()
-              : tagService.prepareTagListByTagIdList(tagIdList);
+          tagService.prepareTagNameListByTagIdList(tagIdList);
 
       GoalResponseDto dto = GoalResponseDto.fromEntityWithId(goal);
       dto.setTagList(tagNameList);
@@ -82,10 +73,7 @@ public class GoalService {
       List<Integer> tagIdList =
           goalTagJunctionService.prepareTagIdListByActionId(goalId);
 
-      String tagName =
-          tagIdList == null || tagIdList.isEmpty()
-              ? ""
-              : tagService.getCombinedTagName(tagIdList);
+      String tagName = tagService.prepareCombinedTagName(tagIdList);
 
       GoalRequestDto dto = GoalRequestDto.fromEntityWithId(goal);
       dto.setTags(tagName);
