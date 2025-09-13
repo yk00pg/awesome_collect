@@ -1,8 +1,6 @@
 package webapp.AwesomeCollect.controller.action;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import java.util.List;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,19 +12,17 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import webapp.AwesomeCollect.SaveResult;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.constant.ViewNames;
-import webapp.AwesomeCollect.common.util.JsonConverter;
-import webapp.AwesomeCollect.common.ActionViewPreparator;
+import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
-import webapp.AwesomeCollect.dto.action.GoalDto;
 import webapp.AwesomeCollect.dto.action.GoalRequestDto;
 import webapp.AwesomeCollect.dto.action.GoalResponseDto;
-import webapp.AwesomeCollect.entity.action.Goal;
 import webapp.AwesomeCollect.security.CustomUserDetails;
-import webapp.AwesomeCollect.service.UserProgressService;
 import webapp.AwesomeCollect.service.action.GoalService;
-import webapp.AwesomeCollect.service.junction.GoalTagJunctionService;
 import webapp.AwesomeCollect.service.TagService;
 import webapp.AwesomeCollect.validation.GoalValidator;
 
@@ -37,21 +33,21 @@ import webapp.AwesomeCollect.validation.GoalValidator;
 public class GoalController {
 
   private final GoalService goalService;
-  private final GoalTagJunctionService goalTagJunctionService;
   private final TagService tagService;
   private final GoalValidator goalValidator;
+  private final MessageUtil messageUtil;
 
   public GoalController(
-      GoalService goalService, GoalTagJunctionService goalTagJunctionService,
-      TagService tagService, GoalValidator goalValidator){
+      GoalService goalService, TagService tagService,
+      GoalValidator goalValidator, MessageUtil messageUtil){
 
     this.goalService = goalService;
-    this.goalTagJunctionService = goalTagJunctionService;
     this.tagService = tagService;
     this.goalValidator = goalValidator;
+    this.messageUtil = messageUtil;
   }
 
-  // 目標リストの閲覧ページを表示
+  // 目標リストの一覧ページを表示
   @GetMapping(ViewNames.GOAL_PAGE)
   public String showGoal(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -108,36 +104,38 @@ public class GoalController {
     }
   }
 
+  // アクセス不可時のエラーページを表示
   @GetMapping(ViewNames.ERROR_NOT_ACCESSIBLE)
   public String showNotAccessibleView(){
     return ViewNames.ERROR_NOT_ACCESSIBLE;
   }
 
+  // DTOのアノテーションで制御できないバリデーションを確認
   @InitBinder(AttributeNames.GOAL_REQUEST_DTO)
   public void initBinder(WebDataBinder dataBinder){
     dataBinder.addValidators(goalValidator);
   }
 
   /**
-   * 登録状況に応じて分岐し、入力された内容を登録/更新/削除する。<br>
-   * 入力されたハッシュタグ（JSON形式）を文字列に変換し、リスト形式で取得する。<br>
-   * ログイン中のユーザーのユーザーIDを取得する。<br>
-   * 目標IDが0（新規登録）の場合、内容が空であればデータバインディングの結果にエラーとして追加し、
-   * そうでなければ目標とタグの登録処理を実行する。<br>
-   * 目標IDが0以外（更新）の場合は、内容が空であれば削除処理を実行し、そうでなければ更新処理を実行する。
+   * 入力されたデータを確認し、目標を編集する。<br>
+   * バインディングエラーが発生した場合はタグリストを詰め直して編集ページに戻り、
+   * そうでない場合はDBの登録・更新処理を行い、詳細ページに遷移してサクセスメッセージを表示する。
    *
    * @param id  目標ID
-   * @param dto 「目標」のデータオブジェクト
-   * @param result  データバインディングの結果
-   * @param customUserDetails ログイン中のユーザー情報
-   * @return  goal/detail/edit.html
+   * @param dto 目標のデータオブジェクト
+   * @param result  バインディングの結果
+   * @param model データをViewに渡すオブジェクト
+   * @param customUserDetails カスタムユーザー情報
+   * @param redirectAttributes  リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
+   * @return  目標・詳細ページ
    */
   @PostMapping(ViewNames.GOAL_EDIT_BY_ID)
   public String editGoal(
       @PathVariable int id,
       @Valid @ModelAttribute(AttributeNames.GOAL_REQUEST_DTO) GoalRequestDto dto,
       BindingResult result, Model model,
-      @AuthenticationPrincipal CustomUserDetails customUserDetails, HttpSession httpSession) {
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      RedirectAttributes redirectAttributes) {
 
     if(result.hasErrors()){
       model.addAttribute(
@@ -147,41 +145,43 @@ public class GoalController {
       return ViewNames.GOAL_EDIT_PAGE;
     }
 
-    List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
+    SaveResult saveResult = goalService.saveGoal(customUserDetails.getId(), dto);
 
-    int userId = customUserDetails.getId();
+    // 新規登録か更新かを判定してサクセスメッセージを表示
+    if(id == 0){
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.ACHIEVEMENT_POPUP,
+          messageUtil.getMessage(MessageKeys.GOAL_AWESOME));
+    }else{
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
 
-    if(id == 0) {
-      if (dto.isContentEmpty()) {
-        result.rejectValue("content", "content.empty", "内容を入力してください");
-      } else {
-        Goal goal = dto.toGoal(userId);
-        goalService.registerGoal(goal);
-        id = goal.getId();
-/*        taggingManager.resolveTagsAndRelations(
-            id, pureTagList, userId, GoalTagJunction::new, goalTagJunctionService);
-        userProgressService.updateUserProgress(userId);
-        httpSession.setAttribute("hasNewRecord", true);
-      }
-    }else{ // TODO: 削除機能は内容の空欄判断ではなく、詳細画面で削除ボタンをつけるようにしたい
-      if(!dto.isContentEmpty()){
-        goalService.updateGoal(dto.toGoalWithId(userId));
-        taggingManager.updateTagsAndRelations(
-            id, pureTagList, userId, GoalTagJunction::new, goalTagJunctionService);
-      }
-    } */
+      // 達成状況が更新された場合もポップアップを表示
+      if(saveResult.isUpdatedStatus()){
+        redirectAttributes.addFlashAttribute(
+            AttributeNames.ACHIEVEMENT_POPUP,
+            messageUtil.getMessage(MessageKeys.ACHIEVE_AWESOME));
       }
     }
-    return "redirect:/goal/detail/" + id;
+
+    return RedirectUtil.redirectView(ViewNames.GOAL_DETAIL_PAGE, saveResult.id());
   }
 
-  @DeleteMapping(value = "/goal/detail/{id}")
-  public String deleteGoal(@PathVariable int id, HttpSession httpSession) {
+  // 指定のIDの目標を削除して一覧ページにリダイレクト
+  @DeleteMapping(ViewNames.GOAL_DETAIL_BY_ID)
+  public String deleteGoal(
+      @PathVariable int id, RedirectAttributes redirectAttributes) {
 
-    goalTagJunctionService.deleteRelationByActionId(id);
     goalService.deleteGoal(id);
-    httpSession.setAttribute("hasNewRecord", true);
 
-    return "redirect:/goal";
+    redirectAttributes.addFlashAttribute(
+        AttributeNames.SUCCESS_MESSAGE,
+        messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
+
+    return RedirectUtil.redirectView(ViewNames.GOAL_PAGE);
   }
 }

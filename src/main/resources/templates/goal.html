@@ -37,8 +37,15 @@
       <div class="border-line-area">
         <div class="border-line"></div>
       </div>
+
+      <div class="action-message-area">
+        <div class="success-message"
+             th:if="${successMessage != null}"
+             th:text="${successMessage}"></div>
+      </div>
+
       <div class="action-content">
-        <div class="content-inner">
+        <div class="action-content-inner">
           <div class="inner-title">目標リスト</div>
           <div th:each="goal : ${goalResponseDtoList}">
             <table class="view-table">

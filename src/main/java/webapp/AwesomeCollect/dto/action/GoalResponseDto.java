@@ -5,6 +5,9 @@ import lombok.Data;
 import webapp.AwesomeCollect.common.util.DateTimeFormatUtil;
 import webapp.AwesomeCollect.entity.action.Goal;
 
+/**
+ * 目標の表示用データオブジェクト。
+ */
 @Data
 public class GoalResponseDto {
 
@@ -22,6 +25,7 @@ public class GoalResponseDto {
   private String registeredAt;
   private String updatedAt;
 
+  // 進捗状況を日本語ラベルに変換
   public String getStatusLabel() {
     return switch (status) {
       case DOING -> DOING_LABEL;
@@ -30,7 +34,8 @@ public class GoalResponseDto {
     };
   }
 
-  public static GoalResponseDto fromEntity(Goal goal){
+  // DBから取得した目標を一覧ページ用のデータオブジェクトに変換
+  public static GoalResponseDto fromEntityForList(Goal goal){
     GoalResponseDto dto = new GoalResponseDto();
     dto.id = goal.getId();
     dto.title = goal.getTitle();
@@ -38,10 +43,12 @@ public class GoalResponseDto {
     return dto;
   }
 
-  public static GoalResponseDto fromEntityWithId(Goal goal){
+  // DBから取得した目標を詳細ページ用のデータオブジェクトに変換
+  public static GoalResponseDto fromEntityForDetail(Goal goal){
     GoalResponseDto dto = new GoalResponseDto();
     dto.id = goal.getId();
     dto.title = goal.getTitle();
+    dto.content = goal.getContent();
     dto.status = goal.isAchieved() ? ACHIEVED : DOING;
     dto.registeredAt = DateTimeFormatUtil.formatDateTime(goal.getRegisteredAt());
     dto.updatedAt = DateTimeFormatUtil.formatDateTime(goal.getUpdatedAt());
