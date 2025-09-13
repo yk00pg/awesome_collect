@@ -8,6 +8,10 @@ import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.dto.action.GoalRequestDto;
 
+/**
+ * 目標のカスタムバリデータクラス。<br>
+ * DTOアノテーションで制御できないバリデーションを確認する。
+ */
 @Component
 public class GoalValidator implements Validator {
 
@@ -24,12 +28,14 @@ public class GoalValidator implements Validator {
     return GoalRequestDto.class.isAssignableFrom(clazz);
   }
 
+  // カスタムバリデーションをチェック
   @Override
   public void validate(@NotNull Object target, @NotNull Errors errors) {
     GoalRequestDto dto = (GoalRequestDto) target;
     validateStatus(dto, errors);
   }
 
+  // 新規登録時に「達成！」を選択している場合はエラーに追加
   private void validateStatus(GoalRequestDto dto, Errors errors){
     if(dto.getId() == 0 && dto.getStatus().equals(ACHIEVED)){
       errors.rejectValue(

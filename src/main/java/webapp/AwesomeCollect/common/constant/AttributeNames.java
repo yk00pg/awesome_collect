@@ -23,6 +23,6 @@ public class AttributeNames {
   public static final String GOAL_RESPONSE_DTO = "goalResponseDto";
   public static final String GOAL_REQUEST_DTO = "goalRequestDto";
 
-  // OTHERS
+  // others
   public static final String TAG_NAME_LIST = "tagNameList";
 }

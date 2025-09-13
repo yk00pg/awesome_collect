@@ -29,7 +29,7 @@
     </div>
 
     <div class="action-content">
-      <div class="content-inner">
+      <div class="action-content-inner">
         <div class="inner-title">目標・詳細</div>
         <div class="content-header">
           <div class="at-info">
@@ -56,7 +56,7 @@
           </tr>
           <tr>
             <th scope="row" class="view-row-th">内容</th>
-            <td th:text="${goalResponseDto.content}"></td>
+            <td class="goal-content" th:text="${goalResponseDto.content}"></td>
           </tr>
           <tr>
             <th scope="row" class="view-row-th">達成状況</th>
@@ -74,6 +74,14 @@
           </table>
       </div>
     </div>
+
+    <form id="deleteGoal"
+          th:action="@{/goal/detail/{id}(id=${goalResponseDto.id})}"
+          method="post" style="display:none;">
+      <input type="hidden" name="_method" value="delete">
+      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+    </form>
+
     <!-- 削除ボタンクリック時にダイアログを表示 -->
     <script th:inline="javascript">
       /*<![CDATA[*/
@@ -88,4 +96,11 @@
       /*]]>*/
     </script>
   </div>
+
+  <!-- 初回登録時 & ステータス更新時に表示するポップアップウィンドウ -->
+  <div th:if="${achievementPopup != null}">
+    <div class="popup"
+         th:replace="~{fragments/popup :: popup}"></div>
+  </div>
 </body>
+</html>
