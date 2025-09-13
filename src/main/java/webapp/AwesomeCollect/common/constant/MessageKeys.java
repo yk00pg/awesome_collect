@@ -9,6 +9,7 @@ public class MessageKeys {
   public static final String DATE_FUTURE = "date.future";
   public static final String LEARNING_TIME_BLANK = "learning.time.blank";
   public static final String TOTAL_LEARNING_TIME_EXCEEDED = "total.learning.time.exceed";
+  public static final String GOAL_ALREADY_ACHIEVED = "goal.already.achieved";
 
   // alert
   public static final String LOGIN_FAILURE = "login.failure";
@@ -25,4 +26,6 @@ public class MessageKeys {
   // awesome
   public static final String TODO_AWESOME = "todo.awesome";
   public static final String DONE_AWESOME = "done.awesome";
+  public static final String GOAL_AWESOME = "goal.awesome";
+  public static final String ACHIEVE_AWESOME = "achieve.awesome";
 }
