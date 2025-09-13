@@ -18,8 +18,8 @@ public class GoalTagJunctionService extends BaseActionTagJunctionService<GoalTag
   }
 
   @Override
-  public List<Integer> prepareTagIdLitByActionId(int goalId) {
-    return super.prepareTagIdLitByActionId(goalId);
+  public List<Integer> prepareTagIdListByActionId(int goalId) {
+    return super.prepareTagIdListByActionId(goalId);
   }
 
   @Override
