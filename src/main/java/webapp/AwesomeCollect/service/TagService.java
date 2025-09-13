@@ -35,9 +35,11 @@ public class TagService {
 
   // タグIDをリスト形式で取得（登録されていなければ登録して取得）
   public List<Integer> resolveTagIdList(int userId, List<String> pureTagList){
-    return pureTagList.stream()
-        .map(tagName -> resolveTagId(userId, tagName))
-        .collect(Collectors.toList());
+    return pureTagList != null
+        ? pureTagList.stream()
+            .map(tagName -> resolveTagId(userId, tagName))
+            .collect(Collectors.toList())
+        : null;
   }
 
   // タグIDを取得（登録されていなければ登録して取得）

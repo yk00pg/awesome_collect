@@ -123,9 +123,7 @@ public class GoalService {
    */
   public SaveResult saveGoal(int userId, GoalRequestDto dto){
     List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
-    List<Integer> tagIdList = pureTagList != null
-        ? tagService.resolveTagIdList(userId, pureTagList)
-        : null;
+    List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
 
     int id = dto.getId();
     SaveResult saveResult;
