@@ -114,15 +114,16 @@ public class DailyDoneService {
 
       int id = dto.getIdList().get(i);
       List<String> pureTagList = pureTagsList.get(i);
+      List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
 
       if(id == 0){
-        registerDone(userId, dto, pureTagList, i);
+        registerDone(userId, dto, tagIdList, i);
       }else{
         // 削除チェックが入っているか確認
         if(dto.isDeletable(i)){
           deleteDone(id);
         }else{
-          updateDone(userId, dto, id, i, pureTagList);
+          updateDone(userId, dto, id, i, tagIdList);
         }
       }
     }
@@ -134,17 +135,16 @@ public class DailyDoneService {
    *
    * @param userId  ユーザーID
    * @param dto できたことのデータオブジェクト
-   * @param pureTagList コンバート済みタグリスト
+   * @param tagIdList タグIDリスト
    * @param index リストのインデックス番号
    */
   private void registerDone(
-      int userId, DoneRequestDto dto, List<String> pureTagList, int index){
+      int userId, DoneRequestDto dto, List<Integer> tagIdList, int index){
 
     DailyDone dailyDone = dto.toDailyDone(userId, index);
     dailyDoneRepository.registerDailyDone(dailyDone);
 
-    if(pureTagList != null){
-      List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
+    if(tagIdList != null){
       doneTagJunctionService.registerNewRelations(
           dailyDone.getId(), DoneTagJunction::new, tagIdList);
     }
@@ -175,19 +175,17 @@ public class DailyDoneService {
    * @param dto できたことのデータオブジェクト
    * @param id できたことのID
    * @param index リストのインデックス番号
-   * @param pureTagList コンバート済みタグリスト
+   * @param tagIdList タグIDリスト
    */
   private void updateDone(
-      int userId, DoneRequestDto dto, int id,
-      int index, List<String> pureTagList) {
+      int userId, DoneRequestDto dto, int id, int index, List<Integer> tagIdList) {
 
     DailyDone dailyDone = dto.toDailyDoneWithId(userId, index);
     dailyDoneRepository.updateDailyDone(dailyDone);
 
-    if(pureTagList != null){
-      List<Integer> newTagIdList = tagService.resolveTagIdList(userId,pureTagList);
+    if(tagIdList != null){
       doneTagJunctionService.updateRelations(
-          id, DoneTagJunction :: new, newTagIdList);
+          id, DoneTagJunction :: new, tagIdList);
     }
 
     sessionManager.setHasUpdateHours(true);
