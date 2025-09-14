@@ -37,18 +37,18 @@ public interface MemoMapper {
       VALUES(#{userId}, #{title}, #{content}, #{registeredAt})
       """)
   @Options(useGeneratedKeys = true, keyProperty =  "id")
-  int insertMemo(Memo memo);
+  void insertMemo(Memo memo);
 
   @Update("""
       UPDATE memo
       SET title=#{title}, content=#{content}, updated_at=#{updatedAt}
       WHERE id=#{id}
       """)
-  int updateMemo(Memo memo);
+  void updateMemo(Memo memo);
 
   @Delete("""
       DELETE FROM memo
       WHERE id=#{id}
       """)
-  int deleteMemo(int id);
+  void deleteMemo(int id);
 }

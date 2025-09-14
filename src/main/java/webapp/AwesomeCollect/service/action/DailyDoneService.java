@@ -68,12 +68,9 @@ public class DailyDoneService {
     List<List<String>> tagNamesList = new ArrayList<>();
     for(DailyDone done : dailyDoneList){
       List<Integer> tagIdList =
-          doneTagJunctionService.searchTagIdsByActionId(done.getId());
+          doneTagJunctionService.prepareTagIdListByActionId(done.getId());
 
-      tagNamesList.add(
-          tagIdList == null || tagIdList.isEmpty()
-              ? Collections.emptyList()
-              : tagService.prepareTagListByTagIdList(tagIdList));
+      tagNamesList.add(tagService.prepareTagNameListByTagIdList(tagIdList));
     }
 
     DoneResponseDto dto = DoneResponseDto.fromDailyDone(dailyDoneList);
@@ -88,12 +85,9 @@ public class DailyDoneService {
     List<String> tagNameList = new ArrayList<>();
     for(DailyDone done : dailyDoneList){
       List<Integer> tagIdList =
-          doneTagJunctionService.searchTagIdsByActionId(done.getId());
+          doneTagJunctionService.prepareTagIdListByActionId(done.getId());
 
-      tagNameList.add(
-          tagIdList == null || tagIdList.isEmpty()
-              ? ""
-              : tagService.getCombinedTagName(tagIdList));
+      tagNameList.add(tagService.prepareCombinedTagName(tagIdList));
     }
 
     DoneRequestDto dto = DoneRequestDto.fromDailyDone(dailyDoneList);
@@ -120,15 +114,16 @@ public class DailyDoneService {
 
       int id = dto.getIdList().get(i);
       List<String> pureTagList = pureTagsList.get(i);
+      List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
 
       if(id == 0){
-        registerDone(userId, dto, pureTagList, i);
+        registerDone(userId, dto, tagIdList, i);
       }else{
         // 削除チェックが入っているか確認
         if(dto.isDeletable(i)){
           deleteDone(id);
         }else{
-          updateDone(userId, dto, id, i, pureTagList);
+          updateDone(userId, dto, id, i, tagIdList);
         }
       }
     }
@@ -140,16 +135,19 @@ public class DailyDoneService {
    *
    * @param userId  ユーザーID
    * @param dto できたことのデータオブジェクト
-   * @param pureTagList コンバート済みタグリスト
+   * @param tagIdList タグIDリスト
    * @param index リストのインデックス番号
    */
   private void registerDone(
-      int userId, DoneRequestDto dto, List<String> pureTagList, int index){
+      int userId, DoneRequestDto dto, List<Integer> tagIdList, int index){
 
     DailyDone dailyDone = dto.toDailyDone(userId, index);
     dailyDoneRepository.registerDailyDone(dailyDone);
-    tagService.resolveTagsAndRelations(
-        dailyDone.getId(), pureTagList, userId, DoneTagJunction :: new, doneTagJunctionService);
+
+    if(tagIdList != null){
+      doneTagJunctionService.registerNewRelations(
+          dailyDone.getId(), DoneTagJunction::new, tagIdList);
+    }
     sessionManager.setHasUpdatedRecordCount(true);
     sessionManager.setHasUpdateHours(true);
 
@@ -177,15 +175,19 @@ public class DailyDoneService {
    * @param dto できたことのデータオブジェクト
    * @param id できたことのID
    * @param index リストのインデックス番号
-   * @param pureTagList コンバート済みタグリスト
+   * @param tagIdList タグIDリスト
    */
   private void updateDone(
-      int userId, DoneRequestDto dto, int id, int index, List<String> pureTagList) {
+      int userId, DoneRequestDto dto, int id, int index, List<Integer> tagIdList) {
 
     DailyDone dailyDone = dto.toDailyDoneWithId(userId, index);
     dailyDoneRepository.updateDailyDone(dailyDone);
-    tagService.updateTagsAndRelations(
-        id, pureTagList, userId, DoneTagJunction :: new, doneTagJunctionService);
+
+    if(tagIdList != null){
+      doneTagJunctionService.updateRelations(
+          id, DoneTagJunction :: new, tagIdList);
+    }
+
     sessionManager.setHasUpdateHours(true);
   }
 

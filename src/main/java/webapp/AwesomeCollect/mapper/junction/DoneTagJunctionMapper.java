@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Select;
 import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
 
 @Mapper
-public interface DoneTagsJunctionMapper extends BaseActionTagJunctionMapper<DoneTagJunction> {
+public interface DoneTagJunctionMapper extends BaseActionTagJunctionMapper<DoneTagJunction> {
 
   @Select("""
       SELECT tag_id FROM done_tag
@@ -23,25 +23,25 @@ public interface DoneTagsJunctionMapper extends BaseActionTagJunctionMapper<Done
         WHERE done_id=#{doneId} AND tag_id=#{tagId}
         )
       """)
-  boolean isRegisteredRelation(DoneTagJunction junction);
+  boolean isRegisteredRelation(DoneTagJunction relation);
 
   @Insert("""
       INSERT done_tag(done_id, tag_id)
       VALUES(#{doneId}, #{tagId})
       """)
-  int insertRelation(DoneTagJunction junction);
+  void insertRelation(DoneTagJunction relation);
 
   @Delete("""
       DELETE FROM done_tag
       WHERE done_id=#{doneId}
       """)
-  int deleteRelationByActionId(int doneId);
+  void deleteRelationByActionId(int doneId);
 
   @Delete("""
       DELETE FROM done_tag
       WHERE done_id=#{doneId} AND tag_id=#{tagId}
       """)
-  int deleteRelationByRelatedId(DoneTagJunction junction);
+  void deleteRelationByRelatedId(DoneTagJunction relation);
 
   @Delete("""
       DELETE dt
@@ -50,5 +50,5 @@ public interface DoneTagsJunctionMapper extends BaseActionTagJunctionMapper<Done
       ON dt.done_id=dd.id
       WHERE dd.user_id=#{userId} AND dd.date=#{date}
       """)
-  int deleteRelationByDate(int userId, LocalDate date);
+  void deleteRelationByDate(int userId, LocalDate date);
 }

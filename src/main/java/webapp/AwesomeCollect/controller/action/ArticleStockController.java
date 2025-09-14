@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import webapp.AwesomeCollect.common.util.JsonConverter;
-import webapp.AwesomeCollect.common.TaggingManager;
 import webapp.AwesomeCollect.common.ActionViewPreparator;
 import webapp.AwesomeCollect.dto.action.ArticleStockDto;
 import webapp.AwesomeCollect.entity.action.ArticleStock;
-import webapp.AwesomeCollect.entity.junction.ArticleTagJunction;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.TagService;
 import webapp.AwesomeCollect.service.UserProgressService;
@@ -32,19 +30,17 @@ public class ArticleStockController {
   private final TagService tagService;
   private final ActionViewPreparator actionViewPreparator;
   private final ArticleTagJunctionService articleTagJunctionService;
-  private final TaggingManager taggingManager;
   private final UserProgressService userProgressService;
 
   public ArticleStockController(
       ArticleStockService articleStockService, TagService tagService,
       ActionViewPreparator actionViewPreparator, ArticleTagJunctionService articleTagJunctionService,
-      TaggingManager taggingManager, UserProgressService userProgressService){
+      UserProgressService userProgressService){
 
     this.articleStockService = articleStockService;
     this.tagService = tagService;
     this.actionViewPreparator = actionViewPreparator;
     this.articleTagJunctionService = articleTagJunctionService;
-    this.taggingManager = taggingManager;
     this.userProgressService = userProgressService;
   }
 
@@ -90,7 +86,7 @@ public class ArticleStockController {
       ArticleStockDto dto, Model model) throws AccessDeniedException{
 
    int userId = customUserDetails.getId();
-   List<String> tagNameList = tagService.getTagNameList(userId);
+   List<String> tagNameList = tagService.prepareTagListByUserId(userId);
 
    if(id == 0){
      actionViewPreparator.prepareBlankDoneView(id, dto, model, tagNameList);
@@ -136,8 +132,6 @@ public class ArticleStockController {
         ArticleStock articleStock = dto.toArticleStock(userId);
         articleStockService.registerArticleStock(articleStock);
         id = articleStock.getId();
-        taggingManager.resolveTagsAndRelations(
-            id, pureTagList, userId, ArticleTagJunction::new, articleTagJunctionService);
         userProgressService.updateUserProgress(userId);
         httpSession.setAttribute("hasNewRecord", true);
       }
@@ -148,8 +142,6 @@ public class ArticleStockController {
         httpSession.setAttribute("hasNewRecord", true);
       }else{
         articleStockService.updateArticleStock(dto.toArticleStockWithId(userId));
-        taggingManager.updateTagsAndRelations(
-            id, pureTagList, userId, ArticleTagJunction::new, articleTagJunctionService);
       }
     }
     return "redirect:/article_stock";
