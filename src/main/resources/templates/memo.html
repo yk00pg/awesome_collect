@@ -1,54 +1,75 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
+  <title>メモリスト</title>
   <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
   <div>
-    <header th:replace="~{fragments/common-header :: common-header}"></header>
+    <header th:replace="~{fragments/header :: header}"></header>
   </div>
 
-  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-  <div class="memo-container">
+  <div class="main-container">
     <!-- まだ登録されていない場合 -->
-    <th:block th:unless="${actionDtoList != null}">
-      <div class="empty-memo">
-        <p>まだメモが登録されていません。</p>
-        <div class="register-memo">
-          <a th:href="@{/memo/detail/edit/0}">最初のメモを登録する</a>
+    <th:block th:if="${#lists.isEmpty(memoResponseDtoList)}">
+      <div class="empty-content">
+        <p th:text="#{unregistered.action('メモ')}"></p>
+        <div class="link-button-area">
+          <a th:href="@{/memo/detail/edit/0}"
+             th:text="#{register.first.action('メモ')}"
+             class="new-registration-link"></a>
         </div>
       </div>
     </th:block>
 
     <!-- 登録されている場合 -->
-    <th:block th:if="${actionDtoList != null}">
-      <div class="register-memo">
-        <a th:href="@{/memo/detail/edit/0}">メモを追加する</a>
+    <th:block th:unless="${#lists.isEmpty(memoResponseDtoList)}">
+      <div class="add-link-button-area">
+        <a th:href="@{/memo/detail/edit/0}"
+           th:text="#{register.additional.action('メモ')}"
+           class="additional-registration-link"></a>
+      </div>
+      <div class="border-line-area">
+        <div class="border-line"></div>
       </div>
 
-      <div class="memo-content">
-        <div th:each="memo : ${actionDtoList}">
-          <table class="memo-table">
-            <tr>
-              <th scope="row">メモタイトル</th>
-              <td th:text="${memo.title}"></td>
-              <td rowspan="2" class="detail-area">
-                <div class="memo-detail">
-                  <a th:href="@{/memo/detail/{id}(id=${memo.id})}">詳細</a>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th:block th:with="rawTag=${memo.tags}">
-                <th scope="row">タグ</th>
-                <td class="tags" th:text="${#strings.replace(rawTag, ',', ' ')}"></td>
-              </th:block>
-            </tr>
-          </table>
+      <div class="action-message-area">
+        <div class="success-message"
+             th:if="${successMessage != null}"
+             th:text="${successMessage}"></div>
+      </div>
+
+      <div class="action-content">
+        <div class="action-content-inner">
+          <div class="inner-title">メモリスト</div>
+          <div th:each="memo : ${memoResponseDtoList}">
+            <table class="view-table">
+              <tr>
+                <th scope="row" class="view-row-th">メモタイトル</th>
+                <td th:text="${memo.title}"></td>
+                <td rowspan="3" class="detail-link-td">
+                  <div class="detail-link-area">
+                    <a th:href="@{/memo/detail/{id}(id=${memo.id})}"
+                       class="detail-link-button">詳細</a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" class="view-row-th">タグ</th>
+                <td class="tag-td">
+                  <div class="tag-area">
+                          <span th:each="tag : ${memo.tagList}"
+                                th:text="${tag}" class="tag-badge"></span>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
       </div>
     </th:block>

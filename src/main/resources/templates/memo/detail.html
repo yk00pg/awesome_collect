@@ -3,16 +3,16 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>メモ詳細</title>
+  <title>メモ・詳細</title>
   <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
   <div>
-    <header th:replace="~{fragments/common-header :: common-header}"></header>
+    <header th:replace="~{fragments/header :: header}"></header>
   </div>
 
-  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
 
   <div class="memo-detail-container">
     <div class="back-indicator">
@@ -22,53 +22,83 @@
       </a>
     </div>
 
-    <div class="memo-header">
-      <div class="at-info">
-        <p th:text="'登録日時: ' + ${actionDto.registeredAt}"></p>
-        <p th:if="${actionDto.updatedAt} != null" th:text="'更新日時: ' + ${actionDto.updatedAt}"></p>
-      </div>
+    <div class="action-message-area">
+      <div class="success-message"
+           th:if="${successMessage != null}"
+           th:text="${successMessage}"></div>
+    </div>
 
-      <div class="edit-delete">
-        <a th:href="@{/memo/detail/edit/{id}(id=*{id})}">
-          <img th:src="@{/image/edit-icon.svg}" alt="編集">
-        </a>
-        <a href="#"
-           onclick="if(confirm('この目標を削除しますか？')) {
-                              document.getElementById('deleteMemo').submit();
-                          } return false;">
-          <img th:src="@{/image/delete-icon.svg}" alt="削除">
-        </a>
+    <div class="action-content">
+      <div class="action-content-inner">
+        <div class="inner-title">メモ・詳細</div>
+        <div class="content-header">
+          <div class="at-info">
+            <p th:text="'登録日時: ' + ${memoResponseDto.registeredAt}"></p>
+            <p th:if="${memoResponseDto.updatedAt} != null" th:text="'更新日時: ' + ${memoResponseDto.updatedAt}"></p>
+          </div>
+
+          <div class="edit-delete-area">
+            <a th:href="@{/memo/detail/edit/{id}(id=*{id})}"
+               class="edit-link-area">
+              <img th:src="@{/image/edit-icon.svg}" alt="編集">
+            </a>
+            <a href="#" class="delete-area" id="delete-link">
+              <img th:src="@{/image/delete-icon.svg}" alt="削除">
+            </a>
+          </div>
+        </div>
+
+        <table class="view-table">
+          <tr>
+            <th scope="row" class="view-row-th">メモタイトル</th>
+            <td th:text="${memoResponseDto.title}"></td>
+          </tr>
+          <tr>
+            <th scope="row" class="view-row-th">内容</th>
+            <td class="memo-content" th:utext="${memoResponseDto.contentAsHtml}"></td>
+          </tr>
+          <tr>
+            <th scope="row" class="view-row-th">タグ</th>
+            <td class="tag-td">
+              <div class="tag-area">
+                          <span th:each="tag : ${memoResponseDto.tagList}"
+                                th:text="${tag}" class="tag-badge"></span>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <div class="note">
+          <small>※ 画像を含む場合、セキュリティの観点から直接表示せず、リンクで代替しています</small>
+        </div>
       </div>
     </div>
 
-    <div class="memo-content">
-      <table class="memo-detail-table">
-        <tr>
-          <th scope="col">メモタイトル</th>
-          <td th:text="${actionDto.title}"></td>
-        </tr>
-        <tr>
-          <th colspan="2" scope="col">内
-            容</th>
-        </tr>
-        <tr>
-          <td colspan="2" th:utext="${actionDto.contentAsHtml}"></td>
-        </tr>
-        <tr>
-          <th:block th:with="rawTag=${actionDto.tags}">
-            <th scope="row">タグ</th>
-            <td class="tags" th:text="${#strings.replace(rawTag, ',', ' ')}"></td>
-          </th:block>
-        </tr>
-      </table>
-      <div class="note">
-        <small>※ 画像を含む場合、セキュリティの観点から直接表示せず、リンクで代替しています</small>
-      </div>
-    </div>
-
-    <form id="deleteMemo" th:action="@{/memo/detail/{id}(id=${actionDto.id})}" method="post" style="display:none;">
+    <form id="deleteMemo"
+          th:action="@{/memo/detail/{id}(id=${memoResponseDto.id})}"
+          method="post" style="display:none;">
       <input type="hidden" name="_method" value="delete">
       <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
     </form>
+
+    <!-- 削除ボタンクリック時にダイアログを表示 -->
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+        const deleteMsg = /*[[#{action.delete.confirm('メモ')}]]*/;
+
+        document.getElementById('delete-link').addEventListener('click', function(e){
+          e.preventDefault();
+          if(confirm(deleteMsg)){
+            document.getElementById('deleteMemo').submit();
+          }
+        });
+      /*]]>*/
+    </script>
+  </div>
+
+  <!-- 初回登録時に表示するポップアップウィンドウ -->
+  <div th:if="${achievementPopup != null}">
+    <div class="popup"
+         th:replace="~{fragments/popup :: popup}"></div>
   </div>
 </body>
+</html>

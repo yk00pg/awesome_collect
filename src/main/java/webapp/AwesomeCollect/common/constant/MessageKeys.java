@@ -28,4 +28,5 @@ public class MessageKeys {
   public static final String DONE_AWESOME = "done.awesome";
   public static final String GOAL_AWESOME = "goal.awesome";
   public static final String ACHIEVE_AWESOME = "achieve.awesome";
+  public static final String MEMO_AWESOME = "memo.awesome";
 }

@@ -359,47 +359,57 @@ table th {
 }
 
 .input-table {
+  table-layout: fixed;
   box-sizing: border-box;
   width: 100%;
   overflow-wrap: anywhere;
   padding-top: 10px;
   padding-bottom: 15px;
   margin: 30px auto;
+  font-size: 14px;
 }
 
 .variable-input-table {
+  table-layout: fixed;
   box-sizing: border-box;
   width: 100%;
   overflow-wrap: anywhere;
   padding-top: 10px;
   margin: 30px auto 0;
+  font-size: 14px;
 }
 
 .view-table {
+  table-layout: fixed;
   box-sizing: border-box;
   width: 100%;
   overflow-wrap: anywhere;
   margin: 0 auto 30px;
+  font-size: 14px;
   background-color: var(--cream);
   border-collapse: collapse;
   border: 1px solid var(--brown-grey);
 }
 
 .done-view-table {
+  table-layout: fixed;
   box-sizing: border-box;
   width: 100%;
   overflow-wrap: anywhere;
   margin: 0 auto 15px;
+  font-size: 14px;
   background-color: var(--cream);
   border-collapse: collapse;
   border: 1px solid var(--brown-grey);
 }
 
 .hours-table {
+  table-layout: fixed;
   box-sizing: border-box;
   width: 100%;
   overflow-wrap: anywhere;
   margin: 10px auto 20px;
+  font-size: 14px;
   background-color: var(--cream);
   border-collapse: collapse;
   border: 1px solid var(--brown-grey);
@@ -435,6 +445,7 @@ table th {
 .input-col-th {
   box-sizing: border-box;
   width: 100%;
+  height: 30px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
@@ -983,9 +994,9 @@ table th {
 
 .memo-detail-container {
   width: 800px;
-  margin: 130px auto 50px auto;
+  margin: 120px auto;
+  padding: 30px;
   color: var(--reddish-brown);
-  padding: 20px 0;
   background-color: white;
   border: 3px solid var(--reddish-brown);
   border-radius: 30px;
@@ -1112,22 +1123,6 @@ table th {
   background-color: #DC9F95;
   border-radius: 10px;
   cursor: pointer;
-}
-
-.done-table,
-.goal-table, .memo-table,
-.article-stock-table {
-  box-sizing: border-box;
-  font-size: 14px;
-  width: 460px;
-  min-height: 50px;
-  overflow-wrap: anywhere;
-  padding-top: 10px;
-  padding-bottom: 15px;
-  margin: 15px 0;
-  background-color: #FFFDF6;
-  border-collapse: collapse;
-  border: 1px solid #9C918B;
 }
 
 .memo-detail-table {

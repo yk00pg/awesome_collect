@@ -29,6 +29,12 @@ public class ViewNames {
   public static final String GOAL_EDIT_PAGE = GOAL_DETAIL_PAGE + "/edit";
   public static final String GOAL_EDIT_BY_ID = GOAL_EDIT_PAGE + ID;
 
+  public static final String MEMO_PAGE = "/memo";
+  public static final String MEMO_DETAIL_PAGE = MEMO_PAGE + "/detail";
+  public static final String MEMO_DETAIL_BY_ID = MEMO_DETAIL_PAGE + ID;
+  public static final String MEMO_EDIT_PAGE = MEMO_DETAIL_PAGE + "/edit";
+  public static final String MEMO_EDIT_BY_ID = MEMO_EDIT_PAGE + ID;
+
   // エラーページ
   private static final String ERROR_PAGE = "/error";
   public static final String ERROR_NOT_ACCESSIBLE = ERROR_PAGE + "/not-accessible";
