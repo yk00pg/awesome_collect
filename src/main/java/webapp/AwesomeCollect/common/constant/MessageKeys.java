@@ -27,6 +27,8 @@ public class MessageKeys {
   public static final String TODO_AWESOME = "todo.awesome";
   public static final String DONE_AWESOME = "done.awesome";
   public static final String GOAL_AWESOME = "goal.awesome";
-  public static final String ACHIEVE_AWESOME = "achieve.awesome";
+  public static final String ACHIEVED_AWESOME = "achieved.awesome";
   public static final String MEMO_AWESOME = "memo.awesome";
+  public static final String ARTICLE_AWESOME = "article.awesome";
+  public static final String FINISHED_AWESOME = "finished.awesome";
 }

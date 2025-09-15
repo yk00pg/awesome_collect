@@ -3,87 +3,77 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>記事ストック</title>
+  <title>記事ストックリスト</title>
   <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
 <div>
-  <header th:replace="~{fragments/common-header :: common-header}"></header>
+  <header th:replace="~{fragments/header :: header}"></header>
 </div>
 
-<div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+<div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-  <div class="article-stock-container">
+  <div class="main-container">
     <!-- まだ登録されていない場合 -->
-    <th:block th:unless="${actionDtoList != null}">
-      <div class="empty-stock">
-        <p>まだ記事ストックが登録されていません。</p>
-        <div class="register-stock">
-          <a th:href="@{/article_stock/edit/0}">最初の記事ストックを登録する</a>
+    <th:block th:if="${#lists.isEmpty(articleResponseDtoList)}">
+      <div class="empty-content">
+        <p th:text="#{unregistered.action('記事ストック')}"></p>
+        <div class="link-button-area">
+          <a th:href="@{/article_stock/detail/edit/0}"
+             th:text="#{register.first.action('記事ストック')}"
+             class="new-registration-link"></a>
         </div>
       </div>
     </th:block>
 
     <!-- 登録されている場合 -->
-    <th:block th:if="${actionDtoList != null}">
-      <div class="register-stock">
-        <a th:href="@{/article_stock/edit/0}">記事ストックを追加する</a>
+    <th:block th:unless="${#lists.isEmpty(articleResponseDtoList)}">
+      <div class="add-link-button-area">
+        <a th:href="@{/article_stock/detail/edit/0}"
+           th:text="#{register.additional.action('記事ストック')}"
+           class="additional-registration-link"></a>
+      </div>
+      <div class="border-line-area">
+        <div class="border-line"></div>
       </div>
 
-      <div class="article-stock-content">
-        <div th:each="articleStock : ${actionDtoList}">
-          <table class="article-stock-table">
-            <tr>
-              <td colspan="2" class="stock-header-area">
-                <div class="stock-header">
-                  <div class="at-info">
-                    <p th:text="'登録日時: ' + ${articleStock.registeredAt}"></p>
-                    <p th:if="${articleStock.updatedAt} != null" th:text="'更新日時: ' + ${articleStock.updatedAt}"></p>
-                  </div>
+      <div class="action-message-area">
+        <div class="success-message"
+             th:if="${successMessage != null}"
+             th:text="${successMessage}"></div>
+      </div>
 
-                  <div class="edit-delete-stock">
-                    <a th:href="@{/article_stock/edit/{id}(id=${articleStock.id})}">
-                      <img th:src="@{/image/edit-icon.svg}" alt="編集">
-                    </a>
-                    <a href="#"
-                       onclick="if(confirm('この目標を削除しますか？')) {
-                                    document.getElementById('deleteStock').submit();
-                                } return false;">
-                      <img th:src="@{/image/delete-icon.svg}" alt="削除">
-                    </a>
+      <div class="action-content">
+        <div class="action-content-inner">
+          <div class="inner-title">記事ストックリスト</div>
+          <div th:each="articleStock : ${articleResponseDtoList}">
+            <table class="view-table">
+              <tr>
+                <th scope="row" class="view-row-th">記事タイトル</th>
+                <td th:text="${articleStock.title}"></td>
+                <td rowspan="3" class="detail-link-td">
+                  <div class="detail-link-area">
+                    <a th:href="@{/article_stock/detail/{id}(id=${articleStock.id})}"
+                       class="detail-link-button">詳細</a>
                   </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">タイトル</th>
-              <td th:text="${articleStock.title}"></td>
-            </tr>
-            <tr>
-              <th scope="row">URL</th>
-              <td class="input-url">
-                <a href="${articleStock.url}">
-                  <div th:text="${articleStock.url}"></div>
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">閲覧状況</th>
-              <td th:text="${articleStock.statusLabel}"></td>
-            </tr>
-            <tr>
-              <th:block th:with="rawTag=${articleStock.tags}">
-                <th scope="row">タグ</th>
-                <td class="tags" th:text="${#strings.replace(rawTag, ',', ' ')}"></td>
-              </th:block>
-            </tr>
-          </table>
-
-          <form id="deleteStock" th:action="@{/article_stock/{id}(id=${articleStock.id})}" method="post" style="display:none;">
-            <input type="hidden" name="_method" value="delete">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-          </form>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" class="view-row-th">閲覧状況</th>
+                <td th:text="${articleStock.statusLabel}"></td>
+              </tr>
+              <tr>
+                <th scope="row" class="view-row-th">タグ</th>
+                <td class="tag-td">
+                  <div class="tag-area">
+                          <span th:each="tag : ${articleStock.tagList}"
+                                th:text="${tag}" class="tag-badge"></span>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
       </div>
     </th:block>

@@ -164,7 +164,7 @@ public class GoalController {
       if(saveResult.isUpdatedStatus()){
         redirectAttributes.addFlashAttribute(
             AttributeNames.ACHIEVEMENT_POPUP,
-            messageUtil.getMessage(MessageKeys.ACHIEVE_AWESOME));
+            messageUtil.getMessage(MessageKeys.ACHIEVED_AWESOME));
       }
     }
 

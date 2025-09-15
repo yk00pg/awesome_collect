@@ -27,6 +27,10 @@ public class AttributeNames {
   public static final String MEMO_RESPONSE_DTO = "memoResponseDto";
   public static final String MEMO_REQUEST_DTO = "memoRequestDto";
 
+  public static final String ARTICLE_RESPONSE_DTO_LIST = "articleResponseDtoList";
+  public static final String ARTICLE_RESPONSE_DTO = "articleResponseDto";
+  public static final String ARTICLE_REQUEST_DTO = "articleRequestDto";
+
   // others
   public static final String TAG_NAME_LIST = "tagNameList";
 }

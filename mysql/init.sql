@@ -79,7 +79,7 @@ CREATE TABLE daily_done(
 CREATE TABLE goal(
   id INT AUTO_INCREMENT,
   user_id INT NOT NULL,
-  title VARCHAR(100),
+  title VARCHAR(100) NOT NULL,
   content VARCHAR(500) NOT NULL,
   achieved BOOLEAN,
   registered_at DATETIME,
@@ -92,7 +92,7 @@ CREATE TABLE goal(
 CREATE TABLE memo(
   id INT AUTO_INCREMENT,
   user_id INT NOT NULL,
-  title VARCHAR(100),
+  title VARCHAR(100) NOT NULL,
   content MEDIUMTEXT NOT NULL,
   registered_at DATETIME,
   updated_at DATETIME,
@@ -105,7 +105,8 @@ CREATE TABLE article_stock(
   id INT AUTO_INCREMENT,
   user_id INT NOT NULL,
   title VARCHAR(100),
-  url VARCHAR(2083),
+  url VARCHAR(2083) NOT NULL,
+  memo VARCHAR(500),
   finished BOOLEAN,
   registered_at DATETIME,
   updated_at DATETIME,
