@@ -1,51 +1,47 @@
 package webapp.AwesomeCollect.controller;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import webapp.AwesomeCollect.analysis.DashboardHelper;
+import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.ViewNames;
 import webapp.AwesomeCollect.dto.DashboardDto;
 import webapp.AwesomeCollect.security.CustomUserDetails;
+import webapp.AwesomeCollect.service.LearningTimeService;
 
 @Controller
 public class DashboardController {
 
-  private final DashboardHelper dashboardHelper;
+  private final LearningTimeService learningTimeService;
 
-  public DashboardController(DashboardHelper dashboardHelper){
+  public DashboardController(
+     LearningTimeService learningTimeService){
 
-    this.dashboardHelper = dashboardHelper;
+    this.learningTimeService = learningTimeService;
   }
 
-  @GetMapping(value = "/dashboard")
+  @GetMapping(ViewNames.DASHBOARD_PAGE)
   public String showDashboard(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      HttpSession session, Model model){
+      Model model){
 
-    int userId = customUserDetails.getId();
-    DashboardDto dto = dashboardHelper.prepareDashboardData(userId, session);
+    DashboardDto dto = new DashboardDto();
+    dto.setTotalAwesome(0);
+    dto.setLearningTimeDto(
+        learningTimeService.prepareLearningTimeDto(customUserDetails.getId()));
 
-    model.addAttribute("totalAwesome", dto.getTotalAwesome());
-    model.addAttribute("totalHours", dto.getTotalHours());
-    model.addAttribute("dailyHoursList", dto.getDailyHoursList());
-    model.addAttribute("monthlyHoursList", dto.getMonthlyHoursList());
-    model.addAttribute("totalHoursByTag", dto.getTotalHoursByTag());
+    model.addAttribute(AttributeNames.DASHBOARD_DTO, dto);
 
-    return "/dashboard";
+    return ViewNames.DASHBOARD_PAGE;
   }
 
-  @GetMapping(value = "/dashboard/tag-hours/all")
-  public String showAllTagHours(
-      @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      HttpSession session, Model model){
+  @GetMapping(ViewNames.DASHBOARD_ALL_TAG_TIME)
+  public String showAllTagHours(Model model){
 
-    int userId = customUserDetails.getId();
-    DashboardDto dto = dashboardHelper.prepareAllTagHoursView(session, userId);
+    model.addAttribute(
+        AttributeNames.TAG_TOTAL_TIME_LIST, learningTimeService.prepareTagTotalTimeList());
 
-    model.addAttribute("totalHoursByAllTag", dto.getTotalHoursByTag());
-
-    return "/dashboard/tag-hours/all";
+    return ViewNames.DASHBOARD_ALL_TAG_TIME;
   }
 }

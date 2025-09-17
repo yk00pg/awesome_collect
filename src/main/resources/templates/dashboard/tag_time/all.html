@@ -11,29 +11,29 @@
 
 <body>
   <div>
-    <header th:replace="~{fragments/common-header :: common-header}"></header>
+    <header th:replace="~{fragments/header :: header}"></header>
   </div>
 
-  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
 
   <div class="dashboard-container">
     <div class="all-tag-container">
-      <div class="tag-hours">
+      <div class="graph-area">
         <div class="back-indicator">
-          <a th:href="@{/dashboard}">
+          <a th:href="@{/dashboard}" class="back-link">
             <img th:src="@{/image/back-icon.svg}" alt="戻る">
             <span>戻る</span>
           </a>
         </div>
         <p>タグ別学習時間（累計・全件）</p>
-        <canvas id="allTagHours"></canvas>
+        <canvas id="allTagTime"></canvas>
       </div>
     </div>
 
     <!-- Chart.js用にデータだけ埋め込み -->
     <script th:inline="javascript">
       /*<![CDATA[*/
-        const tagHoursList = /*[[${totalHoursByAllTag}]]*/ [];
+        const tagTimeList = /*[[${tagTotalTimeList}]]*/ [];
       /*]]>*/
     </script>
 

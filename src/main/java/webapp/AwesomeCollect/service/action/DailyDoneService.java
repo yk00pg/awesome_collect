@@ -2,7 +2,6 @@ package webapp.AwesomeCollect.service.action;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -149,7 +148,7 @@ public class DailyDoneService {
           dailyDone.getId(), DoneTagJunction::new, tagIdList);
     }
     sessionManager.setHasUpdatedRecordCount(true);
-    sessionManager.setHasUpdateHours(true);
+    sessionManager.setHasUpdateTime(true);
 
     if(index == 0){
       userProgressService.updateUserProgress(userId);
@@ -165,7 +164,7 @@ public class DailyDoneService {
     doneTagJunctionService.deleteRelationByActionId(id);
     dailyDoneRepository.deleteDailyDoneById(id);
     sessionManager.setHasUpdatedRecordCount(true);
-    sessionManager.setHasUpdateHours(true);
+    sessionManager.setHasUpdateTime(true);
   }
 
   /**
@@ -188,7 +187,7 @@ public class DailyDoneService {
           id, DoneTagJunction :: new, tagIdList);
     }
 
-    sessionManager.setHasUpdateHours(true);
+    sessionManager.setHasUpdateTime(true);
   }
 
   // 指定の日付のできたことをすべて削除
@@ -197,7 +196,7 @@ public class DailyDoneService {
     dailyDoneRepository.deleteDailyDoneByDate(userId, date);
 
     sessionManager.setHasUpdatedRecordCount(true);
-    sessionManager.setHasUpdateHours(true);
+    sessionManager.setHasUpdateTime(true);
   }
 
   // 指定のユーザーのレコード数を取得

@@ -31,6 +31,9 @@ public class AttributeNames {
   public static final String ARTICLE_RESPONSE_DTO = "articleResponseDto";
   public static final String ARTICLE_REQUEST_DTO = "articleRequestDto";
 
+  public static final String DASHBOARD_DTO = "dashboardDto";
+  public static final String TAG_TOTAL_TIME_LIST = "tagTotalTimeList";
+
   // others
   public static final String TAG_NAME_LIST = "tagNameList";
 }

@@ -1,32 +1,30 @@
 package webapp.AwesomeCollect.mapper;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Month;
-import java.time.Year;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import webapp.AwesomeCollect.dto.analysis.TagLearningHoursDto;
-import webapp.AwesomeCollect.dto.analysis.TotalLearningHoursDto;
+import webapp.AwesomeCollect.entity.AvgLearningTime;
+import webapp.AwesomeCollect.entity.TagLearningTime;
+import webapp.AwesomeCollect.entity.TotalLearningTime;
 
 @Mapper
-public interface LearningHoursMapper {
+public interface LearningTimeMapper {
 
   @Select("""
       SELECT
-        COALESCE(SUM(hours), 0) AS totalHours
+        COALESCE(SUM(minutes), 0) AS totalTime
       FROM
         daily_done
       WHERE
         user_id=#{userId}
       """)
-  BigDecimal calculateTotalHours(int userId);
+  int calculateTotalTime(int userId);
 
   @Select("""
       SELECT
         DAYOFWEEK(date) AS dayOfWeek,
-        ROUND(AVG(hours) AS avgHours
+        ROUND(AVG(minutes)) AS avgTime
       FROM
         daily_done
       WHERE
@@ -34,14 +32,14 @@ public interface LearningHoursMapper {
       GROUP BY
         dayOfWeek
       ORDER BY
-        daiOfWeek
+        dayOfWeek
       """)
-  List<TotalLearningHoursDto> averageDayOfWeekHours(int userId);
+  List<AvgLearningTime> averageDayOfWeekTime(int userId);
 
   @Select("""
       SELECT
         date AS date,
-        SUM(hours) AS totalHours
+        SUM(minutes) AS totalTime
       FROM
         daily_done
       WHERE
@@ -52,13 +50,13 @@ public interface LearningHoursMapper {
       ORDER BY
         date
       """)
-  List<TotalLearningHoursDto> calculateDailyTotalHours(
+  List<TotalLearningTime> calculateDailyTotalTime(
       int userId, LocalDate fromDate, LocalDate toDate);
 
   @Select("""
       SELECT
         DATE_SUB(date, INTERVAL DAY(date)-1 DAY) AS date,
-        SUM(hours) AS totalHours
+        SUM(minutes) AS totalTime
       FROM
         daily_done
       WHERE
@@ -69,14 +67,14 @@ public interface LearningHoursMapper {
       ORDER BY
         DATE_SUB(date, INTERVAL DAY(date)-1 DAY)
       """)
-  List<TotalLearningHoursDto> calculateMonthlyTotalHours(
+  List<TotalLearningTime> calculateMonthlyTotalTime(
       int userId, LocalDate fromDate, LocalDate toDate);
 
   @Select("""
       SELECT
         COALESCE(t.id, 0) AS tagId,
         COALESCE(t.name, '(未設定)') AS tagName,
-        SUM(dd.hours) AS totalHours
+        SUM(dd.minutes) AS totalTime
       FROM
         daily_done dd
       LEFT JOIN
@@ -88,5 +86,5 @@ public interface LearningHoursMapper {
       GROUP BY
         COALESCE(t.id, 0), COALESCE(t.name, '(未設定)')
       """)
-  List<TagLearningHoursDto> calculateTotalHoursByTag(int userId);
+  List<TagLearningTime> calculateTotalTimeByTag(int userId);
 }
