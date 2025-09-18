@@ -101,7 +101,8 @@
                 <label class="delete-check-area" th:if="*{idList[__${iterStat.index}__] > 0}">
                   <input type="checkbox" class="delete-check"
                          th:field="*{deletableList[__${iterStat.index}__]}" value="true" />
-                  <input type="hidden" th:field="*{deletableList[__${iterStat.index}__]}" value="false" />
+                  <input type="hidden"
+                         th:field="*{deletableList[__${iterStat.index}__]}" value="false" />
                   <div class="delete-icon-area">
                     <img th:src="@{/image/delete-icon.svg}" class="delete-icon">
                   </div>
@@ -132,7 +133,8 @@
               <th scope="row" class="task-th" th:text="'メモ ' + ${iterStat.index + 1}"></th>
               <td class="blank-row"></td>
               <td colspan="4" class="done-memo-area">
-                <textarea class="input-done-memo-area" th:field="*{memoList[__${iterStat.index}__]}"></textarea>
+                <textarea class="input-done-memo-area"
+                          th:field="*{memoList[__${iterStat.index}__]}"></textarea>
               </td>
             </tr>
             <tr class="tag-row">
@@ -196,6 +198,21 @@
         </div>
       </form>
 
+      <!-- submit時に削除チェックが入っている場合はダイアログを表示 -->
+      <script th:inline="javascript">
+        /*<![CDATA[*/
+            const deleteConfirmMessage = /*[[#{delete.confirm}]]*/;
+
+            document.getElementById("doneForm").addEventListener("submit", function(e) {
+            const hasDelete = [...document.querySelectorAll(".delete-check")]
+                .some(cb => cb.checked);
+
+            if(hasDelete && !confirm(deleteConfirmMessage)) {
+                e.preventDefault();
+            }
+            });
+        /*]]>*/
+      </script>
     </div>
   </div>
   <script th:src="@{/js/done-add-tbody.js}"></script>
