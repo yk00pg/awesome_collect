@@ -86,19 +86,14 @@ public class GoalController {
       Model model) {
 
     int userId = customUserDetails.getId();
-
-    GoalRequestDto goalRequestDto =
-        id == 0
-            ? new GoalRequestDto()
-            : goalService.prepareRequestDto(id, userId);
+    GoalRequestDto goalRequestDto = goalService.prepareRequestDto(id, userId);
 
     if(goalRequestDto == null) {
       return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
     }else{
       model.addAttribute(AttributeNames.GOAL_REQUEST_DTO, goalRequestDto);
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST,
-          tagService.prepareTagListByUserId(userId));
+          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
 
       return ViewNames.GOAL_EDIT_PAGE;
     }
@@ -137,15 +132,15 @@ public class GoalController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes) {
 
+    int userId = customUserDetails.getId();
+
     if(result.hasErrors()){
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST,
-          tagService.prepareTagListByUserId(customUserDetails.getId()));
-
+          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
       return ViewNames.GOAL_EDIT_PAGE;
     }
 
-    SaveResult saveResult = goalService.saveGoal(customUserDetails.getId(), dto);
+    SaveResult saveResult = goalService.saveGoal(userId, dto);
 
     // 新規登録か更新かを判定してサクセスメッセージを表示
     if(id == 0){

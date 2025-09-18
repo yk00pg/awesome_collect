@@ -16,7 +16,7 @@
 
   <div class="main-container">
     <!-- まだ登録されていない場合 -->
-    <th:block th:unless="${goalResponseDtoList != null}">
+    <th:block th:if="${#lists.isEmpty(goalResponseDtoList)}">
       <div class="empty-content">
         <p th:text="#{unregistered.action('目標')}"></p>
         <div class="link-button-area">
@@ -28,7 +28,7 @@
     </th:block>
 
     <!-- 登録されている場合 -->
-    <th:block th:if="${goalResponseDtoList != null}">
+    <th:block th:unless="${#lists.isEmpty(goalResponseDtoList)}">
       <div class="add-link-button-area">
         <a th:href="@{/goal/detail/edit/0}"
            th:text="#{register.additional.action('目標')}"

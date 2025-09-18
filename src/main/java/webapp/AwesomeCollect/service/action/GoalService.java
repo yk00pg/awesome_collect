@@ -94,6 +94,10 @@ public class GoalService {
 
   // DBの登録状況に応じた入力用データオブジェクトを返す
   public GoalRequestDto prepareRequestDto(int goalId, int userId){
+    if(goalId == 0){
+      return new GoalRequestDto();
+    }
+
     Goal goal = goalRepository.findGoalByIds(goalId, userId);
     if(goal == null){
       return null;
