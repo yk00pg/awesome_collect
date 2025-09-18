@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -16,6 +18,7 @@ import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.user.UserInfoDto;
 import webapp.AwesomeCollect.exception.DuplicateException;
 import webapp.AwesomeCollect.service.UserInfoService;
+import webapp.AwesomeCollect.validation.SignupValidator;
 
 /**
  * サインアップページのコントローラークラス。
@@ -24,12 +27,17 @@ import webapp.AwesomeCollect.service.UserInfoService;
 @Controller
 public class SignupController {
 
-  private final MessageUtil messageUtil;
   private final UserInfoService userInfoService;
+  private final SignupValidator signupValidator;
+  private final MessageUtil messageUtil;
 
-  public SignupController(MessageUtil messageUtil, UserInfoService userInfoService){
-    this.messageUtil = messageUtil;
+  public SignupController(
+      UserInfoService userInfoService, SignupValidator signupValidator,
+      MessageUtil messageUtil){
+
     this.userInfoService = userInfoService;
+    this.signupValidator = signupValidator;
+    this.messageUtil = messageUtil;
   }
 
   // 新規登録フォームを表示
@@ -37,6 +45,11 @@ public class SignupController {
   public String showSignUpForm(Model model){
     model.addAttribute(AttributeNames.USER_INFO_DTO, new UserInfoDto());
     return ViewNames.SIGNUP_PAGE;
+  }
+
+  @InitBinder(AttributeNames.USER_INFO_DTO)
+  public void initBinder(WebDataBinder dataBinder){
+    dataBinder.addValidators(signupValidator);
   }
 
   /**
@@ -55,18 +68,6 @@ public class SignupController {
       BindingResult result, RedirectAttributes redirectAttributes) {
 
     if(result.hasErrors()){
-      return ViewNames.SIGNUP_PAGE;
-    }
-
-    // パスワードと確認用パスワードが一致しない場合はエラーに追加
-    if(dto.getPasswordDto().isPasswordMismatch()){
-      result.rejectValue(
-          "passwordDto.password", "mismatchPassword",
-          messageUtil.getMessage(MessageKeys.PASSWORD_MISMATCH));
-      result.rejectValue(
-          "passwordDto.confirmPassword", "mismatchPassword",
-          messageUtil.getMessage(MessageKeys.PASSWORD_MISMATCH));
-
       return ViewNames.SIGNUP_PAGE;
     }
 
