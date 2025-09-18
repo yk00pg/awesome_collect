@@ -67,9 +67,11 @@ public class TodoRequestDto {
   public static TodoRequestDto fromDailyTodo (List<DailyTodo> todoList){
     TodoRequestDto dto = new TodoRequestDto();
     dto.date = todoList.getFirst().getDate();
-    todoList.forEach(todo -> dto.idList.add(todo.getId()));
-    todoList.forEach(todo -> dto.contentList.add(todo.getContent()));
-    todoList.forEach(todo -> dto.deletableList.add(Boolean.FALSE));
+    todoList.forEach(todo -> {
+      dto.idList.add(todo.getId());
+      dto.contentList.add(todo.getContent());
+      dto.deletableList.add(Boolean.FALSE);
+    });
     return dto;
   }
 
