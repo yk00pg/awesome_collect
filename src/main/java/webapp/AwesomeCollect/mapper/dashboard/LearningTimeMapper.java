@@ -1,12 +1,12 @@
-package webapp.AwesomeCollect.mapper;
+package webapp.AwesomeCollect.mapper.dashboard;
 
 import java.time.LocalDate;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import webapp.AwesomeCollect.entity.AvgLearningTime;
-import webapp.AwesomeCollect.entity.TagLearningTime;
-import webapp.AwesomeCollect.entity.TotalLearningTime;
+import webapp.AwesomeCollect.entity.dashboard.AvgLearningTime;
+import webapp.AwesomeCollect.entity.dashboard.TagLearningTime;
+import webapp.AwesomeCollect.entity.dashboard.TotalLearningTime;
 
 @Mapper
 public interface LearningTimeMapper {

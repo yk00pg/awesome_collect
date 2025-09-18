@@ -1,13 +1,16 @@
-package webapp.AwesomeCollect.repository;
+package webapp.AwesomeCollect.repository.dashboard;
 
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.stereotype.Repository;
-import webapp.AwesomeCollect.entity.AvgLearningTime;
-import webapp.AwesomeCollect.entity.TagLearningTime;
-import webapp.AwesomeCollect.entity.TotalLearningTime;
-import webapp.AwesomeCollect.mapper.LearningTimeMapper;
+import webapp.AwesomeCollect.entity.dashboard.AvgLearningTime;
+import webapp.AwesomeCollect.entity.dashboard.TagLearningTime;
+import webapp.AwesomeCollect.entity.dashboard.TotalLearningTime;
+import webapp.AwesomeCollect.mapper.dashboard.LearningTimeMapper;
 
+/**
+ * 学習時間のリポジトリクラス。
+ */
 @Repository
 public class LearningTimeRepository {
 

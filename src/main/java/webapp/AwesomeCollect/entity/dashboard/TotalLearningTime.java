@@ -1,4 +1,4 @@
-package webapp.AwesomeCollect.entity;
+package webapp.AwesomeCollect.entity.dashboard;
 
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;

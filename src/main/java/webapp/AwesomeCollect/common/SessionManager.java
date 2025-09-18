@@ -2,7 +2,7 @@ package webapp.AwesomeCollect.common;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
-import webapp.AwesomeCollect.dto.LearningTimeDto;
+import webapp.AwesomeCollect.dto.dashboard.LearningTimeDto;
 
 @Component
 public class SessionManager {
