@@ -113,25 +113,26 @@ public class DailyDoneController {
    * @return  できたこと閲覧ページ
    */
   @PostMapping(ViewNames.DAILY_DONE_EDIT_PAGE)
-  public String editDailyTodo(
+  public String editDailyDone(
       @PathVariable LocalDate date,
       @Valid @ModelAttribute(AttributeNames.DONE_REQUEST_DTO) DoneRequestDto dto,
       BindingResult result, Model model,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes) {
 
+    int userId = customUserDetails.getId();
+
     if(result.hasErrors()){
       model.addAttribute(
           AttributeNames.TODO_RESPONSE_DTO,
-          dailyTodoService.prepareResponseDto(customUserDetails.getId(), date));
+          dailyTodoService.prepareResponseDto(userId, date));
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST,
-          tagService.prepareTagListByUserId(customUserDetails.getId()));
+          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
 
       return ViewNames.DONE_EDIT_PAGE;
     }
 
-    dailyDoneService.saveDailyDone(customUserDetails.getId(), dto);
+    dailyDoneService.saveDailyDone(userId, dto);
 
     boolean isUpdatedRecord = dto.getIdList().getFirst() != 0;
 
