@@ -45,6 +45,9 @@ public class ViewNames {
   public static final String ARTICLE_STOCK_EDIT_PAGE = ARTICLE_STOCK_DETAIL_PAGE + EDIT_PAGE;
   public static final String ARTICLE_STOCK_EDIT_BY_ID = ARTICLE_STOCK_EDIT_PAGE + ID;
 
+  public static final String DASHBOARD_PAGE = "/dashboard";
+  public static final String DASHBOARD_ALL_TAG_TIME = DASHBOARD_PAGE + "/tag_time/all";
+
   // エラーページ
   private static final String ERROR_PAGE = "/error";
   public static final String ERROR_NOT_ACCESSIBLE = ERROR_PAGE + "/not-accessible";
