@@ -94,6 +94,10 @@ public class GoalService {
 
   // DBの登録状況に応じた入力用データオブジェクトを返す
   public GoalRequestDto prepareRequestDto(int goalId, int userId){
+    if(goalId == 0){
+      return new GoalRequestDto();
+    }
+
     Goal goal = goalRepository.findGoalByIds(goalId, userId);
     if(goal == null){
       return null;
@@ -123,9 +127,7 @@ public class GoalService {
    */
   public SaveResult saveGoal(int userId, GoalRequestDto dto){
     List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
-    List<Integer> tagIdList = pureTagList != null
-        ? tagService.resolveTagIdList(userId, pureTagList)
-        : null;
+    List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
 
     int id = dto.getId();
     SaveResult saveResult;

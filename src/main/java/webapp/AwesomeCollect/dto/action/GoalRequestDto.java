@@ -31,7 +31,7 @@ public class GoalRequestDto {
   @NotBlank(message = "{content.blank}")
   private String content;
 
-  @NotBlank(message = "{status.valid}")
+  @NotBlank(message = "{status.blank}")
   private String status;
 
   private String tags;
