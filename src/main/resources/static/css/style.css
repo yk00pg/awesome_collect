@@ -370,7 +370,6 @@ table th {
 }
 
 .variable-input-table {
-  table-layout: fixed;
   box-sizing: border-box;
   width: 100%;
   overflow-wrap: anywhere;
@@ -392,7 +391,6 @@ table th {
 }
 
 .done-view-table {
-  table-layout: fixed;
   box-sizing: border-box;
   width: 100%;
   overflow-wrap: anywhere;
@@ -743,6 +741,7 @@ table th {
 }
 
 .notice-message p {
+  font-size: 14px;
   font-weight: bold;
   color: var(--olive);
   margin: 0;
