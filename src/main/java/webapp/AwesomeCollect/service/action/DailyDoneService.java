@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.common.SessionManager;
 import webapp.AwesomeCollect.common.util.JsonConverter;
 import webapp.AwesomeCollect.dto.action.DoneRequestDto;
@@ -40,7 +41,14 @@ public class DailyDoneService {
     this.sessionManager = sessionManager;
   }
 
-  // DBの登録状況に応じた閲覧用データオブジェクトを返す
+  /**
+   * DBにできたことが登録されていない場合は空の表示用データオブジェクトを、<br>
+   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
+   *
+   * @param userId  ユーザーID
+   * @param date  日付
+   * @return  できたこと表示用データオブジェクト
+   */
   public DoneResponseDto prepareResponseDto(int userId, LocalDate date){
     List<DailyDone> dailyDoneList = dailyDoneRepository.searchDailyDone(userId, date);
     if(dailyDoneList == null || dailyDoneList.isEmpty()){
@@ -50,7 +58,14 @@ public class DailyDoneService {
     }
   }
 
-  // DBの登録状況に応じた編集用データオブジェクトを返す
+  /**
+   * DBにできたことが登録されていない場合は空の入力用データオブジェクトを、<br>
+   * 登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   *
+   * @param userId  ユーザーID
+   * @param date  日付
+   * @return  できたこと入力用データオブジェクト
+   */
   public DoneRequestDto prepareRequestDto(int userId, LocalDate date){
     List<DailyDone> dailyDoneList = dailyDoneRepository.searchDailyDone(userId, date);
     if(dailyDoneList == null || dailyDoneList.isEmpty()){
@@ -60,7 +75,13 @@ public class DailyDoneService {
     }
   }
 
-  // DBの登録内容を基に閲覧用データオブジェクトを組み立てて返す
+  /**
+   * できたことリストを表示用データオブジェクトに変換し、紐付けられたタグ名リストを設定する。
+   *
+   * @param dailyDoneList できたことリスト
+   * @return  できたこと表示用データオブジェクト
+   */
+  @Transactional
   private @NotNull DoneResponseDto assembleCurrentResponseDto(
       List<DailyDone> dailyDoneList) {
 
@@ -68,7 +89,6 @@ public class DailyDoneService {
     for(DailyDone done : dailyDoneList){
       List<Integer> tagIdList =
           doneTagJunctionService.prepareTagIdListByActionId(done.getId());
-
       tagNamesList.add(tagService.prepareTagNameListByTagIdList(tagIdList));
     }
 
@@ -77,7 +97,13 @@ public class DailyDoneService {
     return dto;
   }
 
-  // DBの登録内容を基に編集用データオブジェクトを組み立てて返す
+  /**
+   * できたことリストを入力用データオブジェクトに変換し、紐付けられたタグ名リストを設定する。
+   *
+   * @param dailyDoneList できたことリスト
+   * @return  できたこと入力用データオブジェクト
+   */
+  @Transactional
   private @NotNull DoneRequestDto assembleCurrentRequestDto(
       List<DailyDone> dailyDoneList) {
 
@@ -85,7 +111,6 @@ public class DailyDoneService {
     for(DailyDone done : dailyDoneList){
       List<Integer> tagIdList =
           doneTagJunctionService.prepareTagIdListByActionId(done.getId());
-
       tagNameList.add(tagService.prepareCombinedTagName(tagIdList));
     }
 
@@ -95,18 +120,16 @@ public class DailyDoneService {
   }
 
   /**
-   * データの種類に応じてDBへの保存処理（登録・削除・更新）を行う。
+   * データの種類に応じてDBに保存（登録・更新・削除）する。
    *
    * @param userId  ユーザーID
-   * @param dto できたことのデータオブジェクト
+   * @param dto できたこと入力用データオブジェクト
    */
   public void saveDailyDone(int userId, DoneRequestDto dto){
     List<List<String>> pureTagsList = JsonConverter.extractValues(dto.getTagsList());
 
     for(int i = 0; i < dto.getContentList().size(); i++) {
       String content = dto.getContentList().get(i);
-
-      // 内容が空の場合はスキップ
       if(content == null || content.isBlank()){
         continue;
       }
@@ -116,37 +139,36 @@ public class DailyDoneService {
       List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
 
       if(id == 0){
-        registerDone(userId, dto, tagIdList, i);
+        registerDailyDone(userId, dto, tagIdList, i);
       }else{
-        // 削除チェックが入っているか確認
         if(dto.isDeletable(i)){
-          deleteDone(id);
+          deleteDailyDone(id);
         }else{
-          updateDone(userId, dto, id, i, tagIdList);
+          updateDailyDone(userId, dto, id, i, tagIdList);
         }
       }
     }
   }
 
   /**
-   * DTOをエンティティに変換してDBに登録し、タグ情報を処理する。<br>
-   * セッション情報を変更し、初回登録時のみユーザーの進捗情報を更新する。
+   * DTOをエンティティに変換してDBに登録し、タグ情報を登録する。<br>
+   * セッションのレコード数更新情報、学習時間更新情報を変更し、
+   * 日ごとの初回登録時のみユーザーの進捗情報を更新する。
    *
    * @param userId  ユーザーID
-   * @param dto できたことのデータオブジェクト
+   * @param dto できたこと入力用データオブジェクト
    * @param tagIdList タグIDリスト
-   * @param index リストのインデックス番号
+   * @param index DTO内リストのインデックス番号
    */
-  private void registerDone(
+  @Transactional
+  private void registerDailyDone(
       int userId, DoneRequestDto dto, List<Integer> tagIdList, int index){
 
-    DailyDone dailyDone = dto.toDailyDone(userId, index);
+    DailyDone dailyDone = dto.toDailyDoneForRegistration(userId, index);
     dailyDoneRepository.registerDailyDone(dailyDone);
-
-    if(tagIdList != null){
-      doneTagJunctionService.registerNewRelations(
+    doneTagJunctionService.registerNewRelations(
           dailyDone.getId(), DoneTagJunction::new, tagIdList);
-    }
+
     sessionManager.setHasUpdatedRecordCount(true);
     sessionManager.setHasUpdateTime(true);
 
@@ -156,11 +178,13 @@ public class DailyDoneService {
   }
 
   /**
-   * idを基にDBのレコードを削除し、セッション情報を変更する。
+   * できたことIDを基にDBからタグレコード、できたことレコードを削除し、
+   * セッションのレコード数更新情報、学習時間更新情報を変更する。
    *
-   * @param id  できたことのID
+   * @param id  できたことID
    */
-  private void deleteDone(int id) {
+  @Transactional
+  private void deleteDailyDone(int id) {
     doneTagJunctionService.deleteRelationByActionId(id);
     dailyDoneRepository.deleteDailyDoneById(id);
     sessionManager.setHasUpdatedRecordCount(true);
@@ -168,7 +192,8 @@ public class DailyDoneService {
   }
 
   /**
-   * DTOをエンティティに変換し、DBのレコード、タグ情報、セッション情報を更新する。
+   * DTOをエンティティに変換してDBのできたことレコードとタグレコードを更新し、
+   * セッションのレコード数更新情報を変更する。
    *
    * @param userId  ユーザーID
    * @param dto できたことのデータオブジェクト
@@ -176,31 +201,29 @@ public class DailyDoneService {
    * @param index リストのインデックス番号
    * @param tagIdList タグIDリスト
    */
-  private void updateDone(
+  @Transactional
+  private void updateDailyDone(
       int userId, DoneRequestDto dto, int id, int index, List<Integer> tagIdList) {
 
-    DailyDone dailyDone = dto.toDailyDoneWithId(userId, index);
+    DailyDone dailyDone = dto.toDailyDoneForUpdate(userId, index);
     dailyDoneRepository.updateDailyDone(dailyDone);
-
-    if(tagIdList != null){
-      doneTagJunctionService.updateRelations(
-          id, DoneTagJunction :: new, tagIdList);
-    }
+    doneTagJunctionService.updateRelations(id, DoneTagJunction::new, tagIdList);
 
     sessionManager.setHasUpdateTime(true);
   }
 
-  // 指定の日付のできたことをすべて削除
-  public void deleteDailyDoneByDate(int userId, LocalDate date){
+  /**
+   * 指定の日付のできたことをすべて削除し、セッションのレコード数更新情報、学習時間更新情報を変更する。
+   *
+   * @param userId  ユーザーID
+   * @param date  日付
+   */
+  @Transactional
+  public void deleteDailyAllDoneByDate(int userId, LocalDate date){
     doneTagJunctionService.deleteRelationByDate(userId, date);
     dailyDoneRepository.deleteDailyDoneByDate(userId, date);
 
     sessionManager.setHasUpdatedRecordCount(true);
     sessionManager.setHasUpdateTime(true);
-  }
-
-  // 指定のユーザーのレコード数を取得
-  public int countDailyDone(int userId){
-    return dailyDoneRepository.countDailyDone(userId);
   }
 }

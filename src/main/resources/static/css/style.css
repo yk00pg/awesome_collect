@@ -273,6 +273,10 @@ input::placeholder {
   font-size: 12px;
 }
 
+textarea::placeholder {
+  font-size: 12px;
+}
+
 select,
 ::picker(select) {
   appearance: base-select;

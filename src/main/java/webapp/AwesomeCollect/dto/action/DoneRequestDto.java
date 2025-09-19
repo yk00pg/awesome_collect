@@ -14,7 +14,7 @@ import webapp.AwesomeCollect.common.util.LearningTimeConverter;
 import webapp.AwesomeCollect.entity.action.DailyDone;
 
 /**
- * できたことの入力用データオブジェクト。
+ * できたこと入力用データオブジェクト。
  */
 @Data
 public class DoneRequestDto {
@@ -55,39 +55,63 @@ public class DoneRequestDto {
 
   private List<Boolean> deletableList = new ArrayList<>();
 
-  // 削除チェックが入っているか確認
+  /**
+   * 削除チェックが入っているかどうか判定する。
+   *
+   * @param index インデックス番号
+   * @return  削除チェックが入っているかどうか
+   */
   public boolean isDeletable(int index){
     return Boolean.TRUE.equals(deletableList.get(index));
   }
 
-  // 新規登録用のデータを詰めたエンティティに変換
-  public DailyDone toDailyDone(int userId, int index){
+  /**
+   * 入力されたデータを新規登録用のエンティティに変換する。
+   *
+   * @param userId  ユーザーID
+   * @param index インデックス番号
+   * @return  新規登録用のエンティティ
+   */
+  public DailyDone toDailyDoneForRegistration(int userId, int index){
     DailyDone dailyDone = new DailyDone();
     dailyDone.setUserId(userId);
     dailyDone.setDate(this.date);
     dailyDone.setContent(contentList.get(index).trim());
     dailyDone.setMinutes(
-        LearningTimeConverter.toTotalMinutes(hoursList.get(index), minutesList.get(index)));
+        LearningTimeConverter.toTotalMinutes(
+            hoursList.get(index), minutesList.get(index)));
     dailyDone.setMemo(memoList.get(index).trim());
     dailyDone.setRegisteredAt(LocalDateTime.now());
     return dailyDone;
   }
 
- // 更新用のデータを詰めたエンティティに変換
-  public DailyDone toDailyDoneWithId(int userId, int index){
+  /**
+   * 入力されたデータを更新用のエンティティに変換する。
+   *
+   * @param userId  ユーザーID
+   * @param index インデックス番号
+   * @return  更新用のエンティティ
+   */
+  public DailyDone toDailyDoneForUpdate(int userId, int index){
     DailyDone dailyDone = new DailyDone();
     dailyDone.setId(idList.get(index));
     dailyDone.setUserId(userId);
     dailyDone.setDate(this.date);
     dailyDone.setContent(contentList.get(index).trim());
     dailyDone.setMinutes(
-        LearningTimeConverter.toTotalMinutes(hoursList.get(index), minutesList.get(index)));
+        LearningTimeConverter.toTotalMinutes(
+            hoursList.get(index), minutesList.get(index)));
     dailyDone.setMemo(memoList.get(index).trim());
     dailyDone.setUpdatedAt(LocalDateTime.now());
     return dailyDone;
   }
 
-  // DBから取得したできたことリストをデータオブジェクトに変換
+  /**
+   * DBから取得したできたことリストをデータオブジェクトに変換する。
+   *
+   * @param doneList  できたことリスト
+   * @return  データオブジェクト
+   */
   public static DoneRequestDto fromDailyDone(List<DailyDone> doneList){
     DoneRequestDto dto = new DoneRequestDto();
     dto.date = doneList.getFirst().getDate();
@@ -104,7 +128,12 @@ public class DoneRequestDto {
     return dto;
   }
 
-  // 日付とid=0を詰めたデータオブジェクトを作成
+  /**
+   * 日付、id(0)、時間(0)、分(0)以外空欄のデータオブジェクトを作成する。
+   *
+   * @param date  日付
+   * @return  データオブジェクト
+   */
   public static DoneRequestDto createBlankDto(LocalDate date){
     DoneRequestDto dto = new DoneRequestDto();
     dto.date = date;
