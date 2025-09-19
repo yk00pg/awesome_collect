@@ -14,6 +14,7 @@ public class ArticleStock {
   private int userId;
   private String title;
   private String url;
+  private String memo;
   private boolean finished;
   private LocalDateTime registeredAt;
   private LocalDateTime updatedAt;

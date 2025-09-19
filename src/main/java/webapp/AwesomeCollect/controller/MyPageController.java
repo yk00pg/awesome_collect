@@ -7,7 +7,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -22,6 +24,7 @@ import webapp.AwesomeCollect.exception.DuplicateException;
 import webapp.AwesomeCollect.exception.IncorrectPasswordException;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.UserInfoService;
+import webapp.AwesomeCollect.validation.MyPageValidator;
 
 /**
  * マイページのコントローラークラス。
@@ -30,12 +33,15 @@ import webapp.AwesomeCollect.service.UserInfoService;
 public class MyPageController {
 
   private final UserInfoService userInfoService;
+  private final MyPageValidator myPageValidator;
   private final MessageUtil messageUtil;
 
   public MyPageController(
-      UserInfoService userInfoService, MessageUtil messageUtil) {
+      UserInfoService userInfoService, MyPageValidator myPageValidator,
+      MessageUtil messageUtil) {
 
     this.userInfoService = userInfoService;
+    this.myPageValidator = myPageValidator;
     this.messageUtil = messageUtil;
   }
 
@@ -70,6 +76,11 @@ public class MyPageController {
   public String showPasswordChangeForm(Model model){
     model.addAttribute(AttributeNames.PASSWORD_DTO, new UserPasswordDto());
     return ViewNames.MY_PAGE_CHANGE_PASSWORD;
+  }
+
+  @InitBinder(AttributeNames.PASSWORD_DTO)
+  public void initBinder(WebDataBinder dataBinder){
+    dataBinder.addValidators(myPageValidator);
   }
 
   /**
@@ -126,31 +137,12 @@ public class MyPageController {
    */
   @PostMapping(ViewNames.MY_PAGE_CHANGE_PASSWORD)
   public String changePassword(
-      @Valid @ModelAttribute(AttributeNames.PASSWORD_DTO) UserPasswordDto dto, BindingResult result,
+      @Valid @ModelAttribute(AttributeNames.PASSWORD_DTO) UserPasswordDto dto,
+      BindingResult result,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
     if(result.hasErrors()){
-      return ViewNames.MY_PAGE_CHANGE_PASSWORD;
-    }
-
-    // 現在のパスワードには@NotBlankをつけていないので念のため確認し、空欄の場合はエラーに追加
-    if(dto.isBlankCurrentPassword()){
-      result.rejectValue("currentPassword", "blankCurrentPassword",
-          messageUtil.getMessage(MessageKeys.CURRENT_PASSWORD_BLANK));
-
-      return ViewNames.MY_PAGE_CHANGE_PASSWORD;
-    }
-
-    // パスワードと確認用パスワードが一致しない場合はエラーに追加
-    if(dto.isPasswordMismatch()){
-      result.rejectValue(
-          "password", "mismatchPassword",
-          messageUtil.getMessage(MessageKeys.PASSWORD_MISMATCH));
-      result.rejectValue(
-          "confirmPassword", "mismatchPassword",
-          messageUtil.getMessage(MessageKeys.PASSWORD_MISMATCH));
-
       return ViewNames.MY_PAGE_CHANGE_PASSWORD;
     }
 
@@ -165,7 +157,6 @@ public class MyPageController {
       return ViewNames.MY_PAGE_CHANGE_PASSWORD;
     }
 
-    // セキュリティ情報を消去し、セッションを破棄してログアウトする
     SecurityContextHolder.clearContext();
     request.getSession().invalidate();
 

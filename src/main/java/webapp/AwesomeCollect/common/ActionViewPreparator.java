@@ -53,7 +53,7 @@ public class ActionViewPreparator {
   private <E, D extends BaseActionDto<E, D>, T> void setCurrentTags(
       BaseActionTagJunctionService<T> junctionService, D currentDto) {
 
-    List<Integer> tagIdList = junctionService.searchTagIdsByActionId(currentDto.getId());
+    List<Integer> tagIdList = junctionService.prepareTagIdListByActionId(currentDto.getId());
     // tagをリストで持つように変更予定。
     // currentDto.setTags(tagService.prepareTagNameList(tagIdList));
   }
@@ -66,7 +66,7 @@ public class ActionViewPreparator {
     List<String> currentTagList = new ArrayList<>();
     List<Integer> doneIds = currentDto.getIdList();
     for(int doneId : doneIds){
-      List<Integer> tagIdList = doneTagJunctionService.searchTagIdsByActionId(doneId);
+      List<Integer> tagIdList = doneTagJunctionService.prepareTagIdListByActionId(doneId);
       /*
        tagをリストで持つように変更予定。
        String currentTag = tagService.prepareTagNameList(tagIdList);

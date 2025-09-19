@@ -22,23 +22,23 @@ public interface ArticleTagsJunctionMapper extends BaseActionTagJunctionMapper<A
         WHERE article_id=#{articleId} AND tag_id=#{tagId}
         )
       """)
-  boolean isRegisteredRelation(ArticleTagJunction junction);
+  boolean isRegisteredRelation(ArticleTagJunction relation);
 
   @Insert("""
       INSERT article_tag(article_id, tag_id)
       VALUES(#{articleId}, #{tagId})
       """)
-  int insertRelation(ArticleTagJunction junction);
+  void insertRelation(ArticleTagJunction relation);
 
   @Delete("""
       DELETE FROM article_tag
       WHERE article_id=#{articleId}
       """)
-  int deleteRelationByActionId(int articleId);
+  void deleteRelationByActionId(int articleId);
 
   @Delete("""
       DELETE FROM article_tag
       WHERE article_tag=#{articleId} AND tag_id=#{tagId}
       """)
-  int deleteRelationByRelatedId(ArticleTagJunction junction);
+  void deleteRelationByRelatedId(ArticleTagJunction relation);
 }

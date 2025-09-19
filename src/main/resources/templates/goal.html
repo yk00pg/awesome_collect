@@ -1,58 +1,79 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
+  <title>目標リスト</title>
   <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
   <div>
-    <header th:replace="~{fragments/common-header :: common-header}"></header>
+    <header th:replace="~{fragments/header :: header}"></header>
   </div>
 
-  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-  <div class="goal-container">
+  <div class="main-container">
     <!-- まだ登録されていない場合 -->
-    <th:block th:unless="${actionDtoList != null}">
-      <div class="empty-goal">
-        <p>まだ目標が登録されていません。</p>
-        <div class="register-goal">
-          <a th:href="@{/goal/detail/edit/0}">最初の目標を登録する</a>
+    <th:block th:if="${#lists.isEmpty(goalResponseDtoList)}">
+      <div class="empty-content">
+        <p th:text="#{unregistered.action('目標')}"></p>
+        <div class="link-button-area">
+          <a th:href="@{/goal/detail/edit/0}"
+             th:text="#{register.first.action('目標')}"
+             class="new-registration-link"></a>
         </div>
       </div>
     </th:block>
 
     <!-- 登録されている場合 -->
-    <th:block th:if="${actionDtoList != null}">
-      <div class="register-goal">
-        <a th:href="@{/goal/detail/edit/0}">目標を追加する</a>
+    <th:block th:unless="${#lists.isEmpty(goalResponseDtoList)}">
+      <div class="add-link-button-area">
+        <a th:href="@{/goal/detail/edit/0}"
+           th:text="#{register.additional.action('目標')}"
+           class="additional-registration-link"></a>
+      </div>
+      <div class="border-line-area">
+        <div class="border-line"></div>
       </div>
 
-      <div class="goal-content">
-        <div th:each="goal : ${actionDtoList}">
-          <table class="goal-table">
-            <tr>
-              <th scope="row">目標タイトル</th>
-              <td th:text="${goal.title}"></td>
-              <td rowspan="3" class="detail-area">
-                <div class="goal-detail">
-                  <a th:href="@{/goal/detail/{id}(id=${goal.id})}">詳細</a>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">達成状況</th>
-              <td th:text="${goal.statusLabel}"></td>
-            </tr>
-            <tr>
-              <th:block th:with="rawTag=${goal.tags}">
-                <th scope="row">タグ</th>
-                <td class="tags" th:text="${#strings.replace(rawTag, ',', ' ')}"></td>
-              </th:block>
-            </tr>
-          </table>
+      <div class="action-message-area">
+        <div class="success-message"
+             th:if="${successMessage != null}"
+             th:text="${successMessage}"></div>
+      </div>
+
+      <div class="action-content">
+        <div class="action-content-inner">
+          <div class="inner-title">目標リスト</div>
+          <div th:each="goal : ${goalResponseDtoList}">
+            <table class="view-table">
+              <tr>
+                <th scope="row" class="view-row-th">目標タイトル</th>
+                <td th:text="${goal.title}"></td>
+                <td rowspan="3" class="detail-link-td">
+                  <div class="detail-link-area">
+                    <a th:href="@{/goal/detail/{id}(id=${goal.id})}"
+                       class="detail-link-button">詳細</a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" class="view-row-th">達成状況</th>
+                <td th:text="${goal.statusLabel}"></td>
+              </tr>
+              <tr>
+                <th scope="row" class="view-row-th">タグ</th>
+                <td class="tag-td">
+                  <div class="tag-area">
+                          <span th:each="tag : ${goal.tagList}"
+                                th:text="${tag}" class="tag-badge"></span>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
       </div>
     </th:block>
