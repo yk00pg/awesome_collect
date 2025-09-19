@@ -11,6 +11,9 @@ import webapp.AwesomeCollect.entity.action.DailyTodo;
 import webapp.AwesomeCollect.repository.DailyTodoRepository;
 import webapp.AwesomeCollect.service.UserProgressService;
 
+/**
+ * やることのサービスクラス。
+ */
 @Service
 public class DailyTodoService {
 
@@ -27,7 +30,14 @@ public class DailyTodoService {
     this.sessionManger = sessionManger;
   }
 
-  // DBの登録状況に応じた閲覧用データオブジェクトを返す
+  /**
+   * DBにやることが登録されていない場合は空の表示用データオブジェクトを、<br>
+   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
+   *
+   * @param userId  ユーザーID
+   * @param date  日付
+   * @return  やること表示用データオブジェクト
+   */
   public TodoResponseDto prepareResponseDto(int userId, LocalDate date) {
     List<DailyTodo> dailyTodoList = dailyTodoRepository.searchDailyTodo(userId, date);
 
@@ -38,7 +48,14 @@ public class DailyTodoService {
     }
   }
 
-  // DBの登録状況に応じた編集用データオブジェクトを返す
+  /**
+   * DBにやることが登録されていない場合は空の入力用データオブジェクトを、<br>
+   * 登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   *
+   * @param userId  ユーザーID
+   * @param date  日付
+   * @return  やること入力用データオブジェクト
+   */
   public TodoRequestDto prepareRequestDto(int userId, LocalDate date) {
     List<DailyTodo> dailyTodoList = dailyTodoRepository.searchDailyTodo(userId, date);
 
@@ -50,10 +67,10 @@ public class DailyTodoService {
   }
 
   /**
-   * データの種類に応じてDBへの保存処理（登録・削除・更新）を行う。
+   * データの種類を判別してDBに保存（登録・更新・削除）する。
    *
    * @param userId  ユーザーID
-   * @param dto やることのデータオブジェクト
+   * @param dto やること入力用データオブジェクト
    */
   @Transactional
   public void saveDailyTodo(int userId, TodoRequestDto dto) {
@@ -61,35 +78,32 @@ public class DailyTodoService {
       int id = dto.getIdList().get(i);
       String content = dto.getContentList().get(i);
 
-      // 内容が空の場合はスキップ
       if(content == null || content.isBlank()){
         continue;
       }
 
       if (id == 0) {
-        registerTodo(userId, dto, i);
+        registerDailyTodo(userId, dto, i);
       } else {
-        // 削除チェックが入っているか確認
         if (dto.isDeletable(i)) {
           dailyTodoRepository.deleteDailyTodoById(id);
         } else {
-          DailyTodo dailyTodo = dto.toDailyTodoWithId(userId, i);
-          dailyTodoRepository.updateDailyTodo(dailyTodo);
+          dailyTodoRepository.updateDailyTodo(dto.toDailyTodoForUpdate(userId, i));
         }
       }
     }
   }
 
   /**
-   * DTOをエンティティに変換してDBに登録し、セッション情報を変更する。<br>
-   * 初回登録時のみユーザーの進捗情報を更新する。
+   * DTOをエンティティに変換してDBに登録し、セッション情報のレコード数更新情報を変更する。<br>
+   * 日ごとの初回登録時のみユーザーの進捗情報を更新する。
    *
    * @param userId  ユーザーID
    * @param dto やることのデータオブジェクト
    * @param index リストのインデックス番号
    */
-  private void registerTodo(int userId, TodoRequestDto dto, int index) {
-    DailyTodo dailyTodo = dto.toDailyTodo(userId, index);
+  private void registerDailyTodo(int userId, TodoRequestDto dto, int index) {
+    DailyTodo dailyTodo = dto.toDailyTodoForRegistration(userId, index);
     dailyTodoRepository.registerDailyTodo(dailyTodo);
     sessionManger.setHasUpdatedRecordCount(true);
     if(index == 0){
@@ -97,14 +111,14 @@ public class DailyTodoService {
     }
   }
 
-  // 指定の日付のやることをすべて削除
+  /**
+   * 指定の日付のやることをすべて削除し、セッションのレコード数更新情報を変更する。
+   *
+   * @param userId  ユーザーID
+   * @param date  日付
+   */
   public void deleteDailyAllTodo(int userId, LocalDate date){
     dailyTodoRepository.deleteDailyTodoByDate(userId, date);
     sessionManger.setHasUpdatedRecordCount(true);
-  }
-
-  // 指定のユーザーのレコード数を取得
-  public Integer countDailyTodo(int userId){
-    return dailyTodoRepository.countDailyTodo(userId);
   }
 }

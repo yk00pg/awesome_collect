@@ -9,10 +9,10 @@
 
 <body>
   <div>
-    <header th:replace="~{fragments/header :: header}"></header>
+    <header th:replace="~{fragments/header::header}"></header>
   </div>
 
-  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
 
   <div class="main-container">
     <div class="back-indicator">
@@ -31,7 +31,8 @@
       <div class="notice-area">
         <div class="notice-message">
           <p th:text="#{task.edit.notice1}"></p>
-          <p th:if="${todoRequestDto.idList[0] != 0}" th:text="#{task.edit.notice2}"></p>
+          <p th:if="${todoRequestDto.idList[0] != 0}"
+             th:text="#{task.edit.notice2}"></p>
         </div>
       </div>
 
@@ -40,7 +41,8 @@
           <th scope="row" class="task-th">日付</th>
           <td class="blank-cell"></td>
           <td>
-            <input type="date" class="date-input-area" th:field="*{date}" required/>
+            <input type="date" class="date-input-area"
+                   th:field="*{date}" required/>
           </td>
         </tr>
         <tr>
@@ -52,25 +54,37 @@
           </td>
         </tr>
         <tr class="blank-row"></tr>
-        <tbody th:each="content, iterStat : *{idList}" data-row-id="${iterStat.index}" >
+        <tbody th:each="content, iterStat : *{idList}"
+               data-row-id="${iterStat.index}" >
           <tr class="variable-row">
-            <th scope="row" class="task-th" th:text="'内容 ' + ${iterStat.index + 1}"></th>
+            <th scope="row" class="task-th"
+                th:text="'内容 ' + ${iterStat.index + 1}"></th>
             <td class="blank-cell">
-              <input type="hidden" th:field="*{idList[__${iterStat.index}__]}"/>
+              <input type="hidden"
+                     th:field="*{idList[__${iterStat.index}__]}"/>
             </td>
             <td>
               <input type="text" class="input-area"
-                     th:field="*{contentList[__${iterStat.index}__]}" />
+                     th:field="*{contentList[__${iterStat.index}__]}"
+                     th:placeholder="#{todo.content.placeholder}" />
             </td>
+            <!-- 登録済みレコードの場合は削除チェックボックスを、そうでない場合は削除ボタンを表示　-->
             <td class="delete-check-td">
-              <label class="delete-check-area" th:if="*{idList[__${iterStat.index}__] > 0}">
+              <label class="delete-check-area"
+                     th:if="*{idList[__${iterStat.index}__] > 0}">
                 <input type="checkbox" class="delete-check"
-                       th:field="*{deletableList[__${iterStat.index}__]}" value="true" />
-                <input type="hidden" th:field="*{deletableList[__${iterStat.index}__]}" value="false" />
+                       th:field="*{deletableList[__${iterStat.index}__]}"
+                       value="true" />
+                <input type="hidden"
+                       th:field="*{deletableList[__${iterStat.index}__]}"
+                       value="false" />
                 <div class="delete-icon-area">
-                  <img th:src="@{/image/delete-icon.svg}" class="delete-icon">
+                  <img th:src="@{/image/delete-icon.svg}"
+                       class="delete-icon">
                 </div>
               </label>
+              <button type="button" class="remove-row-button"
+                      th:if="*{idList[__${iterStat.index}__] == 0}">×</button>
             </td>
           </tr>
         </tbody>
@@ -90,19 +104,19 @@
       <div class="add-button-area">
         <button type="button" id="add-row" class="add-button">＋</button>
       </div>
-      <script th:src="@{/js/todo-add-row.js}"></script>
 
       <div class="button-area">
         <button type="submit" class="register-button">保存する</button>
       </div>
     </form>
 
-    <!-- submit時に削除チェックが入っている場合はダイアログを表示 -->
+    <!-- submit時に削除チェックが入っている場合に表示するダイアログ -->
     <script th:inline="javascript">
       /*<![CDATA[*/
           const deleteConfirmMessage = /*[[#{delete.confirm}]]*/;
 
-          document.getElementById("todoForm").addEventListener("submit", function(e) {
+          document.getElementById("todoForm")
+              .addEventListener("submit", function(e) {
           const hasDelete = [...document.querySelectorAll(".delete-check")]
               .some(cb => cb.checked);
 
@@ -113,5 +127,14 @@
       /*]]>*/
     </script>
   </div>
+
+  <!-- 行追加・削除する関数を呼び出す -->
+  <script th:src="@{/js/todo-add-row.js}"></script>
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+        const contentPlaceholder = /*[[#{todo.content.placeholder}]]*/
+        initTodoAddTbody();
+    /*]]>*/
+  </script>
 </body>
 </html>

@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 import webapp.AwesomeCollect.entity.action.DailyTodo;
 import webapp.AwesomeCollect.mapper.action.DailyTodoMapper;
 
+/**
+ * やることのリポジトリクラス。
+ */
 @Repository
 public class DailyTodoRepository {
 
@@ -17,10 +20,6 @@ public class DailyTodoRepository {
 
   public List<DailyTodo> searchDailyTodo(int userId, LocalDate date){
     return mapper.selectDailyTodo(userId, date);
-  }
-
-  public int countDailyTodo(int userId){
-    return mapper.countDailyTodo(userId);
   }
 
   public void registerDailyTodo(DailyTodo todo){
