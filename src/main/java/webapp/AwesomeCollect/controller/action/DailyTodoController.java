@@ -85,8 +85,9 @@ public class DailyTodoController {
   }
 
   /**
-   * 入力されたデータにバンディングエラーが発生した場合はエラーメッセージを表示し、
-   * そうでない場合はDBにデータを保存（登録・更新・削除）し、閲覧ページに遷移してサクセスメッセージを表示する。
+   * 入力されたデータにバンディングエラーが発生した場合は編集ページに戻り、
+   * そうでない場合はDBにデータを保存（登録・更新・削除）し、
+   * 閲覧ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    *
    * @param date  日付
    * @param dto やることのデータオブジェクト
@@ -126,7 +127,7 @@ public class DailyTodoController {
     return RedirectUtil.redirectView(ViewNames.TODO_PAGE, date);
   }
 
-  // 指定の日付のやることをすべて削除して閲覧ページにリダイレクトする
+  // 指定の日付のやることをすべて削除して閲覧ページにリダイレクトする。
   @DeleteMapping(ViewNames.DAILY_TODO_VIEW_PAGE)
   public String deleteDailyAllTodo(
       @PathVariable LocalDate date,
@@ -135,7 +136,8 @@ public class DailyTodoController {
 
     dailyTodoService.deleteDailyAllTodo(customUserDetails.getId(), date);
 
-    redirectAttributes.addFlashAttribute(AttributeNames.SUCCESS_MESSAGE,
+    redirectAttributes.addFlashAttribute(
+        AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
     return RedirectUtil.redirectView(ViewNames.TODO_PAGE, date);
