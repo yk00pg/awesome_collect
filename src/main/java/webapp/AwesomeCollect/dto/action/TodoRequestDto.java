@@ -25,25 +25,30 @@ public class TodoRequestDto {
 
   private List<Integer> idList = new ArrayList<>();
 
-  private List<@Size(max = CONTENT_MAX_SIZE, message = "{contentList.size}") String> contentList
-      = new ArrayList<>();
+  private List<
+      @Size(max = CONTENT_MAX_SIZE,
+      message = "{contentList.size}") String> contentList = new ArrayList<>();
 
   private List<Boolean> deletableList = new ArrayList<>();
 
-  // 内容がすべて空か確認
-  public boolean isContentListEmpty() {
-    return contentList == null ||
-        contentList.stream()
-            .allMatch(content -> content == null || content.isBlank());
-  }
-
-  // 削除チェックが入っているか確認
+  /**
+   * 削除チェックが入っているかどうか判定する。
+   *
+   * @param index インデックス番号
+   * @return  削除チェックが入っているかどうか
+   */
   public boolean isDeletable(int index){
     return Boolean.TRUE.equals(deletableList.get(index));
   }
 
-  // 新規登録用のデータを詰めたエンティティに変換
-  public DailyTodo toDailyTodo(int userId, int index){
+  /**
+   * 入力されたデータを新規登録用のエンティティに変換する。
+   *
+   * @param userId  ユーザーID
+   * @param index インデックス番号
+   * @return  新規登録用のエンティティ
+   */
+  public DailyTodo toDailyTodoForRegistration(int userId, int index){
     DailyTodo dailyTodo = new DailyTodo();
     dailyTodo.setUserId(userId);
     dailyTodo.setDate(date);
@@ -52,8 +57,14 @@ public class TodoRequestDto {
     return dailyTodo;
   }
 
-  // 更新用のデータを詰めたエンティティに変換
-  public DailyTodo toDailyTodoWithId(int userId, int index){
+   /**
+   * 入力されたデータを更新用のエンティティに変換する。
+   *
+   * @param userId  ユーザーID
+   * @param index インデックス番号
+   * @return  更新用のエンティティ
+   */
+  public DailyTodo toDailyTodoForUpdate(int userId, int index){
     DailyTodo dailyTodo = new DailyTodo();
     dailyTodo.setId(idList.get(index));
     dailyTodo.setUserId(userId);
@@ -63,7 +74,12 @@ public class TodoRequestDto {
     return dailyTodo;
   }
 
-  // DBから取得したやることリストをデータオブジェクトに変換
+  /**
+   * DBから取得したやることリストをデータオブジェクトに変換する。
+   *
+   * @param todoList  やることリスト
+   * @return  データオブジェクト
+   */
   public static TodoRequestDto fromDailyTodo (List<DailyTodo> todoList){
     TodoRequestDto dto = new TodoRequestDto();
     dto.date = todoList.getFirst().getDate();
@@ -75,7 +91,12 @@ public class TodoRequestDto {
     return dto;
   }
 
-  // 日付とid=0を詰めたデータオブジェクトを作成
+  /**
+   * 日付とid(0)以外空欄のデータオブジェクトを作成する。
+   *
+   * @param date  日付
+   * @return  データオブジェクト
+   */
   public static TodoRequestDto createBlankDto(LocalDate date){
     TodoRequestDto dto = new TodoRequestDto();
     dto.date = date;

@@ -9,6 +9,9 @@ import lombok.Data;
 import webapp.AwesomeCollect.common.util.DateTimeFormatUtil;
 import webapp.AwesomeCollect.entity.action.DailyTodo;
 
+/**
+ * やること表示用データオブジェクト。
+ */
 @Data
 public class TodoResponseDto {
 
@@ -22,7 +25,12 @@ public class TodoResponseDto {
   private LocalDate nextDate;
   private boolean hasContent;
 
-  // DBから取得したやることリストをデータオブジェクトに変換する
+  /**
+   * DBから取得したやることリストをデータオブジェクトに変換する。
+   *
+   * @param todoList  やることリスト
+   * @return  データオブジェクト
+   */
   public static TodoResponseDto fromDailyTodo (List<DailyTodo> todoList){
     TodoResponseDto dto = new TodoResponseDto();
 
@@ -52,7 +60,12 @@ public class TodoResponseDto {
     return dto;
   }
 
-  // 日付以外空欄のDTOを作成して返す
+  /**
+   * 日付以外空欄のデータオブジェクトを作成する。
+   *
+   * @param date  日付
+   * @return  データオブジェクト
+   */
   public static TodoResponseDto createBlankDto(LocalDate date){
     TodoResponseDto dto = new TodoResponseDto();
     dto.date = date;

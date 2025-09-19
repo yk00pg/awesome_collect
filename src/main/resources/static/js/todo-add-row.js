@@ -1,6 +1,7 @@
-document.addEventListener("DOMContentLoaded", () => {
+function initTodoAddTbody() {
     const table = document.getElementById("variable-table");
     const addButton = document.getElementById("add-row");
+    if (!table || !addButton) return;
 
     // 追加する行ブロックの中身
     const createBlock = (index) => {
@@ -16,7 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
             </td>
             <td>
               <input type="text" class="input-area"
-                     name="contentList[${index}]" />
+                     name="contentList[${index}]"
+                     placeholder=${contentPlaceholder} />
             </td>
             <td>
               <button type="button" class="remove-row-button">×</button>
@@ -28,22 +30,20 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // 行ブロックを追加
-    addButton.addEventListener("click", () => {
+    addButton.onclick = () => {
         const blocks = table.querySelectorAll("tbody[data-row-id]");
         const index = blocks.length;
         const newBlock = createBlock(index);
         table.appendChild(newBlock);
-    })
+    };
 
     // 追加した行ブロックを削除
-    table.addEventListener("click", (e) => {
+    table.onclick = (e) => {
         if(e.target.classList.contains("remove-row-button")) {
-            const tbody = e.target.closest("tbody");
-            tbody.remove();
-
+            e.target.closest("tbody").remove();
             updateLabels();
         }
-    });
+    };
 
     // ラベルの番号を振り直す
     function updateLabels() {
@@ -52,4 +52,4 @@ document.addEventListener("DOMContentLoaded", () => {
             block.querySelector(".task-th").textContent = "内容 " + (i + 1);
         });
     }
-});
+}
