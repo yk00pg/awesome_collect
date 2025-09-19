@@ -25,18 +25,6 @@ public interface GoalMapper {
       """)
   Goal selectGoalByIds(int id, int userId);
 
-  @Select("""
-      SELECT COUNT(*) FROM goal
-      WHERE user_id=#{userId}
-      """)
-  int countGoal(int userId);
-
-  @Select("""
-      SELECT COUNT(achieved) FROM goal
-      WHERE user_id=#{userId} AND achieved=1
-      """)
-  int countAchieved(int userId);
-
   // @OptionsをつけてDBで自動採番されるIDを取得してエンティティに付与
   @Insert("""
       INSERT goal(user_id, title, content, achieved, registered_at)

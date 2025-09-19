@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.SaveResult;
 import webapp.AwesomeCollect.common.SessionManager;
 import webapp.AwesomeCollect.common.util.JsonConverter;
@@ -40,7 +41,13 @@ public class GoalService {
     this.sessionManager = sessionManager;
   }
 
-  // DBの登録状況に応じた表示用データオブジェクトをリスト形式で返す
+  /**
+   * DBに目標が登録されていない場合は空のリストを、
+   * 登録されている場合は登録データを詰めた表示用データオブジェクトのリストを用意する。
+   *
+   * @param userId  ユーザーID
+   * @return  目標表示用データオブジェクト
+   */
   public List<GoalResponseDto> prepareResponseDtoList(int userId){
     List<Goal> goalList = goalRepository.searchGoal(userId);
     if(goalList == null || goalList.isEmpty()){
@@ -50,26 +57,14 @@ public class GoalService {
     }
   }
 
-  // DBの登録内容を基に表示用データオブジェクトを組み立てて返す
-  private @NotNull List<GoalResponseDto> assembleCurrentReponseDtoList(
-      List<Goal> goalList) {
-
-    List<GoalResponseDto> dtoList = new ArrayList<>();
-    for(Goal goal : goalList){
-      GoalResponseDto dto = GoalResponseDto.fromEntityForList(goal);
-
-      List<Integer> tagIdList =
-          goalTagJunctionService.prepareTagIdListByActionId(goal.getId());
-      List<String> tagNameList =
-          tagService.prepareTagNameListByTagIdList(tagIdList);
-
-      dto.setTagList(tagNameList);
-      dtoList.add(dto);
-    }
-    return dtoList;
-  }
-
-  // DBの登録状況に応じた表示用データオブジェクトを返す
+  /**
+   * DBに目標が登録されていない場合はエラー画面に遷移させるためにnullを返し、
+   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
+   *
+   * @param goalId  目標ID
+   * @param userId  ユーザーID
+   * @return  目標表示用データオブジェクト
+   */
   public GoalResponseDto prepareResponseDto(int goalId, int userId) {
     Goal goal = goalRepository.findGoalByIds(goalId, userId);
     if(goal == null){
@@ -79,20 +74,15 @@ public class GoalService {
     }
   }
 
-  // DBの登録内容を基に表示用データオブジェクトを組み立てて返す
-  private @NotNull GoalResponseDto assembleCurrentResponseDto(int goalId, Goal goal) {
-    GoalResponseDto dto = GoalResponseDto.fromEntityForDetail(goal);
-
-    List<Integer> tagIdList =
-        goalTagJunctionService.prepareTagIdListByActionId(goalId);
-    List<String> tagNameList =
-        tagService.prepareTagNameListByTagIdList(tagIdList);
-
-    dto.setTagList(tagNameList);
-    return dto;
-  }
-
-  // DBの登録状況に応じた入力用データオブジェクトを返す
+  /**
+   * 目標IDが0の場合は空の入力用データオブジェクトを用意する。<br>
+   * そうでない場合は、DBに目標が登録されていない場合はエラー画面に遷移させるためにnullを返し、
+   * 登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   *
+   * @param goalId  目標ID
+   * @param userId  ユーザーID
+   * @return  目標入力用データオブジェクト
+   */
   public GoalRequestDto prepareRequestDto(int goalId, int userId){
     if(goalId == 0){
       return new GoalRequestDto();
@@ -106,36 +96,85 @@ public class GoalService {
     }
   }
 
-  // DBの登録内容を基に入力用データオブジェクトを組み立てて返す
-  private @NotNull GoalRequestDto assembleCurrentRequestDto(int goalId, Goal goal) {
-    GoalRequestDto dto = GoalRequestDto.fromEntity(goal);
+  /**
+   * 目標リストを一覧ページ用の表示用データオブジェクトに変換し、紐付けられたタグ名リストを設定する。
+   *
+   * @param goalList  目標リスト
+   * @return  一覧ページ用の目標表示用データオブジェクトのリスト
+   */
+  @Transactional
+  private @NotNull List<GoalResponseDto> assembleCurrentReponseDtoList(
+      List<Goal> goalList) {
 
+    List<GoalResponseDto> dtoList = new ArrayList<>();
+    for(Goal goal : goalList){
+      List<Integer> tagIdList =
+          goalTagJunctionService.prepareTagIdListByActionId(goal.getId());
+      List<String> tagNameList =
+          tagService.prepareTagNameListByTagIdList(tagIdList);
+
+      GoalResponseDto dto = GoalResponseDto.fromEntityForList(goal);
+      dto.setTagList(tagNameList);
+      dtoList.add(dto);
+    }
+    return dtoList;
+  }
+
+  /**
+   * 目標を詳細ページ用の表示用データオブジェクトに変換し、紐付けられたタグ名リストを設定する。
+   *
+   * @param goalId  目標ID
+   * @param goal  目標
+   * @return  詳細ページ用の目標表示用データオブジェクト
+   */
+  @Transactional
+  private @NotNull GoalResponseDto assembleCurrentResponseDto(int goalId, Goal goal) {
+    List<Integer> tagIdList =
+        goalTagJunctionService.prepareTagIdListByActionId(goalId);
+    List<String> tagNameList =
+        tagService.prepareTagNameListByTagIdList(tagIdList);
+
+    GoalResponseDto dto = GoalResponseDto.fromEntityForDetail(goal);
+    dto.setTagList(tagNameList);
+    return dto;
+  }
+
+  /**
+   * 目標を入力用データオブジェクトに変換し、紐付けられたタグ名を設定する。
+   *
+   * @param goalId  目標ID
+   * @param goal  目標
+   * @return  目標入力用データオブジェクト
+   */
+  @Transactional
+  private @NotNull GoalRequestDto assembleCurrentRequestDto(int goalId, Goal goal) {
     List<Integer> tagIdList =
         goalTagJunctionService.prepareTagIdListByActionId(goalId);
     String tagName = tagService.prepareCombinedTagName(tagIdList);
 
+    GoalRequestDto dto = GoalRequestDto.fromEntity(goal);
     dto.setTags(tagName);
     return dto;
   }
 
   /**
-   * データの種類に応じてDBへの保存処理（登録・更新）を行う。
+   * データの種類に応じてDBに保存（登録・更新）し、セッションのレコード数更新情報を変更する。
    *
    * @param userId  ユーザーID
-   * @param dto 目標のデータオブジェクト
+   * @param dto 目標入力用データオブジェクト
    * @return  保存結果オブジェクト
    */
   public SaveResult saveGoal(int userId, GoalRequestDto dto){
     List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
     List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
 
-    int id = dto.getId();
+    int goalId = dto.getId();
     SaveResult saveResult;
-    if(id == 0){
-      int goalId = registerGoal(userId, dto, tagIdList);
+    if(goalId == 0){
+      goalId = registerGoal(userId, dto, tagIdList);
       saveResult = new SaveResult(goalId, false);
     }else{
-      saveResult = updateGoal(userId, dto, tagIdList, id);
+      saveResult = updateGoal(userId, dto, tagIdList, goalId);
     }
     sessionManager.setHasUpdatedRecordCount(true);
 
@@ -143,72 +182,64 @@ public class GoalService {
   }
 
   /**
-   * DTOをエンティティに変換してDBに登録し、タグ情報を処理する。<br>
-   * セッション情報を変更し、ユーザーの進捗情報を更新する。
+   * DTOをエンティティに変換してDBに登録し、タグ情報を登録する。<br>
+   * セッションのレコード数更新情報を変更し、ユーザーの進捗情報を更新する。
    *
    * @param userId  ユーザーID
    * @param dto 目標のデータオブジェクト
    * @param tagIdList タグIDリスト
    * @return  登録した目標ID
    */
+  @Transactional
   private int registerGoal(
       int userId, GoalRequestDto dto, List<Integer> tagIdList) {
 
     Goal goal = dto.toGoalForRegistration(userId);
+    int goalId = goal.getId();
     goalRepository.registerGoal(goal);
+    goalTagJunctionService.registerNewRelations(goalId, GoalTagJunction::new, tagIdList);
 
-    if(tagIdList != null){
-      goalTagJunctionService.registerNewRelations(
-          goal.getId(), GoalTagJunction :: new, tagIdList);
-    }
     sessionManager.setHasUpdatedRecordCount(true);
     userProgressService.updateUserProgress(userId);
 
-    return goal.getId();
+    return goalId;
   }
 
   /**
-   * DTOをエンティティに変換し、DBのレコード、タグ情報、セッション情報を更新する。
+   * DTOをエンティティに変換してDBの目標レコードとタグレコードを更新し、
+   * セッションのレコード数更新情報を変更する。
    *
    * @param userId  ユーザーID
-   * @param dto 目標のデータオブジェクト
+   * @param dto 目標入力用データオブジェクト
    * @param tagIdList タグIDリスト
-   * @param id  目標ID
+   * @param goalId  目標ID
    * @return  保存結果オブジェクト
    */
+  @Transactional
   private SaveResult updateGoal(
-      int userId, GoalRequestDto dto, List<Integer> tagIdList, int id) {
+      int userId, GoalRequestDto dto, List<Integer> tagIdList, int goalId) {
 
     Goal goal = dto.toGoalForUpdate(userId);
-    // 進捗状況が更新されているか確認
     boolean isAchievedUpdate =
-        !goalRepository.findGoalByIds(id, userId).isAchieved() && goal.isAchieved();
+        !goalRepository.findGoalByIds(goalId, userId).isAchieved() && goal.isAchieved();
 
     goalRepository.updateGoal(goal);
-
-    if(tagIdList != null){
-      goalTagJunctionService.updateRelations(id, GoalTagJunction :: new, tagIdList);
-    }
-    sessionManager.setHasUpdatedRecordCount(true);
-
-    return new SaveResult(id, isAchievedUpdate);
-  }
-
-  // 指定のIDの目標を削除
-  public void deleteGoal(int id){
-    goalTagJunctionService.deleteRelationByActionId(id);
-    goalRepository.deleteGoal(id);
+    goalTagJunctionService.updateRelations(goalId, GoalTagJunction::new, tagIdList);
 
     sessionManager.setHasUpdatedRecordCount(true);
+
+    return new SaveResult(goalId, isAchievedUpdate);
   }
 
-  // 指定のユーザーのレコード数を取得
-  public int countGoal(int userId){
-    return goalRepository.countGoal(userId);
-  }
+  /**
+   * 指定のIDの目標を削除し、セッションのレコード数更新情報をを変更する。
+   * @param goalId  目標ID
+   */
+  @Transactional
+  public void deleteGoal(int goalId){
+    goalTagJunctionService.deleteRelationByActionId(goalId);
+    goalRepository.deleteGoal(goalId);
 
-  // 指定のユーザーの達成レコード数を取得
-  public int countAchieved(int userId){
-    return goalRepository.countAchieved(userId);
+    sessionManager.setHasUpdatedRecordCount(true);
   }
 }

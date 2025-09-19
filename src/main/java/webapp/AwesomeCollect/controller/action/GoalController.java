@@ -47,7 +47,7 @@ public class GoalController {
     this.messageUtil = messageUtil;
   }
 
-  // 目標リストの一覧ページを表示
+  // 目標の一覧ページ（目標リスト）を表示する。
   @GetMapping(ViewNames.GOAL_PAGE)
   public String showGoal(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -60,7 +60,7 @@ public class GoalController {
     return ViewNames.GOAL_PAGE;
   }
 
-  // 目標の詳細ページを表示
+  // 目標の詳細ページを表示する。
   @GetMapping(ViewNames.GOAL_DETAIL_BY_ID)
   public String showGoalDetail(
       @PathVariable int id,
@@ -78,7 +78,7 @@ public class GoalController {
     }
   }
 
-  // 目標の編集ページを表示
+  // 目標の編集ページを表示する
   @GetMapping(ViewNames.GOAL_EDIT_BY_ID)
   public String showGoalForm(
       @PathVariable int id,
@@ -112,9 +112,9 @@ public class GoalController {
   }
 
   /**
-   * 入力されたデータを確認し、目標を編集する。<br>
-   * バインディングエラーが発生した場合はタグリストを詰め直して編集ページに戻り、
-   * そうでない場合はDBの登録・更新処理を行い、詳細ページに遷移してサクセスメッセージを表示する。
+   * 入力されたデータにバインディングエラーが発生した場合はタグリストを詰め直して
+   * 編集ページに戻り、そうでない場合はDBにデータを保存（登録・更新）し、
+   * 詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    *
    * @param id  目標ID
    * @param dto 目標のデータオブジェクト
@@ -142,8 +142,8 @@ public class GoalController {
 
     SaveResult saveResult = goalService.saveGoal(userId, dto);
 
-    // 新規登録か更新かを判定してサクセスメッセージを表示
-    if(id == 0){
+    boolean isRegistration = id == 0;
+    if(isRegistration){
       redirectAttributes.addFlashAttribute(
           AttributeNames.SUCCESS_MESSAGE,
           messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
@@ -155,7 +155,6 @@ public class GoalController {
           AttributeNames.SUCCESS_MESSAGE,
           messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
 
-      // 達成状況が更新された場合もポップアップを表示
       if(saveResult.isUpdatedStatus()){
         redirectAttributes.addFlashAttribute(
             AttributeNames.ACHIEVEMENT_POPUP,
@@ -166,7 +165,7 @@ public class GoalController {
     return RedirectUtil.redirectView(ViewNames.GOAL_DETAIL_PAGE, saveResult.id());
   }
 
-  // 指定のIDの目標を削除して一覧ページにリダイレクト
+  // 指定のIDの目標を削除して一覧ページにリダイレクトする。
   @DeleteMapping(ViewNames.GOAL_DETAIL_BY_ID)
   public String deleteGoal(
       @PathVariable int id, RedirectAttributes redirectAttributes) {

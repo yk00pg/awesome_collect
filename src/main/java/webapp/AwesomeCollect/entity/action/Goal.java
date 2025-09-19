@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 目標を扱うオブジェクト。DBテーブルのカラムと連動する。
+ */
 @Getter
 @Setter
 @NoArgsConstructor

@@ -25,7 +25,7 @@ public class GoalResponseDto {
   private String registeredAt;
   private String updatedAt;
 
-  // 進捗状況を日本語ラベルに変換
+  // 進捗状況を日本語ラベルに変換する（Thymeleaf用）。
   public String getStatusLabel() {
     return switch (status) {
       case DOING -> DOING_LABEL;
@@ -34,7 +34,12 @@ public class GoalResponseDto {
     };
   }
 
-  // DBから取得した目標を一覧ページ用のデータオブジェクトに変換
+  /**
+   * DBから取得した目標を一覧ページ用データオブジェクトに変換する。
+   *
+   * @param goal  目標
+   * @return  一覧ページ用データオブジェクト
+   */
   public static GoalResponseDto fromEntityForList(Goal goal){
     GoalResponseDto dto = new GoalResponseDto();
     dto.id = goal.getId();
@@ -43,7 +48,12 @@ public class GoalResponseDto {
     return dto;
   }
 
-  // DBから取得した目標を詳細ページ用のデータオブジェクトに変換
+  /**
+   * DBから取得した目標を詳細ページ用データオブジェクトに変換する。
+   *
+   * @param goal  目標
+   * @return  詳細ページ用データオブジェクト
+   */
   public static GoalResponseDto fromEntityForDetail(Goal goal){
     GoalResponseDto dto = new GoalResponseDto();
     dto.id = goal.getId();

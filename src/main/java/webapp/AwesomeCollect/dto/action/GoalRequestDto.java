@@ -36,7 +36,7 @@ public class GoalRequestDto {
 
   private String tags;
 
-  // 進捗状況を日本語ラベルに変換
+  // 進捗状況を日本語ラベルに変換する（Thymeleaf用）。
   public String getStatusLabel() {
     return switch (status) {
       case DOING -> DOING_LABEL;
@@ -45,7 +45,12 @@ public class GoalRequestDto {
     };
   }
 
-  // 登録用のデータを詰めたエンティティに変換
+  /**
+   * 入力されたデータを新規登録用のエンティティに変換する。
+   *
+   * @param userId  ユーザーID
+   * @return  新規登録用のエンティティ
+   */
   public Goal toGoalForRegistration(int userId){
     Goal goal = new Goal();
     goal.setUserId(userId);
@@ -56,7 +61,12 @@ public class GoalRequestDto {
     return goal;
   }
 
-  // 更新用のデータを詰めたエンティティに変換
+  /**
+   * 入力されたデータを更新用のエンティティに変換する。
+   *
+   * @param userId  ユーザーID
+   * @return  更新用のエンティティ
+   */
   public Goal toGoalForUpdate(int userId){
     Goal goal = new Goal();
     goal.setId(id);
@@ -68,7 +78,12 @@ public class GoalRequestDto {
     return goal;
   }
 
-  // DBから取得した目標をデータオブジェクトに変換
+  /**
+   * DBから取得した目標をデータオブジェクトに変換する。
+   *
+   * @param goal  目標
+   * @return  データオブジェクト
+   */
   public static GoalRequestDto fromEntity(Goal goal){
     GoalRequestDto dto = new GoalRequestDto();
     dto.id = goal.getId();
