@@ -95,11 +95,11 @@ public class DailyTodoService {
   }
 
   /**
-   * DTOをエンティティに変換してDBに登録し、セッション情報のレコード数更新情報を変更する。<br>
+   * DTOをエンティティに変換してDBに登録し、セッションのレコード数更新情報を変更する。<br>
    * 日ごとの初回登録時のみユーザーの進捗情報を更新する。
    *
    * @param userId  ユーザーID
-   * @param dto やることのデータオブジェクト
+   * @param dto やること入力用データオブジェクト
    * @param index リストのインデックス番号
    */
   private void registerDailyTodo(int userId, TodoRequestDto dto, int index) {
