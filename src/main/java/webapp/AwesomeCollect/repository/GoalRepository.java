@@ -25,14 +25,6 @@ public class GoalRepository {
     return mapper.selectGoalByIds(id, userId);
   }
 
-  public int countGoal(int userId){
-    return mapper.countGoal(userId);
-  }
-
-  public int countAchieved(int userId){
-    return mapper.countAchieved(userId);
-  }
-
   public void registerGoal(Goal goal){
     mapper.insertGoal(goal);
   }

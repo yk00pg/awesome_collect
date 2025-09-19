@@ -9,10 +9,10 @@
 
 <body>
   <div>
-    <header th:replace="~{fragments/header :: header}"></header>
+    <header th:replace="~{fragments/header::header}"></header>
   </div>
 
-  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
 
   <div class="main-container">
     <div class="back-indicator">
@@ -100,7 +100,7 @@
   <!-- 初回登録時 & ステータス更新時に表示するポップアップウィンドウ -->
   <div th:if="${achievementPopup != null}">
     <div class="popup"
-         th:replace="~{fragments/popup :: popup}"></div>
+         th:replace="~{fragments/popup::popup}"></div>
   </div>
 </body>
 </html>

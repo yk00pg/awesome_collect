@@ -28,14 +28,13 @@ public class GoalValidator implements Validator {
     return GoalRequestDto.class.isAssignableFrom(clazz);
   }
 
-  // カスタムバリデーションをチェック
   @Override
   public void validate(@NotNull Object target, @NotNull Errors errors) {
     GoalRequestDto dto = (GoalRequestDto) target;
     validateStatus(dto, errors);
   }
 
-  // 新規登録時に「達成！」を選択している場合はエラーに追加
+  // 新規登録時に「達成！」を選択している場合はエラーに追加する。
   private void validateStatus(GoalRequestDto dto, Errors errors){
     if(dto.getId() == 0 && dto.getStatus().equals(ACHIEVED)){
       errors.rejectValue(
