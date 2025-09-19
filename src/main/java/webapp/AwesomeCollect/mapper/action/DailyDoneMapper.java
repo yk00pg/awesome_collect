@@ -20,12 +20,6 @@ public interface DailyDoneMapper {
       """)
   List<DailyDone> selectDailyDone(int userId, LocalDate date);
 
-  @Select("""
-      SELECT COUNT(*) FROM daily_done
-      WHERE user_id=#{userId}
-      """)
-  int countDailyDone(int userId);
-
   // @OptionsをつけてDBで自動採番されるIDを取得してエンティティに付与
   @Insert("""
       INSERT daily_done(user_id, date, content, minutes, memo, registered_at)

@@ -30,7 +30,6 @@ public class DailyDoneValidator implements Validator {
     return DoneRequestDto.class.isAssignableFrom(clazz);
   }
 
-  // カスタムバリデーションをチェック
   @Override
   public void validate(@NotNull Object target, @NotNull Errors errors) {
     DoneRequestDto dto = (DoneRequestDto)  target;
@@ -40,7 +39,7 @@ public class DailyDoneValidator implements Validator {
     validateTotalLearningTime(dto, errors);
   }
 
-  // 未来の日付の場合にエラーに追加
+  // 未来の日付の場合はエラーに追加する。
   private void validateDate(DoneRequestDto dto, Errors errors){
     if(dto.getDate().isAfter(LocalDate.now())){
       errors.rejectValue(
@@ -49,7 +48,7 @@ public class DailyDoneValidator implements Validator {
     }
   }
 
-  // すべての内容が空欄の場合にエラーに追加
+  // すべての内容が空欄の場合はエラーに追加する。
   private void validateContent(DoneRequestDto dto, Errors errors){
     if(dto.getContentList() == null ||
         dto.getContentList().stream()
@@ -61,14 +60,14 @@ public class DailyDoneValidator implements Validator {
     }
   }
 
-  // 内容が入力されていて、学習時間が入力されていない場合にエラーに追加
+  // 内容が入力されていて、学習時間が入力されていない場合はエラーに追加する。
   private void validateLearningTime(DoneRequestDto dto, Errors errors){
     for(int i = 0; i < dto.getContentList().size(); i++){
       String content = dto.getContentList().get(i);
 
       if(content != null && !content.isBlank()
           && dto.getHoursList().get(i) == 0 && dto.getMinutesList().get(i) == 0){
-        // エラーメッセージを重複して表示しないように、minutesListフィールには追加しない
+        // エラーメッセージを重複して表示しないように、minutesListフィールドには追加しない
         errors.rejectValue(
             "hoursList[" + i + "]", "blankLearningTime",
             messageUtil.getMessage(MessageKeys.LEARNING_TIME_BLANK));
@@ -76,7 +75,7 @@ public class DailyDoneValidator implements Validator {
     }
   }
 
-  // 1日の学習時間尾合計が24時間を超える場合にエラーに追加
+  // 1日の学習時間尾合計が24時間を超える場合はエラーに追加する。
   private void validateTotalLearningTime(DoneRequestDto dto, Errors errors){
     int totalHours = dto.getHoursList().stream()
         .mapToInt(Integer::intValue)
@@ -86,7 +85,7 @@ public class DailyDoneValidator implements Validator {
         .sum();
 
     if((totalHours * MINUTES) + totalMinutes > HOURS * MINUTES){
-      // エラーメッセージを重複して表示しないように、minutesListフィールには追加しない
+      // エラーメッセージを重複して表示しないように、minutesListフィールドには追加しない
       errors.rejectValue(
           "hoursList", "exceededTotalLearningTime",
           messageUtil.getMessage(MessageKeys.TOTAL_LEARNING_TIME_EXCEEDED));

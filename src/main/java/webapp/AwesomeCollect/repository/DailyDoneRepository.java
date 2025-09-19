@@ -22,10 +22,6 @@ public class DailyDoneRepository {
     return mapper.selectDailyDone(userId, date);
   }
 
-  public int countDailyDone(int userId){
-    return mapper.countDailyDone(userId);
-  }
-
   public void registerDailyDone(DailyDone done){
     mapper.insertDone(done);
   }
