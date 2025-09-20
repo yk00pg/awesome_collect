@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.common.SessionManager;
 import webapp.AwesomeCollect.common.util.JsonConverter;
 import webapp.AwesomeCollect.dto.action.MemoRequestDto;
@@ -39,7 +40,13 @@ public class MemoService {
     this.sessionManager = sessionManager;
   }
 
-  // DBの登録状況に応じた表示用データオブジェクトをリスト形式で用意
+  /**
+   * DBにメモが登録されていない場合は空のリストを、
+   * 登録されている場合は登録データを詰めた表示用データオブジェクトのリストを用意する。
+   *
+   * @param userId  ユーザーId
+   * @return  メモ表示用データオブジェクト
+   */
   public List<MemoResponseDto> prepareResponseDtoList(int userId){
     List<Memo> memoList = memoRepository.searchMemo(userId);
     if(memoList == null || memoList.isEmpty()){
@@ -49,43 +56,33 @@ public class MemoService {
     }
   }
 
-  // DBの登録内容を基に表示用データオブジェクトを組み立てる
-  private @NotNull List<MemoResponseDto> assembleCurrentResponseDtoList(
-      List<Memo> memoList) {
-
-    List<MemoResponseDto> dtoList = new ArrayList<>();
-    for(Memo memo : memoList){
-      MemoResponseDto dto =
-          assembleCurrentResponseDto(MemoResponseDto.fromEntityForList(memo), memo.getId());
-      dtoList.add(dto);
-    }
-    return dtoList;
-  }
-
-  // DBの登録状況に応じた表示用データオブジェクトを用意
+  /**
+   * DBにメモが登録されていない場合はエラー画面に遷移させるためにnullを返し、
+   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
+   *
+   * @param memoId  メモID
+   * @param userId  ユーザーID
+   * @return  メモ表示用データオブジェクト
+   */
   public MemoResponseDto prepareResponseDto(int memoId, int userId){
     Memo memo = memoRepository.findMemoByIds(memoId, userId);
     if(memo == null){
       return null;
     }else{
-      return assembleCurrentResponseDto(MemoResponseDto.fromEntityForDetail(memo), memoId);
+      return assembleCurrentResponseDto(
+          MemoResponseDto.fromEntityForDetail(memo), memoId);
     }
   }
 
-  // DBの登録内容を基に表示用データオブジェクトを組み立てる
-  private @NotNull MemoResponseDto assembleCurrentResponseDto(
-      MemoResponseDto dto, int memoId) {
-
-    List<Integer> tagIdList =
-        memoTagJunctionService.prepareTagIdListByActionId(memoId);
-    List<String> tagNameList =
-        tagService.prepareTagNameListByTagIdList(tagIdList);
-
-    dto.setTagList(tagNameList);
-    return dto;
-  }
-
-  // DBの登録状況に応じた入力用データオブジェクトを用意
+  /**
+   * メモIDが0の場合は空の入力用データオブジェクトを用意する。<br>
+   * そうでない場合は、DBにメモが登録されていない場合はエラー画面に遷移させるためにnullを返し、
+   * 登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   *
+   * @param memoId  メモID
+   * @param userId  ユーザーID
+   * @return  メモ入力用データオブジェクト
+   */
   public MemoRequestDto prepareRequestDto(int memoId, int userId){
     if(memoId == 0){
       return new MemoRequestDto();
@@ -99,7 +96,54 @@ public class MemoService {
     }
   }
 
-  // DBの登録内容を基に入力用データオブジェクトを組み立てる
+  /**
+   * メモリストを一覧ページ用の表示用データオブジェクトに変換し、紐付けられたタグ名リストを設定する。
+   *
+   * @param memoList  メモリスト
+   * @return  メモ表示用データオブジェクトのリスト
+   */
+  private @NotNull List<MemoResponseDto> assembleCurrentResponseDtoList(
+      List<Memo> memoList) {
+
+    List<MemoResponseDto> dtoList = new ArrayList<>();
+    for(Memo memo : memoList){
+      MemoResponseDto dto =
+          assembleCurrentResponseDto(
+              MemoResponseDto.fromEntityForList(memo), memo.getId());
+      dtoList.add(dto);
+    }
+    return dtoList;
+  }
+
+  /**
+   * メモに紐付けられたタグ名リストを表示用データオブジェクトに設定する。
+   *
+   * @param dto メモ表示用データオブジェクト
+   * @param memoId  メモID
+   * @return  メモ表示用データオブジェクト
+   */
+  @Transactional
+  private @NotNull MemoResponseDto assembleCurrentResponseDto(
+      MemoResponseDto dto, int memoId) {
+
+    List<Integer> tagIdList =
+        memoTagJunctionService.prepareTagIdListByActionId(memoId);
+    List<String> tagNameList =
+        tagService.prepareTagNameListByTagIdList(tagIdList);
+
+    dto.setTagList(tagNameList);
+    return dto;
+  }
+
+
+  /**
+   * メモを入力用データオブジェクトに変換し、紐付けられたタグ名を設定する。
+   *
+   * @param memoId  メモID
+   * @param memo  メモ
+   * @return  メモ入力用データオブジェクト
+   */
+  @Transactional
   private @NotNull MemoRequestDto assembleCurrentRequestDto(int memoId, Memo memo) {
     MemoRequestDto dto = MemoRequestDto.fromEntity(memo);
 
@@ -112,12 +156,13 @@ public class MemoService {
   }
 
   /**
-   * データの種類に応じてDBへの保存処理（登録・更新）を行う。
+   * データの種類に応じてDBに保存（登録・更新）し、セッションのレコード数更新情報を変更する。
    *
    * @param userId  ユーザーID
-   * @param dto メモのデータオブジェクト
+   * @param dto メモ入力用データオブジェクト
    * @return  メモID
    */
+  // TODO: Goal, Memo, ArticleStockで処理を共通化する場合は、SaveResultを返すようにする。
   public int saveMemo(int userId, MemoRequestDto dto){
     List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
     List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
@@ -128,28 +173,29 @@ public class MemoService {
     }else{
       updateMemo(userId, dto, tagIdList, memoId);
     }
+    sessionManager.setHasUpdatedRecordCount(true);
+
     return memoId;
   }
 
   /**
-   * DTOをエンティティに変換してDBに登録し、タグ情報を処理する。<br>
-   * セッション情報を変更し、ユーザーの進捗情報を更新する。
+   * DTOをエンティティに変換してDBに登録し、タグ情報を登録する。<br>
+   * セッションのレコード数更新情報を変更し、ユーザーの進捗情報を更新する。
    *
    * @param userId  ユーザーID
-   * @param dto メモのデータオブジェクト
+   * @param dto メモ入力用データオブジェクト
    * @param tagIdList タグIDリスト
    * @return  登録したメモID
    */
+  @Transactional
   private int registerMemo(
       int userId, MemoRequestDto dto, List<Integer> tagIdList) {
 
     Memo memo = dto.toMemoForRegistration(userId);
     memoRepository.registerMemo(memo);
+    memoTagJunctionService.registerNewRelations(
+        memo.getId(), MemoTagJunction::new, tagIdList);
 
-    if(tagIdList != null){
-      memoTagJunctionService.registerNewRelations(
-          memo.getId(), MemoTagJunction :: new, tagIdList);
-    }
     sessionManager.setHasUpdatedRecordCount(true);
     userProgressService.updateUserProgress(userId);
 
@@ -157,35 +203,35 @@ public class MemoService {
   }
 
   /**
-   * DTOをエンティティに変換し、DBのレコード、タグ情報、セッション情報を更新する。
+   * DTOをエンティティに変換してDBのメモレコードをタグレコードを更新し、
+   * セッションのレコード数更新情報を変更する。
    *
    * @param userId  ユーザーID
-   * @param dto メモのデータオブジェクト
+   * @param dto メモ入力用データオブジェクト
    * @param tagIdList タグIDリスト
    * @param memoId  メモID
    */
+  @Transactional
   private void updateMemo(
       int userId, MemoRequestDto dto, List<Integer> tagIdList, int memoId){
 
     Memo memo = dto.toMemoForUpdate(userId);
     memoRepository.updateMemo(memo);
+    memoTagJunctionService.updateRelations(memoId, MemoTagJunction::new, tagIdList);
 
-    if(tagIdList != null){
-      memoTagJunctionService.updateRelations(memoId, MemoTagJunction :: new, tagIdList);
-    }
     sessionManager.setHasUpdatedRecordCount(true);
   }
 
-  // 指定のIDのメモを削除
+  /**
+   * 指定のIDのメモを削除し、セッションのレコード数更新情報を変更する。
+   *
+   * @param memoId  メモID
+   */
+  @Transactional
   public void deleteMemo(int memoId){
     memoTagJunctionService.deleteRelationByActionId(memoId);
     memoRepository.deleteMemo(memoId);
 
     sessionManager.setHasUpdatedRecordCount(true);
-  }
-
-  // 指定のユーザーのレコード数を取得
-  public int countMemo(int userId){
-    return memoRepository.countMemo(userId);
   }
 }

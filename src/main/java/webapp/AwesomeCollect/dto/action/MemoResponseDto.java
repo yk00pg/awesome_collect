@@ -20,12 +20,17 @@ public class MemoResponseDto {
   private String registeredAt;
   private String updatedAt;
 
-  // 内容をHTMLに変換
+  // 内容をHTMLに変換する（Thymeleaf用）。
   public String getContentAsHtml(){
     return MarkdownConverter.toSafeHtml(content);
   }
 
-  // DBから取得したメモを一覧ページ用のデータオブジェクトに変換
+  /**
+   * DBから取得したメモを一覧ページ用データオブジェクトに変換する。
+   *
+   * @param memo  メモ
+   * @return  一覧ページ用データオブジェクト
+   */
   public static MemoResponseDto fromEntityForList(Memo memo){
     MemoResponseDto dto = new MemoResponseDto();
     dto.id = memo.getId();
@@ -33,7 +38,12 @@ public class MemoResponseDto {
     return dto;
   }
 
-  // DBから取得したメモを詳細ページ用のデータオブジェクトに変換
+  /**
+   * DBから取得したメモを詳細ページ用データオブジェクトに変換する。
+   *
+   * @param memo  メモ
+   * @return  詳細ページ用データオブジェクト
+   */
   public static MemoResponseDto fromEntityForDetail(Memo memo){
     MemoResponseDto dto = new MemoResponseDto();
     dto.id = memo.getId();

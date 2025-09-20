@@ -40,7 +40,7 @@ public class MemoController {
     this.messageUtil = messageUtil;
   }
 
-  // メモリストの一覧ページを表示
+  // メモの一覧ページ（メモリスト）を表示する。
   @GetMapping(ViewNames.MEMO_PAGE)
   public String showMemo(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -53,7 +53,7 @@ public class MemoController {
     return ViewNames.MEMO_PAGE;
   }
 
-  // メモの詳細ページを表示
+  // メモの詳細ページを表示する。
   @GetMapping(ViewNames.MEMO_DETAIL_BY_ID)
   public String showMemoDetail(
       @PathVariable int id,
@@ -71,32 +71,31 @@ public class MemoController {
     }
   }
 
-  // メモの編集ページを表示
+  // メモの編集ページを表示する。
   @GetMapping(ViewNames.MEMO_EDIT_BY_ID)
   public String showMemoForm(
       @PathVariable int id,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model) {
 
-    MemoRequestDto memoRequestDto =
-        memoService.prepareRequestDto(id, customUserDetails.getId());
+    int userId = customUserDetails.getId();
+    MemoRequestDto memoRequestDto = memoService.prepareRequestDto(id, userId);
 
     if(memoRequestDto == null){
       return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
     }else{
       model.addAttribute(AttributeNames.MEMO_REQUEST_DTO, memoRequestDto);
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST,
-          tagService.prepareTagListByUserId(customUserDetails.getId()));
+          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
 
       return ViewNames.MEMO_EDIT_PAGE;
     }
   }
 
   /**
-   * 入力されたデータを確認し、メモを編集する。<br>
-   * バインディングエラーが発生した場合はタグリストを詰め直して編集ページに戻り、
-   * そうでない場合はDBの登録・更新処理を行い、詳細ページに遷移してサクセスメッセージを表示する。
+   * 入力されたデータにバインディングエラーが発生した場合はタグリストを詰め直して
+   * 編集ページに戻り、そうでない場合はDBに保存（登録・更新）し、
+   * 詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    * 
    * @param id  メモID
    * @param dto メモのデータオブジェクト
@@ -114,24 +113,25 @@ public class MemoController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes) {
 
+    int userId = customUserDetails.getId();
+
     if(result.hasErrors()){
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST,
-          tagService.prepareTagListByUserId(customUserDetails.getId()));
+          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
 
       return ViewNames.MEMO_EDIT_PAGE;
     }
 
-    int memoId = memoService.saveMemo(customUserDetails.getId(), dto);
-
+    int memoId = memoService.saveMemo(userId, dto);
     addAttributeBySaveType(id, redirectAttributes);
 
     return RedirectUtil.redirectView(ViewNames.MEMO_DETAIL_PAGE, memoId);
   }
 
-  // 新規登録か更新かを判定してサクセスメッセージを表示
+  // 新規登録か更新かを判定してサクセスメッセージを表示する。
   private void addAttributeBySaveType(int id, RedirectAttributes redirectAttributes) {
-    if(id == 0){
+    boolean isRegistration = id == 0;
+    if(isRegistration){
       redirectAttributes.addFlashAttribute(
           AttributeNames.SUCCESS_MESSAGE,
           messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
@@ -145,7 +145,7 @@ public class MemoController {
     }
   }
 
-  // 指定のIDの目標を削除して一覧ページにリダイレクト
+  // 指定のIDの目標を削除して一覧ページにリダイレクトする。
   @DeleteMapping(ViewNames.MEMO_DETAIL_BY_ID)
   public String deleteMemo(
       @PathVariable int id, RedirectAttributes redirectAttributes) {

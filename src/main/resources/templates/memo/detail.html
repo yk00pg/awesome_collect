@@ -9,10 +9,10 @@
 
 <body>
   <div>
-    <header th:replace="~{fragments/header :: header}"></header>
+    <header th:replace="~{fragments/header::header}"></header>
   </div>
 
-  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
 
   <div class="memo-detail-container">
     <div class="back-indicator">
@@ -34,7 +34,8 @@
         <div class="content-header">
           <div class="at-info">
             <p th:text="'登録日時: ' + ${memoResponseDto.registeredAt}"></p>
-            <p th:if="${memoResponseDto.updatedAt} != null" th:text="'更新日時: ' + ${memoResponseDto.updatedAt}"></p>
+            <p th:if="${memoResponseDto.updatedAt} != null"
+               th:text="'更新日時: ' + ${memoResponseDto.updatedAt}"></p>
           </div>
 
           <div class="edit-delete-area">
@@ -55,7 +56,8 @@
           </tr>
           <tr>
             <th scope="row" class="view-row-th">内容</th>
-            <td class="memo-content" th:utext="${memoResponseDto.contentAsHtml}"></td>
+            <td class="memo-content"
+                th:utext="${memoResponseDto.contentAsHtml}"></td>
           </tr>
           <tr>
             <th scope="row" class="view-row-th">タグ</th>
@@ -68,7 +70,7 @@
           </tr>
         </table>
         <div class="note">
-          <small>※ 画像を含む場合、セキュリティの観点から直接表示せず、リンクで代替しています</small>
+          <small th:text="#{memo.notice}"></small>
         </div>
       </div>
     </div>
@@ -80,7 +82,7 @@
       <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
     </form>
 
-    <!-- 削除ボタンクリック時にダイアログを表示 -->
+    <!-- 削除ボタンクリック時に表示するダイアログ -->
     <script th:inline="javascript">
       /*<![CDATA[*/
         const deleteMsg = /*[[#{action.delete.confirm('メモ')}]]*/;
@@ -98,7 +100,7 @@
   <!-- 初回登録時に表示するポップアップウィンドウ -->
   <div th:if="${achievementPopup != null}">
     <div class="popup"
-         th:replace="~{fragments/popup :: popup}"></div>
+         th:replace="~{fragments/popup::popup}"></div>
   </div>
 </body>
 </html>
