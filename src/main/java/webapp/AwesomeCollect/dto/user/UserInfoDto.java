@@ -16,8 +16,13 @@ public class UserInfoDto {
   @Valid
   private UserPasswordDto passwordDto;
 
-  // 入力されたユーザー情報をエンティティに変換する
-  public UserInfo toEntity(PasswordEncoder passwordEncoder){
+  /**
+   * 入力されたデータをエンティティに変換する。
+   *
+   * @param passwordEncoder パスワードエンコーダー
+   * @return  新規登録用のエンティティ
+   */
+  public UserInfo toEntityForSignup(PasswordEncoder passwordEncoder){
     UserInfo userInfo = new UserInfo();
     userInfo.setLoginId(basicInfoDto.getLoginId());
     userInfo.setUserName(basicInfoDto.getUserName());

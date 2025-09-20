@@ -2,6 +2,11 @@ package webapp.AwesomeCollect.common.constant;
 
 public class MessageKeys {
 
+  // exception
+  public static final String DUPLICATE_LOGIN_ID = "duplicate.loginId";
+  public static final String DUPLICATE_EMAIL = "duplicate.email";
+  public static final String CURRENT_PASSWORD_INCORRECT = "currentPassword.incorrect";
+
   // validation
   public static final String PASSWORD_MISMATCH = "password.mismatch";
   public static final String CURRENT_PASSWORD_BLANK = "currentPassword.blank";

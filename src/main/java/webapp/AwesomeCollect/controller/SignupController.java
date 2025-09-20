@@ -40,22 +40,22 @@ public class SignupController {
     this.messageUtil = messageUtil;
   }
 
-  // 新規登録フォームを表示
+  // 新規登録フォームを表示する。
   @GetMapping(ViewNames.SIGNUP_PAGE)
   public String showSignUpForm(Model model){
     model.addAttribute(AttributeNames.USER_INFO_DTO, new UserInfoDto());
     return ViewNames.SIGNUP_PAGE;
   }
 
+  // DTOのアノテーションで制御できないバリデーションを確認する。
   @InitBinder(AttributeNames.USER_INFO_DTO)
   public void initBinder(WebDataBinder dataBinder){
     dataBinder.addValidators(signupValidator);
   }
 
   /**
-   * 入力されたデータを確認し、ユーザー情報の新規登録を行う。<br>
-   * バインディングエラーまたはDB登録時の例外が発生した場合はエラーメッセージを表示し、
-   * そうでない場合はログインページに遷移し、サクセスメッセージを表示する。
+   * 入力されたデータにバインディングエラーまたはDB登録時の例外が発生した場合はサインアップページに戻り、
+   * そうでない場合はDBに登録してログインページに遷移し、サクセスメッセージを表示する。
    *
    * @param dto ユーザー情報を扱うデータオブジェクト
    * @param result  バインディングの結果
@@ -71,7 +71,6 @@ public class SignupController {
       return ViewNames.SIGNUP_PAGE;
     }
 
-    // ログインIDまたはメールアドレスが重複している場合はエラーに追加
     try {
       userInfoService.registerNewUser(dto);
     }catch(DuplicateException ex){

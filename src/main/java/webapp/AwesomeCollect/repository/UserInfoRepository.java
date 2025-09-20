@@ -5,7 +5,7 @@ import webapp.AwesomeCollect.entity.UserInfo;
 import webapp.AwesomeCollect.mapper.UserInfoMapper;
 
 /**
- * ユーザー情報を有するDBテーブルにアクセスするリポジトリクラス。
+ * ユーザー情報のリポジトリクラス。
  */
 @Repository
 public class UserInfoRepository {

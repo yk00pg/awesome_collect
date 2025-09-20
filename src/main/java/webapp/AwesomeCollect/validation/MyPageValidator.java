@@ -8,6 +8,9 @@ import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.dto.user.UserPasswordDto;
 
+/**
+ * マイページのユーザー情報編集時のカスタムバリデータクラス。
+ */
 @Component
 public class MyPageValidator implements Validator {
 
@@ -29,6 +32,7 @@ public class MyPageValidator implements Validator {
     validateConfirmPassword(dto, errors);
   }
 
+  // 現在のパスワードが空欄の場合はエラーに追加する。
   private void validateCurrentPassword(UserPasswordDto dto, Errors errors){
     if(dto.getCurrentPassword() == null || dto.getCurrentPassword().isBlank()){
       errors.rejectValue(
@@ -37,6 +41,7 @@ public class MyPageValidator implements Validator {
     }
   }
 
+  // パスワードと確認用パスワードが不一致の場合はエラーに追加する。
   private void validateConfirmPassword(UserPasswordDto dto, Errors errors){
     if(!dto.getPassword().equals(dto.getConfirmPassword())){
       errors.rejectValue(

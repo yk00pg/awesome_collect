@@ -45,12 +45,14 @@ public class MyPageController {
     this.messageUtil = messageUtil;
   }
 
-  // ユーザー登録情報を表示
+  // ユーザー登録情報を表示する。
   @GetMapping(ViewNames.MY_PAGE)
   public String showUserBasicInfo(
       @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
 
-    prepareUserInfoView(customUserDetails, model);
+    UserBasicInfoDto basicInfoDto =
+        userInfoService.prepareUserInfoDto(customUserDetails.getId());
+    model.addAttribute(AttributeNames.BASIC_INFO_DTO, basicInfoDto);
     return ViewNames.MY_PAGE;
   }
 
@@ -59,16 +61,10 @@ public class MyPageController {
   public String showUserBasicInfoEditForm(
       @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
 
-    prepareUserInfoView(customUserDetails, model);
-    return ViewNames.MY_PAGE_EDIT;
-  }
-
-  private void prepareUserInfoView(
-      CustomUserDetails customUserDetails, Model model) {
-
     UserBasicInfoDto basicInfoDto =
         userInfoService.prepareUserInfoDto(customUserDetails.getId());
     model.addAttribute(AttributeNames.BASIC_INFO_DTO, basicInfoDto);
+    return ViewNames.MY_PAGE_EDIT;
   }
 
   // パスワード変更フォームを表示
