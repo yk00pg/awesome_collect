@@ -24,18 +24,6 @@ public interface ArticleStockMapper {
       """)
   ArticleStock selectArticleStockByIds(int id, int userId);
 
-  @Select("""
-      SELECT COUNT(*) FROM article_stock
-      WHERE user_id=#{userId}
-      """)
-  int countArticleStock(int userId);
-
-  @Select("""
-      SELECT COUNT(*) FROM article_stock
-      WHERE user_id=#{userId} AND finished=1
-      """)
-  int countFinished(int userId);
-
   // @OptionsをつけてDBで自動採番されるIDを取得してエンティティに付与
   @Insert("""
       INSERT article_stock(user_id, title, url, memo, finished, registered_at)

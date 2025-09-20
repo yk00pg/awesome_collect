@@ -7,7 +7,7 @@ import lombok.Data;
 import webapp.AwesomeCollect.entity.action.ArticleStock;
 
 /**
- * 記事ストックの入力用データオブジェクト。
+ * 記事ストック入力用データオブジェクト。
  */
 @Data
 public class ArticleRequestDto {
@@ -39,7 +39,7 @@ public class ArticleRequestDto {
 
   private String tags;
 
-  // 進捗状況を日本語ラベルに変換
+  // 進捗状況を日本語ラベルに変換する（Thymeleaf用）。
   public String getStatusLabel(){
     return switch (status){
       case STILL_NOT -> STILL_NOT_LABEL;
@@ -48,7 +48,12 @@ public class ArticleRequestDto {
     };
   }
 
-  // 登録用のデータを詰めたエンティティに変換
+  /**
+   * 入力されたデータを登録用のエンティティに変換する。
+   *
+   * @param userId  ユーザーID
+   * @return  登録用のエンティティ
+   */
   public ArticleStock toArticleStockForRegistration(int userId){
     ArticleStock articleStock = new ArticleStock();
     articleStock.setUserId(userId);
@@ -60,7 +65,12 @@ public class ArticleRequestDto {
     return articleStock;
   }
 
-  // 更新用のデータを詰めたエンティティに変換
+  /**
+   * 入力されたデータを更新用のエンティティに変換する。
+   *
+   * @param userId  ユーザーID
+   * @return  更新用のエンティティ
+   */
   public ArticleStock toArticleStockForUpdate(int userId){
     ArticleStock articleStock = new ArticleStock();
     articleStock.setId(id);
@@ -73,7 +83,12 @@ public class ArticleRequestDto {
     return articleStock;
   }
 
-  // DBから取得した記事ストックをデータオブジェクトに変換
+  /**
+   * DBから取得した記事ストックをデータオブジェクトに変換する。
+   *
+   * @param articleStock  記事ストック
+   * @return  データオブジェクト
+   */
   public static ArticleRequestDto fromEntity(ArticleStock articleStock){
     ArticleRequestDto dto = new ArticleRequestDto();
     dto.id = articleStock.getId();

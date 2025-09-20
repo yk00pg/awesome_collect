@@ -6,7 +6,7 @@ import webapp.AwesomeCollect.common.util.DateTimeFormatUtil;
 import webapp.AwesomeCollect.entity.action.ArticleStock;
 
 /**
- * 記事ストックの表示用データオブジェクト。
+ * 記事ストック表示用データオブジェクト。
  */
 @Data
 public class ArticleResponseDto {
@@ -28,7 +28,7 @@ public class ArticleResponseDto {
   private String registeredAt;
   private String updatedAt;
 
-  // 閲覧状況を日本語ラベルに変換
+  // 閲覧状況を日本語ラベルに変換する（Thymeleaf用）。
   public String getStatusLabel(){
     return switch (status){
       case STILL_NOT -> STILL_NOT_LABEL;
@@ -37,7 +37,12 @@ public class ArticleResponseDto {
     };
   }
 
-  // DBから取得した記事ストックを一覧ページ用のデータオブジェクトに変換
+  /**
+   * DBから取得した記事ストックを一覧ページ用データオブジェクトに変換する。
+   *
+   * @param articleStock  記事ストック
+   * @return  一覧ページ用データオブジェクト
+   */
   public static ArticleResponseDto fromEntityForList(
       ArticleStock articleStock){
 
@@ -48,7 +53,12 @@ public class ArticleResponseDto {
     return dto;
   }
 
-  // DBから取得した記事ストックを詳細ページ用のデータオブジェクトに変換
+  /**
+   * DBから取得した記事ストックを詳細ページ用データオブジェクトに変換する。
+   *
+   * @param articleStock  記事ストック
+   * @return  詳細ページ用データオブジェクト
+   */
   public static ArticleResponseDto fromEntityForDetail(
       ArticleStock articleStock) {
 
@@ -62,5 +72,4 @@ public class ArticleResponseDto {
     dto.updatedAt = DateTimeFormatUtil.formatDateTime(articleStock.getUpdatedAt());
     return dto;
   }
-
 }

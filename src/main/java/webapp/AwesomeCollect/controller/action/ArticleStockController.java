@@ -24,7 +24,7 @@ import webapp.AwesomeCollect.service.TagService;
 import webapp.AwesomeCollect.service.action.ArticleStockService;
 
 /**
- * 記事ストックページのコントローラークラス。
+ * 記事ストックのコントローラークラス。
  */
 @Controller
 public class ArticleStockController {
@@ -42,7 +42,7 @@ public class ArticleStockController {
     this.messageUtil = messageUtil;
   }
 
-  // 記事ストックリストの一覧ページを表示`
+  // 記事ストックの一覧ページ（記事ストックリスト）を表示する。`
   @GetMapping(ViewNames.ARTICLE_STOCK_PAGE)
   public String showArticleStock(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -55,7 +55,7 @@ public class ArticleStockController {
     return ViewNames.ARTICLE_STOCK_PAGE;
   }
 
-  // 記事ストックの詳細ページを表示
+  // 記事ストックの詳細ページを表示する。
   @GetMapping(ViewNames.ARTICLE_STOCK_DETAIL_BY_ID)
   public String showArticleStockDetail(
       @PathVariable int id,
@@ -73,7 +73,7 @@ public class ArticleStockController {
     }
   }
 
-  // 記事ストックの編集ページを表示
+  // 記事ストックの編集ページを表示する。
   @GetMapping(ViewNames.ARTICLE_STOCK_EDIT_BY_ID)
   public String showArticleStockForm(
       @PathVariable int id,
@@ -96,12 +96,12 @@ public class ArticleStockController {
   }
 
   /**
-   * 入力されたデータを確認し、記事ストックを編集する。<br>
-   * バインディングエラーが発生した場合はタグリストを詰め直して編集ページに戻り、
-   * そうでない場合はDBの登録・更新処理を行い、詳細ページに遷移してサクセスメッセージを表示する。
+   * 入力されたデータにバインディングエラーが発生した場合はタグリストを詰め直して
+   * 編集ページに戻り、そうでない場合はDBに保存（登録・更新）し、
+   * 詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    *
    * @param id  記事ストックID
-   * @param dto 記事ストックのデータオブジェクト
+   * @param dto 記事ストック入力用データオブジェクト
    * @param result  バインディングの結果
    * @param model データをViewに渡すオブジェクト
    * @param customUserDetails カスタムユーザー情報
@@ -126,31 +126,13 @@ public class ArticleStockController {
 
     SaveResult saveResult =
         articleStockService.saveArticleStock(customUserDetails.getId(), dto);
+    addAttributeBySaveType(id, redirectAttributes, saveResult);
 
-    // 新規登録か更新かを判定してサクセスメッセージを表示
-    if (id == 0) {
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.ACHIEVEMENT_POPUP,
-          messageUtil.getMessage(MessageKeys.ARTICLE_AWESOME));
-    } else {
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
-
-      // 達成状況が更新された場合もポップアップを表示
-      if (saveResult.isUpdatedStatus()) {
-        redirectAttributes.addFlashAttribute(
-            AttributeNames.ACHIEVEMENT_POPUP,
-            messageUtil.getMessage(MessageKeys.FINISHED_AWESOME));
-      }
-    }
-    return RedirectUtil.redirectView(ViewNames.ARTICLE_STOCK_DETAIL_PAGE, saveResult.id());
+    return RedirectUtil.redirectView(
+        ViewNames.ARTICLE_STOCK_DETAIL_PAGE, saveResult.id());
   }
 
-  // 指定のIDの目標を削除して一覧ページにリダイレクト
+  // 指定のIDの目標を削除して一覧ページにリダイレクトする。
   @DeleteMapping(ViewNames.ARTICLE_STOCK_DETAIL_BY_ID)
   public String deleteStock(
       @PathVariable int id, RedirectAttributes redirectAttributes) {
@@ -162,5 +144,37 @@ public class ArticleStockController {
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
     return RedirectUtil.redirectView(ViewNames.ARTICLE_STOCK_PAGE);
+  }
+
+  /**
+   * 保存の種類（登録・更新）に応じたサクセスメッセージを設定し、
+   * 登録の場合、閲覧状況の更新の場合にはポップアップウィンドウも設定する。
+   *
+   * @param id  記事ストックID
+   * @param redirectAttributes  リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
+   * @param saveResult  保存結果オブジェクト
+   */
+  private void addAttributeBySaveType(
+      int id, RedirectAttributes redirectAttributes, SaveResult saveResult) {
+
+    boolean isRegistration = id == 0;
+    if (isRegistration) {
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.ACHIEVEMENT_POPUP,
+          messageUtil.getMessage(MessageKeys.ARTICLE_AWESOME));
+    } else {
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
+
+      if (saveResult.isUpdatedStatus()) {
+        redirectAttributes.addFlashAttribute(
+            AttributeNames.ACHIEVEMENT_POPUP,
+            messageUtil.getMessage(MessageKeys.FINISHED_AWESOME));
+      }
+    }
   }
 }
