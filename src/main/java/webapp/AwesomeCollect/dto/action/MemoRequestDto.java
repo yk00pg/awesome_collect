@@ -7,17 +7,17 @@ import lombok.Data;
 import webapp.AwesomeCollect.entity.action.Memo;
 
 /**
- * メモの入力用データオブジェクト。
+ * メモ入力用データオブジェクト。
  */
 @Data
 public class MemoRequestDto {
 
-  private static final int MEMO_MAX_SIZE = 100;
+  private static final int TITLE_MAX_SIZE = 100;
 
   private int id;
 
   @NotBlank(message = "{title.blank}")
-  @Size(max = MEMO_MAX_SIZE, message = "{title.size}")
+  @Size(max = TITLE_MAX_SIZE, message = "{title.size}")
   private String title;
 
   @NotBlank(message = "{content.blank}")
@@ -25,7 +25,12 @@ public class MemoRequestDto {
 
   private String tags;
 
-  // 登録用のデータを詰めたエンティティに変換
+  /**
+   * 入力されたデータを新規登録用のエンティティに変換する。
+   *
+   * @param userId  ユーザーID
+   * @return  新規登録用のエンティティ
+   */
   public Memo toMemoForRegistration(int userId){
     Memo memo = new Memo();
     memo.setUserId(userId);
@@ -35,7 +40,12 @@ public class MemoRequestDto {
     return memo;
   }
 
-  // 更新用のデータを詰めたエンティティに変換
+  /**
+   * 入力されたデータを更新用のエンティティに変換する。
+   *
+   * @param userId  ユーザーID
+   * @return  更新用のエンティティ
+   */
   public Memo toMemoForUpdate(int userId){
     Memo memo = new Memo();
     memo.setId(id);
@@ -46,7 +56,12 @@ public class MemoRequestDto {
     return memo;
   }
 
-  // DBから取得したメモをデータオブジェクトに変換
+  /**
+   * DBから取得したメモをデータオブジェクトに変換する。
+   *
+   * @param memo  メモ
+   * @return  データオブジェクト
+   */
   public static MemoRequestDto fromEntity(Memo memo){
     MemoRequestDto dto = new MemoRequestDto();
     dto.id = memo.getId();

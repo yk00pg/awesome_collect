@@ -1,4 +1,3 @@
-// EasyMDEの設定
 const easyMDE = new EasyMDE({
     element: document.getElementById("content"),
     spellChecker: false,

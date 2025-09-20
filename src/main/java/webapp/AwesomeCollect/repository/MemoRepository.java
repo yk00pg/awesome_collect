@@ -25,10 +25,6 @@ public class MemoRepository {
     return mapper.selectMemoByIds(id, userId);
   }
 
-  public int countMemo(int userId){
-    return mapper.countMemo(userId);
-  }
-
   public void registerMemo(Memo memo){
     mapper.insertMemo(memo);
   }
