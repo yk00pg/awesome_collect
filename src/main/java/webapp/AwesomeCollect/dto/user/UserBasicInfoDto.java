@@ -8,7 +8,7 @@ import lombok.Data;
 import webapp.AwesomeCollect.entity.UserInfo;
 
 /**
- * ユーザーの基本情報を扱うデータオブジェクト。
+ * ユーザーの基本情報データオブジェクト。
  */
 @Data
 public class UserBasicInfoDto {
@@ -28,8 +28,13 @@ public class UserBasicInfoDto {
   @Size(max = 254, message = "{email.invalid.size}")
   private String email;
 
-  // 入力されたユーザーの基本情報とIDをエンティティに変換する
-  public UserInfo toEntityWithId(int id){
+  /**
+   * 入力されたデータを更新用のエンティティに変換する。
+   *
+   * @param id  ユーザーID
+   * @return  更新用のエンティティ
+   */
+  public UserInfo toEntityForUpdate(int id){
     UserInfo userInfo = new UserInfo();
     userInfo.setId(id);
     userInfo.setLoginId(loginId);
@@ -38,7 +43,12 @@ public class UserBasicInfoDto {
     return userInfo;
   }
 
-  // DBから取得したユーザーの基本情報をデータオブジェクトに変換する
+  /**
+   * DBから取得したユーザー情報をデータオブジェクトに変換する。
+   *
+   * @param userInfo  ユーザー情報
+   * @return  データオブジェクト
+   */
   public static UserBasicInfoDto fromEntity(UserInfo userInfo){
     UserBasicInfoDto dto = new UserBasicInfoDto();
     dto.loginId = userInfo.getLoginId();

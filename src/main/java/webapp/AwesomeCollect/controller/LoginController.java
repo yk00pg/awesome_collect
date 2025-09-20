@@ -20,19 +20,22 @@ public class LoginController {
     this.messageUtil = messageUtil;
   }
 
-  // ログインフォームを表示
+  // ログインフォームを表示する。
   @GetMapping(ViewNames.LOGIN_PAGE)
   public String showLoginForm() {
     return ViewNames.LOGIN_PAGE;
   }
 
-  // ログイン失敗時にエラーメッセージとヒントを表示
+  // ログイン失敗時にエラーメッセージとヒントを表示する。
   @GetMapping(value = ViewNames.LOGIN_PAGE, params = "error")
   public String showLoginFailureMessage(Model model){
     model.addAttribute(
-        AttributeNames.FAILURE_MESSAGE, messageUtil.getMessage(MessageKeys.LOGIN_FAILURE));
+        AttributeNames.FAILURE_MESSAGE,
+        messageUtil.getMessage(MessageKeys.LOGIN_FAILURE));
     model.addAttribute(
-        AttributeNames.FAILURE_HINT, messageUtil.getMessage(MessageKeys.LOGIN_FAILURE_HINT));
+        AttributeNames.FAILURE_HINT,
+        messageUtil.getMessage(MessageKeys.LOGIN_FAILURE_HINT));
+
     return ViewNames.LOGIN_PAGE;
   }
 }

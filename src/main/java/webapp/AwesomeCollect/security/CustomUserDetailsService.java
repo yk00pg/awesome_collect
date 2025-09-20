@@ -8,7 +8,7 @@ import webapp.AwesomeCollect.entity.UserInfo;
 import webapp.AwesomeCollect.repository.UserInfoRepository;
 
 /**
- * ログイン認証に係るサービスクラス。
+ * ログイン認証のサービスクラス。
  */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

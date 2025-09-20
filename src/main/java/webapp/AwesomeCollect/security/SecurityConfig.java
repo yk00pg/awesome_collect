@@ -48,7 +48,7 @@ public class SecurityConfig {
     return httpSecurity.build();
   }
 
-  // 認証処理のエントリーポイントを設定
+  // 認証処理のエントリーポイントを設定する。
   @Bean
   public AuthenticationManager authenticationManager(
       AuthenticationConfiguration authConfig) throws Exception{
@@ -56,13 +56,13 @@ public class SecurityConfig {
     return authConfig.getAuthenticationManager();
   }
 
-  // パスワードをハッシュ化するためのエンコーダーを用意
+  // パスワードをハッシュ化するためのエンコーダーを用意する。
   @Bean
   public PasswordEncoder passwordEncoder(){
     return new BCryptPasswordEncoder();
   }
 
-  // 認証を行うプロバイダに引き渡すサービスとエンコーダーを設定
+  // 認証を行うプロバイダに引き渡すサービスとエンコーダーを設定する。
   @Bean
   public DaoAuthenticationProvider daoAuthenticationProvider(){
     DaoAuthenticationProvider provider = new DaoAuthenticationProvider();

@@ -9,6 +9,9 @@ import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.dto.user.UserInfoDto;
 import webapp.AwesomeCollect.dto.user.UserPasswordDto;
 
+/**
+ * サインアップ時のカスタムバリデータクラス。
+ */
 @Component
 public class SignupValidator implements Validator {
 
@@ -29,6 +32,7 @@ public class SignupValidator implements Validator {
     validatePassword(dto, errors);
   }
 
+  // パスワードと確認用パスワードが不一致の場合はエラーに追加する。
   private void validatePassword(UserInfoDto dto, Errors errors){
     UserPasswordDto passwordDto = dto.getPasswordDto();
     if(!passwordDto.getPassword().equals(passwordDto.getConfirmPassword())){
