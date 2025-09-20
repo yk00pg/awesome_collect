@@ -24,36 +24,24 @@ public interface ArticleStockMapper {
       """)
   ArticleStock selectArticleStockByIds(int id, int userId);
 
-  @Select("""
-      SELECT COUNT(*) FROM article_stock
-      WHERE user_id=#{userId}
-      """)
-  int countArticleStock(int userId);
-
-  @Select("""
-      SELECT COUNT(*) FROM article_stock
-      WHERE user_id=#{userId} AND finished=1
-      """)
-  int countFinished(int userId);
-
   // @OptionsをつけてDBで自動採番されるIDを取得してエンティティに付与
   @Insert("""
-      INSERT article_stock(user_id, title, url, finished, registered_at)
-      VALUES(#{userId}, #{title}, #{url}, #{finished}, #{registeredAt})
+      INSERT article_stock(user_id, title, url, memo, finished, registered_at)
+      VALUES(#{userId}, #{title}, #{url}, #{memo}, #{finished}, #{registeredAt})
       """)
   @Options(useGeneratedKeys = true, keyProperty = "id")
-  int insertArticleStock(ArticleStock articleStock);
+  void insertArticleStock(ArticleStock articleStock);
 
   @Update("""
       UPDATE article_stock
-      SET title=#{title}, url=#{url}, finished=#{finished}, updated_at=#{updatedAt}
+      SET title=#{title}, url=#{url}, memo=#{memo}, finished=#{finished}, updated_at=#{updatedAt}
       WHERE id=#{id}
       """)
-  int updateArticleStock(ArticleStock articleStock);
+  void updateArticleStock(ArticleStock articleStock);
 
   @Delete("""
       DELETE FROM article_stock
       WHERE id=#{id}
       """)
-  int deleteArticleStock(int id);
+  void deleteArticleStock(int id);
 }

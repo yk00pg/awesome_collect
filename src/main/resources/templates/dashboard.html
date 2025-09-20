@@ -11,45 +11,57 @@
 
 <body>
   <div>
-    <header th:replace="~{fragments/common-header :: common-header}"></header>
+    <header th:replace="~{fragments/header :: header}"></header>
   </div>
 
-  <div class="sidebar" th:replace="~{fragments/common-sidebar :: common-sidebar}"></div>
+  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
 
   <div class="dashboard-container">
     <div class="top-container">
       <div class="total-awesome-container">
         <p>これまでに貯めた<span>えらい！</span>の数</p>
-        <p class="total-awesome" th:text="${totalAwesome}"></p>
+        <p class="total-awesome" th:text="${dashboardDto.totalAwesome}"></p>
       </div>
-      <div class="total-hours-container">
-        <p>これまでの<span>累計学習時間</span>（時間）</p>
-        <p class="total-hours" th:text="${totalHours}"></p>
+      <div class="total-time-container">
+        <p>これまでの<span>累計学習時間</span></p>
+        <div class="total-time">
+          <p class="total-hours" th:text="${dashboardDto.learningTimeDto.totalHours}"></p>
+          <span>時間</span>
+          <p class="total-minutes" th:text="${dashboardDto.learningTimeDto.totalMinutes}"></p>
+          <span>分</span>
+        </div>
       </div>
     </div>
 
     <div class="bottom-container">
-      <div class="daily-hours">
+      <div class="graph-area">
         <p>日別学習時間（過去7日分）</p>
-        <canvas id="dailyHours"></canvas>
+        <canvas id="dailyTime"></canvas>
       </div>
-      <div class="monthly-hours">
+      <div class="graph-area">
+        <p>曜日別学習時間（平均）</p>
+        <canvas id="dayOfWeekTime"></canvas>
+      </div>
+      <div class="graph-area">
         <p>月別学習時間（過去6ヶ月分）</p>
-        <canvas id="monthlyHours"></canvas>
+        <canvas id="monthlyTime"></canvas>
       </div>
-      <div class="tag-hours">
+      <div class="graph-area">
         <p>タグ別学習時間（累計・上位抜粋）</p>
-        <canvas id="tagHours"></canvas>
-        <a th:href="@{/dashboard/tag-hours/all}">すべてのタグを確認する</a>
+        <canvas id="tagTime"></canvas>
+        <div class="link-area">
+          <a th:href="@{/dashboard/tag_time/all}" class="all-tag-link">すべてのタグを確認する</a>
+        </div>
       </div>
     </div>
 
     <!-- Chart.js用にデータだけ埋め込み -->
     <script th:inline="javascript">
       /*<![CDATA[*/
-        const dailyHoursList = /*[[${dailyHoursList}]]*/ [];
-        const monthlyHoursList = /*[[${monthlyHoursList}]]*/ [];
-        const tagHoursList = /*[[${totalHoursByTag}]]*/ [];
+        const dailyTimeList = /*[[${dashboardDto.learningTimeDto.dailyTotalTimeList}]]*/ [];
+        const dayOfWeekTimeList = /*[[${dashboardDto.learningTimeDto.dayOfWeekAvgTimeList}]]*/ [];
+        const monthlyTimeList = /*[[${dashboardDto.learningTimeDto.monthlyTotalTimeList}]]*/ [];
+        const tagTimeList = /*[[${dashboardDto.learningTimeDto.topTenTagTotalTimeList}]]*/ [];
       /*]]>*/
     </script>
 

@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 記事ストック情報を扱うオブジェクト。DBテーブルのカラムと連動する。
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,6 +17,7 @@ public class ArticleStock {
   private int userId;
   private String title;
   private String url;
+  private String memo;
   private boolean finished;
   private LocalDateTime registeredAt;
   private LocalDateTime updatedAt;

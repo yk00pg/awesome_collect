@@ -3,7 +3,6 @@ function initDoneAddTbody() {
     const addButton = document.getElementById("add-row");
     if (!table || !addButton) return;
 
-    // 追加する行ブロックの中身
     const createBlock = (index) => {
         const tbody = document.createElement("tbody");
         tbody.dataset.rowId = index;
@@ -17,7 +16,8 @@ function initDoneAddTbody() {
             </td>
             <td colspan="3">
               <input type="text" class="input-area"
-                     name="contentList[${index}]" />
+                     name="contentList[${index}]"
+                     placeholder=${contentPlaceholder} />
             </td>
             <td>
               <button type="button" class="remove-row-button">×</button>
@@ -33,6 +33,7 @@ function initDoneAddTbody() {
             <td>
               <input type="number" class="input-area"
                      name="hoursList[${index}]"
+                     placeholder=${hoursPlaceholder}
                      min="0" max="24" value="0" />
             </td>
             <td>
@@ -41,6 +42,7 @@ function initDoneAddTbody() {
             <td>
               <input type="number" class="input-area"
                      name="minutesList[${index}]"
+                     placeholder=${minutesPlaceholder}
                      min="0" max="59" value="0" />
             </td>
             <td>
@@ -55,7 +57,8 @@ function initDoneAddTbody() {
             <th scope="row" class="task-th">メモ ${index + 1}</th>
             <td class="blank-row"></td>
             <td colspan="4" class="done-memo-area">
-              <textarea class="input-done-memo-area" name="memoList[${index}]"></textarea>
+              <textarea class="input-done-memo-area" name="memoList[${index}]"
+                        placeholder=${memoPlaceholder} ></textarea>
             </td>
         `;
         tbody.appendChild(memoRow);
@@ -102,7 +105,6 @@ function initDoneAddTbody() {
         }
     };
 
-    // ラベルの番号を振り直す
     function updateLabels() {
         const blocks = table.querySelectorAll("tbody[data-row-id]");
         blocks.forEach((block, i) => {

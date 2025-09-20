@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * できたこと情報を扱うデータオブジェクト。DBテーブルのカラムと連動する。
+ */
 @Getter
 @Setter
 @NoArgsConstructor

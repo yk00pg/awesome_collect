@@ -19,6 +19,21 @@ public class AttributeNames {
   public static final String DONE_RESPONSE_DTO = "doneResponseDto";
   public static final String DONE_REQUEST_DTO = "doneRequestDto";
 
-  // OTHERS
+  public static final String GOAL_RESPONSE_DTO_LIST = "goalResponseDtoList";
+  public static final String GOAL_RESPONSE_DTO = "goalResponseDto";
+  public static final String GOAL_REQUEST_DTO = "goalRequestDto";
+
+  public static final String MEMO_RESPONSE_DTO_LIST = "memoResponseDtoList";
+  public static final String MEMO_RESPONSE_DTO = "memoResponseDto";
+  public static final String MEMO_REQUEST_DTO = "memoRequestDto";
+
+  public static final String ARTICLE_RESPONSE_DTO_LIST = "articleResponseDtoList";
+  public static final String ARTICLE_RESPONSE_DTO = "articleResponseDto";
+  public static final String ARTICLE_REQUEST_DTO = "articleRequestDto";
+
+  public static final String DASHBOARD_DTO = "dashboardDto";
+  public static final String TAG_TOTAL_TIME_LIST = "tagTotalTimeList";
+
+  // others
   public static final String TAG_NAME_LIST = "tagNameList";
 }

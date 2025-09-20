@@ -25,30 +25,24 @@ public interface MemoMapper {
       """)
   Memo selectMemoByIds(int id, int userId);
 
-  @Select("""
-      SELECT COUNT(*) FROM memo
-      WHERE user_id=#{userId}
-      """)
-  int countMemo(int userId);
-
   // @OptionsをつけてDBで自動採番されるIDを取得してエンティティに付与
   @Insert("""
       INSERT memo(user_id, title, content, registered_at)
       VALUES(#{userId}, #{title}, #{content}, #{registeredAt})
       """)
   @Options(useGeneratedKeys = true, keyProperty =  "id")
-  int insertMemo(Memo memo);
+  void insertMemo(Memo memo);
 
   @Update("""
       UPDATE memo
       SET title=#{title}, content=#{content}, updated_at=#{updatedAt}
       WHERE id=#{id}
       """)
-  int updateMemo(Memo memo);
+  void updateMemo(Memo memo);
 
   @Delete("""
       DELETE FROM memo
       WHERE id=#{id}
       """)
-  int deleteMemo(int id);
+  void deleteMemo(int id);
 }

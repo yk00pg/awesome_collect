@@ -51,7 +51,7 @@ public class DailyDoneController {
     this.messageUtil = messageUtil;
   }
 
-  // できたことリストの閲覧ページを表示
+  // できたこと閲覧ページ（できたことリスト）を表示する。
   @GetMapping(ViewNames.DAILY_DONE_VIEW_PAGE)
   public String showDailyDone(
       @PathVariable LocalDate date,
@@ -65,13 +65,13 @@ public class DailyDoneController {
     return ViewNames.DONE_PAGE;
   }
 
-  // できたことリストの閲覧ページにリダイレクト
+  // できたこと閲覧ページにリダイレクトする。
   @GetMapping(ViewNames.DONE_PAGE)
   public String redirectByDate(@RequestParam LocalDate date) {
     return RedirectUtil.redirectView(ViewNames.DONE_PAGE, date);
   }
 
-  // できたことリストの編集ページを表示
+  // できたこと編集ページを表示する。
   @GetMapping(ViewNames.DAILY_DONE_EDIT_PAGE)
   public String showDailyDoneForm(
       @PathVariable LocalDate date,
@@ -93,16 +93,16 @@ public class DailyDoneController {
     return ViewNames.DONE_EDIT_PAGE;
   }
 
-  // DTOのアノテーションで制御できないバリデーションを確認
+  // DTOのアノテーションで制御できないバリデーションを確認する。
   @InitBinder(AttributeNames.DONE_REQUEST_DTO)
   public void initBinder(WebDataBinder dataBinder){
     dataBinder.addValidators(dailyDoneValidator);
   }
 
   /**
-   * 入力されたデータを確認し、できたことを編集する。<br>
-   * バインディングエラーが発生した場合は参考用やることリストとタグリストを詰め直して編集ページに戻り、
-   * そうでない場合はDBの登録・更新・削除処理を行い、閲覧ページに遷移してサクセスメッセージを表示する。
+   * 入力されたデータにバインディングエラーが発生した場合は参考用やることリストとタグリストを
+   * 詰め直して編集ページに戻り、そうでない場合はDBにデータを保存（登録・更新・削除）し、
+   * 閲覧ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    *
    * @param date  日付
    * @param dto できたことのデータオブジェクト
@@ -113,53 +113,53 @@ public class DailyDoneController {
    * @return  できたこと閲覧ページ
    */
   @PostMapping(ViewNames.DAILY_DONE_EDIT_PAGE)
-  public String editDailyTodo(
+  public String editDailyDone(
       @PathVariable LocalDate date,
       @Valid @ModelAttribute(AttributeNames.DONE_REQUEST_DTO) DoneRequestDto dto,
       BindingResult result, Model model,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes) {
 
+    int userId = customUserDetails.getId();
+
     if(result.hasErrors()){
       model.addAttribute(
           AttributeNames.TODO_RESPONSE_DTO,
-          dailyTodoService.prepareResponseDto(customUserDetails.getId(), date));
+          dailyTodoService.prepareResponseDto(userId, date));
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST,
-          tagService.prepareTagListByUserId(customUserDetails.getId()));
+          tagService.prepareTagListByUserId(userId));
 
       return ViewNames.DONE_EDIT_PAGE;
     }
 
-    dailyDoneService.saveDailyDone(customUserDetails.getId(), dto);
+    dailyDoneService.saveDailyDone(userId, dto);
 
-    boolean isUpdatedRecord = dto.getIdList().getFirst() != 0;
-
-    // 新規登録か更新（削除含む）かを判定してサクセスメッセージを表示
-    if(isUpdatedRecord){
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
-    }else{
+    boolean isFirstRegistration = dto.getIdList().getFirst() == 0;
+    if(isFirstRegistration){
       redirectAttributes.addFlashAttribute(
           AttributeNames.SUCCESS_MESSAGE,
           messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
       redirectAttributes.addFlashAttribute(
           AttributeNames.ACHIEVEMENT_POPUP,
           messageUtil.getMessage(MessageKeys.DONE_AWESOME));
+    }else{
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
     }
 
     return RedirectUtil.redirectView(ViewNames.DONE_PAGE, date);
   }
 
-  // 指定の日付のできたことリストを削除して閲覧ページにリダイレクト
+  // 指定の日付のできたことをすべて削除して閲覧ページにリダイレクトする。
   @DeleteMapping(ViewNames.DAILY_DONE_VIEW_PAGE)
   public String deleteDone(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes){
 
-    dailyDoneService.deleteDailyDoneByDate(customUserDetails.getId(), date);
+    dailyDoneService.deleteDailyAllDoneByDate(customUserDetails.getId(), date);
 
     redirectAttributes.addFlashAttribute(
         AttributeNames.SUCCESS_MESSAGE,

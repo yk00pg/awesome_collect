@@ -38,9 +38,9 @@ public class DoneTagJunctionService extends BaseActionTagJunctionService<DoneTag
   @Transactional
   public void updateRelations(
       int actionId, BiFunction<Integer, Integer, DoneTagJunction> relationFactory,
-      List<Integer> newTagIdList) {
+      List<Integer> tagIdList) {
 
-    super.updateRelations(actionId, relationFactory, newTagIdList);
+    super.updateRelations(actionId, relationFactory, tagIdList);
   }
 
   @Override

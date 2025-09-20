@@ -1,13 +1,15 @@
 // タグ別学習時間グラフ
-const ctx = document.getElementById('allTagHours');
+const ctx = document.getElementById('allTagTime');
 
-const tagNameList = tagHoursList.map(dto => dto.tagName);
-const tagTotalHoursList = tagHoursList.map(dto => dto.totalHours);
+const tagNameList = tagTimeList.map(dto => dto.tagName);
+const tagTotalTimeList = tagTimeList.map(dto => dto.totalTime);
 
 // 上位3位だけ不透明度を上げてハイライト
 const highlightRank = 3;
-const colorsTags = tagTotalHoursList.map((v, i) =>
-    i < highlightRank ? 'rgba(189, 221, 196, 0.8)' : 'rgba(189, 221, 196, 0.3)'
+const colorsTags = tagTotalTimeList.map((v, i) =>
+    i < highlightRank
+    ? 'rgba(189, 221, 196, 0.8)'
+    : 'rgba(189, 221, 196, 0.3)'
 );
 
 // 横棒グラフ
@@ -16,7 +18,7 @@ new Chart(ctx, {
     data: {
         labels: tagNameList,
         datasets: [{
-            data: tagTotalHoursList,
+            data: tagTotalTimeList,
             backgroundColor: colorsTags,
             borderColor: 'rgba(189, 221, 196, 1)',
             borderWidth: 1
@@ -37,7 +39,7 @@ new Chart(ctx, {
                     weight: 'bold'
                 },
                 color: '#627962',
-                formatter: (value) => value
+                formatter: (value) => formatMinutesToHM(value)
             },
             legend: {
               display: false
@@ -52,7 +54,9 @@ new Chart(ctx, {
                 ticks: {
                     font: function(context) {
                         return {
-                          weight: context.index < highlightRank ? 'bold' : 'normal'
+                            weight: context.index < highlightRank
+                                    ? 'bold'
+                                    : 'normal'
                         };
                     },
                     color: '#627962',
@@ -65,8 +69,14 @@ new Chart(ctx, {
                 grid: {
                     display: false
                 },
-                suggestedMax: Math.max(...tagTotalHoursList) * 1.1,
+                suggestedMax: Math.max(...tagTotalTimeList) * 1.1,
             }
         }
     }
 });
+
+function formatMinutesToHM(minutes) {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return (hours > 0 ? hours + 'h ' : '') + mins + 'm';
+}

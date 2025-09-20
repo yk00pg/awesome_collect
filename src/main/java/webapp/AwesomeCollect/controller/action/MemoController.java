@@ -1,9 +1,6 @@
 package webapp.AwesomeCollect.controller.action;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import java.nio.file.AccessDeniedException;
-import java.util.List;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,179 +10,152 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import webapp.AwesomeCollect.common.util.JsonConverter;
-import webapp.AwesomeCollect.common.TaggingManager;
-import webapp.AwesomeCollect.common.ActionViewPreparator;
-import webapp.AwesomeCollect.dto.action.MemoDto;
-import webapp.AwesomeCollect.entity.action.Memo;
-import webapp.AwesomeCollect.entity.junction.MemoTagJunction;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.MessageKeys;
+import webapp.AwesomeCollect.common.constant.ViewNames;
+import webapp.AwesomeCollect.common.util.MessageUtil;
+import webapp.AwesomeCollect.common.util.RedirectUtil;
+import webapp.AwesomeCollect.dto.action.MemoRequestDto;
+import webapp.AwesomeCollect.dto.action.MemoResponseDto;
 import webapp.AwesomeCollect.security.CustomUserDetails;
-import webapp.AwesomeCollect.service.UserProgressService;
 import webapp.AwesomeCollect.service.action.MemoService;
-import webapp.AwesomeCollect.service.junction.MemoTagJunctionService;
 import webapp.AwesomeCollect.service.TagService;
 
+/**
+ * メモのコントローラークラス。
+ */
 @Controller
 public class MemoController {
 
   private final MemoService memoService;
   private final TagService tagService;
-  private final ActionViewPreparator actionViewPreparator;
-  private final MemoTagJunctionService memoTagJunctionService;
-  private final TaggingManager taggingManager;
-  private final UserProgressService userProgressService;
+  private final MessageUtil messageUtil;
 
   public MemoController(
-      MemoService memoService, TagService tagService, ActionViewPreparator actionViewPreparator,
-      MemoTagJunctionService memoTagJunctionService, TaggingManager taggingManager,
-      UserProgressService userProgressService){
+      MemoService memoService, TagService tagService, MessageUtil messageUtil){
 
     this.memoService = memoService;
     this.tagService = tagService;
-    this.actionViewPreparator = actionViewPreparator;
-    this.memoTagJunctionService = memoTagJunctionService;
-    this.taggingManager = taggingManager;
-    this.userProgressService = userProgressService;
+    this.messageUtil = messageUtil;
   }
 
-  /**
-   * 「メモ」の一覧画面を表示する。<br>
-   * ログイン中のユーザーのユーザーIDを取得し、ユーザーIDを基にDBからメモリストを取得する。<br>
-   * メモリストが空（未登録）の場合は空のデータオブジェクトをモデルに追加し、
-   * そうでない場合は登録済みデータを入れたデータオブジェクトをモデルに追加する。
-   *
-   * @param customUserDetails ログイン中のユーザー情報
-   * @param dto 「メモ」のデータオブジェクト
-   * @param model HTMLにデータを渡すオブジェクト
-   * @return  memo.html
-   */
-  @GetMapping(value = "/memo")
+  // メモの一覧ページ（メモリスト）を表示する。
+  @GetMapping(ViewNames.MEMO_PAGE)
   public String showMemo(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      MemoDto dto, Model model){
+      Model model){
 
-    int userId = customUserDetails.getId();
-    List<Memo> memoList = memoService.searchMemo(userId);
-    if(!memoList.isEmpty()){
-      actionViewPreparator.prepareCurrentDataListView(
-          dto, model, memoList, memoTagJunctionService);
-    }
-    return "/memo";
+    model.addAttribute(
+        AttributeNames.MEMO_RESPONSE_DTO_LIST,
+        memoService.prepareResponseDtoList(customUserDetails.getId()));
+
+    return ViewNames.MEMO_PAGE;
   }
 
-  /**
-   * ID別の「メモ」の詳細画面を表示する。
-   *
-   * @param id  メモID
-   * @param customUserDetails ログイン中のユーザー情報
-   * @param dto 「メモ」のデータオブジェクト
-   * @param model HTMLにデータを渡すオブジェクト
-   * @return  memo/detail.html
-   * @throws AccessDeniedException  登録していないIDのページを開こうとした場合
-   */
-  @GetMapping(value = "memo/detail/{id}")
+  // メモの詳細ページを表示する。
+  @GetMapping(ViewNames.MEMO_DETAIL_BY_ID)
   public String showMemoDetail(
       @PathVariable int id,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      MemoDto dto, Model model) throws AccessDeniedException {
+      Model model) {
 
-    showMemoDetailView(id, customUserDetails, dto, model);
-    return "memo/detail";
+    MemoResponseDto memoResponseDto =
+        memoService.prepareResponseDto(id, customUserDetails.getId());
+
+    if (memoResponseDto == null) {
+      return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
+    } else {
+      model.addAttribute(AttributeNames.MEMO_RESPONSE_DTO, memoResponseDto);
+      return ViewNames.MEMO_DETAIL_PAGE;
+    }
   }
 
-  /**
-   * ID別の「メモ」の編集画面を表示する。
-   *
-   * @param id  メモID
-   * @param customUserDetails ログイン中のユーザー情報
-   * @param dto 「メモ」のデータオブジェクト
-   * @param model HTMLにデータを渡すオブジェクト
-   * @return  memo/detail/edit.html
-   * @throws AccessDeniedException  登録していないIDのページを開こうとした場合
-   */
-  @GetMapping(value = "memo/detail/edit/{id}")
+  // メモの編集ページを表示する。
+  @GetMapping(ViewNames.MEMO_EDIT_BY_ID)
   public String showMemoForm(
       @PathVariable int id,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      MemoDto dto, Model model) throws AccessDeniedException {
+      Model model) {
 
-    showMemoDetailView(id, customUserDetails, dto, model);
-    return "memo/detail/edit";
+    int userId = customUserDetails.getId();
+    MemoRequestDto memoRequestDto = memoService.prepareRequestDto(id, userId);
+
+    if(memoRequestDto == null){
+      return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
+    }else{
+      model.addAttribute(AttributeNames.MEMO_REQUEST_DTO, memoRequestDto);
+      model.addAttribute(
+          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
+
+      return ViewNames.MEMO_EDIT_PAGE;
+    }
   }
 
   /**
-   * ログイン中のユーザーのユーザーIDを取得し、ユーザーIDを基にDBからタグリストを取得する。<br>
-   * メモIDが0（新規登録）の場合は空のデータオブジェクトとタグリストをモデルに追加し、
-   * そうでない場合は、目標IDとユーザーIDを基にDBを検索し、レコードがない場合は例外処理をする。<br>
-   * レコードがある場合は登録済みデータを入れたデータオブジェクトとタグリストをモデルに追加する。
-   *
+   * 入力されたデータにバインディングエラーが発生した場合はタグリストを詰め直して
+   * 編集ページに戻り、そうでない場合はDBに保存（登録・更新）し、
+   * 詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
+   * 
    * @param id  メモID
-   * @param customUserDetails ログイン中のユーザー情報
-   * @param dto 「メモ」のデータオブジェクト
-   * @param model HTMLにデータを渡すオブジェクト
-   * @throws AccessDeniedException  登録していないIDのページを開こうとした場合
+   * @param dto メモのデータオブジェクト
+   * @param result  バインディングの結果
+   * @param model データをViewに渡すオブジェクト
+   * @param customUserDetails カスタムユーザー情報
+   * @param redirectAttributes  リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
+   * @return  メモ・詳細ページ
    */
-  private void showMemoDetailView(
-      int id, CustomUserDetails customUserDetails,
-      MemoDto dto, Model model) throws AccessDeniedException {
-
-    int userId = customUserDetails.getId();
-    List<String> tagNameList = tagService.getTagNameList(userId);
-
-    if(id == 0){
-      actionViewPreparator.prepareBlankDoneView(id, dto, model, tagNameList);
-    }else{
-      Memo memo = memoService.findMemoByIds(id,userId);
-      if (memo == null){
-        throw new AccessDeniedException("不正なアクセスです");
-      }else{
-        actionViewPreparator.prepareCurrentDataView(
-            dto, model, memo, tagNameList, memoTagJunctionService);
-      }
-    }
-  }
-
-  @PostMapping(value = "/memo/detail/edit/{id}")
+  @PostMapping(ViewNames.MEMO_EDIT_BY_ID)
   public String editMemo(
       @PathVariable int id,
-      @Valid @ModelAttribute("memoDto") MemoDto dto, BindingResult result,
-      @AuthenticationPrincipal CustomUserDetails customUserDetails, HttpSession httpSession) {
-
-    List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
+      @Valid @ModelAttribute(AttributeNames.MEMO_REQUEST_DTO) MemoRequestDto dto,
+      BindingResult result, Model model,
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      RedirectAttributes redirectAttributes) {
 
     int userId = customUserDetails.getId();
-    if(id == 0){
-      if(dto.isTitleEmpty()){
-        result.rejectValue("title", "title.empty", "タイトルを入力してください");
-      }
-      Memo memo = dto.toMemo(userId);
-      memoService.registerMemo(memo);
-      id = memo.getId();
-      taggingManager.resolveTagsAndRelations(
-          id, pureTagList, userId, MemoTagJunction::new, memoTagJunctionService);
-      userProgressService.updateUserProgress(userId);
-      httpSession.setAttribute("hasNewRecord", true);
-    }else{ // TODO: 削除機能は内容の空欄判断ではなく、詳細画面で削除ボタンをつけるようにしたい
-      if(dto.isTitleEmpty()){
-        memoService.deleteMemo(id);
-        memoTagJunctionService.deleteRelationByActionId(id);
-        httpSession.setAttribute("hasNewRecord", true);
-        return "redirect:/memo";
-      }else{
-        taggingManager.updateTagsAndRelations(
-            id, pureTagList, userId, MemoTagJunction::new, memoTagJunctionService);
-      }
+
+    if(result.hasErrors()){
+      model.addAttribute(
+          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
+
+      return ViewNames.MEMO_EDIT_PAGE;
     }
-    return "redirect:/memo/detail/" + id;
+
+    int memoId = memoService.saveMemo(userId, dto);
+    addAttributeBySaveType(id, redirectAttributes);
+
+    return RedirectUtil.redirectView(ViewNames.MEMO_DETAIL_PAGE, memoId);
   }
 
-  @DeleteMapping(value = "/memo/detail/{id}")
-  public String deleteMemo(@PathVariable int id, HttpSession httpSession) {
+  // 新規登録か更新かを判定してサクセスメッセージを表示する。
+  private void addAttributeBySaveType(int id, RedirectAttributes redirectAttributes) {
+    boolean isRegistration = id == 0;
+    if(isRegistration){
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.ACHIEVEMENT_POPUP,
+          messageUtil.getMessage(MessageKeys.MEMO_AWESOME));
+    }else{
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
+    }
+  }
 
-    memoTagJunctionService.deleteRelationByActionId(id);
+  // 指定のIDの目標を削除して一覧ページにリダイレクトする。
+  @DeleteMapping(ViewNames.MEMO_DETAIL_BY_ID)
+  public String deleteMemo(
+      @PathVariable int id, RedirectAttributes redirectAttributes) {
+
     memoService.deleteMemo(id);
-    httpSession.setAttribute("hasNewRecord", true);
+    
+    redirectAttributes.addFlashAttribute(
+        AttributeNames.SUCCESS_MESSAGE,
+        messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
-    return "redirect:/memo";
+    return RedirectUtil.redirectView(ViewNames.MEMO_PAGE);
   }
 }

@@ -273,22 +273,30 @@ input::placeholder {
   font-size: 12px;
 }
 
+textarea::placeholder {
+  font-size: 12px;
+}
+
 select,
 ::picker(select) {
   appearance: base-select;
 }
 
 ::picker(select) {
-  margin: 5px 0;
   background-color: white;
   border:1px solid var(--brown-grey);
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 select {
-  gap: 3px;
+  padding: 13px 20px;
   font-family: var(--normal-font-set);
-  padding-inline: 15px;
+  background-color: var(--pink-cream);
+  border:1px solid var(--brown-grey) !important;
+  border-top-right-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
 }
 
 option {
@@ -355,12 +363,14 @@ table th {
 }
 
 .input-table {
+  table-layout: fixed;
   box-sizing: border-box;
   width: 100%;
   overflow-wrap: anywhere;
   padding-top: 10px;
   padding-bottom: 15px;
   margin: 30px auto;
+  font-size: 14px;
 }
 
 .variable-input-table {
@@ -369,13 +379,16 @@ table th {
   overflow-wrap: anywhere;
   padding-top: 10px;
   margin: 30px auto 0;
+  font-size: 14px;
 }
 
 .view-table {
+  table-layout: fixed;
   box-sizing: border-box;
   width: 100%;
   overflow-wrap: anywhere;
   margin: 0 auto 30px;
+  font-size: 14px;
   background-color: var(--cream);
   border-collapse: collapse;
   border: 1px solid var(--brown-grey);
@@ -386,16 +399,19 @@ table th {
   width: 100%;
   overflow-wrap: anywhere;
   margin: 0 auto 15px;
+  font-size: 14px;
   background-color: var(--cream);
   border-collapse: collapse;
   border: 1px solid var(--brown-grey);
 }
 
 .hours-table {
+  table-layout: fixed;
   box-sizing: border-box;
   width: 100%;
   overflow-wrap: anywhere;
   margin: 10px auto 20px;
+  font-size: 14px;
   background-color: var(--cream);
   border-collapse: collapse;
   border: 1px solid var(--brown-grey);
@@ -431,6 +447,7 @@ table th {
 .input-col-th {
   box-sizing: border-box;
   width: 100%;
+  height: 30px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
@@ -476,6 +493,14 @@ table th {
   padding-left: 20px;
 }
 
+.action-message-area {
+  box-sizing: border-box;
+  width: 100%;
+  text-align: left;
+  padding-top: 10px;
+  padding-left: 20px;
+}
+
 .failure-message, .failure-hint,
 .success-message, .error-message {
   font-size: 12px;
@@ -505,6 +530,12 @@ table th {
   margin-top: 5px;
 }
 
+.back-link {
+  display: flex;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
 .button-area {
   text-align: center;
   margin: 20px auto;
@@ -519,6 +550,12 @@ table th {
 .link-button-area {
   text-align: center;
   margin: 35px auto;
+}
+
+.add-link-button-area {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 25px;
 }
 
 .login-button, .register-button,
@@ -562,7 +599,8 @@ table th {
   border: 3px solid var(--reddish-brown);
 }
 
-.new-registration-link {
+.new-registration-link,
+.additional-registration-link {
   font-weight: bold;
   color: var(--pink-cream);
   text-align: center;
@@ -707,6 +745,7 @@ table th {
 }
 
 .notice-message p {
+  font-size: 14px;
   font-weight: bold;
   color: var(--olive);
   margin: 0;
@@ -835,6 +874,11 @@ table th {
   padding: 0 20px;
 }
 
+.action-content-inner {
+  margin-top: 15px;
+  padding: 0 20px;
+}
+
 .task-th {
   box-sizing: border-box;
   width: 90px;
@@ -889,22 +933,25 @@ table th {
   width: 90px;
 }
 
-.empty-goal, .empty-memo,
-.empty-stock {
-  text-align: center;
+.detail-link-td {
+  width: 60px;
+  padding: 0 !important;
 }
 
-.goal-detail a, .memo-detail a,
-.edit-area a {
+.detail-link-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-link-button {
+  padding: 3px 8px;
   font-weight: bold;
-  color: var(--reddish-brown);
-  text-align: center;
   text-decoration: none;
-  padding: 1px 10px;
-  margin: 1px auto;
+  color: var(--reddish-brown);
   background-color: var(--pink-beige);
   border: 2px solid var(--reddish-brown);
-  border-radius: 5px;
+  border-radius: 8px;
 }
 
 .stock-header {
@@ -956,9 +1003,9 @@ table th {
 
 .memo-detail-container {
   width: 800px;
-  margin: 130px auto 50px auto;
+  margin: 120px auto;
+  padding: 30px;
   color: var(--reddish-brown);
-  padding: 20px 0;
   background-color: white;
   border: 3px solid var(--reddish-brown);
   border-radius: 30px;
@@ -984,7 +1031,7 @@ table th {
   gap: 30px;
 }
 
-.total-awesome-container, .total-hours-container {
+.total-awesome-container, .total-time-container {
   box-sizing: border-box;
   width: 350px;
   height: 250px
@@ -998,18 +1045,33 @@ table th {
 }
 
 .total-awesome-container span,
-.total-hours-container span,
-.daily-hours p, .monthly-hours p, .tag-hours p {
+.total-time-container span,
+.graph-area p {
   font-size: 18px;
   font-weight: bold;
 }
 
-.tag-hours a {
-  color: inherit;
-  text-align: left;
+.link-area{
+  margin: 15px;
 }
 
-.total-awesome, .total-hours {
+.all-tag-link {
+  color: inherit;
+}
+
+.total-time {
+  display: flex;
+  align-items: center;
+}
+
+.total-time span {
+  padding-top: 30px;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.total-awesome, .total-hours,
+.total-minutes {
   font-family: var(--highlight-font-set);
   font-size: 64px;
   font-weight: bold;
@@ -1027,37 +1089,25 @@ table th {
   gap: 30px;
 }
 
-.daily-hours, .monthly-hours, .tag-hours {
+.graph-area {
   box-sizing: border-box;
   width: 100%;
   font-size: 14px;
   text-align: center;
-  padding: 20px;
+  padding: 30px;
   background-color: white;
   border: 3px solid var(--reddish-brown);
   border-radius: 30px;
   box-shadow: 10px 10px 10px var(--brown-grey);
 }
 
-.daily-hours canvas, .monthly-hours canvas,
-.tag-hours canvas {
+.graph-area canvas {
   margin: 30px;
 }
 
 .all-tag-container {
   box-sizing: border-box;
   width: 100%;
-}
-
-.todo-form-title, .done-form-title,
-.goal-form-title, .memo-form-title,
-.article-stock-form-title,
-.password-change-form-title,
-.mypage-edit-form-title {
-  font-size: 18px;
-  font-weight: bold;
-  color: var(--reddish-brown);
-  text-align: center;
 }
 
 .input-date p, .input-content p {
@@ -1096,22 +1146,6 @@ table th {
   background-color: #DC9F95;
   border-radius: 10px;
   cursor: pointer;
-}
-
-.done-table,
-.goal-table, .memo-table,
-.article-stock-table {
-  box-sizing: border-box;
-  font-size: 14px;
-  width: 460px;
-  min-height: 50px;
-  overflow-wrap: anywhere;
-  padding-top: 10px;
-  padding-bottom: 15px;
-  margin: 15px 0;
-  background-color: #FFFDF6;
-  border-collapse: collapse;
-  border: 1px solid #9C918B;
 }
 
 .memo-detail-table {
@@ -1165,6 +1199,10 @@ table th {
   padding: 5px 0;
 }
 
+.goal-content {
+  white-space: pre-line;
+}
+
 .done-edit-container {
   width: 560px;
   margin: 120px auto;
@@ -1199,25 +1237,15 @@ table th {
   padding: 0;
 }
 
-.input-done-memo-area {
+.input-done-memo-area,
+.input-goal-content-area,
+.input-article-memo-area {
   height: 100px;
   margin-top: 1px;
+  padding-top: 10px;
   font-family: var(--normal-font-set);
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-}
-
-.select-stock-status {
-  box-sizing: border-box;
-  width: 100%;
-  height: 50px;
-  line-height: 43px;
-  font-size: 14px;
-  color: var(--reddish-brown);
-  background-color: var(--pink-cream);
-  border: 1px solid #9C918B;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
 }
 
 .input-done-date {
@@ -1226,10 +1254,6 @@ table th {
 
 .input-todo-content {
   width: 380px;
-}
-
-.input-goal-title, .select-goal-status {
-  height: 30px;
 }
 
 .input-done-content, .input-done-hours {
@@ -1253,10 +1277,11 @@ table th {
   height: 100px;
 }
 
-.select-goal-status {
+.select-goal-status,
+.select-article-status {
   box-sizing: border-box;
-  width: 150px;
-  margin: 0;
+  width: 100%;
+  height: 50px;
 }
 
 .input-url a {
@@ -1353,6 +1378,11 @@ table th {
 
 .border-row {
   height: 50px;
+}
+
+.border-line-area {
+  padding-top: 20px;
+  padding-bottom: 10px;
 }
 
 .border-line {

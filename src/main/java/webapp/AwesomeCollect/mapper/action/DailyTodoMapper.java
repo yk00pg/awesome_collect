@@ -18,13 +18,6 @@ public interface DailyTodoMapper {
       """)
   List<DailyTodo> selectDailyTodo(int userId, LocalDate date);
 
-
-  @Select("""
-      SELECT COUNT(*) FROM daily_todo
-      WHERE user_id=#{userId}
-      """)
-  int countDailyTodo(int userId);
-
   @Insert("""
       INSERT daily_todo(user_id, date, content, registered_at)
       VALUES(#{userId}, #{date}, #{content}, #{registeredAt})

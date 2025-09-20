@@ -13,10 +13,10 @@
 
 <body>
   <div>
-    <header th:replace="~{fragments/header :: header}"></header>
+    <header th:replace="~{fragments/header::header}"></header>
   </div>
 
-  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
 
   <div class="done-edit-container">
     <div class="reference-todo-container">
@@ -65,7 +65,8 @@
         <div class="notice-area">
           <div class="notice-message">
             <p th:text="#{task.edit.notice1}"></p>
-            <p th:if="${doneRequestDto.idList[0] != 0}" th:text="#{task.edit.notice2}"></p>
+            <p th:if="${doneRequestDto.idList[0] != 0}"
+               th:text="#{task.edit.notice2}"></p>
             <p th:text="#{tag.input.notice}"></p>
           </div>
         </div>
@@ -75,7 +76,8 @@
             <th scope="row" class="task-th">日付</th>
             <td class="blank-cell"></td>
             <td>
-              <input type="date" class="date-input-area" th:field="*{date}" required/>
+              <input type="date" class="date-input-area"
+                     th:field="*{date}" required/>
             </td>
           </tr>
           <tr>
@@ -87,33 +89,44 @@
             </td>
           </tr>
           <tr class="blank-row"></tr>
-          <tbody th:each="content, iterStat : *{idList}" data-row-id="${iterStat.index}">
+          <tbody th:each="content, iterStat : *{idList}"
+                 data-row-id="${iterStat.index}">
             <tr class="content-row">
-              <th scope="row" class="task-th" th:text="'内容 ' + ${iterStat.index + 1}"></th>
+              <th scope="row" class="task-th"
+                  th:text="'内容 ' + ${iterStat.index + 1}"></th>
               <td class="blank-cell">
-                <input type="hidden" th:field="*{idList[__${iterStat.index}__]}" />
+                <input type="hidden"
+                       th:field="*{idList[__${iterStat.index}__]}" />
               </td>
               <td colspan="3">
                 <input type="text" class="input-area"
-                       th:field="*{contentList[__${iterStat.index}__]}" />
+                       th:field="*{contentList[__${iterStat.index}__]}"
+                       th:placeholder="#{task.content.placeholder}" />
               </td>
+              <!-- 登録済みレコードの場合は削除チェックボックスを、そうでない場合は削除ボタンを表示　-->
               <td class="delete-check-td">
-                <label class="delete-check-area" th:if="*{idList[__${iterStat.index}__] > 0}">
+                <label class="delete-check-area"
+                       th:if="*{idList[__${iterStat.index}__] > 0}">
                   <input type="checkbox" class="delete-check"
                          th:field="*{deletableList[__${iterStat.index}__]}" value="true" />
-                  <input type="hidden" th:field="*{deletableList[__${iterStat.index}__]}" value="false" />
+                  <input type="hidden"
+                         th:field="*{deletableList[__${iterStat.index}__]}" value="false" />
                   <div class="delete-icon-area">
                     <img th:src="@{/image/delete-icon.svg}" class="delete-icon">
                   </div>
                 </label>
+                <button type="button" class="remove-row-button"
+                        th:if="*{idList[__${iterStat.index}__] == 0} and ${iterStat.index > 0}">×</button>
               </td>
             </tr>
             <tr class="time-row">
-              <th scope="row" class="task-th" th:text="'学習時間 ' + ${iterStat.index + 1}"></th>
+              <th scope="row" class="task-th"
+                  th:text="'学習時間 ' + ${iterStat.index + 1}"></th>
               <td class="blank-cell"></td>
               <td class="input-time-area">
                 <input type="number" class="input-area"
                        th:field="*{hoursList[__${iterStat.index}__]}"
+                       th:placeholder="#{hours.placeholder}"
                        min="0" max="24" value="0" />
               </td>
               <td>
@@ -122,6 +135,7 @@
               <td class="input-time-area">
                 <input type="number" class="input-area"
                        th:field="*{minutesList[__${iterStat.index}__]}"
+                       th:placeholder="#{minutes.placeholder}"
                        min="0" max="59" value="0" />
               </td>
               <td>
@@ -129,14 +143,18 @@
               </td>
             </tr>
             <tr class="memo-row">
-              <th scope="row" class="task-th" th:text="'メモ ' + ${iterStat.index + 1}"></th>
+              <th scope="row" class="task-th"
+                  th:text="'メモ ' + ${iterStat.index + 1}"></th>
               <td class="blank-row"></td>
               <td colspan="4" class="done-memo-area">
-                <textarea class="input-done-memo-area" th:field="*{memoList[__${iterStat.index}__]}"></textarea>
+                <textarea class="input-done-memo-area"
+                          th:field="*{memoList[__${iterStat.index}__]}"
+                          th:placeholder="#{done.memo.placeholder}" ></textarea>
               </td>
             </tr>
             <tr class="tag-row">
-              <th scope="row" class="task-th" th:text="'タグ ' + ${iterStat.index + 1}"></th>
+              <th scope="row" class="task-th"
+                  th:text="'タグ ' + ${iterStat.index + 1}"></th>
               <td class="blank-cell"></td>
               <td colspan="4">
                 <input type="text" class="tags-input"
@@ -169,7 +187,8 @@
               <td class="error-message-td"></td>
               <td class="blank-cell"></td>
               <td colspan="4">
-                <div class="error-message" th:errors="*{hoursList[__${iterStat.index}__]}"></div>
+                <div class="error-message"
+                     th:errors="*{hoursList[__${iterStat.index}__]}"></div>
               </td>
             </tr>
             <tr th:if="${#fields.hasErrors('memoList')}">
@@ -196,16 +215,41 @@
         </div>
       </form>
 
+      <!-- submit時に削除チェックが入っている場合はダイアログを表示 -->
+      <script th:inline="javascript">
+        /*<![CDATA[*/
+            const deleteConfirmMessage = /*[[#{delete.confirm}]]*/;
+
+            document.getElementById("doneForm").addEventListener("submit", function(e) {
+            const hasDelete = [...document.querySelectorAll(".delete-check")]
+                .some(cb => cb.checked);
+
+            if(hasDelete && !confirm(deleteConfirmMessage)) {
+                e.preventDefault();
+            }
+            });
+        /*]]>*/
+      </script>
     </div>
   </div>
+
   <script th:src="@{/js/done-add-tbody.js}"></script>
-  <!-- Tagifyの設定はJSで行う -->
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+        const contentPlaceholder = /*[[#{task.content.placeholder}]]*/;
+        const hoursPlaceholder = /*[[#{hours.placeholder}]]*/;
+        const minutesPlaceholder = /*[[#{minutes.placeholder}]]*/;
+        const memoPlaceholder = /*[[#{done.memo.placeholder}]]*/;
+
+        initDoneAddTbody();
+    /*]]>*/
+  </script>
+
   <script th:src="@{/js/tagify.js}"></script>
   <script th:inline="javascript">
     /*<![CDATA[*/
-    const tagNameList = /*[[${tagNameList}]]*/ [];
-    initDoneAddTbody();
-    initAllTagify();
+        const tagNameList = /*[[${tagNameList}]]*/;
+        initAllTagify();
     /*]]>*/
   </script>
 </body>

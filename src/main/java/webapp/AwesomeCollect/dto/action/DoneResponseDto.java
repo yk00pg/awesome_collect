@@ -13,7 +13,7 @@ import webapp.AwesomeCollect.common.util.LearningTimeConverter;
 import webapp.AwesomeCollect.entity.action.DailyDone;
 
 /**
- * できたことの表示用データオブジェクト。
+ * できたこと表示用データオブジェクト。
  */
 @Data
 public class DoneResponseDto {
@@ -34,6 +34,12 @@ public class DoneResponseDto {
   private LocalDate nextDate;
   private boolean hasContent;
 
+  /**
+   * DBから取得したできたことリストをデータオブジェクトに変換する。
+   *
+   * @param doneList  できたことリスト
+   * @return  データオブジェクト
+   */
   public static DoneResponseDto fromDailyDone(List<DailyDone> doneList){
     DoneResponseDto dto = new DoneResponseDto();
     dto.date = doneList.getFirst().getDate();
@@ -70,10 +76,16 @@ public class DoneResponseDto {
     dto.prevDate = dto.date.minusDays(1);
     dto.nextDate = dto.date.plusDays(1);
     dto.hasContent = true;
+
     return dto;
   }
 
-  // 日付以外空欄のDTOを作成して返す
+  /**
+   * 日付以外空欄のデータオブジェクトを作成する。
+   *
+   * @param date  日付
+   * @return  データオブジェクト
+   */
   public static DoneResponseDto createBlankDto(LocalDate date){
     DoneResponseDto dto = new DoneResponseDto();
     dto.date = date;

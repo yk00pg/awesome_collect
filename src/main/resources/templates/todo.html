@@ -9,10 +9,10 @@
 
 <body>
   <div>
-    <header th:replace="~{fragments/header :: header}"></header>
+    <header th:replace="~{fragments/header::header}"></header>
   </div>
 
-  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
 
   <div class="task-container">
     <div class="date-index">
@@ -35,7 +35,7 @@
         <p th:text="${todoResponseDto.formattedDate}"></p>
       </div>
 
-      <!-- まだ登録されていない場合 -->
+      <!-- 登録されていない場合 -->
       <th:block th:if="${!todoResponseDto.hasContent}">
         <div class="empty-content">
           <p th:text="#{unregistered.task('やること')}"></p>
@@ -88,7 +88,7 @@
           <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
         </form>
 
-        <!-- 削除ボタンクリック時にダイアログを表示 -->
+        <!-- 削除ボタンクリック時に表示するダイアログ -->
         <script th:inline="javascript">
           /*<![CDATA[*/
             const deleteMsg = /*[[#{task.delete.confirm('やること')}]]*/;
@@ -108,7 +108,7 @@
   <!-- 初回登録時のみ表示するポップアップウィンドウ -->
   <div th:if="${achievementPopup != null}">
     <div class="popup"
-       th:replace="~{fragments/popup :: popup}"></div>
+       th:replace="~{fragments/popup::popup}"></div>
   </div>
 </body>
 </html>
