@@ -1,4 +1,4 @@
-package webapp.AwesomeCollect.entity;
+package webapp.AwesomeCollect.entity.user;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

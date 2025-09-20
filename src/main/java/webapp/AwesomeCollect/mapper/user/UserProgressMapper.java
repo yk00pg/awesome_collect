@@ -1,10 +1,10 @@
-package webapp.AwesomeCollect.mapper;
+package webapp.AwesomeCollect.mapper.user;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import webapp.AwesomeCollect.entity.UserProgress;
+import webapp.AwesomeCollect.entity.user.UserProgress;
 
 @Mapper
 public interface UserProgressMapper {

@@ -5,16 +5,16 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import webapp.AwesomeCollect.SaveResult;
+import webapp.AwesomeCollect.common.SaveResult;
 import webapp.AwesomeCollect.common.SessionManager;
 import webapp.AwesomeCollect.common.util.JsonConverter;
-import webapp.AwesomeCollect.dto.action.GoalRequestDto;
-import webapp.AwesomeCollect.dto.action.GoalResponseDto;
+import webapp.AwesomeCollect.dto.action.request.GoalRequestDto;
+import webapp.AwesomeCollect.dto.action.response.GoalResponseDto;
 import webapp.AwesomeCollect.entity.junction.GoalTagJunction;
 import webapp.AwesomeCollect.entity.action.Goal;
-import webapp.AwesomeCollect.repository.GoalRepository;
+import webapp.AwesomeCollect.repository.action.GoalRepository;
 import webapp.AwesomeCollect.service.TagService;
-import webapp.AwesomeCollect.service.UserProgressService;
+import webapp.AwesomeCollect.service.user.UserProgressService;
 import webapp.AwesomeCollect.service.junction.GoalTagJunctionService;
 
 /**

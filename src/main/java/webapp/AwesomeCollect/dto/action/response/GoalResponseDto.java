@@ -1,4 +1,4 @@
-package webapp.AwesomeCollect.dto.action;
+package webapp.AwesomeCollect.dto.action.response;
 
 import java.util.List;
 import lombok.Data;

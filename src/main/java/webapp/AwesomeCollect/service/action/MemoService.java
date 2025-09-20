@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.common.SessionManager;
 import webapp.AwesomeCollect.common.util.JsonConverter;
-import webapp.AwesomeCollect.dto.action.MemoRequestDto;
-import webapp.AwesomeCollect.dto.action.MemoResponseDto;
+import webapp.AwesomeCollect.dto.action.request.MemoRequestDto;
+import webapp.AwesomeCollect.dto.action.response.MemoResponseDto;
 import webapp.AwesomeCollect.entity.junction.MemoTagJunction;
 import webapp.AwesomeCollect.entity.action.Memo;
-import webapp.AwesomeCollect.repository.MemoRepository;
+import webapp.AwesomeCollect.repository.action.MemoRepository;
 import webapp.AwesomeCollect.service.TagService;
-import webapp.AwesomeCollect.service.UserProgressService;
+import webapp.AwesomeCollect.service.user.UserProgressService;
 import webapp.AwesomeCollect.service.junction.MemoTagJunctionService;
 
 /**

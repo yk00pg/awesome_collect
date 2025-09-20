@@ -6,7 +6,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.util.MessageUtil;
-import webapp.AwesomeCollect.dto.action.TodoRequestDto;
+import webapp.AwesomeCollect.dto.action.request.TodoRequestDto;
 
 /**
  * やることのカスタムバリデータクラス。<br>

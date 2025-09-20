@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import webapp.AwesomeCollect.entity.UserInfo;
+import webapp.AwesomeCollect.entity.user.UserInfo;
 
 /**
  * ユーザーの基本情報データオブジェクト。

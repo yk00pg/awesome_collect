@@ -1,4 +1,4 @@
-package webapp.AwesomeCollect.repository;
+package webapp.AwesomeCollect.repository.action;
 
 import java.time.LocalDate;
 import java.util.List;

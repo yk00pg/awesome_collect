@@ -1,4 +1,4 @@
-package webapp.AwesomeCollect.dto.action;
+package webapp.AwesomeCollect.dto.action.response;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

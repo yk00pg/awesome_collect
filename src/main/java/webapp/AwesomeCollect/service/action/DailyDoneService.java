@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.common.SessionManager;
 import webapp.AwesomeCollect.common.util.JsonConverter;
-import webapp.AwesomeCollect.dto.action.DoneRequestDto;
-import webapp.AwesomeCollect.dto.action.DoneResponseDto;
+import webapp.AwesomeCollect.dto.action.request.DoneRequestDto;
+import webapp.AwesomeCollect.dto.action.response.DoneResponseDto;
 import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
 import webapp.AwesomeCollect.entity.action.DailyDone;
-import webapp.AwesomeCollect.repository.DailyDoneRepository;
+import webapp.AwesomeCollect.repository.action.DailyDoneRepository;
 import webapp.AwesomeCollect.service.TagService;
-import webapp.AwesomeCollect.service.UserProgressService;
+import webapp.AwesomeCollect.service.user.UserProgressService;
 import webapp.AwesomeCollect.service.junction.DoneTagJunctionService;
 
 /**

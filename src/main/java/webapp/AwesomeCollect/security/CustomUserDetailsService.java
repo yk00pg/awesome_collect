@@ -4,8 +4,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import webapp.AwesomeCollect.entity.UserInfo;
-import webapp.AwesomeCollect.repository.UserInfoRepository;
+import webapp.AwesomeCollect.entity.user.UserInfo;
+import webapp.AwesomeCollect.repository.user.UserInfoRepository;
 
 /**
  * ログイン認証のサービスクラス。

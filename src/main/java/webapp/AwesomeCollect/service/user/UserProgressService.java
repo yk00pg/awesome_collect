@@ -1,10 +1,11 @@
-package webapp.AwesomeCollect.service;
+package webapp.AwesomeCollect.service.user;
 
 import java.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import webapp.AwesomeCollect.entity.UserProgress;
-import webapp.AwesomeCollect.repository.UserProgressRepository;
+import webapp.AwesomeCollect.entity.user.UserProgress;
+import webapp.AwesomeCollect.repository.user.UserProgressRepository;
+import webapp.AwesomeCollect.service.BonusAwesomeService;
 
 @Service
 public class UserProgressService {

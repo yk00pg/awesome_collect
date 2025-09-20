@@ -1,8 +1,8 @@
-package webapp.AwesomeCollect.repository;
+package webapp.AwesomeCollect.repository.user;
 
 import org.springframework.stereotype.Repository;
-import webapp.AwesomeCollect.entity.UserProgress;
-import webapp.AwesomeCollect.mapper.UserProgressMapper;
+import webapp.AwesomeCollect.entity.user.UserProgress;
+import webapp.AwesomeCollect.mapper.user.UserProgressMapper;
 
 @Repository
 public class UserProgressRepository {

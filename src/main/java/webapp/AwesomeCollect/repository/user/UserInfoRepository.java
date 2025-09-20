@@ -1,8 +1,8 @@
-package webapp.AwesomeCollect.repository;
+package webapp.AwesomeCollect.repository.user;
 
 import org.springframework.stereotype.Repository;
-import webapp.AwesomeCollect.entity.UserInfo;
-import webapp.AwesomeCollect.mapper.UserInfoMapper;
+import webapp.AwesomeCollect.entity.user.UserInfo;
+import webapp.AwesomeCollect.mapper.user.UserInfoMapper;
 
 /**
  * ユーザー情報のリポジトリクラス。
