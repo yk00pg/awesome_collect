@@ -27,7 +27,7 @@ public class SecurityConfig {
     this.customUserDetailsService = customUserDetailsService;
   }
 
-  // ログイン認証をカスタマイズ
+  // ログイン認証をカスタマイズする。
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
     httpSecurity

@@ -53,7 +53,7 @@ public class UserInfoService {
       throws DuplicateException {
 
     UserInfo userInfo = dto.toEntityForSignup(securityConfig.passwordEncoder());
-    // 新規ユーザのためid=0として重複確認
+    // 新規ユーザのためid=0
     if(isDuplicateLoginId(userInfo.getLoginId(), 0)) {
       throw new DuplicateException(DuplicateType.USER_ID);
     }
