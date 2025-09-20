@@ -20,14 +20,23 @@ public abstract class BaseActionTagJunctionService<T> {
   }
 
   /**
-   * アクションIDを基に
-   * @param actionId
-   * @return
+   * アクションIDを基にDBからタグIDリストを取得する。
+   *
+   * @param actionId  アクションID
+   * @return  タグIDリスト
    */
   public List<Integer> prepareTagIdListByActionId(int actionId){
     return repository.searchTagIdsByActionId(actionId);
   }
 
+  /**
+   * タグIDリストがnullまたは空の場合は何もしない。<br>
+   * そうでない場合は、アクションIDとタグIDを組み合わせてエンティティを生成し、DBに登録する。
+   *
+   * @param actionId  アクションID
+   * @param relationFactory エンティティを生成するインターフェース
+   * @param tagIdList タグIDリスト
+   */
   public void registerNewRelations(
       int actionId, BiFunction<Integer, Integer, T> relationFactory,
       List<Integer> tagIdList){
@@ -42,6 +51,15 @@ public abstract class BaseActionTagJunctionService<T> {
     }
   }
 
+  /**
+   * タグIDリストがnullまたは空の場合は何もしない。<br>
+   * そうでない場合は、アクションIDとタグIDを組み合わせてエンティティを生成し、
+   * DBのレコードを更新（登録・削除）する。
+   *
+   * @param actionId  アクションID
+   * @param relationFactory エンティティを生成するインターフェース
+   * @param tagIdList タグIDリスト
+   */
   public void updateRelations(
       int actionId, BiFunction<Integer, Integer, T> relationFactory,
       List<Integer> tagIdList){
@@ -56,19 +74,35 @@ public abstract class BaseActionTagJunctionService<T> {
     deleteRelations(actionId, relationFactory, tagIdList, currentTagIdList);
   }
 
-  private void deleteRelations(
-      int actionId, BiFunction<Integer, Integer, T> relationFactory,
-      List<Integer> tagIdList, List<Integer> currentTagIdList) {
-
-    Set<Integer> toRemoveList = new HashSet<>(currentTagIdList);
-    tagIdList.forEach(toRemoveList::remove);
-
-    for(int tagId : toRemoveList){
-      T relation = relationFactory.apply(actionId, tagId);
-      deleteRelationByRelatedId(relation);
-    }
+  /**
+   * アクションIDとタグIDの関係をDBに登録する。
+   *
+   * @param relation  アクションIDとタグIDの関係
+   */
+  protected void registerRelation(T relation){
+    repository.registerRelation(relation);
   }
 
+  /**
+   * アクションIDを基に、アクションIDとタグIDの関係をDBから削除する。
+   *
+   * @param actionId  アクションID
+   */
+  protected void deleteRelationByActionId(int actionId){
+    repository.deleteRelationByActionId(actionId);
+  }
+
+  /**
+   * アクションIDとタグIDの関係を基に、DBのレコードを削除する。
+   *
+   * @param relation  アクションIDとタグIDの関係
+   */
+  protected void deleteRelationByRelatedId(T relation){
+    repository.deleteRelationByRelatedId(relation);
+  }
+
+
+  // 登録済みのタグ情報と入力されたタグ情報を比較し、差分をDBに登録する。
   private void registerRelations(
       int actionId, BiFunction<Integer, Integer, T> relationFactory,
       List<Integer> newTagIdList, List<Integer> currentTagIdList) {
@@ -82,15 +116,18 @@ public abstract class BaseActionTagJunctionService<T> {
     }
   }
 
-  protected void registerRelation(T relation){
-    repository.registerRelation(relation);
+  // 登録済みのタグ情報と入力されたタグ情報を比較し、差分をDBから削除する。
+  private void deleteRelations(
+      int actionId, BiFunction<Integer, Integer, T> relationFactory,
+      List<Integer> tagIdList, List<Integer> currentTagIdList) {
+
+    Set<Integer> toRemoveList = new HashSet<>(currentTagIdList);
+    tagIdList.forEach(toRemoveList::remove);
+
+    for(int tagId : toRemoveList){
+      T relation = relationFactory.apply(actionId, tagId);
+      deleteRelationByRelatedId(relation);
+    }
   }
 
-  public void deleteRelationByActionId(int actionId){
-    repository.deleteRelationByActionId(actionId);
-  }
-
-  public void deleteRelationByRelatedId(T relation){
-    repository.deleteRelationByRelatedId(relation);
-  }
 }

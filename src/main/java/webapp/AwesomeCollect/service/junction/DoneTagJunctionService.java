@@ -58,6 +58,12 @@ public class DoneTagJunctionService extends BaseActionTagJunctionService<DoneTag
     super.deleteRelationByRelatedId(relation);
   }
 
+  /**
+   * 日付を基にDBからできたことIDとタグIDの関係を削除する。
+   *
+   * @param userId  ユーザーID
+   * @param date  日付
+   */
   public void deleteRelationByDate(int userId, LocalDate date) {
     doneTagJunctionRepository.deleteRelationByDate(userId, date);
   }
