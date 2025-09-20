@@ -1,11 +1,11 @@
-package webapp.AwesomeCollect.mapper;
+package webapp.AwesomeCollect.mapper.user;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import webapp.AwesomeCollect.entity.UserInfo;
+import webapp.AwesomeCollect.entity.user.UserInfo;
 
 @Mapper
 public interface UserInfoMapper {

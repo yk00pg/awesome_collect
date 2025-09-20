@@ -1,4 +1,4 @@
-package webapp.AwesomeCollect.dto.action;
+package webapp.AwesomeCollect.dto.action.request;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -11,6 +11,7 @@ import java.util.List;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import webapp.AwesomeCollect.common.util.LearningTimeConverter;
+import webapp.AwesomeCollect.dto.action.response.TodoResponseDto;
 import webapp.AwesomeCollect.entity.action.DailyDone;
 
 /**

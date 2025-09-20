@@ -1,4 +1,4 @@
-package webapp.AwesomeCollect.dto.action;
+package webapp.AwesomeCollect.dto.action.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import webapp.AwesomeCollect.entity.UserInfo;
+import webapp.AwesomeCollect.entity.user.UserInfo;
 
 /**
  * カスタムユーザー情報を扱うオブジェクト。ログインID、パスワードなどの情報を持つ。

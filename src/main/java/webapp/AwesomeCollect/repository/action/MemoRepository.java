@@ -1,4 +1,4 @@
-package webapp.AwesomeCollect.repository;
+package webapp.AwesomeCollect.repository.action;
 
 import java.util.List;
 import org.springframework.stereotype.Repository;

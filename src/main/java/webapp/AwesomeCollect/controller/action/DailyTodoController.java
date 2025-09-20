@@ -20,7 +20,7 @@ import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.constant.ViewNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
-import webapp.AwesomeCollect.dto.action.TodoRequestDto;
+import webapp.AwesomeCollect.dto.action.request.TodoRequestDto;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.action.DailyTodoService;
 import webapp.AwesomeCollect.validation.DailyTodoValidator;

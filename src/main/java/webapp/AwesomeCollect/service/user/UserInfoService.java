@@ -1,4 +1,4 @@
-package webapp.AwesomeCollect.service;
+package webapp.AwesomeCollect.service.user;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,9 +7,9 @@ import webapp.AwesomeCollect.dto.user.UserInfoDto;
 import webapp.AwesomeCollect.dto.user.UserPasswordDto;
 import webapp.AwesomeCollect.exception.DuplicateException;
 import webapp.AwesomeCollect.exception.DuplicateType;
-import webapp.AwesomeCollect.entity.UserInfo;
+import webapp.AwesomeCollect.entity.user.UserInfo;
 import webapp.AwesomeCollect.exception.IncorrectPasswordException;
-import webapp.AwesomeCollect.repository.UserInfoRepository;
+import webapp.AwesomeCollect.repository.user.UserInfoRepository;
 import webapp.AwesomeCollect.security.SecurityConfig;
 
 /**

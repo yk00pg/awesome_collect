@@ -1,4 +1,4 @@
-package webapp.AwesomeCollect.entity;
+package webapp.AwesomeCollect.entity.user;
 
 import java.time.LocalDate;
 import lombok.Getter;

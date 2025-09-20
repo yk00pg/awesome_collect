@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import webapp.AwesomeCollect.entity.UserInfo;
+import webapp.AwesomeCollect.entity.user.UserInfo;
 
 /**
  * ユーザーのパスワード情報データオブジェクト。

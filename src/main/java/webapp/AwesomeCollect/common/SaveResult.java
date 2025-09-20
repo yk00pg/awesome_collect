@@ -1,4 +1,4 @@
-package webapp.AwesomeCollect;
+package webapp.AwesomeCollect.common;
 
 /**
  * データの保存方法（新規登録・更新）や内容を判別するためのオブジェクト。
