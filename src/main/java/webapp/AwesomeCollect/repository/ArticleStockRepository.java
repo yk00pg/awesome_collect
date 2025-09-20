@@ -25,14 +25,6 @@ public class ArticleStockRepository {
     return mapper.selectArticleStockByIds(id, userId);
   }
 
-  public int countArticleStock(int userId){
-    return mapper.countArticleStock(userId);
-  }
-
-  public int countFinished(int userId){
-    return mapper.countFinished(userId);
-  }
-
   public void registerArticleStock(ArticleStock articleStock){
     mapper.insertArticleStock(articleStock);
   }

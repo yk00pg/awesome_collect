@@ -12,10 +12,10 @@
 
 <body>
   <div>
-    <header th:replace="~{fragments/header :: header}"></header>
+    <header th:replace="~{fragments/header::header}"></header>
   </div>
 
-  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
 
   <div class="main-container">
     <div class="back-indicator">
@@ -51,7 +51,8 @@
         <th scope="row" class="input-row-th">タイトル</th>
         <td class="blank-cell"></td>
         <td>
-          <input type="text" class="input-area" th:field="*{title}" required />
+          <input type="text" class="input-area" th:field="*{title}"
+                 th:placeholder="#{title.placeholder}" required />
         </td>
       </tr>
       <tr>
@@ -83,8 +84,8 @@
         <th scope="row" class="input-row-th">メモ</th>
         <td class="blank-cell"></td>
         <td>
-          <textarea class="input-article-memo-area"
-                    th:field="*{memo}"></textarea>
+          <textarea class="input-article-memo-area" th:field="*{memo}"
+                    th:placeholder="#{article.memo.placeholder}"></textarea>
         </td>
       </tr>
       <tr>
@@ -139,10 +140,10 @@
   </div>
   <script th:src="@{/js/tagify.js}"></script>
   <script th:inline="javascript">
-    /*<![CDATA[*/
-    const tagNameList = /*[[${tagNameList}]]*/ [];
-    initAllTagify();
-    /*]]>*/
+      /*<![CDATA[*/
+          const tagNameList = /*[[${tagNameList}]]*/ [];
+          initAllTagify();
+      /*]]>*/
   </script>
 </body>
 </html>
