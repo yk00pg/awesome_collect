@@ -99,12 +99,6 @@ public class GoalController {
     }
   }
 
-  // アクセス不可時のエラーページを表示
-  @GetMapping(ViewNames.ERROR_NOT_ACCESSIBLE)
-  public String showNotAccessibleView(){
-    return ViewNames.ERROR_NOT_ACCESSIBLE;
-  }
-
   // DTOのアノテーションで制御できないバリデーションを確認
   @InitBinder(AttributeNames.GOAL_REQUEST_DTO)
   public void initBinder(WebDataBinder dataBinder){
