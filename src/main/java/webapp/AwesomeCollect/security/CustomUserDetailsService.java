@@ -20,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
   }
 
   /**
-   * ログインIDを基にDBからユーザー情報を取得し、nullでなければカスタムユーザー情報として返す。
+   * ログインIDを基にDBからユーザー情報を取得し、nullでなければカスタムユーザー情報として読み込む。
    *
    * @param loginId ログインID
    * @return  カスタムユーザー情報

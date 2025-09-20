@@ -56,7 +56,7 @@ public class MyPageController {
     return ViewNames.MY_PAGE;
   }
 
-  // ユーザー登録情報の編集フォームを表示
+  // ユーザー登録情報の編集フォームを表示する。
   @GetMapping(ViewNames.MY_PAGE_EDIT)
   public String showUserBasicInfoEditForm(
       @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
@@ -67,21 +67,22 @@ public class MyPageController {
     return ViewNames.MY_PAGE_EDIT;
   }
 
-  // パスワード変更フォームを表示
+  // パスワード変更フォームを表示する。
   @GetMapping(ViewNames.MY_PAGE_CHANGE_PASSWORD)
   public String showPasswordChangeForm(Model model){
     model.addAttribute(AttributeNames.PASSWORD_DTO, new UserPasswordDto());
     return ViewNames.MY_PAGE_CHANGE_PASSWORD;
   }
 
+  // DTOアノテーションで制御できないバリデーションを確認する。
   @InitBinder(AttributeNames.PASSWORD_DTO)
   public void initBinder(WebDataBinder dataBinder){
     dataBinder.addValidators(myPageValidator);
   }
 
   /**
-   * 入力されたデータを確認し、ユーザーの基本情報を更新する。<br>
-   * バインディングエラーまたはDB更新時の例外が発生した場合はエラーメッセージを表示し、
+   * 入力されたデータにバインディングエラーまたはDB更新時の例外が発生した場合は
+   * 編集ページに戻ってエラーメッセージを表示し、
    * そうでない場合はマイページに遷移し、サクセスメッセージを表示する。
    *
    * @param dto ユーザーの基本情報のデータオブジェクト
@@ -101,7 +102,6 @@ public class MyPageController {
       return ViewNames.MY_PAGE_EDIT;
     }
 
-    // ログインIDまたはメールアドレスが重複している場合はエラーに追加
     try{
       userInfoService.updateUserInfo(dto, customUserDetails.getId());
     }catch(DuplicateException ex) {
@@ -120,9 +120,9 @@ public class MyPageController {
   }
 
   /**
-   * 入力されたデータを確認し、パスワードを変更する。<br>
-   * バインディングエラーまたはパスワード照合エラーが発生した場合はエラーメッセージを表示し、
-   * そうでない場合はログアウトしてログインページに遷移し、サクセスメッセージを表示する。
+   * 入力されたデータにバインディングエラーまたはパスワード照合エラーが発生した場合は
+   * 変更ページに戻ってエラーメッセージを表示し、そうでない場合はセッションを削除して
+   * ログアウトし、ログインページに遷移してサクセスメッセージを表示する。
    *
    * @param dto パスワード情報を扱うデータオブジェクト
    * @param result  バインディングの結果
@@ -142,7 +142,6 @@ public class MyPageController {
       return ViewNames.MY_PAGE_CHANGE_PASSWORD;
     }
 
-    // 現在のパスワードが間違っている場合はエラーに追加
     try{
       userInfoService.updatePassword(dto, customUserDetails.getId());
     }catch(IncorrectPasswordException ex){

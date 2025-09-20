@@ -15,17 +15,19 @@ public class UserBasicInfoDto {
 
   private static final String LOGIN_ID_PATTERN =
       "^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9_-]{6,20}$";
+  private static final int NAME_MAX_SIZE = 20;
+  private static final int EMAIL_MAX_SIZE = 254;
 
   @NotBlank(message = "{loginId.blank}")
   @Pattern(regexp = LOGIN_ID_PATTERN, message = "{loginId.invalid}")
   private String loginId;
 
-  @Size(max = 20, message = "{userName.invalid}")
+  @Size(max = NAME_MAX_SIZE, message = "{userName.invalid}")
   private String userName;
 
   @NotBlank(message = "{email.blank}")
   @Email(message = "{email.invalid.pattern}")
-  @Size(max = 254, message = "{email.invalid.size}")
+  @Size(max = EMAIL_MAX_SIZE, message = "{email.invalid.size}")
   private String email;
 
   /**
