@@ -6,7 +6,7 @@ import webapp.AwesomeCollect.common.util.DateTimeFormatUtil;
 import webapp.AwesomeCollect.entity.action.Goal;
 
 /**
- * 目標の表示用データオブジェクト。
+ * 目標表示用データオブジェクト。
  */
 @Data
 public class GoalResponseDto {
@@ -35,10 +35,10 @@ public class GoalResponseDto {
   }
 
   /**
-   * DBから取得した目標を一覧ページ用データオブジェクトに変換する。
+   * DBから取得した目標を一覧ページの表示用データオブジェクトに変換する。
    *
    * @param goal  目標
-   * @return  一覧ページ用データオブジェクト
+   * @return  一覧ページの表示用データオブジェクト
    */
   public static GoalResponseDto fromEntityForList(Goal goal){
     GoalResponseDto dto = new GoalResponseDto();
@@ -49,10 +49,10 @@ public class GoalResponseDto {
   }
 
   /**
-   * DBから取得した目標を詳細ページ用データオブジェクトに変換する。
+   * DBから取得した目標を詳細ページの表示用データオブジェクトに変換する。
    *
    * @param goal  目標
-   * @return  詳細ページ用データオブジェクト
+   * @return  詳細ページの表示用データオブジェクト
    */
   public static GoalResponseDto fromEntityForDetail(Goal goal){
     GoalResponseDto dto = new GoalResponseDto();
