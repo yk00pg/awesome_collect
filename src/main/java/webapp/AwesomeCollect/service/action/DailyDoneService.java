@@ -134,17 +134,17 @@ public class DailyDoneService {
         continue;
       }
 
-      int id = dto.getIdList().get(i);
+      int doneId = dto.getIdList().get(i);
       List<String> pureTagList = pureTagsList.get(i);
       List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
 
-      if(id == 0){
+      if(doneId == 0){
         registerDailyDone(userId, dto, tagIdList, i);
       }else{
         if(dto.isDeletable(i)){
-          deleteDailyDone(id);
+          deleteDailyDone(doneId);
         }else{
-          updateDailyDone(userId, dto, id, i, tagIdList);
+          updateDailyDone(userId, dto, doneId, i, tagIdList);
         }
       }
     }
@@ -158,7 +158,7 @@ public class DailyDoneService {
    * @param userId  ユーザーID
    * @param dto できたこと入力用データオブジェクト
    * @param tagIdList タグIDリスト
-   * @param index DTO内リストのインデックス番号
+   * @param index リストのインデックス番号
    */
   @Transactional
   private void registerDailyDone(
@@ -181,12 +181,12 @@ public class DailyDoneService {
    * できたことIDを基にDBからタグレコード、できたことレコードを削除し、
    * セッションのレコード数更新情報、学習時間更新情報を変更する。
    *
-   * @param id  できたことID
+   * @param doneId  できたことID
    */
   @Transactional
-  private void deleteDailyDone(int id) {
-    doneTagJunctionService.deleteRelationByActionId(id);
-    dailyDoneRepository.deleteDailyDoneById(id);
+  private void deleteDailyDone(int doneId) {
+    doneTagJunctionService.deleteRelationByActionId(doneId);
+    dailyDoneRepository.deleteDailyDoneById(doneId);
     sessionManager.setHasUpdatedRecordCount(true);
     sessionManager.setHasUpdateTime(true);
   }
@@ -196,18 +196,18 @@ public class DailyDoneService {
    * セッションのレコード数更新情報を変更する。
    *
    * @param userId  ユーザーID
-   * @param dto できたことのデータオブジェクト
-   * @param id できたことのID
+   * @param dto できたこと入力用データオブジェクト
+   * @param doneId できたことID
    * @param index リストのインデックス番号
    * @param tagIdList タグIDリスト
    */
   @Transactional
   private void updateDailyDone(
-      int userId, DoneRequestDto dto, int id, int index, List<Integer> tagIdList) {
+      int userId, DoneRequestDto dto, int doneId, int index, List<Integer> tagIdList) {
 
     DailyDone dailyDone = dto.toDailyDoneForUpdate(userId, index);
     dailyDoneRepository.updateDailyDone(dailyDone);
-    doneTagJunctionService.updateRelations(id, DoneTagJunction::new, tagIdList);
+    doneTagJunctionService.updateRelations(doneId, DoneTagJunction::new, tagIdList);
 
     sessionManager.setHasUpdateTime(true);
   }

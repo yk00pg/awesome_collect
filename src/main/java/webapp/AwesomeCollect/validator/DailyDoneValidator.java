@@ -67,7 +67,7 @@ public class DailyDoneValidator implements Validator {
 
       if(content != null && !content.isBlank()
           && dto.getHoursList().get(i) == 0 && dto.getMinutesList().get(i) == 0){
-        // エラーメッセージを重複して表示しないように、minutesListフィールドには追加しない
+        // エラーメッセージを重複して表示しないように、minutesListフィールドには追加しない。
         errors.rejectValue(
             "hoursList[" + i + "]", "blankLearningTime",
             messageUtil.getMessage(MessageKeys.LEARNING_TIME_BLANK));
@@ -85,7 +85,7 @@ public class DailyDoneValidator implements Validator {
         .sum();
 
     if((totalHours * MINUTES) + totalMinutes > HOURS * MINUTES){
-      // エラーメッセージを重複して表示しないように、minutesListフィールドには追加しない
+      // エラーメッセージを重複して表示しないように、minutesListフィールドには追加しない。
       errors.rejectValue(
           "hoursList", "exceededTotalLearningTime",
           messageUtil.getMessage(MessageKeys.TOTAL_LEARNING_TIME_EXCEEDED));
