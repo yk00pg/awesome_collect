@@ -76,18 +76,18 @@ public class DailyTodoService {
   @Transactional
   public void saveDailyTodo(int userId, TodoRequestDto dto) {
     for (int i = 0; i < dto.getContentList().size(); i++) {
-      int id = dto.getIdList().get(i);
+      int todoId = dto.getIdList().get(i);
       String content = dto.getContentList().get(i);
 
       if(content == null || content.isBlank()){
         continue;
       }
 
-      if (id == 0) {
+      if (todoId == 0) {
         registerDailyTodo(userId, dto, i);
       } else {
         if (dto.isDeletable(i)) {
-          dailyTodoRepository.deleteDailyTodoById(id);
+          dailyTodoRepository.deleteDailyTodoById(todoId);
         } else {
           dailyTodoRepository.updateDailyTodo(dto.toDailyTodoForUpdate(userId, i));
         }
