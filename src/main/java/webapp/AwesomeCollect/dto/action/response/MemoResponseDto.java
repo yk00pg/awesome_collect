@@ -7,7 +7,7 @@ import webapp.AwesomeCollect.common.util.MarkdownConverter;
 import webapp.AwesomeCollect.entity.action.Memo;
 
 /**
- * メモの表示用データオブジェクト。
+ * メモ表示用データオブジェクト。
  */
 @Data
 public class MemoResponseDto {
@@ -26,10 +26,10 @@ public class MemoResponseDto {
   }
 
   /**
-   * DBから取得したメモを一覧ページ用データオブジェクトに変換する。
+   * DBから取得したメモを一覧ページの表示用データオブジェクトに変換する。
    *
    * @param memo  メモ
-   * @return  一覧ページ用データオブジェクト
+   * @return  一覧ページの表示用データオブジェクト
    */
   public static MemoResponseDto fromEntityForList(Memo memo){
     MemoResponseDto dto = new MemoResponseDto();
@@ -39,10 +39,10 @@ public class MemoResponseDto {
   }
 
   /**
-   * DBから取得したメモを詳細ページ用データオブジェクトに変換する。
+   * DBから取得したメモを詳細ページの表示用データオブジェクトに変換する。
    *
    * @param memo  メモ
-   * @return  詳細ページ用データオブジェクト
+   * @return  詳細ページの表示用データオブジェクト
    */
   public static MemoResponseDto fromEntityForDetail(Memo memo){
     MemoResponseDto dto = new MemoResponseDto();

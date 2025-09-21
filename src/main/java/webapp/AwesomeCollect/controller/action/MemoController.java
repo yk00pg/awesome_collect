@@ -94,7 +94,7 @@ public class MemoController {
 
   /**
    * 入力されたデータにバインディングエラーが発生した場合はタグリストを詰め直して
-   * 編集ページに戻り、そうでない場合はDBに保存（登録・更新）し、
+   * 編集ページに戻り、エラーメッセージを表示する。そうでない場合はDBに保存（登録・更新）し、
    * 詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    * 
    * @param id  メモID
@@ -128,7 +128,21 @@ public class MemoController {
     return RedirectUtil.redirectView(ViewNames.MEMO_DETAIL_PAGE, memoId);
   }
 
-  // 新規登録か更新かを判定してサクセスメッセージを表示する。
+  // 指定のIDの目標を削除して一覧ページにリダイレクトする。
+  @DeleteMapping(ViewNames.MEMO_DETAIL_BY_ID)
+  public String deleteMemo(
+      @PathVariable int id, RedirectAttributes redirectAttributes) {
+
+    memoService.deleteMemo(id);
+    
+    redirectAttributes.addFlashAttribute(
+        AttributeNames.SUCCESS_MESSAGE,
+        messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
+
+    return RedirectUtil.redirectView(ViewNames.MEMO_PAGE);
+  }
+
+  // 登録か更新かを判定してサクセスメッセージとポップアップウィンドウを表示する。
   private void addAttributeBySaveType(int id, RedirectAttributes redirectAttributes) {
     boolean isRegistration = id == 0;
     if(isRegistration){
@@ -143,19 +157,5 @@ public class MemoController {
           AttributeNames.SUCCESS_MESSAGE,
           messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
     }
-  }
-
-  // 指定のIDの目標を削除して一覧ページにリダイレクトする。
-  @DeleteMapping(ViewNames.MEMO_DETAIL_BY_ID)
-  public String deleteMemo(
-      @PathVariable int id, RedirectAttributes redirectAttributes) {
-
-    memoService.deleteMemo(id);
-    
-    redirectAttributes.addFlashAttribute(
-        AttributeNames.SUCCESS_MESSAGE,
-        messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
-
-    return RedirectUtil.redirectView(ViewNames.MEMO_PAGE);
   }
 }
