@@ -1,3 +1,4 @@
+// 入力フォームに行ブロックを追加する関数
 function initTodoAddTbody() {
     const table = document.getElementById("variable-table");
     const addButton = document.getElementById("add-row");
@@ -29,7 +30,7 @@ function initTodoAddTbody() {
         return tbody;
     };
 
-    // 行ブロックを追加
+    // 追加ボタンをクリックしたときに行ブロックを追加する。
     addButton.onclick = () => {
         const blocks = table.querySelectorAll("tbody[data-row-id]");
         const index = blocks.length;
@@ -37,7 +38,7 @@ function initTodoAddTbody() {
         table.appendChild(newBlock);
     };
 
-    // 追加した行ブロックを削除
+    // 削除ボタンをクリックしたときに行ブロックを削除する。
     table.onclick = (e) => {
         if(e.target.classList.contains("remove-row-button")) {
             e.target.closest("tbody").remove();
@@ -45,7 +46,7 @@ function initTodoAddTbody() {
         }
     };
 
-    // ラベルの番号を振り直す
+    // ラベルの番号を振り直す。
     function updateLabels() {
         const blocks = table.querySelectorAll("tbody[data-row-id]");
         blocks.forEach((block, i) => {

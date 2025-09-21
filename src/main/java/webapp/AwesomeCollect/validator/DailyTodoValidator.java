@@ -1,4 +1,4 @@
-package webapp.AwesomeCollect.validation;
+package webapp.AwesomeCollect.validator;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -35,7 +35,7 @@ public class DailyTodoValidator implements Validator {
   /**
    * 内容がすべて空欄の場合はエラーに追加する。
    *
-   * @param dto やることの入力用データオブジェクト
+   * @param dto やること入力用データオブジェクト
    * @param errors  エラー
    */
   private void validateContent(TodoRequestDto dto, Errors errors){

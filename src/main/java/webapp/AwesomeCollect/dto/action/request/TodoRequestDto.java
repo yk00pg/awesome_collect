@@ -11,7 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import webapp.AwesomeCollect.entity.action.DailyTodo;
 
 /**
- * やることの入力用データオブジェクト。
+ * やること入力用データオブジェクト。
  */
 @Data
 public class TodoRequestDto {
@@ -75,10 +75,10 @@ public class TodoRequestDto {
   }
 
   /**
-   * DBから取得したやることリストをデータオブジェクトに変換する。
+   * DBから取得したやることリストを入力用データオブジェクトに変換する。
    *
    * @param todoList  やることリスト
-   * @return  データオブジェクト
+   * @return  入力用データオブジェクト
    */
   public static TodoRequestDto fromDailyTodo (List<DailyTodo> todoList){
     TodoRequestDto dto = new TodoRequestDto();
@@ -92,10 +92,10 @@ public class TodoRequestDto {
   }
 
   /**
-   * 日付とid(0)以外空欄のデータオブジェクトを作成する。
+   * 日付とid(0)以外空欄の入力用データオブジェクトを作成する。
    *
    * @param date  日付
-   * @return  データオブジェクト
+   * @return  入力用データオブジェクト
    */
   public static TodoRequestDto createBlankDto(LocalDate date){
     TodoRequestDto dto = new TodoRequestDto();

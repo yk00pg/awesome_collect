@@ -23,7 +23,7 @@ import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.action.request.TodoRequestDto;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.action.DailyTodoService;
-import webapp.AwesomeCollect.validation.DailyTodoValidator;
+import webapp.AwesomeCollect.validator.DailyTodoValidator;
 
 /**
  * やることのコントローラークラス。
@@ -85,12 +85,12 @@ public class DailyTodoController {
   }
 
   /**
-   * 入力されたデータにバンディングエラーが発生した場合は編集ページに戻り、
-   * そうでない場合はDBにデータを保存（登録・更新・削除）し、
+   * 入力されたデータにバンディングエラーが発生した場合は編集ページに戻って
+   * エラーメッセージを表示し、そうでない場合はDBにデータを保存（登録・更新・削除）し、
    * 閲覧ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    *
    * @param date  日付
-   * @param dto やることのデータオブジェクト
+   * @param dto やること入力用データオブジェクト
    * @param result  バインディングの結果
    * @param customUserDetails カスタムユーザー情報
    * @param redirectAttributes  リダイレクト後に一度だけ表示されるデータをViewに渡すインターフェース
@@ -109,20 +109,7 @@ public class DailyTodoController {
     }
 
     dailyTodoService.saveDailyTodo(customUserDetails.getId(), dto);
-
-    boolean isFirstRegistration = dto.getIdList().getFirst() == 0;
-    if(isFirstRegistration){
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.ACHIEVEMENT_POPUP,
-          messageUtil.getMessage(MessageKeys.TODO_AWESOME));
-    }else{
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
-    }
+    addAttributeBySaveType(dto, redirectAttributes);
 
     return RedirectUtil.redirectView(ViewNames.TODO_PAGE, date);
   }
@@ -141,5 +128,24 @@ public class DailyTodoController {
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
     return RedirectUtil.redirectView(ViewNames.TODO_PAGE, date);
+  }
+
+  // 新規登録か更新（削除含む）かを判定してサクセスメッセージとポップアップウィンドウを表示する。
+  private void addAttributeBySaveType(
+      TodoRequestDto dto, RedirectAttributes redirectAttributes) {
+
+    boolean isFirstRegistration = dto.getIdList().getFirst() == 0;
+    if(isFirstRegistration){
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.ACHIEVEMENT_POPUP,
+          messageUtil.getMessage(MessageKeys.TODO_AWESOME));
+    }else{
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
+    }
   }
 }

@@ -1,4 +1,4 @@
-package webapp.AwesomeCollect.validation;
+package webapp.AwesomeCollect.validator;
 
 import java.time.LocalDate;
 import org.jetbrains.annotations.NotNull;
