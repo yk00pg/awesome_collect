@@ -35,10 +35,10 @@ public class DoneResponseDto {
   private boolean hasContent;
 
   /**
-   * DBから取得したできたことリストをデータオブジェクトに変換する。
+   * DBから取得したできたことリストを表示用データオブジェクトに変換する。
    *
    * @param doneList  できたことリスト
-   * @return  データオブジェクト
+   * @return  表示用データオブジェクト
    */
   public static DoneResponseDto fromDailyDone(List<DailyDone> doneList){
     DoneResponseDto dto = new DoneResponseDto();
@@ -55,6 +55,7 @@ public class DoneResponseDto {
     });
 
     // 初回登録日を設定
+    // noinspection OptionalGetWithoutIsPresent
     dto.registeredAt = doneList.stream()
         .map(DailyDone :: getRegisteredAt)
         .min(Comparator.naturalOrder())
@@ -81,10 +82,10 @@ public class DoneResponseDto {
   }
 
   /**
-   * 日付以外空欄のデータオブジェクトを作成する。
+   * 日付以外空欄の表示用データオブジェクトを作成する。
    *
    * @param date  日付
-   * @return  データオブジェクト
+   * @return  表示用データオブジェクト
    */
   public static DoneResponseDto createBlankDto(LocalDate date){
     DoneResponseDto dto = new DoneResponseDto();
