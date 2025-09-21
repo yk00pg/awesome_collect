@@ -8,7 +8,7 @@ import lombok.Data;
 import webapp.AwesomeCollect.entity.UserInfo;
 
 /**
- * ユーザーの基本情報データオブジェクト。
+ * ユーザー基本情報データオブジェクト。
  */
 @Data
 public class UserBasicInfoDto {
@@ -46,7 +46,7 @@ public class UserBasicInfoDto {
   }
 
   /**
-   * DBから取得したユーザー情報をデータオブジェクトに変換する。
+   * DBから取得したユーザー情報を基本情報データオブジェクトに変換する。
    *
    * @param userInfo  ユーザー情報
    * @return  データオブジェクト

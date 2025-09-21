@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * ユーザー情報を扱うオブジェクト。DBテーブルのカラムと連動する。
+ * ユーザー情報を扱うオブジェクト。DBに存在するテーブルと連動する。
  */
 @Getter
 @Setter

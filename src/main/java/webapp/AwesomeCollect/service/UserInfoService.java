@@ -32,10 +32,10 @@ public class UserInfoService {
   }
 
   /**
-   * ユーザーIDを基にユーザー情報を取得し、データオブジェクトに変換する。
+   * ユーザーIDを基にユーザー情報を取得し、基本情報データオブジェクトに変換する。
    *
    * @param id  ユーザーID
-   * @return  ユーザー情報データオブジェクト
+   * @return  ユーザー基本情報データオブジェクト
    */
   public UserBasicInfoDto prepareUserInfoDto(int id){
     return UserBasicInfoDto.fromEntity(userInfoRepository.findUserInfoById(id));
@@ -45,7 +45,7 @@ public class UserInfoService {
    * DTOをエンティティに変換し、ログインIDまたはメールアドレスが重複している場合は例外を投げ、
    * そうでない場合はDBに登録して進捗管理データを作成する。
    *
-   * @param dto ユーザー情報データオブジェクト
+   * @param dto ユーザー情報統合データオブジェクト
    * @throws DuplicateException ログインIDまたはメールアドレスが重複している場合
    */
   @Transactional
@@ -70,7 +70,7 @@ public class UserInfoService {
    * DTOをエンティティに変換し、ログインIDまたはメールアドレスが重複している場合は例外を投げ、
    * そうでない場合はDBのレコードを更新する。
    *
-   * @param dto ユーザーの基本情報データオブジェクト
+   * @param dto ユーザー基本情報データオブジェクト
    * @param id  ユーザーID
    * @throws DuplicateException ログインIDまたはメールアドレスが重複している場合
    */
@@ -94,7 +94,7 @@ public class UserInfoService {
    * 入力された現在のパスワードがDBに登録されているパスワードと不一致の場合は例外を投げ、
    * そうでない場合はエンティティに変換してDBのレコードを更新する。
    *
-   * @param dto ユーザーのパスワード情報データオブジェクト
+   * @param dto ユーザーパスワード情報データオブジェクト
    * @param id  ユーザーID
    * @throws IncorrectPasswordException 入力された現在のパスワードと登録されているパスワードが不一致が場合
    */
