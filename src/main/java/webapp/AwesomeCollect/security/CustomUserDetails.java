@@ -9,13 +9,7 @@ import webapp.AwesomeCollect.entity.user.UserInfo;
 /**
  * カスタムユーザー情報を扱うオブジェクト。ログインID、パスワードなどの情報を持つ。
  */
-public class CustomUserDetails  implements UserDetails {
-
-  private final UserInfo userInfo;
-
-  public CustomUserDetails(UserInfo userInfo){
-    this.userInfo = userInfo;
-  }
+public record CustomUserDetails(UserInfo userInfo) implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -32,31 +26,11 @@ public class CustomUserDetails  implements UserDetails {
     return userInfo.getLoginId();
   }
 
-  @Override
-  public boolean isAccountNonExpired() {
-    return true;
-  }
-
-  @Override
-  public boolean isAccountNonLocked() {
-    return true;
-  }
-
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return true;
-  }
-
-  public int getId(){
+  public int getId() {
     return userInfo.getId();
   }
 
-  public String getEmail(){
+  public String getEmail() {
     return userInfo.getEmail();
   }
 }
