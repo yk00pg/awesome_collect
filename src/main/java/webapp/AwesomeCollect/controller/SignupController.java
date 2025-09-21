@@ -18,7 +18,7 @@ import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.user.UserInfoDto;
 import webapp.AwesomeCollect.exception.DuplicateException;
 import webapp.AwesomeCollect.service.user.UserInfoService;
-import webapp.AwesomeCollect.validation.SignupValidator;
+import webapp.AwesomeCollect.validator.SignupValidator;
 
 /**
  * サインアップページのコントローラークラス。

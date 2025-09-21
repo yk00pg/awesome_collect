@@ -24,7 +24,7 @@ import webapp.AwesomeCollect.dto.action.response.GoalResponseDto;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.action.GoalService;
 import webapp.AwesomeCollect.service.TagService;
-import webapp.AwesomeCollect.validation.GoalValidator;
+import webapp.AwesomeCollect.validator.GoalValidator;
 
 /**
  * 目標のコントローラークラス。

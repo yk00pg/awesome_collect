@@ -26,10 +26,10 @@ public class TodoResponseDto {
   private boolean hasContent;
 
   /**
-   * DBから取得したやることリストをデータオブジェクトに変換する。
+   * DBから取得したやることリストを表示用データオブジェクトに変換する。
    *
    * @param todoList  やることリスト
-   * @return  データオブジェクト
+   * @return  表示用データオブジェクト
    */
   public static TodoResponseDto fromDailyTodo (List<DailyTodo> todoList){
     TodoResponseDto dto = new TodoResponseDto();
@@ -38,18 +38,19 @@ public class TodoResponseDto {
     todoList.forEach(todo -> dto.contentList.add(todo.getContent()));
 
     // 初回登録日を設定
+    // noinspection OptionalGetWithoutIsPresent
     dto.registeredAt = todoList.stream()
-        .map(DailyTodo :: getRegisteredAt)
+        .map(DailyTodo::getRegisteredAt)
         .min(Comparator.naturalOrder())
-        .map(DateTimeFormatUtil :: formatDateTime)
+        .map(DateTimeFormatUtil::formatDateTime)
         .get();
 
     // 最終更新日を設定
     dto.updatedAt = todoList.stream()
-        .map(DailyTodo :: getUpdatedAt)
-        .filter(Objects :: nonNull)
+        .map(DailyTodo::getUpdatedAt)
+        .filter(Objects::nonNull)
         .max(Comparator.naturalOrder())
-        .map(DateTimeFormatUtil :: formatDateTime)
+        .map(DateTimeFormatUtil::formatDateTime)
         .orElse(null);
 
     dto.formattedDate = DateTimeFormatUtil.formatDate(dto.date);

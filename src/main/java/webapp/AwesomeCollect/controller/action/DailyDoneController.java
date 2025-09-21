@@ -25,7 +25,7 @@ import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.TagService;
 import webapp.AwesomeCollect.service.action.DailyDoneService;
 import webapp.AwesomeCollect.service.action.DailyTodoService;
-import webapp.AwesomeCollect.validation.DailyDoneValidator;
+import webapp.AwesomeCollect.validator.DailyDoneValidator;
 
 /**
  * できたことのコントローラークラス。
