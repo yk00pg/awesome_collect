@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.common.SessionManager;
-import webapp.AwesomeCollect.dto.action.TodoRequestDto;
-import webapp.AwesomeCollect.dto.action.TodoResponseDto;
+import webapp.AwesomeCollect.dto.action.request.TodoRequestDto;
+import webapp.AwesomeCollect.dto.action.response.TodoResponseDto;
 import webapp.AwesomeCollect.entity.action.DailyTodo;
-import webapp.AwesomeCollect.repository.DailyTodoRepository;
-import webapp.AwesomeCollect.service.UserProgressService;
+import webapp.AwesomeCollect.repository.action.DailyTodoRepository;
+import webapp.AwesomeCollect.service.user.UserProgressService;
 
 /**
  * やることのサービスクラス。
@@ -67,7 +67,8 @@ public class DailyTodoService {
   }
 
   /**
-   * データの種類を判別してDBに保存（登録・更新・削除）する。
+   * データの種類を判別してDBに保存（登録・更新・削除）する。<br>
+   * 内容が空の場合は何もせずスキップする。
    *
    * @param userId  ユーザーID
    * @param dto やること入力用データオブジェクト

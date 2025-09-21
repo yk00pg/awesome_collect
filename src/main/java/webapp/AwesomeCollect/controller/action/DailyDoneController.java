@@ -20,12 +20,12 @@ import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.constant.ViewNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
-import webapp.AwesomeCollect.dto.action.DoneRequestDto;
+import webapp.AwesomeCollect.dto.action.request.DoneRequestDto;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.TagService;
 import webapp.AwesomeCollect.service.action.DailyDoneService;
 import webapp.AwesomeCollect.service.action.DailyTodoService;
-import webapp.AwesomeCollect.validation.DailyDoneValidator;
+import webapp.AwesomeCollect.validator.DailyDoneValidator;
 
 /**
  * できたことのコントローラークラス。

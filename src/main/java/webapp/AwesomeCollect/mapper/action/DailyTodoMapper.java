@@ -22,24 +22,24 @@ public interface DailyTodoMapper {
       INSERT daily_todo(user_id, date, content, registered_at)
       VALUES(#{userId}, #{date}, #{content}, #{registeredAt})
       """)
-  int insertTodo(DailyTodo todo);
+  void insertTodo(DailyTodo todo);
 
   @Update("""
       UPDATE daily_todo
       SET date=#{date}, content=#{content}, updated_at=#{updatedAt}
       WHERE id=#{id}
       """)
-  int updateTodo(DailyTodo todo);
+  void updateTodo(DailyTodo todo);
 
   @Delete("""
       DELETE FROM daily_todo
       WHERE id=#{id}
       """)
-  int deleteTodoById(int id);
+  void deleteTodoById(int id);
 
   @Delete("""
       DELETE FROM daily_todo
       WHERE user_id=#{userId} AND date=#{date}
       """)
-  int deleteTodoByDate(int userId, LocalDate date);
+  void deleteTodoByDate(int userId, LocalDate date);
 }

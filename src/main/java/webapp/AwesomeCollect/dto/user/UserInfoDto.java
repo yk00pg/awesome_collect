@@ -3,7 +3,7 @@ package webapp.AwesomeCollect.dto.user;
 import jakarta.validation.Valid;
 import lombok.Data;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import webapp.AwesomeCollect.entity.UserInfo;
+import webapp.AwesomeCollect.entity.user.UserInfo;
 
 /**
  * ユーザー情報統合データオブジェクト。基本情報とパスワードのデータオブジェクトを内包する。

@@ -13,18 +13,18 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import webapp.AwesomeCollect.SaveResult;
+import webapp.AwesomeCollect.common.SaveResult;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.constant.ViewNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
-import webapp.AwesomeCollect.dto.action.GoalRequestDto;
-import webapp.AwesomeCollect.dto.action.GoalResponseDto;
+import webapp.AwesomeCollect.dto.action.request.GoalRequestDto;
+import webapp.AwesomeCollect.dto.action.response.GoalResponseDto;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.action.GoalService;
 import webapp.AwesomeCollect.service.TagService;
-import webapp.AwesomeCollect.validation.GoalValidator;
+import webapp.AwesomeCollect.validator.GoalValidator;
 
 /**
  * 目標のコントローラークラス。
@@ -97,12 +97,6 @@ public class GoalController {
 
       return ViewNames.GOAL_EDIT_PAGE;
     }
-  }
-
-  // アクセス不可時のエラーページを表示
-  @GetMapping(ViewNames.ERROR_NOT_ACCESSIBLE)
-  public String showNotAccessibleView(){
-    return ViewNames.ERROR_NOT_ACCESSIBLE;
   }
 
   // DTOのアノテーションで制御できないバリデーションを確認

@@ -23,8 +23,8 @@ import webapp.AwesomeCollect.dto.user.UserPasswordDto;
 import webapp.AwesomeCollect.exception.DuplicateException;
 import webapp.AwesomeCollect.exception.IncorrectPasswordException;
 import webapp.AwesomeCollect.security.CustomUserDetails;
-import webapp.AwesomeCollect.service.UserInfoService;
-import webapp.AwesomeCollect.validation.MyPageValidator;
+import webapp.AwesomeCollect.service.user.UserInfoService;
+import webapp.AwesomeCollect.validator.MyPageValidator;
 
 /**
  * マイページのコントローラークラス。
