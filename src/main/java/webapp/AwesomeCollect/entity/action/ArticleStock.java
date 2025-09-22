@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 記事ストック情報を扱うオブジェクト。DBテーブルのカラムと連動する。
+ * 記事ストック情報を扱うオブジェクト。DBに存在するテーブルと連動する。
  */
 @Getter
 @Setter

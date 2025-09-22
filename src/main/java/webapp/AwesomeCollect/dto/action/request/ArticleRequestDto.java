@@ -49,10 +49,10 @@ public class ArticleRequestDto {
   }
 
   /**
-   * 入力されたデータを登録用のエンティティに変換する。
+   * 入力されたデータを新規登録用のエンティティに変換する。
    *
    * @param userId  ユーザーID
-   * @return  登録用のエンティティ
+   * @return  新規登録用のエンティティ
    */
   public ArticleStock toArticleStockForRegistration(int userId){
     ArticleStock articleStock = new ArticleStock();
@@ -84,10 +84,10 @@ public class ArticleRequestDto {
   }
 
   /**
-   * DBから取得した記事ストックをデータオブジェクトに変換する。
+   * DBから取得した記事ストックを入力用データオブジェクトに変換する。
    *
    * @param articleStock  記事ストック
-   * @return  データオブジェクト
+   * @return  入力用データオブジェクト
    */
   public static ArticleRequestDto fromEntity(ArticleStock articleStock){
     ArticleRequestDto dto = new ArticleRequestDto();
