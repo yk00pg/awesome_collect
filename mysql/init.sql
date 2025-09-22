@@ -104,8 +104,8 @@ CREATE TABLE memo(
 CREATE TABLE article_stock(
   id INT AUTO_INCREMENT,
   user_id INT NOT NULL,
-  title VARCHAR(100),
-  url VARCHAR(2083) NOT NULL,
+  title VARCHAR(100) NOT NULL,
+  url VARCHAR(2083),
   memo VARCHAR(500),
   finished BOOLEAN,
   registered_at DATETIME,

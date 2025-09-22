@@ -80,16 +80,16 @@ public class ArticleStockController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model) {
 
+    int userId = customUserDetails.getId();
     ArticleRequestDto articleRequestDto =
-        articleStockService.prepareRequestDto(id,customUserDetails.getId());
+        articleStockService.prepareRequestDto(id, userId);
 
     if(articleRequestDto == null){
       return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
     }else{
       model.addAttribute(AttributeNames.ARTICLE_REQUEST_DTO, articleRequestDto);
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST,
-          tagService.prepareTagListByUserId(customUserDetails.getId()));
+          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
 
       return ViewNames.ARTICLE_STOCK_EDIT_PAGE;
     }
@@ -97,7 +97,7 @@ public class ArticleStockController {
 
   /**
    * 入力されたデータにバインディングエラーが発生した場合はタグリストを詰め直して
-   * 編集ページに戻り、そうでない場合はDBに保存（登録・更新）し、
+   * 編集ページに戻ってエラーメッセージを表示し、そうでない場合はDBに保存（登録・更新）し、
    * 詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    *
    * @param id  記事ストックID
@@ -146,14 +146,7 @@ public class ArticleStockController {
     return RedirectUtil.redirectView(ViewNames.ARTICLE_STOCK_PAGE);
   }
 
-  /**
-   * 保存の種類（登録・更新）に応じたサクセスメッセージを設定し、
-   * 登録の場合、閲覧状況の更新の場合にはポップアップウィンドウも設定する。
-   *
-   * @param id  記事ストックID
-   * @param redirectAttributes  リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
-   * @param saveResult  保存結果オブジェクト
-   */
+  // 登録か更新か、更新の場合は閲覧状況が更新されたかを判定してサクセスメッセージとポップアップウィンドウを表示する。
   private void addAttributeBySaveType(
       int id, RedirectAttributes redirectAttributes, SaveResult saveResult) {
 

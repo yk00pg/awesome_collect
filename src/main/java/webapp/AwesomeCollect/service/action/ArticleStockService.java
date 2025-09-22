@@ -43,7 +43,7 @@ public class ArticleStockService {
   }
 
   /**
-   * DBに記事ストックが登録されていない場合は空のリストを、
+   * ユーザーIDを基にDBを確認し、記事ストックが登録されていない場合は空のリストを、
    * 登録されている場合は登録データを詰めた表示用データオブジェクトのリストを用意する。
    *
    * @param userId  ユーザーID
@@ -60,7 +60,7 @@ public class ArticleStockService {
   }
 
   /**
-   * DBに指定のIDの記事ストックが登録されていない場合はエラー画面に遷移させるためにnullを返し、
+   * 記事ストックIDとユーザーIDを基にDBを確認し、記事ストックが登録されていない場合はnullを返し、
    * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
    *
    * @param articleId 記事ストックID
@@ -80,9 +80,8 @@ public class ArticleStockService {
 
   /**
    * 記事ストックIDが0の場合は空の入力用データオブジェクトを用意する。<br>
-   * そうでない場合は、DBに指定の記事ストックIDとユーザーIDの組み合わせが登録されていない場合は
-   * エラー画面に遷移させるためにnullを返し、
-   * 登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   * そうでない場合は、記事ストックIDとユーザーIDを基にDBを確認し、記事ストックが登録されていない場合は
+   * nullを返し、登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
    *
    * @param articleId 記事ストックID
    * @param userId  ユーザーID
@@ -103,7 +102,7 @@ public class ArticleStockService {
   }
 
   /**
-   * 記事ストックリストを一覧ページ用の表示用データオブジェクトに変換し、紐付けられたタグ名リストを設定する。
+   * 記事ストックリストを一覧ページの表示用データオブジェクトに変換し、紐付けられたタグ名リストを設定する。
    *
    * @param articleStockList  記事ストックリスト
    * @return  記事ストック表示用データオブジェクトのリスト
@@ -152,13 +151,12 @@ public class ArticleStockService {
   private @NotNull ArticleRequestDto assembleCurrentRequestDto(
       int articleId, ArticleStock articleStock) {
 
-    ArticleRequestDto dto = ArticleRequestDto.fromEntity(articleStock);
-
     List<Integer> tagIdList =
         articleTagJunctionService.prepareTagIdListByActionId(articleId);
     String tagNames =
         tagService.prepareCombinedTagName(tagIdList);
 
+    ArticleRequestDto dto = ArticleRequestDto.fromEntity(articleStock);
     dto.setTags(tagNames);
     return dto;
   }
@@ -192,7 +190,7 @@ public class ArticleStockService {
    * @param userId  ユーザーID
    * @param dto 記事ストック入力用データオブジェクト
    * @param tagIdList タグIDリスト
-   * @return  保存結果
+   * @return  保存結果オブジェクト
    */
   @Transactional
   private SaveResult registerArticleStock(
@@ -215,7 +213,7 @@ public class ArticleStockService {
    * @param dto 記事ストック入力用データオブジェクト
    * @param tagIdList タグIDリスト
    * @param id  記事ストックID
-   * @return  保存結果
+   * @return  保存結果オブジェクト
    */
   @Transactional
   private SaveResult updateArticleStock(
