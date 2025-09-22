@@ -1022,7 +1022,7 @@ table th {
   color: var(--reddish-brown);
 }
 
-.top-container {
+.top-container, .bottom-container {
   box-sizing: border-box;
   width: 100%;
   display: flex;
@@ -1031,10 +1031,11 @@ table th {
   gap: 30px;
 }
 
-.total-awesome-container, .total-time-container {
+.total-awesome-container, .total-time-container,
+.total-days-container, .streak-days-container {
   box-sizing: border-box;
   width: 350px;
-  height: 250px
+  height: 260px;
   font-size: 14px;
   text-align: center;
   padding: 20px;
@@ -1046,6 +1047,8 @@ table th {
 
 .total-awesome-container span,
 .total-time-container span,
+.total-days-container span,
+.streak-days-container span,
 .graph-area p {
   font-size: 18px;
   font-weight: bold;
@@ -1055,23 +1058,35 @@ table th {
   margin: 15px;
 }
 
-.all-tag-link {
+.learning-time-link, .all-tag-link {
   color: inherit;
 }
 
-.total-time {
-  display: flex;
-  align-items: center;
+.learning-time-link span {
+  font-size: 14px;
 }
 
-.total-time span {
+.total-awesome-area, .total-time-area,
+.total-days-area, .streak-days-area,
+.last-date-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.last-date-area {
+  gap: 10px;
+}
+
+.total-awesome-area span, .total-time-area span,
+.total-days-area span, .streak-days-area span,
+.last-date-area sapan {
   padding-top: 30px;
   font-size: 16px;
-  font-weight: normal;
 }
 
 .total-awesome, .total-hours,
-.total-minutes {
+.total-minutes, .total-days, .streak-days {
   font-family: var(--highlight-font-set);
   font-size: 64px;
   font-weight: bold;
@@ -1080,7 +1095,17 @@ table th {
   margin: 20px;
 }
 
-.bottom-container {
+.streak-days {
+  margin-bottom: 0px;
+}
+
+.last-date {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--bordeaux);
+}
+
+.graphs-container {
   box-sizing: border-box;
   width: 100%;
   display: flex;

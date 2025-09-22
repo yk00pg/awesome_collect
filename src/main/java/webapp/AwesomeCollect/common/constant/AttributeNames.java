@@ -32,6 +32,7 @@ public class AttributeNames {
   public static final String ARTICLE_REQUEST_DTO = "articleRequestDto";
 
   public static final String DASHBOARD_DTO = "dashboardDto";
+  public static final String LEARNING_TIME_DTO = "learningTimeDto";
   public static final String TAG_TOTAL_TIME_LIST = "tagTotalTimeList";
 
   // others

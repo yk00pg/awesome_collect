@@ -5,22 +5,22 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>ダッシュボード/タグ別学習時間（累計・全件）</title>
+  <title>ダッシュボード・全タグ別学習時間グラフ</title>
   <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
   <div>
-    <header th:replace="~{fragments/header :: header}"></header>
+    <header th:replace="~{fragments/header::header}"></header>
   </div>
 
-  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
 
   <div class="dashboard-container">
     <div class="all-tag-container">
       <div class="graph-area">
         <div class="back-indicator">
-          <a th:href="@{/dashboard}" class="back-link">
+          <a th:href="@{/dashboard/chart/learning_time}" class="back-link">
             <img th:src="@{/image/back-icon.svg}" alt="戻る">
             <span>戻る</span>
           </a>
@@ -30,14 +30,11 @@
       </div>
     </div>
 
-    <!-- Chart.js用にデータだけ埋め込み -->
     <script th:inline="javascript">
       /*<![CDATA[*/
-        const tagTimeList = /*[[${tagTotalTimeList}]]*/ [];
+          const tagTimeList = /*[[${tagTotalTimeList}]]*/ [];
       /*]]>*/
     </script>
-
-    <!-- Chart.jsの設定はJSで行う -->
     <script th:src="@{/js/dashboard-all-tag-chart.js}"></script>
   </div>
 </body>
