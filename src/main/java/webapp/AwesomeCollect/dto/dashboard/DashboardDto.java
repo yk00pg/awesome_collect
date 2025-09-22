@@ -12,4 +12,5 @@ public class DashboardDto {
 
   private int totalAwesome;
   private LearningTimeDto learningTimeDto;
+  private LearningDaysDto learningDaysDto;
 }
