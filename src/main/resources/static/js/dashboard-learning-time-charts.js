@@ -1,3 +1,4 @@
+// Chart.jsの設定（学習時間グラフページ用）
 const today = new Date();
 const basicColor = 'rgba(220, 159, 149, 1)';
 const textColor = '#664B4F';
