@@ -8,10 +8,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * JSON文字列をDB登録用の文字列に変換するコンバータクラス。
+ */
 public class JsonConverter {
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
 
+  /**
+   * （DailyDone用）
+   * JSON文字列のタグリストを確認し、要素がnullまたは空の場合は空のリストを、
+   * そうでない場合は値のみを抽出してリストを作成し、リスト形式でまとめる。
+   *
+   * @param jsonTagsList  JSON文字列のタグリスト
+   * @return  変換後のタグリスト
+   */
   public static List<List<String>> extractValues(List<String> jsonTagsList){
     List<List<String>> pureTagsList = new ArrayList<>();
     for(String jsonTag : jsonTagsList){
@@ -21,8 +32,9 @@ public class JsonConverter {
           continue;
         }
 
-        List<Map<String, String>> parsed = objectMapper.readValue(jsonTag, new TypeReference<>() {
-        });
+        List<Map<String, String>> parsed =
+            objectMapper.readValue(jsonTag, new TypeReference<>() {
+            });
 
         List<String> pureTag = parsed.stream()
             .map(m -> m.getOrDefault("value",""))
@@ -36,14 +48,23 @@ public class JsonConverter {
     return pureTagsList;
   }
 
+  /**
+   * （Goal, Memo, ArticleStork用）
+   * JSON文字列のタグがnullまたは空の場合はnullを返し、
+   * そうでない場合は値のみを抽出してリストを作成する。
+   *
+   * @param jsonTags  JSON文字列のタグ
+   * @return  変換後のタグリスト
+   */
   public static List<String> extractValues(String jsonTags){
       try{
         if(jsonTags == null || jsonTags.trim().isEmpty()){
           return null;
         }
 
-        List<Map<String, String>> parsed = objectMapper.readValue(jsonTags, new TypeReference<>() {
-        });
+        List<Map<String, String>> parsed =
+            objectMapper.readValue(jsonTags, new TypeReference<>() {
+            });
 
         return parsed.stream()
             .map(m -> m.getOrDefault("value",""))

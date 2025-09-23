@@ -86,7 +86,7 @@ public class MemoController {
     }else{
       model.addAttribute(AttributeNames.MEMO_REQUEST_DTO, memoRequestDto);
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
       return ViewNames.MEMO_EDIT_PAGE;
     }
@@ -117,7 +117,7 @@ public class MemoController {
 
     if(result.hasErrors()){
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
       return ViewNames.MEMO_EDIT_PAGE;
     }

@@ -1,3 +1,4 @@
+// Tagifyの設定
 function initTagify(input){
     return new Tagify(input, {
         pattern: /#/,
