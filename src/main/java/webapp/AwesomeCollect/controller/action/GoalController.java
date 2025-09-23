@@ -93,7 +93,7 @@ public class GoalController {
     }else{
       model.addAttribute(AttributeNames.GOAL_REQUEST_DTO, goalRequestDto);
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
       return ViewNames.GOAL_EDIT_PAGE;
     }
@@ -130,7 +130,7 @@ public class GoalController {
 
     if(result.hasErrors()){
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
       return ViewNames.GOAL_EDIT_PAGE;
     }
 

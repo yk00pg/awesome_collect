@@ -89,7 +89,7 @@ public class ArticleStockController {
     }else{
       model.addAttribute(AttributeNames.ARTICLE_REQUEST_DTO, articleRequestDto);
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
       return ViewNames.ARTICLE_STOCK_EDIT_PAGE;
     }
@@ -119,7 +119,7 @@ public class ArticleStockController {
     if (result.hasErrors()) {
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST,
-          tagService.prepareTagListByUserId(customUserDetails.getId()));
+          tagService.getTagNameListByUserId(customUserDetails.getId()));
 
       return ViewNames.ARTICLE_STOCK_EDIT_PAGE;
     }

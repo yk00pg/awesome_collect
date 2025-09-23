@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 import webapp.AwesomeCollect.entity.Tag;
 import webapp.AwesomeCollect.mapper.TagMapper;
 
+/**
+ * タグのリポジトリクラス。
+ */
 @Repository
 public class TagRepository {
 

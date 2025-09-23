@@ -88,7 +88,7 @@ public class DailyDoneController {
         dailyDoneService.prepareRequestDto(userId, date));
     model.addAttribute(
         AttributeNames.TAG_NAME_LIST,
-        tagService.prepareTagListByUserId(userId));
+        tagService.getTagNameListByUserId(userId));
 
     return ViewNames.DONE_EDIT_PAGE;
   }
@@ -129,7 +129,7 @@ public class DailyDoneController {
           dailyTodoService.prepareResponseDto(userId, date));
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST,
-          tagService.prepareTagListByUserId(userId));
+          tagService.getTagNameListByUserId(userId));
 
       return ViewNames.DONE_EDIT_PAGE;
     }
