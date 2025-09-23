@@ -4,6 +4,9 @@ import org.springframework.stereotype.Repository;
 import webapp.AwesomeCollect.entity.user.UserProgress;
 import webapp.AwesomeCollect.mapper.user.UserProgressMapper;
 
+/**
+ * ユーザー進捗状況のリポジトリクラス。
+ */
 @Repository
 public class UserProgressRepository {
 
