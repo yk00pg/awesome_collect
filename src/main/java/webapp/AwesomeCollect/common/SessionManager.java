@@ -6,6 +6,9 @@ import webapp.AwesomeCollect.dto.dashboard.AwesomePointDto;
 import webapp.AwesomeCollect.dto.dashboard.LearningDaysDto;
 import webapp.AwesomeCollect.dto.dashboard.LearningTimeDto;
 
+/**
+ * セッション情報を管理するクラス。
+ */
 @Component
 public class SessionManager {
 

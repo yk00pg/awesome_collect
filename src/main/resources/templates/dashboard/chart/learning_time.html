@@ -28,6 +28,7 @@
         <p>日別学習時間（過去7日分）</p>
         <canvas id="dailyTime"></canvas>
       </div>
+
       <div class="graph-area">
         <div class="back-indicator">
           <a th:href="@{/dashboard}" class="back-link">
@@ -38,6 +39,7 @@
         <p>曜日別学習時間（平均）</p>
         <canvas id="dayOfWeekTime"></canvas>
       </div>
+
       <div class="graph-area">
         <div class="back-indicator">
           <a th:href="@{/dashboard}" class="back-link">
@@ -48,6 +50,7 @@
         <p>月別学習時間（過去6ヶ月分）</p>
         <canvas id="monthlyTime"></canvas>
       </div>
+
       <div class="graph-area">
         <div class="back-indicator">
           <a th:href="@{/dashboard}" class="back-link">
@@ -57,6 +60,7 @@
         </div>
         <p>タグ別学習時間（累計・上位抜粋）</p>
         <canvas id="tagTime"></canvas>
+        <!-- タグ別学習時間リストが11要素以上ある場合 -->
         <div class="link-area"
              th:if="${#lists.size(learningTimeDto.tagTotalTimeList) > 10}">
           <a th:href="@{/dashboard/chart/learning_time/all_tags}"
