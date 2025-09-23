@@ -3,6 +3,9 @@ package webapp.AwesomeCollect.dto.dashboard;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * 学習日数表示用データオブジェクト
+ */
 @Data
 @AllArgsConstructor
 public class LearningDaysDto {

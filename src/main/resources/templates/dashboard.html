@@ -21,24 +21,33 @@
       <div class="total-awesome-container">
         <p>これまでに貯めた<span>えらい！</span>の数</p>
         <div class="total-awesome-area">
-          <p class="total-awesome" th:text="${dashboardDto.totalAwesome}"></p>
+          <p class="total-awesome"
+             th:text="${dashboardDto.awesomePointDto.totalAwesome}"></p>
           <span>えらい！</span>
         </div>
       </div>
-      <div class="total-time-container">
-        <p>これまでの<span>累計学習時間</span></p>
-        <div class="total-time-area">
-          <p class="total-hours" th:text="${dashboardDto.learningTimeDto.totalHours}"></p>
-          <span>時間</span>
-          <p class="total-minutes" th:text="${dashboardDto.learningTimeDto.totalMinutes}"></p>
-          <span>分</span>
+      <div class="illustration-graph-container">
+        <div class="illustration-graph-area">
+          <div th:if="${#lists.isEmpty(dashboardDto.awesomePointDto.splitTotalAwesomeList)}"
+               th:text="#{no.awesome.point}"></div>
+          <div th:unless="${#lists.isEmpty(dashboardDto.awesomePointDto.splitTotalAwesomeList)}"
+               th:each="num : ${dashboardDto.awesomePointDto.splitTotalAwesomeList}" >
+            <img th:if="${num > 0 and num <= 9}"
+                 th:src="@{/image/sowing-seeds-icon.svg}" alt="種まき"/>
+            <img th:if="${num > 9 and num <= 29}"
+                 th:src="@{/image/watering-icon.svg}" alt="水やり"/>
+            <img th:if="${num > 29 and num <= 69}"
+                 th:src="@{/image/sprouted-leaves-icon.svg}" alt="双葉"/>
+            <img th:if="${num > 69 and num <= 99}"
+                 th:src="@{/image/blooming-flower-icon.svg}" alt="咲いた花"/>
+            <img th:if="${num == 100}"
+                 th:src="@{/image/flower-vase-icon.svg}" alt="花瓶"/>
+          </div>
         </div>
-        <a th:href="@{/dashboard/chart/learning_time}"
-           class="learning-time-link">学習時間を<span>グラフ</span>で確認する</a>
       </div>
     </div>
 
-    <div class="bottom-container">
+    <div class="middle-container">
       <div class="total-days-container">
         <p>これまでの<span>累計学習日数</span></p>
         <div class="total-days-area">
@@ -55,6 +64,31 @@
         <div class="last-date-area">
           <p>最後に学習した日: </p>
           <p class="last-date" th:text="${dashboardDto.learningDaysDto.lastLearnedDate}"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-container">
+      <div class="total-time-container">
+        <p>これまでの<span>累計学習時間</span></p>
+        <div class="total-time-area">
+          <p class="total-hours" th:text="${dashboardDto.learningTimeDto.totalHours}"></p>
+          <span>時間</span>
+          <p class="total-minutes" th:text="${dashboardDto.learningTimeDto.totalMinutes}"></p>
+          <span>分</span>
+        </div>
+      </div>
+      <div class="learning-time-link-container">
+        <div class="learning-time-link-area">
+          <!-- 学習記録が登録されていない（学習時間が0）場合 -->
+          <p th:if="${dashboardDto.learningTimeDto.totalHours == 0
+                        and dashboardDto.learningTimeDto.totalMinutes == 0}"
+             th:text="#{no.learning.record}"></p>
+          <!-- 学習記録が登録されている場合（学習時間が0でない）場合 -->
+          <a th:href="@{/dashboard/chart/learning_time}"
+             th:unless="${dashboardDto.learningTimeDto.totalHours == 0
+                            and dashboardDto.learningTimeDto.totalMinutes == 0}"
+             class="learning-time-link">学習時間をグラフで確認</a>
         </div>
       </div>
     </div>

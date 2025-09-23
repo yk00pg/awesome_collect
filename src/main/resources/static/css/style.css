@@ -560,7 +560,8 @@ table th {
 
 .login-button, .register-button,
 .save-button,
-.signup-link, .edit-link {
+.signup-link, .edit-link,
+.learning-time-link {
   padding: 15px 40px;
   font-weight: bold;
   border-radius: 10px;
@@ -600,7 +601,8 @@ table th {
 }
 
 .new-registration-link,
-.additional-registration-link {
+.additional-registration-link,
+.learning-time-link {
   font-weight: bold;
   color: var(--pink-cream);
   text-align: center;
@@ -1022,7 +1024,7 @@ table th {
   color: var(--reddish-brown);
 }
 
-.top-container, .bottom-container {
+.top-container, .bottom-container, .middle-container {
   box-sizing: border-box;
   width: 100%;
   display: flex;
@@ -1032,17 +1034,47 @@ table th {
 }
 
 .total-awesome-container, .total-time-container,
-.total-days-container, .streak-days-container {
+.learning-time-link-container,
+.total-days-container, .streak-days-container,
+.illustration-graph-container {
   box-sizing: border-box;
   width: 350px;
-  height: 260px;
+  height: 250px;
   font-size: 14px;
   text-align: center;
-  padding: 20px;
+  padding: 15px;
   background-color: white;
   border: 3px solid var(--reddish-brown);
   border-radius: 30px;
   box-shadow: 10px 10px 10px var(--brown-grey);
+}
+
+.learning-time-link-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.illustration-graph-area {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  border: 8px dotted var(--pink-beige);
+  border-radius: 15px;
+}
+
+.illustration-graph-area img {
+  box-sizing: border-box;
+  width: 100%;
+  padding-left: 5px;
+}
+
+.learning-time-link-area {
+  text-align: center;
+  margin: 35px auto;
 }
 
 .total-awesome-container span,
@@ -1058,12 +1090,8 @@ table th {
   margin: 15px;
 }
 
-.learning-time-link, .all-tag-link {
+.all-tag-link {
   color: inherit;
-}
-
-.learning-time-link span {
-  font-size: 14px;
 }
 
 .total-awesome-area, .total-time-area,
@@ -1092,7 +1120,7 @@ table th {
   font-weight: bold;
   color: var(--bordeaux);
   -webkit-text-stroke: 1px var(--bordeaux);
-  margin: 20px;
+  margin: 10px;
 }
 
 .streak-days {

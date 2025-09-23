@@ -8,7 +8,7 @@ import webapp.AwesomeCollect.entity.dashboard.TagLearningTime;
 import webapp.AwesomeCollect.entity.dashboard.TotalLearningTime;
 
 /**
- * 学習時間のデータオブジェクト。
+ * 学習時間表示用データオブジェクト。
  */
 @Data
 @AllArgsConstructor

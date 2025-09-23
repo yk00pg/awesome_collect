@@ -2,6 +2,7 @@ package webapp.AwesomeCollect.common;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
+import webapp.AwesomeCollect.dto.dashboard.AwesomePointDto;
 import webapp.AwesomeCollect.dto.dashboard.LearningDaysDto;
 import webapp.AwesomeCollect.dto.dashboard.LearningTimeDto;
 
@@ -13,7 +14,7 @@ public class SessionManager {
   private static final String HAS_UPDATED_RECORD_COUNT = "hasUpdatedRecordCount";
   private static final String HAS_UPDATED_LEARNING_DAYS = "hasUpdatedLearningDays";
   private static final String HAS_UPDATED_TIME = "hasUpdatedTime";
-  private static final String CACHED_AWESOME = "cachedAwesome";
+  private static final String AWESOME_POINT_DTO = "awesomePointDto";
   private static final String LEARNING_TIME_DTO = "learningTimeDto";
   private static final String LEARNING_DAYS_DTO = "learningDaysDto";
 
@@ -45,12 +46,12 @@ public class SessionManager {
     return (Boolean) httpSession.getAttribute(HAS_UPDATED_TIME);
   }
 
-  public void setAwesomePoint(int awesomePoint){
-    httpSession.setAttribute(CACHED_AWESOME, awesomePoint);
+  public void setAwesomePointDto(AwesomePointDto awesomePointDto){
+    httpSession.setAttribute(AWESOME_POINT_DTO, awesomePointDto);
   }
 
-  public Integer getCachedAwesomePoint(){
-    return (Integer) httpSession.getAttribute(CACHED_AWESOME);
+  public AwesomePointDto getCachedAwesomePointDto(){
+    return (AwesomePointDto) httpSession.getAttribute(AWESOME_POINT_DTO);
   }
 
   public void setLearningTimeDto(LearningTimeDto learningTimeDto){
