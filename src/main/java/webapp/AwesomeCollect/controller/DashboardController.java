@@ -51,7 +51,7 @@ public class DashboardController {
     return ViewNames.DASHBOARD_PAGE;
   }
 
-  // 学習時間チャートページを表示する。
+  // 学習時間グラフページを表示する。
   @GetMapping(ViewNames.DASHBOARD_LEARNING_TIME_CHART)
   public String showLearningTimeChart(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -63,7 +63,7 @@ public class DashboardController {
     return ViewNames.DASHBOARD_LEARNING_TIME_CHART;
   }
 
-  // 全タグ分の学習時間チャートページを表示する。
+  // 全タグ別学習時間グラフページを表示する。
   @GetMapping(ViewNames.DASHBOARD_ALL_TAG_TIME_CHART)
   public String showAllTagsTimeChart(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,

@@ -1,3 +1,4 @@
+// Chart.jsの設定（全タグ別学習時間グラフページ用）
 // タグ別学習時間グラフ
 const ctx = document.getElementById('allTagTime');
 
