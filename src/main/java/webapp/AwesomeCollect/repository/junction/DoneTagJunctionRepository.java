@@ -7,7 +7,7 @@ import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
 import webapp.AwesomeCollect.mapper.junction.DoneTagJunctionMapper;
 
 /**
- * できたことタグのリポジトリクラス。
+ * できたこと×タグのリポジトリクラス。
  */
 @Repository
 public class DoneTagJunctionRepository extends BaseActionTagJunctionRepository<DoneTagJunction>{

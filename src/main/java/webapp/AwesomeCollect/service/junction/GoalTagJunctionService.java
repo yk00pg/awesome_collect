@@ -8,7 +8,7 @@ import webapp.AwesomeCollect.entity.junction.GoalTagJunction;
 import webapp.AwesomeCollect.repository.junction.GoalTagJunctionRepository;
 
 /**
- * 目標タグのサービスクラス。
+ * 目標×タグのサービスクラス。
  */
 @Service
 public class GoalTagJunctionService extends BaseActionTagJunctionService<GoalTagJunction> {

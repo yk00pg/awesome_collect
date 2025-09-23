@@ -7,7 +7,7 @@ import java.util.function.BiFunction;
 import webapp.AwesomeCollect.repository.junction.BaseActionTagJunctionRepository;
 
 /**
- * 中間テーブルのサービスクラスの基底クラス。
+ * アクション×タグのサービスクラスの基底クラス。
  *
  * @param <T> ジェネリクス
  */
