@@ -11,7 +11,7 @@ import webapp.AwesomeCollect.dto.dashboard.LearningDaysDto;
 import webapp.AwesomeCollect.repository.dashboard.LearningDaysRepository;
 
 /**
- * 学習日数をまとめるサービスクラス。
+ * 学習日数のサービスクラス。
  */
 @Service
 public class LearningDaysService {
@@ -27,11 +27,11 @@ public class LearningDaysService {
   }
 
   /**
-   * セッション情報を確認し、セッション情報がnullまたは学習日数の更新有りまたはDTOがnullの場合は
+   * セッション情報を確認し、学習日数更新情報がnullまたは更新有りあるいはセッションのDTOがnullの場合は、
    * 累計学習日数、連続学習日数、最終学習日を算出し、DTOに詰めてセッション情報を更新する。
    *
    * @param userId  ユーザーID
-   * @return  学習日数のデータオブジェクト
+   * @return  学習日数表示用データオブジェクト
    */
   @Transactional
   public LearningDaysDto prepareLearningDaysDto(int userId){
@@ -47,7 +47,9 @@ public class LearningDaysService {
       if(!learningDateList.isEmpty()){
         LocalDate latestDate = learningDateList.getLast();
         for(int i = learningDateList.size() -1; i >= 0; i--) {
-          if (ChronoUnit.DAYS.between(learningDateList.get(i), latestDate.minusDays(streakDays)) == 0) {
+          if (ChronoUnit.DAYS.between(
+              learningDateList.get(i), latestDate.minusDays(streakDays)) == 0) {
+
             streakDays++;
           } else {
             break;
@@ -60,7 +62,6 @@ public class LearningDaysService {
       sessionManager.setLearningDaysDto(learningDaysDto);
       sessionManager.setHasUpdatedLearningDays(false);
     }
-
     return learningDaysDto;
   }
 }

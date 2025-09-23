@@ -57,7 +57,8 @@
         </div>
         <p>タグ別学習時間（累計・上位抜粋）</p>
         <canvas id="tagTime"></canvas>
-        <div class="link-area">
+        <div class="link-area"
+             th:if="${#lists.size(learningTimeDto.tagTotalTimeList) > 10}">
           <a th:href="@{/dashboard/chart/learning_time/all_tags}"
              class="all-tag-link">すべてのタグを確認する</a>
         </div>

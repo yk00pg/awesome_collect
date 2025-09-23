@@ -1,11 +1,13 @@
 package webapp.AwesomeCollect.controller;
 
+import java.util.List;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
 import webapp.AwesomeCollect.common.constant.ViewNames;
+import webapp.AwesomeCollect.dto.dashboard.AwesomePointDto;
 import webapp.AwesomeCollect.dto.dashboard.DashboardDto;
 import webapp.AwesomeCollect.dto.dashboard.LearningDaysDto;
 import webapp.AwesomeCollect.dto.dashboard.LearningTimeDto;
@@ -21,16 +23,16 @@ import webapp.AwesomeCollect.service.dashboard.LearningTimeService;
 public class DashboardController {
 
   private final AwesomeCountService awesomeCountService;
-  private final LearningTimeService learningTimeService;
   private final LearningDaysService learningDaysService;
+  private final LearningTimeService learningTimeService;
 
   public DashboardController(
-      AwesomeCountService awesomeCountService, LearningTimeService learningTimeService,
-      LearningDaysService learningDaysService){
+      AwesomeCountService awesomeCountService, LearningDaysService learningDaysService,
+      LearningTimeService learningTimeService){
 
     this.awesomeCountService = awesomeCountService;
-    this.learningTimeService = learningTimeService;
     this.learningDaysService = learningDaysService;
+    this.learningTimeService = learningTimeService;
   }
 
   // ダッシュボードのトップページを表示する。
@@ -40,12 +42,12 @@ public class DashboardController {
       Model model){
 
     int userId = customUserDetails.getId();
-    int totalAwesome = awesomeCountService.calculateTotalAwesome(userId);
-    LearningTimeDto learningTimeDto = learningTimeService.prepareLearningTimeDto(userId);
+    AwesomePointDto awesomePointDto = awesomeCountService.prepareAwesomePointDto(userId);
     LearningDaysDto learningDaysDto = learningDaysService.prepareLearningDaysDto(userId);
+    LearningTimeDto learningTimeDto = learningTimeService.prepareLearningTimeDto(userId);
 
     DashboardDto dashboardDto =
-        new DashboardDto(totalAwesome, learningTimeDto, learningDaysDto);
+        new DashboardDto(awesomePointDto, learningDaysDto, learningTimeDto);
     model.addAttribute(AttributeNames.DASHBOARD_DTO, dashboardDto);
 
     return ViewNames.DASHBOARD_PAGE;
