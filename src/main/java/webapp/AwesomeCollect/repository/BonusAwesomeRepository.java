@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 import webapp.AwesomeCollect.entity.BonusAwesome;
 import webapp.AwesomeCollect.mapper.BonusAwesomeMapper;
 
+/**
+ * ボーナスえらい！のリポジトリクラス。
+ */
 @Repository
 public class BonusAwesomeRepository {
 

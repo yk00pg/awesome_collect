@@ -2,6 +2,9 @@ package webapp.AwesomeCollect.awesome;
 
 import lombok.Getter;
 
+/**
+ * ボーナスえらい！の種類を扱うenum。
+ */
 public enum BonusType {
   DAILY(1, "アクション登録") {
     @Override
@@ -38,5 +41,11 @@ public enum BonusType {
     this.reason = reason;
   }
 
+  /**
+   * 現在の連続記録日数がボーナスえらい！の獲得対象か確認する。
+   *
+   * @param currentStreak 現在の連続記録日数
+   * @return  ボーナスえらい！の獲得対象かどうか
+   */
   public abstract boolean isApplicable(int currentStreak);
 }
