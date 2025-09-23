@@ -20,5 +20,5 @@ public interface BonusAwesomeMapper {
       INSERT bonus_awesome(user_id, awesome_point, reason, collected_date)
       VALUES(#{userId}, #{awesomePoint}, #{reason}, #{collectedDate})
       """)
-  int insertBonusAwesome(BonusAwesome bonusAwesome);
+  void insertBonusAwesome(BonusAwesome bonusAwesome);
 }
