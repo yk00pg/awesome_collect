@@ -1,6 +1,5 @@
 package webapp.AwesomeCollect.controller;
 
-import java.util.List;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,9 +45,8 @@ public class DashboardController {
     LearningDaysDto learningDaysDto = learningDaysService.prepareLearningDaysDto(userId);
     LearningTimeDto learningTimeDto = learningTimeService.prepareLearningTimeDto(userId);
 
-    DashboardDto dashboardDto =
-        new DashboardDto(awesomePointDto, learningDaysDto, learningTimeDto);
-    model.addAttribute(AttributeNames.DASHBOARD_DTO, dashboardDto);
+    model.addAttribute(AttributeNames.DASHBOARD_DTO,
+        new DashboardDto(awesomePointDto, learningDaysDto, learningTimeDto));
 
     return ViewNames.DASHBOARD_PAGE;
   }
@@ -59,9 +57,8 @@ public class DashboardController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model){
 
-    LearningTimeDto learningTimeDto =
-        learningTimeService.prepareLearningTimeDto(customUserDetails.getId());
-    model.addAttribute(AttributeNames.LEARNING_TIME_DTO, learningTimeDto);
+    model.addAttribute(AttributeNames.LEARNING_TIME_DTO,
+        learningTimeService.prepareLearningTimeDto(customUserDetails.getId()));
 
     return ViewNames.DASHBOARD_LEARNING_TIME_CHART;
   }

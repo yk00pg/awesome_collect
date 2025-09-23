@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * えらいポイント表示用データオブジェクト
+ * えらいポイント表示用データオブジェクト。
  */
 @Data
 @AllArgsConstructor
@@ -13,5 +13,4 @@ public class AwesomePointDto {
 
   private int totalAwesome;
   private List<Integer> splitTotalAwesomeList;
-
 }

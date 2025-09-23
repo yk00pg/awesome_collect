@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * ダッシュボード統括データオブジェクト。<br>
+ * ダッシュボード表示用統括データオブジェクト。<br>
  * えらい！ポイント、学習時間、学習日数のデータオブジェクトを内包する。
  */
 @Data
