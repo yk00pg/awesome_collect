@@ -7,6 +7,9 @@ import webapp.AwesomeCollect.entity.user.UserProgress;
 import webapp.AwesomeCollect.repository.user.UserProgressRepository;
 import webapp.AwesomeCollect.service.BonusAwesomeService;
 
+/**
+ * ユーザー進捗状況のサービスクラス。
+ */
 @Service
 public class UserProgressService {
 
@@ -21,7 +24,7 @@ public class UserProgressService {
   }
 
   /**
-   * 進捗管理データ（ユーザーID、登録日）を作成し、DBに登録する。
+   * ユーザー進捗状況のエンティティを作成し、ユーザーIDと登録日を詰めてDBに登録する。
    *
    * @param userId  ユーザーID
    */
@@ -34,9 +37,8 @@ public class UserProgressService {
   }
 
   /**
-   * 進捗管理データを更新する。<br>
-   * 既存データの登録状況に応じてアクション累計記録日数、アクション最終記録日、
-   * 現在の連続記録日数、最大連続記録日数、ボーナスえらい！ポイントの獲得状況を更新する。
+   * ユーザーIDを基にDBからユーザー進捗状況を取得し、アクション最終記録日がnullまたは今日でない場合は、
+   * 累計記録日数、最終記録日、連続記録日数、ボーナスえらい！取得回数を更新し、ユーザー進捗状況を更新する。
    *
    * @param userId  ユーザーID
    */
@@ -49,7 +51,6 @@ public class UserProgressService {
     LocalDate lastActionDate = userProgress.getLastActionDate();
     int currentStreak = userProgress.getCurrentStreak();
 
-    // アクション最終記録日がnullまたは今日でない場合
     if (lastActionDate == null || !lastActionDate.equals(today)) {
       userProgress.setTotalActionDays(userProgress.getTotalActionDays() + 1);
       userProgress.setLastActionDate(today);
@@ -67,18 +68,18 @@ public class UserProgressService {
   }
 
   /**
-   * 既存データの登録状況に応じて、現在の連続記録日数、最大連続記録日数を更新し、現在の連続記録日数を返す。
+   * アクション最終記録日がnullでなく、昨日の日付の場合は連続記録日数を1日増やし、そうでない場合は1日に戻す。<br>
+   * 現在の連続記録日数が最大連続記録日数よりも大きい場合は、最大連続記録日数を更新する。
    *
    * @param yesterday　昨日の日付
    * @param lastActionDate  アクション最終記録日
    * @param currentStreak 現在の連続記録日数
-   * @param userProgress  進捗管理データ
+   * @param userProgress  ユーザー進捗状況
    * @return  現在の連続記録日数
    */
   private int updateStreak(
       LocalDate yesterday, LocalDate lastActionDate, int currentStreak, UserProgress userProgress) {
 
-    // アクション最終記録日がnullではなく、昨日の日付の場合
     if (lastActionDate != null && lastActionDate.equals(yesterday)) {
       currentStreak += 1;
       userProgress.setCurrentStreak(currentStreak);
@@ -87,7 +88,6 @@ public class UserProgressService {
       userProgress.setCurrentStreak(currentStreak);
     }
 
-    // 現在の連続記録日数が最大連続記録日数よりも大きい場合
     if (currentStreak > userProgress.getLongestStreak()) {
       userProgress.setLongestStreak(currentStreak);
     }

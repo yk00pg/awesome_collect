@@ -23,8 +23,10 @@ public interface UserProgressMapper {
 
   @Update("""
       UPDATE user_progress
-      SET total_action_days=#{totalActionDays}, last_action_date=#{lastActionDate},
-      current_streak=#{currentStreak}, longest_streak=#{longestStreak}, streak_bonus_count=#{streakBonusCount}
+      SET
+        total_action_days=#{totalActionDays}, last_action_date=#{lastActionDate},
+        current_streak=#{currentStreak}, longest_streak=#{longestStreak},
+        streak_bonus_count=#{streakBonusCount}
       WHERE user_id=#{userId}
       """)
   int updateUserProgress(UserProgress userProgress);
