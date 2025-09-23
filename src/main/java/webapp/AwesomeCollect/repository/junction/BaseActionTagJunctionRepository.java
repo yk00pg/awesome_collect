@@ -4,7 +4,8 @@ import java.util.List;
 import webapp.AwesomeCollect.mapper.junction.BaseActionTagJunctionMapper;
 
 /**
- * アクションタグのリポジトリの基底クラス。
+ * アクション×タグのリポジトリの基底クラス。
+ *
  * @param <T>
  */
 public abstract class BaseActionTagJunctionRepository <T> {

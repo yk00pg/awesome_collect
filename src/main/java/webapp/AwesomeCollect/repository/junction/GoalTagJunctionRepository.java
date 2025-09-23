@@ -6,7 +6,7 @@ import webapp.AwesomeCollect.entity.junction.GoalTagJunction;
 import webapp.AwesomeCollect.mapper.junction.GoalTagJunctionMapper;
 
 /**
- * 目標タグのリポジトリクラス。
+ * 目標×タグのリポジトリクラス。
  */
 @Repository
 public class GoalTagJunctionRepository extends BaseActionTagJunctionRepository<GoalTagJunction>{

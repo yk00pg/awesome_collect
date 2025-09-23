@@ -9,5 +9,4 @@ public interface BaseActionTagJunctionMapper<T> {
   void insertRelation(T relation);
   void deleteRelationByActionId(int actionId);
   void deleteRelationByRelatedId(T relation);
-
 }

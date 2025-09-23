@@ -6,7 +6,7 @@ import webapp.AwesomeCollect.entity.junction.ArticleTagJunction;
 import webapp.AwesomeCollect.mapper.junction.ArticleTagsJunctionMapper;
 
 /**
- * 記事ストックタグのリポジトリクラス。
+ * 記事ストック×タグのリポジトリクラス。
  */
 @Repository
 public class ArticleTagJunctionRepository extends BaseActionTagJunctionRepository<ArticleTagJunction> {
