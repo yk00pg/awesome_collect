@@ -4,6 +4,9 @@ import java.util.Locale;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
+/**
+ * メッセージキーを基にメッセージを取得するクラス。
+ */
 @Component
 public class MessageUtil {
 

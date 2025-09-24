@@ -1,6 +1,9 @@
 package webapp.AwesomeCollect.common.constant;
 
-public class MessageKeys {
+/**
+ * メッセージキーの定数クラス。
+ */
+public final class MessageKeys {
 
   // exception
   public static final String DUPLICATE_LOGIN_ID = "duplicate.loginId";
@@ -36,4 +39,8 @@ public class MessageKeys {
   public static final String MEMO_AWESOME = "memo.awesome";
   public static final String ARTICLE_AWESOME = "article.awesome";
   public static final String FINISHED_AWESOME = "finished.awesome";
+
+  private MessageKeys(){
+    // インスタンス化を防止
+  }
 }

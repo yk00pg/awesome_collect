@@ -11,7 +11,7 @@ import org.owasp.html.Sanitizers;
 /**
  * 文字列をHTMLに変換するクラス。
  */
-public class MarkdownConverter {
+public final class MarkdownConverter {
 
   // ソフトブレークを改行とみなす
   private static final MutableDataSet options = new MutableDataSet()

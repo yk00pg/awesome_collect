@@ -11,7 +11,7 @@ import webapp.AwesomeCollect.common.constant.ViewNames;
 @Controller
 public class HomeController {
 
-  // ホーム画面を表示
+  // ホーム画面を表示する。
   @GetMapping(ViewNames.HOME_PAGE)
   public String showHomeView(){
     return ViewNames.HOME_PAGE;

@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-  <meta charset="UTF-8">
-  <title>ページが見つかりません</title>
-  <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <title>ページが見つかりません</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+  </head>
 
-<body>
-  <div>
-    <header th:replace="~{fragments/header :: header}"></header>
-  </div>
-
-  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
-
-  <div class="error-container">
-    <h1>Not Found!</h1>
-    <p>ページが見つかりません。</p>
-    <p>前のページに戻るか、サイドメニューから選んで移動してください。</p>
-    <div class="history-back-button-area">
-      <button class="history-back-button" onclick="history.back()">ひとつ前のページに戻る</button>
+  <body>
+    <div>
+      <header th:replace="~{fragments/header::header}"></header>
     </div>
-  </div>
-</body>
+
+    <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
+
+    <div class="error-container">
+      <h1 th:text="#{not.found.title}"></h1>
+      <p th:text="#{not.found}"></p>
+      <p th:text="#{return.guide}"></p>
+      <div class="history-back-button-area">
+        <button class="history-back-button"
+                onclick="history.back()">ひとつ前のページに戻る</button>
+      </div>
+    </div>
+  </body>
 </html>
