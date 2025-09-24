@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * JSON文字列をDB登録用の文字列に変換するコンバータクラス。
+ * JSON文字列をDB登録用の文字列に変換するクラス。
  */
-public class JsonConverter {
+public final class JsonConverter {
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
 

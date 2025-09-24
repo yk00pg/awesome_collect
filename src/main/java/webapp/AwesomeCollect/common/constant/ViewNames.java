@@ -1,6 +1,9 @@
 package webapp.AwesomeCollect.common.constant;
 
-public class ViewNames {
+/**
+ * View名（URLまたはhtmlファイル名）の定数クラス。
+ */
+public final class ViewNames {
 
   public static final String SIGNUP_PAGE = "/signup";
   public static final String LOGIN_PAGE = "/login";
@@ -53,4 +56,8 @@ public class ViewNames {
   // エラーページ
   private static final String ERROR_PAGE = "/error";
   public static final String ERROR_NOT_ACCESSIBLE = ERROR_PAGE + "/not-accessible";
+
+  private ViewNames(){
+    // インスタンス下を防止
+  }
 }

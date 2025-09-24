@@ -1,27 +1,28 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-  <meta charset="UTF-8">
-  <title>エラーが発生しました</title>
-  <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <title>エラーが発生しました</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+  </head>
 
-<body>
-  <div>
-    <header th:replace="~{fragments/header :: header}"></header>
-  </div>
-
-  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
-
-  <div class="error-container">
-    <h1>Unexpected Error!</h1>
-    <p>予期せぬエラーが発生しました。</p>
-    <p>しばらく待ってからアクセスし直してください。</p>
-    <!-- 拡張機能として「エラー報告ボタン」をつけたい -->
-    <div class="history-back-button-area">
-      <button class="history-back-button" onclick="history.back()">ひとつ前のページに戻る</button>
+  <body>
+    <div>
+      <header th:replace="~{fragments/header::header}"></header>
     </div>
-  </div>
-</body>
+
+    <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
+
+    <div class="error-container">
+      <h1 th:text="#{unexpected.error.title}"></h1>
+      <p th:text="#{unexpected.error}"></p>
+      <p th:text="#{reconnect.guide}"></p>
+      <!-- 将来的に、エラー報告ボタンもつけたい -->
+      <div class="history-back-button-area">
+        <button class="history-back-button"
+                onclick="history.back()">ひとつ前のページに戻る</button>
+      </div>
+    </div>
+  </body>
 </html>
