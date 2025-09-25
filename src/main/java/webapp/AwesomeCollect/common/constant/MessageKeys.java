@@ -11,6 +11,7 @@ public class MessageKeys {
   public static final String PASSWORD_MISMATCH = "password.mismatch";
   public static final String CURRENT_PASSWORD_BLANK = "currentPassword.blank";
   public static final String CONTENT_BLANK = "content.blank";
+  public static final String CONTENT_DUPLICATE = "content.duplicate";
   public static final String DATE_FUTURE = "date.future";
   public static final String LEARNING_TIME_BLANK = "learning.time.blank";
   public static final String TOTAL_LEARNING_TIME_EXCEEDED = "total.learning.time.exceed";

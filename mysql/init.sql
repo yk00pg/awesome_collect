@@ -53,7 +53,7 @@ CREATE TABLE tag(
 CREATE TABLE daily_todo(
   id INT AUTO_INCREMENT,
   user_id INT NOT NULL,
-  date DATE,
+  date DATE NOT NULL,
   content VARCHAR(100),
   registered_at DATETIME,
   updated_at DATETIME,
