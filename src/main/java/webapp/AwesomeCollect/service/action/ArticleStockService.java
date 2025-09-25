@@ -12,6 +12,8 @@ import webapp.AwesomeCollect.dto.action.request.ArticleRequestDto;
 import webapp.AwesomeCollect.dto.action.response.ArticleResponseDto;
 import webapp.AwesomeCollect.entity.junction.ArticleTagJunction;
 import webapp.AwesomeCollect.entity.action.ArticleStock;
+import webapp.AwesomeCollect.exception.DuplicateException;
+import webapp.AwesomeCollect.exception.DuplicateType;
 import webapp.AwesomeCollect.repository.action.ArticleStockRepository;
 import webapp.AwesomeCollect.service.TagService;
 import webapp.AwesomeCollect.service.user.UserProgressService;
@@ -172,12 +174,12 @@ public class ArticleStockService {
     List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
     List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
 
-    int id = dto.getId();
+    int articleId = dto.getId();
     SaveResult saveResult;
-    if(id == 0){
+    if(articleId == 0){
       saveResult = registerArticleStock(userId, dto, tagIdList);
     }else{
-      saveResult = updateArticleStock(userId, dto, tagIdList, id);
+      saveResult = updateArticleStock(userId, dto, tagIdList, articleId);
     }
     sessionManager.setHasUpdatedRecordCount(true);
 
@@ -191,10 +193,20 @@ public class ArticleStockService {
    * @param dto 記事ストック入力用データオブジェクト
    * @param tagIdList タグIDリスト
    * @return  保存結果オブジェクト
+   * @throws DuplicateException 同ユーザーが同じタイトルまたはURLをすでに登録している場合
    */
   @Transactional
   private SaveResult registerArticleStock(
-      int userId, ArticleRequestDto dto, List<Integer> tagIdList) {
+      int userId, ArticleRequestDto dto, List<Integer> tagIdList)
+      throws DuplicateException {
+
+    if(isDuplicateTitle(dto.getId(), userId, dto.getTitle())){
+      throw new DuplicateException(DuplicateType.TITLE);
+    }
+
+    if(isDuplicateUrl(dto.getId(), userId, dto.getUrl())){
+      throw new DuplicateException(DuplicateType.URL);
+    }
 
     ArticleStock articleStock = dto.toArticleStockForRegistration(userId);
     articleStockRepository.registerArticleStock(articleStock);
@@ -212,22 +224,44 @@ public class ArticleStockService {
    * @param userId  ユーザーID
    * @param dto 記事ストック入力用データオブジェクト
    * @param tagIdList タグIDリスト
-   * @param id  記事ストックID
+   * @param articleId  記事ストックID
    * @return  保存結果オブジェクト
+   * @throws DuplicateException 同ユーザーが同じタイトルまたはURLをすでに登録している場合
    */
   @Transactional
   private SaveResult updateArticleStock(
-      int userId, ArticleRequestDto dto, List<Integer> tagIdList, int id) {
+      int userId, ArticleRequestDto dto, List<Integer> tagIdList, int articleId)
+      throws DuplicateException{
+
+    if(isDuplicateTitle(articleId, userId, dto.getTitle())){
+      throw new DuplicateException(DuplicateType.TITLE);
+    }
+
+    if(isDuplicateUrl(articleId, userId, dto.getUrl())){
+      throw new DuplicateException(DuplicateType.URL);
+    }
 
     ArticleStock articleStock = dto.toArticleStockForUpdate(userId);
     boolean isFinishedUpdate =
-        !articleStockRepository.findArticleStockByIds(id, userId).isFinished()
+        !articleStockRepository.findArticleStockByIds(articleId, userId).isFinished()
             && articleStock.isFinished();
 
     articleStockRepository.updateArticleStock(articleStock);
-    articleTagJunctionService.updateRelations(id, ArticleTagJunction::new, tagIdList);
+    articleTagJunctionService.updateRelations(articleId, ArticleTagJunction::new, tagIdList);
 
-    return new SaveResult(id, isFinishedUpdate);
+    return new SaveResult(articleId, isFinishedUpdate);
+  }
+
+  // 記事ストックタイトルが重複しているか確認する。
+  private boolean isDuplicateTitle(int articleId, int userId, String title){
+    Integer recordId = articleStockRepository.findIdByUserIdAndTitle(userId, title.strip());
+    return recordId != null && !recordId.equals(articleId);
+  }
+
+  // 記事のURLが重複しているか確認する。
+  private boolean isDuplicateUrl(int articleId, int userId, String url){
+    Integer recordId = articleStockRepository.findIdByUserIdAndUrl(userId, url.strip());
+    return recordId != null && !recordId.equals(articleId);
   }
 
   /**

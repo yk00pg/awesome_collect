@@ -19,6 +19,7 @@ import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.action.request.ArticleRequestDto;
 import webapp.AwesomeCollect.dto.action.response.ArticleResponseDto;
+import webapp.AwesomeCollect.exception.DuplicateException;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.TagService;
 import webapp.AwesomeCollect.service.action.ArticleStockService;
@@ -116,16 +117,28 @@ public class ArticleStockController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes) {
 
+    int userId = customUserDetails.getId();
+
     if (result.hasErrors()) {
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST,
-          tagService.getTagNameListByUserId(customUserDetails.getId()));
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
       return ViewNames.ARTICLE_STOCK_EDIT_PAGE;
     }
 
-    SaveResult saveResult =
-        articleStockService.saveArticleStock(customUserDetails.getId(), dto);
+    SaveResult saveResult;
+    try {
+      saveResult = articleStockService.saveArticleStock(userId, dto);
+    }catch (DuplicateException ex){
+      result.rejectValue(
+          ex.getType().getFieldName(), "duplicate",
+          messageUtil.getMessage(ex.getType().getMessageKey("article")));
+
+      model.addAttribute(
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
+
+      return ViewNames.ARTICLE_STOCK_EDIT_PAGE;
+    }
     addAttributeBySaveType(id, redirectAttributes, saveResult);
 
     return RedirectUtil.redirectView(

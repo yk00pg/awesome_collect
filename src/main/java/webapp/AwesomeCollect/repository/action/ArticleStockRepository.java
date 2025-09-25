@@ -25,6 +25,14 @@ public class ArticleStockRepository {
     return mapper.selectArticleStockByIds(id, userId);
   }
 
+  public Integer findIdByUserIdAndTitle(int userId, String title){
+    return mapper.selectIdByUserIdAndTitle(userId, title);
+  }
+
+  public Integer findIdByUserIdAndUrl(int userId, String url){
+    return mapper.selectIdByUserIdAndUrl(userId, url);
+  }
+
   public void registerArticleStock(ArticleStock articleStock){
     mapper.insertArticleStock(articleStock);
   }
