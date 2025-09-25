@@ -11,6 +11,8 @@ import webapp.AwesomeCollect.dto.action.request.MemoRequestDto;
 import webapp.AwesomeCollect.dto.action.response.MemoResponseDto;
 import webapp.AwesomeCollect.entity.junction.MemoTagJunction;
 import webapp.AwesomeCollect.entity.action.Memo;
+import webapp.AwesomeCollect.exception.DuplicateException;
+import webapp.AwesomeCollect.exception.DuplicateType;
 import webapp.AwesomeCollect.repository.action.MemoRepository;
 import webapp.AwesomeCollect.service.TagService;
 import webapp.AwesomeCollect.service.user.UserProgressService;
@@ -41,7 +43,7 @@ public class MemoService {
   }
 
   /**
-   * DBにメモが登録されていない場合は空のリストを、
+   * ユーザーIDを基にDBを確認し、メモが登録されていない場合は空のリストを、
    * 登録されている場合は登録データを詰めた表示用データオブジェクトのリストを用意する。
    *
    * @param userId  ユーザーId
@@ -57,7 +59,7 @@ public class MemoService {
   }
 
   /**
-   * DBにメモが登録されていない場合はエラー画面に遷移させるためにnullを返し、
+   * メモIDとユーザーIDを基にDBを確認し、メモが登録されていない場合はnullを返し、
    * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
    *
    * @param memoId  メモID
@@ -76,8 +78,8 @@ public class MemoService {
 
   /**
    * メモIDが0の場合は空の入力用データオブジェクトを用意する。<br>
-   * そうでない場合は、DBにメモが登録されていない場合はエラー画面に遷移させるためにnullを返し、
-   * 登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   * そうでない場合は、メモIDとユーザーIDを基にDBを確認し、メモが登録されていない場合は
+   * nullを返し、登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
    *
    * @param memoId  メモID
    * @param userId  ユーザーID
@@ -145,12 +147,11 @@ public class MemoService {
    */
   @Transactional
   private @NotNull MemoRequestDto assembleCurrentRequestDto(int memoId, Memo memo) {
-    MemoRequestDto dto = MemoRequestDto.fromEntity(memo);
-
     List<Integer> tagIdList =
         memoTagJunctionService.prepareTagIdListByActionId(memoId);
     String tagName = tagService.prepareCombinedTagName(tagIdList);
 
+    MemoRequestDto dto = MemoRequestDto.fromEntity(memo);
     dto.setTags(tagName);
     return dto;
   }
@@ -184,10 +185,15 @@ public class MemoService {
    * @param dto メモ入力用データオブジェクト
    * @param tagIdList タグIDリスト
    * @return  登録したメモID
+   * @throws DuplicateException 同ユーザーが同じタイトルをすでに登録している場合
    */
   @Transactional
   private int registerMemo(
       int userId, MemoRequestDto dto, List<Integer> tagIdList) {
+
+    if(isDuplicateTitle(dto.getId(), userId, dto.getTitle())){
+      throw new DuplicateException(DuplicateType.TITLE);
+    }
 
     Memo memo = dto.toMemoForRegistration(userId);
     memoRepository.registerMemo(memo);
@@ -201,24 +207,37 @@ public class MemoService {
   }
 
   /**
-   * DTOをエンティティに変換してDBのメモレコードをタグレコードを更新する。
+   * DTOをエンティティに変換してDBのメモ、紐付けられたタグとの関係情報を更新する。
    *
    * @param userId  ユーザーID
    * @param dto メモ入力用データオブジェクト
    * @param tagIdList タグIDリスト
    * @param memoId  メモID
+   * @throws DuplicateException 同ユーザーが同じタイトルをすでに登録している場合
    */
   @Transactional
   private void updateMemo(
-      int userId, MemoRequestDto dto, List<Integer> tagIdList, int memoId){
+      int userId, MemoRequestDto dto, List<Integer> tagIdList, int memoId)
+      throws DuplicateException {
+
+    if(isDuplicateTitle(memoId, userId, dto.getTitle())){
+      throw new DuplicateException(DuplicateType.TITLE);
+    }
 
     Memo memo = dto.toMemoForUpdate(userId);
     memoRepository.updateMemo(memo);
     memoTagJunctionService.updateRelations(memoId, MemoTagJunction::new, tagIdList);
   }
 
+  // メモタイトルが重複しているか確認する。
+  private boolean isDuplicateTitle(int memoId, int userId, String title){
+    Integer recordId = memoRepository.findIdByUserIdAndTitle(userId, title.strip());
+    return recordId != null && !recordId.equals(memoId);
+  }
+
   /**
-   * 指定のIDのメモを削除し、セッションのレコード数更新情報を変更する。
+   * 指定のIDのメモ、紐付けられたタグとの関係情報を削除し、
+   * セッションのレコード数更新情報を変更する。
    *
    * @param memoId  メモID
    */

@@ -25,6 +25,12 @@ public interface MemoMapper {
       """)
   Memo selectMemoByIds(int id, int userId);
 
+  @Select("""
+      SELECT id FROM memo
+      WHERE user_id=#{userId} AND title=#{title}
+      """)
+  Integer selectIdByUserIdAndTitle(int userId, String title);
+
   // @OptionsをつけてDBで自動採番されるIDを取得してエンティティに付与
   @Insert("""
       INSERT memo(user_id, title, content, registered_at)
