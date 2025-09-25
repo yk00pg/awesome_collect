@@ -14,7 +14,6 @@ public class GoalRequestDto {
 
   private static final int TITLE_MAX_SIZE = 100;
   private static final int CONTENT_MAX_SIZE = 500;
-  private static final int STATUS_SIZE = 3;
 
   private static final String ACHIEVED = "achieved";
   private static final String DOING = "doing";
@@ -29,6 +28,7 @@ public class GoalRequestDto {
   private String title;
 
   @NotBlank(message = "{content.blank}")
+  @Size(max = CONTENT_MAX_SIZE, message = "{content.size}")
   private String content;
 
   @NotBlank(message = "{status.blank}")

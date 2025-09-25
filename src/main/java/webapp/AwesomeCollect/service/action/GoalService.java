@@ -12,6 +12,8 @@ import webapp.AwesomeCollect.dto.action.request.GoalRequestDto;
 import webapp.AwesomeCollect.dto.action.response.GoalResponseDto;
 import webapp.AwesomeCollect.entity.junction.GoalTagJunction;
 import webapp.AwesomeCollect.entity.action.Goal;
+import webapp.AwesomeCollect.exception.DuplicateException;
+import webapp.AwesomeCollect.exception.DuplicateType;
 import webapp.AwesomeCollect.repository.action.GoalRepository;
 import webapp.AwesomeCollect.service.TagService;
 import webapp.AwesomeCollect.service.user.UserProgressService;
@@ -42,7 +44,7 @@ public class GoalService {
   }
 
   /**
-   * DBに目標が登録されていない場合は空のリストを、
+   * ユーザーIDを基にDBを確認し、目標が登録されていない場合は空のリストを、
    * 登録されている場合は登録データを詰めた表示用データオブジェクトのリストを用意する。
    *
    * @param userId  ユーザーID
@@ -58,7 +60,7 @@ public class GoalService {
   }
 
   /**
-   * DBに目標が登録されていない場合はエラー画面に遷移させるためにnullを返し、
+   * 目標IDとユーザーIDを基にDBを確認し、目標が登録されていない場合はnullを返し、
    * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
    *
    * @param goalId  目標ID
@@ -77,8 +79,8 @@ public class GoalService {
 
   /**
    * 目標IDが0の場合は空の入力用データオブジェクトを用意する。<br>
-   * そうでない場合は、DBに目標が登録されていない場合はエラー画面に遷移させるためにnullを返し、
-   * 登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   * そうでない場合は、目標IDとユーザーIDを基にDBを確認し、目標が登録されていない場合は
+   * nullを返し、登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
    *
    * @param goalId  目標ID
    * @param userId  ユーザーID
@@ -173,14 +175,14 @@ public class GoalService {
     }else{
       saveResult = updateGoal(userId, dto, tagIdList, goalId);
     }
+
     sessionManager.setHasUpdatedRecordCount(true);
 
     return saveResult;
   }
 
   /**
-   * DTOをエンティティに変換してDBに登録し、タグ情報を登録する。<br>
-   * セッションのレコード数更新情報を変更し、ユーザーの進捗情報を更新する。
+   * DTOをエンティティに変換してDBに登録し、タグ情報を登録してユーザーの進捗情報を更新する。
    *
    * @param userId  ユーザーID
    * @param dto 目標入力用データオブジェクト
@@ -189,22 +191,25 @@ public class GoalService {
    */
   @Transactional
   private int registerGoal(
-      int userId, GoalRequestDto dto, List<Integer> tagIdList) {
+      int userId, GoalRequestDto dto, List<Integer> tagIdList)
+      throws DuplicateException {
 
     Goal goal = dto.toGoalForRegistration(userId);
     int goalId = goal.getId();
+    if(isDuplicateTitle(goalId, userId, goal.getTitle())){
+      throw new DuplicateException(DuplicateType.TITLE);
+    }
+
     goalRepository.registerGoal(goal);
     goalTagJunctionService.registerNewRelations(goalId, GoalTagJunction::new, tagIdList);
 
-    sessionManager.setHasUpdatedRecordCount(true);
     userProgressService.updateUserProgress(userId);
 
     return goalId;
   }
 
   /**
-   * DTOをエンティティに変換してDBの目標レコードとタグレコードを更新し、
-   * セッションのレコード数更新情報を変更する。
+   * DTOをエンティティに変換してDBの目標、紐付けられたタグとの関係情報を更新する。
    *
    * @param userId  ユーザーID
    * @param dto 目標入力用データオブジェクト
@@ -214,22 +219,32 @@ public class GoalService {
    */
   @Transactional
   private SaveResult updateGoal(
-      int userId, GoalRequestDto dto, List<Integer> tagIdList, int goalId) {
+      int userId, GoalRequestDto dto, List<Integer> tagIdList, int goalId)
+      throws DuplicateException {
 
     Goal goal = dto.toGoalForUpdate(userId);
+    if(isDuplicateTitle(goalId, userId, goal.getTitle())){
+      throw new DuplicateException(DuplicateType.TITLE);
+    }
+
     boolean isAchievedUpdate =
         !goalRepository.findGoalByIds(goalId, userId).isAchieved() && goal.isAchieved();
 
     goalRepository.updateGoal(goal);
     goalTagJunctionService.updateRelations(goalId, GoalTagJunction::new, tagIdList);
 
-    sessionManager.setHasUpdatedRecordCount(true);
-
     return new SaveResult(goalId, isAchievedUpdate);
   }
 
+  // 目標タイトルが重複しているか確認する。
+  private boolean isDuplicateTitle(int goalId, int userId, String title){
+    Integer recordId = goalRepository.findIdByUserIdAndTitle(userId, title.strip());
+    return recordId != null && !recordId.equals(goalId);
+  }
+
   /**
-   * 指定のIDの目標を削除し、セッションのレコード数更新情報をを変更する。
+   * 指定のIDの目標、紐づけられたタグとの関係情報を削除し、
+   * セッションのレコード数更新情報を変更する。
    *
    * @param goalId  目標ID
    */

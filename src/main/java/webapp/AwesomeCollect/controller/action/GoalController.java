@@ -1,6 +1,9 @@
 package webapp.AwesomeCollect.controller.action;
 
 import jakarta.validation.Valid;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Stack;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +24,7 @@ import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.action.request.GoalRequestDto;
 import webapp.AwesomeCollect.dto.action.response.GoalResponseDto;
+import webapp.AwesomeCollect.exception.DuplicateException;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.action.GoalService;
 import webapp.AwesomeCollect.service.TagService;
@@ -106,7 +110,7 @@ public class GoalController {
   }
 
   /**
-   * 入力されたデータにバインディングエラーが発生した場合はタグリストを詰め直して
+   * 入力されたデータにバインディングエラーまたは例外が発生した場合はタグリストを詰め直して
    * 編集ページに戻り、エラーメッセージを表示する。そうでない場合はDBにデータを
    * 保存（登録・更新）し、詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    *
@@ -134,7 +138,20 @@ public class GoalController {
       return ViewNames.GOAL_EDIT_PAGE;
     }
 
-    SaveResult saveResult = goalService.saveGoal(userId, dto);
+    SaveResult saveResult;
+    try{
+       saveResult = goalService.saveGoal(userId, dto);
+    }catch(DuplicateException ex){
+      result.rejectValue(
+          ex.getType().getFieldName(), "duplicate",
+          messageUtil.getMessage(ex.getType().getMessageKey("goal")));
+
+      model.addAttribute(
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
+
+      return ViewNames.GOAL_EDIT_PAGE;
+    }
+
     addAttributeBySaveType(id, redirectAttributes, saveResult);
 
     return RedirectUtil.redirectView(ViewNames.GOAL_DETAIL_PAGE, saveResult.id());

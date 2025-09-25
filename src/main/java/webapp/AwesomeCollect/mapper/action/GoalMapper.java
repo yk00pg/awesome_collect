@@ -25,6 +25,12 @@ public interface GoalMapper {
       """)
   Goal selectGoalByIds(int id, int userId);
 
+  @Select("""
+      SELECT id FROM goal
+      WHERE user_id=#{userId} AND title=#{title}
+      """)
+  Integer selectIdByUserIdAndTitle(int userId, String title);
+
   // @OptionsをつけてDBで自動採番されるIDを取得してエンティティに付与
   @Insert("""
       INSERT goal(user_id, title, content, achieved, registered_at)
