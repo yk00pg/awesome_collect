@@ -118,7 +118,8 @@
                   </label>
                   <!-- JSで追加した行の場合は削除ボタンを表示 -->
                   <button type="button" class="remove-row-button"
-                          th:unless="*{idList[__${iterStat.index}__] > 0} or ${iterStat.index == 0}">×</button>
+                          th:unless="*{idList[__${iterStat.index}__] > 0}
+                              or ${iterStat.index == 0}">×</button>
                 </td>
               </tr>
               <tr class="time-row">
