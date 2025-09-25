@@ -31,7 +31,7 @@ public class DailyTodoService {
   }
 
   /**
-   * DBにやることが登録されていない場合は空の表示用データオブジェクトを、<br>
+   * ユーザーIDと日付を基にDBを確認し、やることが登録されていない場合は空の表示用データオブジェクトを、
    * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
    *
    * @param userId  ユーザーID
@@ -49,7 +49,7 @@ public class DailyTodoService {
   }
 
   /**
-   * DBにやることが登録されていない場合は空の入力用データオブジェクトを、<br>
+   * ユーザーIDと日付を基にDBを確認し、やることが登録されていない場合は空の入力用データオブジェクトを、
    * 登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
    *
    * @param userId  ユーザーID
@@ -76,7 +76,11 @@ public class DailyTodoService {
   @Transactional
   public void saveDailyTodo(int userId, TodoRequestDto dto) {
     for (int i = 0; i < dto.getContentList().size(); i++) {
-      int todoId = dto.getIdList().get(i);
+      // 可変行のID=0が効かないケースに備えてnullを回避
+      int todoId =
+          dto.getIdList().get(i) == null
+              ? 0
+              : dto.getIdList().get(i);
       String content = dto.getContentList().get(i);
 
       if(content == null || content.isBlank()){
@@ -88,6 +92,7 @@ public class DailyTodoService {
       } else {
         if (dto.isDeletable(i)) {
           dailyTodoRepository.deleteDailyTodoById(todoId);
+          sessionManger.setHasUpdatedRecordCount(true);
         } else {
           dailyTodoRepository.updateDailyTodo(dto.toDailyTodoForUpdate(userId, i));
         }
