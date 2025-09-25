@@ -60,6 +60,13 @@ public class DailyTodoValidator implements Validator {
    */
   private void validateContent(TodoRequestDto dto, Errors errors){
     List<String> contentList = dto.getContentList();
+    if(contentList == null ||
+        contentList.stream()
+            .allMatch(content -> content == null || content.isBlank())){
+
+      return;
+    }
+
     contentList.replaceAll(String::strip);
     HashSet<String> uniqueElements = new HashSet<>(contentList);
     if(contentList.size() > uniqueElements.size()){
