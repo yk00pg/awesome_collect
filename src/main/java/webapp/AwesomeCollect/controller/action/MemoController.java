@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.w3c.dom.Attr;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.constant.ViewNames;
@@ -18,6 +19,7 @@ import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.action.request.MemoRequestDto;
 import webapp.AwesomeCollect.dto.action.response.MemoResponseDto;
+import webapp.AwesomeCollect.exception.DuplicateException;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.action.MemoService;
 import webapp.AwesomeCollect.service.TagService;
@@ -93,7 +95,7 @@ public class MemoController {
   }
 
   /**
-   * 入力されたデータにバインディングエラーが発生した場合はタグリストを詰め直して
+   * 入力されたデータにバインディングエラーまたは例外が発生した場合はタグリストを詰め直して
    * 編集ページに戻り、エラーメッセージを表示する。そうでない場合はDBに保存（登録・更新）し、
    * 詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    * 
@@ -122,13 +124,26 @@ public class MemoController {
       return ViewNames.MEMO_EDIT_PAGE;
     }
 
-    int memoId = memoService.saveMemo(userId, dto);
+    int memoId;
+    try{
+      memoId = memoService.saveMemo(userId, dto);
+    }catch (DuplicateException ex){
+      result.rejectValue(
+          ex.getType().getFieldName(), "duplicate",
+          messageUtil.getMessage(ex.getType().getMessageKey("memo")));
+
+      model.addAttribute(
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
+
+      return ViewNames.MEMO_EDIT_PAGE;
+    }
+
     addAttributeBySaveType(id, redirectAttributes);
 
     return RedirectUtil.redirectView(ViewNames.MEMO_DETAIL_PAGE, memoId);
   }
 
-  // 指定のIDの目標を削除して一覧ページにリダイレクトする。
+  // 指定のIDのメモを削除して一覧ページにリダイレクトする。
   @DeleteMapping(ViewNames.MEMO_DETAIL_BY_ID)
   public String deleteMemo(
       @PathVariable int id, RedirectAttributes redirectAttributes) {

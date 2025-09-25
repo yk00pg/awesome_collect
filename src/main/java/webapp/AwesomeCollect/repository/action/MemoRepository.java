@@ -25,6 +25,10 @@ public class MemoRepository {
     return mapper.selectMemoByIds(id, userId);
   }
 
+  public Integer findIdByUserIdAndTitle(int userId, String title){
+    return mapper.selectIdByUserIdAndTitle(userId, title);
+  }
+
   public void registerMemo(Memo memo){
     mapper.insertMemo(memo);
   }
