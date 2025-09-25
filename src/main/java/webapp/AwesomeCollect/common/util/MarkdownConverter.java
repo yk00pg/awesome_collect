@@ -8,19 +8,30 @@ import java.util.regex.Pattern;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
 
-public class MarkdownConverter {
+/**
+ * 文字列をHTMLに変換するクラス。
+ */
+public final class MarkdownConverter {
 
+  // ソフトブレークを改行とみなす
   private static final MutableDataSet options = new MutableDataSet()
       .set(HtmlRenderer.SOFT_BREAK, "<br />\n");
 
   private static final Parser parser = Parser.builder(options).build();
   private static final HtmlRenderer renderer = HtmlRenderer.builder(options).build();
 
+  // リンク、見出し・段落、表は許容
   private static final PolicyFactory policy = Sanitizers.FORMATTING
       .and(Sanitizers.LINKS)
       .and(Sanitizers.BLOCKS)
       .and(Sanitizers.TABLES);
 
+  /**
+   * 文字列を安全なHTMLに変換する。
+   *
+   * @param markdown  マークダウン記法で書かれた文字列
+   * @return  変換済みのHTML
+   */
   public static String toSafeHtml(String markdown){
     if(markdown == null || markdown.isBlank()){
       return "";
@@ -30,6 +41,7 @@ public class MarkdownConverter {
     return policy.sanitize(rawHtml);
   }
 
+  // 画像はそのまま表示せず、文字列に変換して表示する。
   private static String sanitizeImages(String markdown){
     Pattern imgPattern = Pattern.compile("!\\[(.*?)\\]\\((.*?)\\)");
     Matcher matcher = imgPattern.matcher(markdown);

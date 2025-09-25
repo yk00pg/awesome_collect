@@ -97,7 +97,7 @@ public class MemoService {
   }
 
   /**
-   * メモリストを一覧ページ用の表示用データオブジェクトに変換し、紐付けられたタグ名リストを設定する。
+   * メモリストを一覧ページの表示用データオブジェクトに変換し、紐付けられたタグ名リストを設定する。
    *
    * @param memoList  メモリスト
    * @return  メモ表示用データオブジェクトのリスト
@@ -162,7 +162,6 @@ public class MemoService {
    * @param dto メモ入力用データオブジェクト
    * @return  メモID
    */
-  // TODO: Goal, Memo, ArticleStockで処理を共通化する場合は、SaveResultを返すようにする。
   public int saveMemo(int userId, MemoRequestDto dto){
     List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
     List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
@@ -173,7 +172,6 @@ public class MemoService {
     }else{
       updateMemo(userId, dto, tagIdList, memoId);
     }
-    sessionManager.setHasUpdatedRecordCount(true);
 
     return memoId;
   }
@@ -203,8 +201,7 @@ public class MemoService {
   }
 
   /**
-   * DTOをエンティティに変換してDBのメモレコードをタグレコードを更新し、
-   * セッションのレコード数更新情報を変更する。
+   * DTOをエンティティに変換してDBのメモレコードをタグレコードを更新する。
    *
    * @param userId  ユーザーID
    * @param dto メモ入力用データオブジェクト
@@ -218,8 +215,6 @@ public class MemoService {
     Memo memo = dto.toMemoForUpdate(userId);
     memoRepository.updateMemo(memo);
     memoTagJunctionService.updateRelations(memoId, MemoTagJunction::new, tagIdList);
-
-    sessionManager.setHasUpdatedRecordCount(true);
   }
 
   /**

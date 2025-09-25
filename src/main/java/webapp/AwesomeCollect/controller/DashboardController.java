@@ -6,10 +6,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
 import webapp.AwesomeCollect.common.constant.ViewNames;
+import webapp.AwesomeCollect.dto.dashboard.AwesomePointDto;
 import webapp.AwesomeCollect.dto.dashboard.DashboardDto;
+import webapp.AwesomeCollect.dto.dashboard.LearningDaysDto;
 import webapp.AwesomeCollect.dto.dashboard.LearningTimeDto;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.dashboard.AwesomeCountService;
+import webapp.AwesomeCollect.service.dashboard.LearningDaysService;
 import webapp.AwesomeCollect.service.dashboard.LearningTimeService;
 
 /**
@@ -18,44 +21,59 @@ import webapp.AwesomeCollect.service.dashboard.LearningTimeService;
 @Controller
 public class DashboardController {
 
-  private final LearningTimeService learningTimeService;
   private final AwesomeCountService awesomeCountService;
+  private final LearningDaysService learningDaysService;
+  private final LearningTimeService learningTimeService;
 
   public DashboardController(
-     LearningTimeService learningTimeService, AwesomeCountService awesomeCountService){
+      AwesomeCountService awesomeCountService, LearningDaysService learningDaysService,
+      LearningTimeService learningTimeService){
 
-    this.learningTimeService = learningTimeService;
     this.awesomeCountService = awesomeCountService;
+    this.learningDaysService = learningDaysService;
+    this.learningTimeService = learningTimeService;
   }
 
-  // ダッシュボードページを表示
+  // ダッシュボードのトップページを表示する。
   @GetMapping(ViewNames.DASHBOARD_PAGE)
   public String showDashboard(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model){
 
     int userId = customUserDetails.getId();
-    int totalAwesome = awesomeCountService.calculateTotalAwesome(userId);
+    AwesomePointDto awesomePointDto = awesomeCountService.prepareAwesomePointDto(userId);
+    LearningDaysDto learningDaysDto = learningDaysService.prepareLearningDaysDto(userId);
     LearningTimeDto learningTimeDto = learningTimeService.prepareLearningTimeDto(userId);
 
-    DashboardDto dashboardDto = new DashboardDto(totalAwesome, learningTimeDto);
-    model.addAttribute(AttributeNames.DASHBOARD_DTO, dashboardDto);
+    model.addAttribute(AttributeNames.DASHBOARD_DTO,
+        new DashboardDto(awesomePointDto, learningDaysDto, learningTimeDto));
 
     return ViewNames.DASHBOARD_PAGE;
   }
 
-  // 全タグの学習時間ページを表示
-  @GetMapping(ViewNames.DASHBOARD_ALL_TAG_TIME)
-  public String showAllTagHours(
+  // 学習時間グラフページを表示する。
+  @GetMapping(ViewNames.DASHBOARD_LEARNING_TIME_CHART)
+  public String showLearningTimeChart(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      Model model){
+
+    model.addAttribute(AttributeNames.LEARNING_TIME_DTO,
+        learningTimeService.prepareLearningTimeDto(customUserDetails.getId()));
+
+    return ViewNames.DASHBOARD_LEARNING_TIME_CHART;
+  }
+
+  // 全タグ別学習時間グラフページを表示する。
+  @GetMapping(ViewNames.DASHBOARD_ALL_TAG_TIME_CHART)
+  public String showAllTagsTimeChart(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model){
 
     LearningTimeDto learningTimeDto =
         learningTimeService.prepareLearningTimeDto(customUserDetails.getId());
-
     model.addAttribute(
         AttributeNames.TAG_TOTAL_TIME_LIST, learningTimeDto.getTagTotalTimeList());
 
-    return ViewNames.DASHBOARD_ALL_TAG_TIME;
+    return ViewNames.DASHBOARD_ALL_TAG_TIME_CHART;
   }
 }

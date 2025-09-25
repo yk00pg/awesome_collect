@@ -108,10 +108,10 @@ public class DoneRequestDto {
   }
 
   /**
-   * DBから取得したできたことリストをデータオブジェクトに変換する。
+   * DBから取得したできたことリストを入力用データオブジェクトに変換する。
    *
    * @param doneList  できたことリスト
-   * @return  データオブジェクト
+   * @return  入力用データオブジェクト
    */
   public static DoneRequestDto fromDailyDone(List<DailyDone> doneList){
     DoneRequestDto dto = new DoneRequestDto();
@@ -130,10 +130,10 @@ public class DoneRequestDto {
   }
 
   /**
-   * 日付、id(0)、時間(0)、分(0)以外空欄のデータオブジェクトを作成する。
+   * 日付、id(0)、時間(0)、分(0)以外空欄の入力用データオブジェクトを作成する。
    *
    * @param date  日付
-   * @return  データオブジェクト
+   * @return  入力用データオブジェクト
    */
   public static DoneRequestDto createBlankDto(LocalDate date){
     DoneRequestDto dto = new DoneRequestDto();

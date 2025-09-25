@@ -18,7 +18,7 @@ import webapp.AwesomeCollect.entity.dashboard.TagLearningTime;
 import webapp.AwesomeCollect.repository.dashboard.LearningTimeRepository;
 
 /**
- * 学習時間をまとめるサービスクラス。
+ * 学習時間のサービスクラス。
  */
 @Service
 public class LearningTimeService {
@@ -36,12 +36,12 @@ public class LearningTimeService {
   }
 
   /**
-   * セッション情報を確認し、セッション情報がnullまたは学習時間の更新有りまたはDTOがnullの場合は
-   * 累計学習時間（時間、分）、日別学習時間、曜日別平均学習時間、月別学習時間、タグ別学習時間を算出し、
-   * DTOに詰めて、セッション情報を更新する。
+   * セッション情報を確認し、学習時間更新情報がnullまたは更新有りあるいはセッションのDTOがnullの場合は、
+   * 累計学習時間（時間、分）、日別学習時間、曜日別平均学習時間、月別学習時間、タグ別学習時間を
+   * 算出し、DTOに詰めて、セッション情報を更新する。
    *
    * @param userId  ユーザーID
-   * @return  学習時間のデータオブジェクト
+   * @return  学習時間表示用データオブジェクト
    */
   @Transactional
   public LearningTimeDto prepareLearningTimeDto(int userId){
@@ -58,7 +58,7 @@ public class LearningTimeService {
       List<AvgLearningTime> dayOfWeekTimeList = getDayOfWeekAvgTimeList(userId);
       List<TotalLearningTime> sixMonthTimeList = getMonthlyTotalTimeList(userId, today);
       List<TagLearningTime> tagTotalTimeList = getTagTotalTimeList(userId);
-      // ダッシュボードのトップページ用に上位10こを抽出
+      // タグ別学習時間・上位抜粋用に上位10こを抽出
       List<TagLearningTime> topTenTagTotalTimeList =
           tagTotalTimeList.stream().limit(10).toList();
 
@@ -69,7 +69,6 @@ public class LearningTimeService {
       sessionManager.setLearningTimeDto(learningTimeDto);
       sessionManager.setHasUpdateTime(false);
     }
-
     return learningTimeDto;
   }
 
@@ -134,7 +133,7 @@ public class LearningTimeService {
   }
 
   /**
-   * 今月から5ヶ月（6ヶ月間）の月別学習時間リストをDBから取得し、月別にマップに詰め直す。<br>
+   * 今月から5ヶ月前（6ヶ月間）の月別学習時間リストをDBから取得し、月別にマップに詰め直す。<br>
    * 今月を含めた6ヶ月分の月間リストを作成し、マップと照らしてレコードのない月は学習時間を0として、
    * 6ヶ月分の月別学習時間リストを作成する。
    *

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 import webapp.AwesomeCollect.mapper.dashboard.AwesomeCountMapper;
 
 /**
- * えらいポイントのリポジトリクラス。
+ * えらい！ポイントのリポジトリクラス。
  */
 @Repository
 public class AwesomeCountRepository {

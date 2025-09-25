@@ -5,7 +5,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class DateTimeFormatUtil {
+/**
+ * 日付の表示形式を整形するクラス。
+ */
+public final class DateTimeFormatUtil {
 
   private static final DateTimeFormatter DATE_FORMATTER =
       DateTimeFormatter.ofPattern("yyyy年MM月dd日 (E)", Locale.JAPANESE);

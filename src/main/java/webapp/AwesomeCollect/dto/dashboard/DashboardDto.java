@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * ダッシュボードのデータオブジェクト。
+ * ダッシュボード表示用統括データオブジェクト。<br>
+ * えらい！ポイント、学習時間、学習日数のデータオブジェクトを内包する。
  */
 @Data
 @AllArgsConstructor
 public class DashboardDto {
 
-  private int totalAwesome;
+  private AwesomePointDto awesomePointDto;
+  private LearningDaysDto learningDaysDto;
   private LearningTimeDto learningTimeDto;
 }

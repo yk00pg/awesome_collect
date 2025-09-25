@@ -8,7 +8,7 @@ import webapp.AwesomeCollect.entity.junction.MemoTagJunction;
 import webapp.AwesomeCollect.repository.junction.MemoTagJunctionRepository;
 
 /**
- * メモタグのサービスクラス。
+ * メモ×タグのサービスクラス。
  */
 @Service
 public class MemoTagJunctionService extends BaseActionTagJunctionService<MemoTagJunction> {

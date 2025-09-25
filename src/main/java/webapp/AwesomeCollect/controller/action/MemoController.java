@@ -86,7 +86,7 @@ public class MemoController {
     }else{
       model.addAttribute(AttributeNames.MEMO_REQUEST_DTO, memoRequestDto);
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
       return ViewNames.MEMO_EDIT_PAGE;
     }
@@ -94,7 +94,7 @@ public class MemoController {
 
   /**
    * 入力されたデータにバインディングエラーが発生した場合はタグリストを詰め直して
-   * 編集ページに戻り、そうでない場合はDBに保存（登録・更新）し、
+   * 編集ページに戻り、エラーメッセージを表示する。そうでない場合はDBに保存（登録・更新）し、
    * 詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    * 
    * @param id  メモID
@@ -117,7 +117,7 @@ public class MemoController {
 
     if(result.hasErrors()){
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
       return ViewNames.MEMO_EDIT_PAGE;
     }
@@ -126,23 +126,6 @@ public class MemoController {
     addAttributeBySaveType(id, redirectAttributes);
 
     return RedirectUtil.redirectView(ViewNames.MEMO_DETAIL_PAGE, memoId);
-  }
-
-  // 新規登録か更新かを判定してサクセスメッセージを表示する。
-  private void addAttributeBySaveType(int id, RedirectAttributes redirectAttributes) {
-    boolean isRegistration = id == 0;
-    if(isRegistration){
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.ACHIEVEMENT_POPUP,
-          messageUtil.getMessage(MessageKeys.MEMO_AWESOME));
-    }else{
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
-    }
   }
 
   // 指定のIDの目標を削除して一覧ページにリダイレクトする。
@@ -157,5 +140,22 @@ public class MemoController {
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
     return RedirectUtil.redirectView(ViewNames.MEMO_PAGE);
+  }
+
+  // 登録か更新かを判定してサクセスメッセージとポップアップウィンドウを表示する。
+  private void addAttributeBySaveType(int id, RedirectAttributes redirectAttributes) {
+    boolean isRegistration = id == 0;
+    if(isRegistration){
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.ACHIEVEMENT_POPUP,
+          messageUtil.getMessage(MessageKeys.MEMO_AWESOME));
+    }else{
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
+    }
   }
 }

@@ -3,69 +3,97 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
-<head>
-  <meta charset="UTF-8">
-  <title>ダッシュボード</title>
-  <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <title>ダッシュボード</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+  </head>
 
-<body>
-  <div>
-    <header th:replace="~{fragments/header :: header}"></header>
-  </div>
+  <body>
+    <div>
+      <header th:replace="~{fragments/header::header}"></header>
+    </div>
 
-  <div class="sidebar" th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
 
-  <div class="dashboard-container">
-    <div class="top-container">
-      <div class="total-awesome-container">
-        <p>これまでに貯めた<span>えらい！</span>の数</p>
-        <p class="total-awesome" th:text="${dashboardDto.totalAwesome}"></p>
+    <div class="dashboard-container">
+      <div class="top-container">
+        <div class="total-awesome-container">
+          <p>これまでに貯めた<span>えらい！</span>の数</p>
+          <div class="total-awesome-area">
+            <p class="total-awesome"
+               th:text="${dashboardDto.awesomePointDto.totalAwesome}"></p>
+            <span>えらい！</span>
+          </div>
+        </div>
+        <div class="illustration-graph-container">
+          <div class="illustration-graph-area">
+            <!-- えらい！ポイントが0（分割したえらい！ポイントリストが空）の場合 -->
+            <div th:if="${#lists.isEmpty(dashboardDto.awesomePointDto.splitTotalAwesomeList)}"
+                 th:text="#{no.awesome.point}"></div>
+            <!-- えらい！ポイントが貯まっている（分割したえらい！ポイントリストが空でない）場合 -->
+            <div th:unless="${#lists.isEmpty(dashboardDto.awesomePointDto.splitTotalAwesomeList)}"
+                 th:each="num : ${dashboardDto.awesomePointDto.splitTotalAwesomeList}" >
+              <img th:if="${num > 0 and num <= 9}"
+                   th:src="@{/image/sowing-seeds-icon.svg}" alt="種まき"/>
+              <img th:if="${num > 9 and num <= 29}"
+                   th:src="@{/image/watering-icon.svg}" alt="水やり"/>
+              <img th:if="${num > 29 and num <= 69}"
+                   th:src="@{/image/sprouted-leaves-icon.svg}" alt="双葉"/>
+              <img th:if="${num > 69 and num <= 99}"
+                   th:src="@{/image/blooming-flower-icon.svg}" alt="咲いた花"/>
+              <img th:if="${num == 100}"
+                   th:src="@{/image/flower-vase-icon.svg}" alt="花瓶"/>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="total-time-container">
-        <p>これまでの<span>累計学習時間</span></p>
-        <div class="total-time">
-          <p class="total-hours" th:text="${dashboardDto.learningTimeDto.totalHours}"></p>
-          <span>時間</span>
-          <p class="total-minutes" th:text="${dashboardDto.learningTimeDto.totalMinutes}"></p>
-          <span>分</span>
+
+      <div class="middle-container">
+        <div class="total-days-container">
+          <p>これまでの<span>累計学習日数</span></p>
+          <div class="total-days-area">
+            <p class="total-days" th:text="${dashboardDto.learningDaysDto.totalDays}"></p>
+            <span>日</span>
+          </div>
+        </div>
+        <div class="streak-days-container">
+          <p>現在の<span>連続学習日数</span></p>
+          <div class="streak-days-area">
+            <p class="streak-days" th:text="${dashboardDto.learningDaysDto.streakDays}"></p>
+            <span>日間</span>
+          </div>
+          <div class="last-date-area">
+            <p>最後に学習した日: </p>
+            <p class="last-date" th:text="${dashboardDto.learningDaysDto.lastLearnedDate}"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-container">
+        <div class="total-time-container">
+          <p>これまでの<span>累計学習時間</span></p>
+          <div class="total-time-area">
+            <p class="total-hours" th:text="${dashboardDto.learningTimeDto.totalHours}"></p>
+            <span>時間</span>
+            <p class="total-minutes" th:text="${dashboardDto.learningTimeDto.totalMinutes}"></p>
+            <span>分</span>
+          </div>
+        </div>
+        <div class="learning-time-link-container">
+          <div class="learning-time-link-area">
+            <!-- 学習記録が登録されていない（学習時間が0）場合 -->
+            <p th:if="${dashboardDto.learningTimeDto.totalHours == 0
+                          and dashboardDto.learningTimeDto.totalMinutes == 0}"
+               th:text="#{no.learning.record}"></p>
+            <!-- 学習記録が登録されている場合（学習時間が0でない）場合 -->
+            <a th:href="@{/dashboard/chart/learning_time}"
+               th:unless="${dashboardDto.learningTimeDto.totalHours == 0
+                              and dashboardDto.learningTimeDto.totalMinutes == 0}"
+               class="learning-time-link">学習時間をグラフで確認</a>
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="bottom-container">
-      <div class="graph-area">
-        <p>日別学習時間（過去7日分）</p>
-        <canvas id="dailyTime"></canvas>
-      </div>
-      <div class="graph-area">
-        <p>曜日別学習時間（平均）</p>
-        <canvas id="dayOfWeekTime"></canvas>
-      </div>
-      <div class="graph-area">
-        <p>月別学習時間（過去6ヶ月分）</p>
-        <canvas id="monthlyTime"></canvas>
-      </div>
-      <div class="graph-area">
-        <p>タグ別学習時間（累計・上位抜粋）</p>
-        <canvas id="tagTime"></canvas>
-        <div class="link-area">
-          <a th:href="@{/dashboard/tag_time/all}" class="all-tag-link">すべてのタグを確認する</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Chart.js用にデータだけ埋め込み -->
-    <script th:inline="javascript">
-      /*<![CDATA[*/
-        const dailyTimeList = /*[[${dashboardDto.learningTimeDto.dailyTotalTimeList}]]*/ [];
-        const dayOfWeekTimeList = /*[[${dashboardDto.learningTimeDto.dayOfWeekAvgTimeList}]]*/ [];
-        const monthlyTimeList = /*[[${dashboardDto.learningTimeDto.monthlyTotalTimeList}]]*/ [];
-        const tagTimeList = /*[[${dashboardDto.learningTimeDto.topTenTagTotalTimeList}]]*/ [];
-      /*]]>*/
-    </script>
-
-    <!-- Chart.jsの設定はJSで行う -->
-    <script th:src="@{/js/dashboard-top-page-charts.js}"></script>
-  </div>
-</body>
+  </body>
+</html>

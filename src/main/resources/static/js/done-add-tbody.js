@@ -1,8 +1,10 @@
+// 入力フォームに行ブロックを追加する関数
 function initDoneAddTbody() {
     const table = document.getElementById("variable-table");
     const addButton = document.getElementById("add-row");
     if (!table || !addButton) return;
 
+    // 追加する行ブロックの中身
     const createBlock = (index) => {
         const tbody = document.createElement("tbody");
         tbody.dataset.rowId = index;
@@ -91,6 +93,7 @@ function initDoneAddTbody() {
         return tbody;
     };
 
+    // 追加ボタンをクリックしたときに行ブロックを追加する。
     addButton.onclick = () => {
         const blocks = table.querySelectorAll("tbody[data-row-id]");
         const index = blocks.length;
@@ -98,6 +101,7 @@ function initDoneAddTbody() {
         table.appendChild(newBlock);
     };
 
+    // 削除ボタンをクリックしたときに行ブロックを削除する。
     table.onclick = (e) => {
         if(e.target.classList.contains("remove-row-button")) {
             e.target.closest("tbody").remove();
@@ -105,6 +109,7 @@ function initDoneAddTbody() {
         }
     };
 
+    // ラベルの番号を振り直す関数
     function updateLabels() {
         const blocks = table.querySelectorAll("tbody[data-row-id]");
         blocks.forEach((block, i) => {

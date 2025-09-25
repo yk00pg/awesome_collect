@@ -7,7 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import webapp.AwesomeCollect.entity.user.UserInfo;
 
 /**
- * ユーザーのパスワード情報データオブジェクト。
+ * ユーザーパスワード情報データオブジェクト。
  */
 @Data
 public class UserPasswordDto {

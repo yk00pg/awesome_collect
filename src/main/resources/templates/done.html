@@ -1,141 +1,141 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-  <meta charset="UTF-8">
-  <title>できたことリスト</title>
-  <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <title>できたことリスト</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+  </head>
 
-<body>
-  <div>
-    <header th:replace="~{fragments/header::header}"></header>
-  </div>
-
-  <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
-
-  <div class="task-container">
-    <div class="date-index">
-      <a th:href="@{/done/{date}(date=${doneResponseDto.prevDate})}">◀︎ 前の日</a>
-      <form method="get" th:action="@{/done}" style="display:inline;">
-        <input type="date" name="date" th:value="${doneResponseDto.date}">
-        <button type="submit">移動</button>
-      </form>
-      <a th:href="@{/done/{date}(date=${doneResponseDto.nextDate})}">次の日 ▶︎</a>
+  <body>
+    <div>
+      <header th:replace="~{fragments/header::header}"></header>
     </div>
 
-    <div class="task-inner">
-      <div class="task-message-area">
-        <div class="success-message"
-             th:if="${successMessage != null}"
-             th:text="${successMessage}"></div>
+    <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
+
+    <div class="task-container">
+      <div class="date-index">
+        <a th:href="@{/done/{date}(date=${doneResponseDto.prevDate})}">◀︎ 前の日</a>
+        <form method="get" th:action="@{/done}" style="display:inline;">
+          <input type="date" name="date" th:value="${doneResponseDto.date}">
+          <button type="submit">移動</button>
+        </form>
+        <a th:href="@{/done/{date}(date=${doneResponseDto.nextDate})}">次の日 ▶︎</a>
       </div>
 
-      <div class="date-label">
-        <p th:text="${doneResponseDto.formattedDate}"></p>
-      </div>
-
-      <!-- 登録されていない場合 -->
-      <th:block th:if="${!doneResponseDto.hasContent}">
-        <div class="empty-content">
-          <p th:text="#{unregistered.task('できたこと')}"></p>
-          <div class="link-button-area">
-            <a th:href="@{/done/edit/{date}(date=${doneResponseDto.date})}"
-               class="new-registration-link">新規登録</a>
-          </div>
+      <div class="task-inner">
+        <div class="task-message-area">
+          <div class="success-message"
+               th:if="${successMessage != null}"
+               th:text="${successMessage}"></div>
         </div>
-      </th:block>
 
-      <!-- 登録されている場合 -->
-      <th:block th:if="${doneResponseDto.hasContent}">
-        <div class="current-content">
-          <div class="content-header">
-            <div class="at-info">
-              <p th:text="'登録日時: ' + ${doneResponseDto.registeredAt}"></p>
-              <p th:if="${doneResponseDto.updatedAt} != null"
-                 th:text="'更新日時: ' + ${doneResponseDto.updatedAt}"></p>
-            </div>
+        <div class="date-label">
+          <p th:text="${doneResponseDto.formattedDate}"></p>
+        </div>
 
-            <div class="edit-delete-area">
+        <!-- 登録されていない場合 -->
+        <th:block th:if="${!doneResponseDto.hasContent}">
+          <div class="empty-content">
+            <p th:text="#{unregistered.task('できたこと')}"></p>
+            <div class="link-button-area">
               <a th:href="@{/done/edit/{date}(date=${doneResponseDto.date})}"
-                 class="edit-link-area">
-                <img th:src="@{/image/edit-icon.svg}" alt="編集">
-              </a>
-              <a href="#" class="delete-area" id="delete-link">
-                <img th:src="@{/image/delete-icon.svg}" alt="削除">
-              </a>
+                 class="new-registration-link">新規登録</a>
             </div>
           </div>
+        </th:block>
 
-          <div class="content-inner">
-            <div class="inner-title">できたことリスト</div>
-            <div th:each="content, iterStat : ${doneResponseDto.contentList}">
-              <table class="done-view-table">
-                  <th:block th:if="${content != null and !#strings.isEmpty(content)}">
-                    <tr>
-                      <th colspan="2" scope="col" class="view-col-th"
-                          th:text="${iterStat.index + 1}"></th>
-                    </tr>
-                    <tr>
-                      <th scope="row" class="view-row-th">内容</th>
-                      <td th:text="${doneResponseDto.contentList[__${iterStat.index}__]}"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row" class="view-row-th">学習時間</th>
-                      <td th:text="${doneResponseDto.learningTimeList[__${iterStat.index}__]}"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row" class="view-row-th">メモ</th>
-                      <td th:text="${doneResponseDto.memoList[__${iterStat.index}__]}"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row" class="view-row-th">タグ</th>
-                      <td class="tag-td">
-                        <div class="tag-area">
-                          <span th:each="tag : ${doneResponseDto.tagsList[__${iterStat.index}__]}"
-                                th:text="${tag}" class="tag-badge"></span>
-                        </div>
-                      </td>
-                    </tr>
-                  </th:block>
+        <!-- 登録されている場合 -->
+        <th:block th:if="${doneResponseDto.hasContent}">
+          <div class="current-content">
+            <div class="content-header">
+              <div class="at-info">
+                <p th:text="'登録日時: ' + ${doneResponseDto.registeredAt}"></p>
+                <p th:if="${doneResponseDto.updatedAt} != null"
+                   th:text="'更新日時: ' + ${doneResponseDto.updatedAt}"></p>
+              </div>
+
+              <div class="edit-delete-area">
+                <a th:href="@{/done/edit/{date}(date=${doneResponseDto.date})}"
+                   class="edit-link-area">
+                  <img th:src="@{/image/edit-icon.svg}" alt="編集">
+                </a>
+                <a href="#" class="delete-area" id="delete-link">
+                  <img th:src="@{/image/delete-icon.svg}" alt="削除">
+                </a>
+              </div>
+            </div>
+
+            <div class="content-inner">
+              <div class="inner-title">できたことリスト</div>
+              <div th:each="content, iterStat : ${doneResponseDto.contentList}">
+                <table class="done-view-table">
+                    <th:block th:if="${content != null and !#strings.isEmpty(content)}">
+                      <tr>
+                        <th colspan="2" scope="col" class="view-col-th"
+                            th:text="${iterStat.index + 1}"></th>
+                      </tr>
+                      <tr>
+                        <th scope="row" class="view-row-th">内容</th>
+                        <td th:text="${doneResponseDto.contentList[__${iterStat.index}__]}"></td>
+                      </tr>
+                      <tr>
+                        <th scope="row" class="view-row-th">学習時間</th>
+                        <td th:text="${doneResponseDto.learningTimeList[__${iterStat.index}__]}"></td>
+                      </tr>
+                      <tr>
+                        <th scope="row" class="view-row-th">メモ</th>
+                        <td th:text="${doneResponseDto.memoList[__${iterStat.index}__]}"></td>
+                      </tr>
+                      <tr>
+                        <th scope="row" class="view-row-th">タグ</th>
+                        <td class="tag-td">
+                          <div class="tag-area">
+                            <span th:each="tag : ${doneResponseDto.tagsList[__${iterStat.index}__]}"
+                                  th:text="${tag}" class="tag-badge"></span>
+                          </div>
+                        </td>
+                      </tr>
+                    </th:block>
+                </table>
+              </div>
+
+              <table class="hours-table">
+                <th scope="row">この日の合計学習時間</th>
+                <td th:text="${doneResponseDto.totalLearningTime}"></td>
               </table>
             </div>
-
-            <table class="hours-table">
-              <th scope="row">この日の合計学習時間</th>
-              <td th:text="${doneResponseDto.totalLearningTime}"></td>
-            </table>
           </div>
-        </div>
 
-        <form id="deleteDailyDone"
-              th:action="@{/done/{date}(date=${doneResponseDto.date})}"
-              method="post" style="display:none;">
-          <input type="hidden" name="_method" value="delete">
-          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-        </form>
+          <form id="deleteDailyDone"
+                th:action="@{/done/{date}(date=${doneResponseDto.date})}"
+                method="post" style="display:none;">
+            <input type="hidden" name="_method" value="delete">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+          </form>
 
-        <!-- 削除ボタンクリック時に表示するダイアログ -->
-        <script th:inline="javascript">
-          /*<![CDATA[*/
-            const deleteMsg = /*[[#{task.delete.confirm('できたこと')}]]*/;
+          <!-- 削除ボタンクリック時に表示するダイアログ -->
+          <script th:inline="javascript">
+            /*<![CDATA[*/
+                const deleteMsg = /*[[#{task.delete.confirm('できたこと')}]]*/;
 
-            document.getElementById('delete-link').addEventListener('click', function(e){
-              e.preventDefault();
-              if(confirm(deleteMsg)){
-                document.getElementById('deleteDailyDone').submit();
-              }
-            });
-          /*]]>*/
-        </script>
-      </th:block>
+                document.getElementById('delete-link').addEventListener('click', function(e){
+                    e.preventDefault();
+                    if(confirm(deleteMsg)){
+                      document.getElementById('deleteDailyDone').submit();
+                    }
+                });
+            /*]]>*/
+          </script>
+        </th:block>
+      </div>
     </div>
-  </div>
 
-  <!-- 初回登録時のみ表示するポップアップウィンドウ -->
-  <div th:if="${achievementPopup != null}">
-    <div class="popup"
-         th:replace="~{fragments/popup::popup}"></div>
-  </div>
-</body>
+    <!-- 初回登録時のみ表示するポップアップウィンドウ -->
+    <div th:if="${achievementPopup != null}">
+      <div class="popup"
+           th:replace="~{fragments/popup::popup}"></div>
+    </div>
+  </body>
 </html>

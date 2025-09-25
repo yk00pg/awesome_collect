@@ -88,7 +88,7 @@ public class DailyDoneController {
         dailyDoneService.prepareRequestDto(userId, date));
     model.addAttribute(
         AttributeNames.TAG_NAME_LIST,
-        tagService.prepareTagListByUserId(userId));
+        tagService.getTagNameListByUserId(userId));
 
     return ViewNames.DONE_EDIT_PAGE;
   }
@@ -100,12 +100,13 @@ public class DailyDoneController {
   }
 
   /**
-   * 入力されたデータにバインディングエラーが発生した場合は参考用やることリストとタグリストを
-   * 詰め直して編集ページに戻り、そうでない場合はDBにデータを保存（登録・更新・削除）し、
-   * 閲覧ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
+   * 入力されたデータにバインディングエラーが発生した場合は参考用やることリストと
+   * タグリストを詰め直して編集ページに戻ってエラーメッセージを表示し、
+   * そうでない場合はDBにデータを保存（登録・更新・削除）し、閲覧ページに遷移して
+   * 保存の種類に応じたサクセスメッセージを表示する。
    *
    * @param date  日付
-   * @param dto できたことのデータオブジェクト
+   * @param dto できたこと入力用データオブジェクト
    * @param result  バインディングの結果
    * @param model データをViewに渡すオブジェクト
    * @param customUserDetails カスタムユーザー情報
@@ -128,26 +129,13 @@ public class DailyDoneController {
           dailyTodoService.prepareResponseDto(userId, date));
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST,
-          tagService.prepareTagListByUserId(userId));
+          tagService.getTagNameListByUserId(userId));
 
       return ViewNames.DONE_EDIT_PAGE;
     }
 
     dailyDoneService.saveDailyDone(userId, dto);
-
-    boolean isFirstRegistration = dto.getIdList().getFirst() == 0;
-    if(isFirstRegistration){
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.ACHIEVEMENT_POPUP,
-          messageUtil.getMessage(MessageKeys.DONE_AWESOME));
-    }else{
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
-    }
+    addAttributeBySaveType(dto, redirectAttributes);
 
     return RedirectUtil.redirectView(ViewNames.DONE_PAGE, date);
   }
@@ -166,5 +154,24 @@ public class DailyDoneController {
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
     return RedirectUtil.redirectView(ViewNames.DONE_PAGE, date);
+  }
+
+  // 新規登録か更新（削除含む）かを判定してサクセスメッセージとポップアップウィンドウを表示する。
+  private void addAttributeBySaveType(
+      DoneRequestDto dto, RedirectAttributes redirectAttributes) {
+
+    boolean isFirstRegistration = dto.getIdList().getFirst() == 0;
+    if(isFirstRegistration){
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.ACHIEVEMENT_POPUP,
+          messageUtil.getMessage(MessageKeys.DONE_AWESOME));
+    }else{
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
+    }
   }
 }

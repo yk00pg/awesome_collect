@@ -57,10 +57,10 @@ public class MemoRequestDto {
   }
 
   /**
-   * DBから取得したメモをデータオブジェクトに変換する。
+   * DBから取得したメモを入力用データオブジェクトに変換する。
    *
    * @param memo  メモ
-   * @return  データオブジェクト
+   * @return  入力用データオブジェクト
    */
   public static MemoRequestDto fromEntity(Memo memo){
     MemoRequestDto dto = new MemoRequestDto();

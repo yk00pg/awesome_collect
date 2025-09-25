@@ -7,7 +7,7 @@ import lombok.Data;
 import webapp.AwesomeCollect.entity.action.Goal;
 
 /**
- * 目標の入力用データオブジェクト。
+ * 目標入力用データオブジェクト。
  */
 @Data
 public class GoalRequestDto {
@@ -79,10 +79,10 @@ public class GoalRequestDto {
   }
 
   /**
-   * DBから取得した目標をデータオブジェクトに変換する。
+   * DBから取得した目標を入力用データオブジェクトに変換する。
    *
    * @param goal  目標
-   * @return  データオブジェクト
+   * @return  入力用データオブジェクト
    */
   public static GoalRequestDto fromEntity(Goal goal){
     GoalRequestDto dto = new GoalRequestDto();
