@@ -199,13 +199,13 @@ public class GoalService {
     }
 
     Goal goal = dto.toGoalForRegistration(userId);
-    int goalId = goal.getId();
     goalRepository.registerGoal(goal);
-    goalTagJunctionService.registerNewRelations(goalId, GoalTagJunction::new, tagIdList);
+    goalTagJunctionService.registerNewRelations(
+        goal.getId(), GoalTagJunction::new, tagIdList);
 
     userProgressService.updateUserProgress(userId);
 
-    return new SaveResult(goalId, false);
+    return new SaveResult(goal.getId(), false);
   }
 
   /**
