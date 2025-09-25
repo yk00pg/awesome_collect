@@ -24,6 +24,18 @@ public interface ArticleStockMapper {
       """)
   ArticleStock selectArticleStockByIds(int id, int userId);
 
+  @Select("""
+      SELECT id FROM article_stock
+      WHERE user_id=#{userId} AND title=#{title}
+      """)
+  Integer selectIdByUserIdAndTitle(int userId, String title);
+
+  @Select("""
+      SELECT id FROM article_stock
+      WHERE user_id=#{userId} AND url=#{url}
+      """)
+  Integer selectIdByUserIdAndUrl(int userId, String url);
+
   // @OptionsをつけてDBで自動採番されるIDを取得してエンティティに付与
   @Insert("""
       INSERT article_stock(user_id, title, url, memo, finished, registered_at)

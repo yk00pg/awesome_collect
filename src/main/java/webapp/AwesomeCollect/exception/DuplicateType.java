@@ -16,7 +16,10 @@ public enum DuplicateType {
       MessageKeys.DUPLICATE_EMAIL),
   TITLE("title",
       "",
-      MessageKeys.DUPLICATE_TITLE);
+      MessageKeys.DUPLICATE_TITLE),
+  URL("url",
+      "",
+      MessageKeys.DUPLICATE_URL);
 
   // 分割DTO用
   private final String fieldName;
