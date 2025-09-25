@@ -4,10 +4,14 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.awesome.BonusType;
 import webapp.AwesomeCollect.entity.BonusAwesome;
 import webapp.AwesomeCollect.repository.BonusAwesomeRepository;
 
+/**
+ * ボーナスえらい！のサービスクラス。
+ */
 @Service
 public class BonusAwesomeService {
 
@@ -18,39 +22,39 @@ public class BonusAwesomeService {
   }
 
   /**
-   * DBからボーナスえらい！情報を取得し、獲得ポイントを計算する。
+   * ユーザーIDを基にDBからボーナスえらい！情報を取得し、獲得ポイントを合算する。
    *
    * @param userId  ユーザーID
    * @return  ボーナスえらい！の合計ポイント
    */
   public int calculateTotalBonusCount(int userId) {
-    List<BonusAwesome> bonusAwesomeList = bonusAwesomeRepository.searchBonusAwesome(userId);
-
-    return bonusAwesomeList.stream().mapToInt(BonusAwesome :: getAwesomePoint).sum();
+    List<BonusAwesome> bonusAwesomeList =
+        bonusAwesomeRepository.searchBonusAwesome(userId);
+    return bonusAwesomeList.stream()
+        .mapToInt(BonusAwesome::getAwesomePoint).sum();
   }
 
   /**
-   * ボーナスえらい！をDBに登録する。<br>
-   * 現在の連続記録日数に応じたボーナスえらい！リストを作成してDBに登録し、
-   * 登録したボーナスえらい！の数を返す。
+   * 現在の連続記録日数に応じて獲得できるボーナスえらい！をリスト化し、その内容をDBに登録する。
    *
    * @param userId  ユーザーID
    * @param currentStreak 現在の連続記録日数
    * @param today 今日の日付
    * @return  登録したボーナスえらい！の数
    */
+  @Transactional
   public int registerBonusAwesome(int userId, int currentStreak, LocalDate today) {
     List<BonusType> applicableTypeList = findApplicableBonusTypes(currentStreak);
     List<BonusAwesome> bonusAwesomeList =
         createBonusAwesomeList(userId, today, applicableTypeList);
 
-    bonusAwesomeList.forEach(bonusAwesomeRepository :: registerBonusAwesome);
+    bonusAwesomeList.forEach(bonusAwesomeRepository::registerBonusAwesome);
 
     return bonusAwesomeList.size();
   }
 
   /**
-   * 現在の連続記録日数に合致するボーナスタイプがある場合はリストに加える。
+   * 現在の連続記録日数に合致するボーナスタイプをリスト化する。
    *
    * @param currentStreak 現在の連続記録日数
    * @return ボーナスタイプリスト

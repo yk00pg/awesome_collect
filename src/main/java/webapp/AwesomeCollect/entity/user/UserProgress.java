@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * ユーザー進捗状況を扱うオブジェクト。DBに存在するテーブルと連動する。
+ */
 @Getter
 @Setter
 @NoArgsConstructor

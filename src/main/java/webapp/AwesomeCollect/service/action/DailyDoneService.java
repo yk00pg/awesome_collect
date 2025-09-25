@@ -121,7 +121,8 @@ public class DailyDoneService {
 
   /**
    * データの種類に応じてDBに保存（登録・更新・削除）する。<br>
-   * 内容が空の場合は何もせずスキップする。
+   * 内容が空の場合は何もせずスキップする。<br>
+   * セッションのレコード数更新情報、学習日数更新情報、学習時間更新情報を変更する。
    *
    * @param userId  ユーザーID
    * @param dto できたこと入力用データオブジェクト
@@ -149,11 +150,14 @@ public class DailyDoneService {
         }
       }
     }
+
+    sessionManager.setHasUpdatedRecordCount(true);
+    sessionManager.setHasUpdatedLearningDays(true);
+    sessionManager.setHasUpdateTime(true);
   }
 
   /**
-   * DTOをエンティティに変換してDBに登録し、タグ情報を登録する。<br>
-   * セッションのレコード数更新情報、学習時間更新情報を変更し、
+   * DTOをエンティティに変換してDBに登録し、タグ情報を登録し、
    * 日ごとの初回登録時のみユーザーの進捗情報を更新する。
    *
    * @param userId  ユーザーID
@@ -170,17 +174,13 @@ public class DailyDoneService {
     doneTagJunctionService.registerNewRelations(
           dailyDone.getId(), DoneTagJunction::new, tagIdList);
 
-    sessionManager.setHasUpdatedRecordCount(true);
-    sessionManager.setHasUpdateTime(true);
-
     if(index == 0){
       userProgressService.updateUserProgress(userId);
     }
   }
 
   /**
-   * できたことIDを基にDBからタグレコード、できたことレコードを削除し、
-   * セッションのレコード数更新情報、学習時間更新情報を変更する。
+   * できたことIDを基にDBからタグレコード、できたことレコードを削除する。
    *
    * @param doneId  できたことID
    */
@@ -188,13 +188,10 @@ public class DailyDoneService {
   private void deleteDailyDone(int doneId) {
     doneTagJunctionService.deleteRelationByActionId(doneId);
     dailyDoneRepository.deleteDailyDoneById(doneId);
-    sessionManager.setHasUpdatedRecordCount(true);
-    sessionManager.setHasUpdateTime(true);
   }
 
   /**
-   * DTOをエンティティに変換してDBのできたことレコードとタグレコードを更新し、
-   * セッションのレコード数更新情報を変更する。
+   * DTOをエンティティに変換してDBのできたことレコードとタグレコードを更新する。
    *
    * @param userId  ユーザーID
    * @param dto できたこと入力用データオブジェクト
@@ -209,8 +206,6 @@ public class DailyDoneService {
     DailyDone dailyDone = dto.toDailyDoneForUpdate(userId, index);
     dailyDoneRepository.updateDailyDone(dailyDone);
     doneTagJunctionService.updateRelations(doneId, DoneTagJunction::new, tagIdList);
-
-    sessionManager.setHasUpdateTime(true);
   }
 
   /**
@@ -225,6 +220,7 @@ public class DailyDoneService {
     dailyDoneRepository.deleteDailyDoneByDate(userId, date);
 
     sessionManager.setHasUpdatedRecordCount(true);
+    sessionManager.setHasUpdatedLearningDays(true);
     sessionManager.setHasUpdateTime(true);
   }
 }

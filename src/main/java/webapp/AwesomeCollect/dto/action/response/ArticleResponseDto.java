@@ -38,14 +38,12 @@ public class ArticleResponseDto {
   }
 
   /**
-   * DBから取得した記事ストックを一覧ページ用データオブジェクトに変換する。
+   * DBから取得した記事ストックを一覧ページの表示用データオブジェクトに変換する。
    *
    * @param articleStock  記事ストック
-   * @return  一覧ページ用データオブジェクト
+   * @return  一覧ページの表示用データオブジェクト
    */
-  public static ArticleResponseDto fromEntityForList(
-      ArticleStock articleStock){
-
+  public static ArticleResponseDto fromEntityForList(ArticleStock articleStock){
     ArticleResponseDto dto = new ArticleResponseDto();
     dto.id = articleStock.getId();
     dto.title = articleStock.getTitle();
@@ -54,10 +52,10 @@ public class ArticleResponseDto {
   }
 
   /**
-   * DBから取得した記事ストックを詳細ページ用データオブジェクトに変換する。
+   * DBから取得した記事ストックを詳細ページの表示用データオブジェクトに変換する。
    *
    * @param articleStock  記事ストック
-   * @return  詳細ページ用データオブジェクト
+   * @return  詳細ページの表示用データオブジェクト
    */
   public static ArticleResponseDto fromEntityForDetail(
       ArticleStock articleStock) {

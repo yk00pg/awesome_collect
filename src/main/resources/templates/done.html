@@ -86,7 +86,8 @@
                       </tr>
                       <tr>
                         <th scope="row" class="view-row-th">メモ</th>
-                        <td th:text="${doneResponseDto.memoList[__${iterStat.index}__]}"></td>
+                        <td class="done-memo"
+                            th:text="${doneResponseDto.memoList[__${iterStat.index}__]}"></td>
                       </tr>
                       <tr>
                         <th scope="row" class="view-row-th">タグ</th>
@@ -132,7 +133,7 @@
       </div>
     </div>
 
-    <!-- 初回登録時のみ表示するポップアップウィンドウ -->
+    <!-- 日付あたりひとつめの登録時に表示するポップアップウィンドウ -->
     <div th:if="${achievementPopup != null}">
       <div class="popup"
            th:replace="~{fragments/popup::popup}"></div>

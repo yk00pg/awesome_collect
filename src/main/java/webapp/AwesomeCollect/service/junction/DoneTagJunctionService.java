@@ -9,7 +9,7 @@ import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
 import webapp.AwesomeCollect.repository.junction.DoneTagJunctionRepository;
 
 /**
- * できたことタグのサービスクラス。
+ * できたこと×タグのサービスクラス。
  */
 @Service
 public class DoneTagJunctionService extends BaseActionTagJunctionService<DoneTagJunction>{

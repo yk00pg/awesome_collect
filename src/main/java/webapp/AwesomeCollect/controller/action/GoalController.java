@@ -78,7 +78,7 @@ public class GoalController {
     }
   }
 
-  // 目標の編集ページを表示する
+  // 目標の編集ページを表示する。
   @GetMapping(ViewNames.GOAL_EDIT_BY_ID)
   public String showGoalForm(
       @PathVariable int id,
@@ -93,13 +93,13 @@ public class GoalController {
     }else{
       model.addAttribute(AttributeNames.GOAL_REQUEST_DTO, goalRequestDto);
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
       return ViewNames.GOAL_EDIT_PAGE;
     }
   }
 
-  // DTOのアノテーションで制御できないバリデーションを確認
+  // DTOのアノテーションで制御できないバリデーションを確認する。
   @InitBinder(AttributeNames.GOAL_REQUEST_DTO)
   public void initBinder(WebDataBinder dataBinder){
     dataBinder.addValidators(goalValidator);
@@ -107,11 +107,11 @@ public class GoalController {
 
   /**
    * 入力されたデータにバインディングエラーが発生した場合はタグリストを詰め直して
-   * 編集ページに戻り、そうでない場合はDBにデータを保存（登録・更新）し、
-   * 詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
+   * 編集ページに戻り、エラーメッセージを表示する。そうでない場合はDBにデータを
+   * 保存（登録・更新）し、詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    *
    * @param id  目標ID
-   * @param dto 目標のデータオブジェクト
+   * @param dto 目標入力用データオブジェクト
    * @param result  バインディングの結果
    * @param model データをViewに渡すオブジェクト
    * @param customUserDetails カスタムユーザー情報
@@ -130,11 +130,33 @@ public class GoalController {
 
     if(result.hasErrors()){
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST, tagService.prepareTagListByUserId(userId));
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
       return ViewNames.GOAL_EDIT_PAGE;
     }
 
     SaveResult saveResult = goalService.saveGoal(userId, dto);
+    addAttributeBySaveType(id, redirectAttributes, saveResult);
+
+    return RedirectUtil.redirectView(ViewNames.GOAL_DETAIL_PAGE, saveResult.id());
+  }
+
+  // 指定のIDの目標を削除して一覧ページにリダイレクトする。
+  @DeleteMapping(ViewNames.GOAL_DETAIL_BY_ID)
+  public String deleteGoal(
+      @PathVariable int id, RedirectAttributes redirectAttributes) {
+
+    goalService.deleteGoal(id);
+
+    redirectAttributes.addFlashAttribute(
+        AttributeNames.SUCCESS_MESSAGE,
+        messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
+
+    return RedirectUtil.redirectView(ViewNames.GOAL_PAGE);
+  }
+
+  // 登録か更新か、更新の場合は進捗状況が更新されたかを判定してサクセスメッセージとポップアップウィンドウを表示する。
+  private void addAttributeBySaveType(
+      int id, RedirectAttributes redirectAttributes, SaveResult saveResult) {
 
     boolean isRegistration = id == 0;
     if(isRegistration){
@@ -155,21 +177,5 @@ public class GoalController {
             messageUtil.getMessage(MessageKeys.ACHIEVED_AWESOME));
       }
     }
-
-    return RedirectUtil.redirectView(ViewNames.GOAL_DETAIL_PAGE, saveResult.id());
-  }
-
-  // 指定のIDの目標を削除して一覧ページにリダイレクトする。
-  @DeleteMapping(ViewNames.GOAL_DETAIL_BY_ID)
-  public String deleteGoal(
-      @PathVariable int id, RedirectAttributes redirectAttributes) {
-
-    goalService.deleteGoal(id);
-
-    redirectAttributes.addFlashAttribute(
-        AttributeNames.SUCCESS_MESSAGE,
-        messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
-
-    return RedirectUtil.redirectView(ViewNames.GOAL_PAGE);
   }
 }

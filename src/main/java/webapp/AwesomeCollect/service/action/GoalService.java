@@ -53,7 +53,7 @@ public class GoalService {
     if(goalList == null || goalList.isEmpty()){
       return new ArrayList<>();
     }else{
-      return assembleCurrentReponseDtoList(goalList);
+      return assembleCurrentResponseDtoList(goalList);
     }
   }
 
@@ -70,7 +70,8 @@ public class GoalService {
     if(goal == null){
       return null;
     }else{
-      return assembleCurrentResponseDto(goalId, goal);
+      return assembleCurrentResponseDto(
+          GoalResponseDto.fromEntityForDetail(goal), goalId);
     }
   }
 
@@ -97,44 +98,40 @@ public class GoalService {
   }
 
   /**
-   * 目標リストを一覧ページ用の表示用データオブジェクトに変換し、紐付けられたタグ名リストを設定する。
+   * 目標リストを一覧ページの表示用データオブジェクトに変換し、紐付けられたタグ名リストを設定する。
    *
    * @param goalList  目標リスト
-   * @return  一覧ページ用の目標表示用データオブジェクトのリスト
+   * @return  目標表示用データオブジェクトのリスト
    */
-  @Transactional
-  private @NotNull List<GoalResponseDto> assembleCurrentReponseDtoList(
+  private @NotNull List<GoalResponseDto> assembleCurrentResponseDtoList(
       List<Goal> goalList) {
 
     List<GoalResponseDto> dtoList = new ArrayList<>();
     for(Goal goal : goalList){
-      List<Integer> tagIdList =
-          goalTagJunctionService.prepareTagIdListByActionId(goal.getId());
-      List<String> tagNameList =
-          tagService.prepareTagNameListByTagIdList(tagIdList);
-
-      GoalResponseDto dto = GoalResponseDto.fromEntityForList(goal);
-      dto.setTagList(tagNameList);
+      GoalResponseDto dto =
+          assembleCurrentResponseDto(
+              GoalResponseDto.fromEntityForList(goal), goal.getId());
       dtoList.add(dto);
     }
     return dtoList;
   }
 
   /**
-   * 目標を詳細ページ用の表示用データオブジェクトに変換し、紐付けられたタグ名リストを設定する。
+   * 目標に紐付けられたタグ名リストを表示用データオブジェクトに設定する。
    *
+   * @param dto 目標表示用データオブジェクト
    * @param goalId  目標ID
-   * @param goal  目標
-   * @return  詳細ページ用の目標表示用データオブジェクト
+   * @return  目標表示用データオブジェクト
    */
   @Transactional
-  private @NotNull GoalResponseDto assembleCurrentResponseDto(int goalId, Goal goal) {
+  private @NotNull GoalResponseDto assembleCurrentResponseDto(
+      GoalResponseDto dto, int goalId) {
+
     List<Integer> tagIdList =
         goalTagJunctionService.prepareTagIdListByActionId(goalId);
     List<String> tagNameList =
         tagService.prepareTagNameListByTagIdList(tagIdList);
 
-    GoalResponseDto dto = GoalResponseDto.fromEntityForDetail(goal);
     dto.setTagList(tagNameList);
     return dto;
   }
@@ -186,7 +183,7 @@ public class GoalService {
    * セッションのレコード数更新情報を変更し、ユーザーの進捗情報を更新する。
    *
    * @param userId  ユーザーID
-   * @param dto 目標のデータオブジェクト
+   * @param dto 目標入力用データオブジェクト
    * @param tagIdList タグIDリスト
    * @return  登録した目標ID
    */
@@ -233,6 +230,7 @@ public class GoalService {
 
   /**
    * 指定のIDの目標を削除し、セッションのレコード数更新情報をを変更する。
+   *
    * @param goalId  目標ID
    */
   @Transactional

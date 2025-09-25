@@ -1,6 +1,9 @@
 package webapp.AwesomeCollect.common.constant;
 
-public class MessageKeys {
+/**
+ * メッセージキーの定数クラス。
+ */
+public final class MessageKeys {
 
   // exception
   public static final String DUPLICATE_LOGIN_ID = "duplicate.loginId";
@@ -11,6 +14,7 @@ public class MessageKeys {
   public static final String PASSWORD_MISMATCH = "password.mismatch";
   public static final String CURRENT_PASSWORD_BLANK = "currentPassword.blank";
   public static final String CONTENT_BLANK = "content.blank";
+  public static final String CONTENT_DUPLICATE = "content.duplicate";
   public static final String DATE_FUTURE = "date.future";
   public static final String LEARNING_TIME_BLANK = "learning.time.blank";
   public static final String TOTAL_LEARNING_TIME_EXCEEDED = "total.learning.time.exceed";
@@ -36,4 +40,8 @@ public class MessageKeys {
   public static final String MEMO_AWESOME = "memo.awesome";
   public static final String ARTICLE_AWESOME = "article.awesome";
   public static final String FINISHED_AWESOME = "finished.awesome";
+
+  private MessageKeys(){
+    // インスタンス化を防止
+  }
 }

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+  <head>
+    <meta charset="UTF-8">
+    <title>ダッシュボード・学習時間グラフ</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+  </head>
+
+  <body>
+  <div>
+    <header th:replace="~{fragments/header::header}"></header>
+  </div>
+
+  <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
+
+  <div class="dashboard-container">
+    <div class="graphs-container">
+      <div class="graph-area">
+        <div class="back-indicator">
+          <a th:href="@{/dashboard}" class="back-link">
+            <img th:src="@{/image/back-icon.svg}" alt="戻る">
+            <span>戻る</span>
+          </a>
+        </div>
+        <p>日別学習時間（過去7日分）</p>
+        <canvas id="dailyTime"></canvas>
+      </div>
+
+      <div class="graph-area">
+        <div class="back-indicator">
+          <a th:href="@{/dashboard}" class="back-link">
+            <img th:src="@{/image/back-icon.svg}" alt="戻る">
+            <span>戻る</span>
+          </a>
+        </div>
+        <p>曜日別学習時間（平均）</p>
+        <canvas id="dayOfWeekTime"></canvas>
+      </div>
+
+      <div class="graph-area">
+        <div class="back-indicator">
+          <a th:href="@{/dashboard}" class="back-link">
+            <img th:src="@{/image/back-icon.svg}" alt="戻る">
+            <span>戻る</span>
+          </a>
+        </div>
+        <p>月別学習時間（過去6ヶ月分）</p>
+        <canvas id="monthlyTime"></canvas>
+      </div>
+
+      <div class="graph-area">
+        <div class="back-indicator">
+          <a th:href="@{/dashboard}" class="back-link">
+            <img th:src="@{/image/back-icon.svg}" alt="戻る">
+            <span>戻る</span>
+          </a>
+        </div>
+        <p>タグ別学習時間（累計・上位抜粋）</p>
+        <canvas id="tagTime"></canvas>
+        <!-- タグ別学習時間リストが11要素以上ある場合 -->
+        <div class="link-area"
+             th:if="${#lists.size(learningTimeDto.tagTotalTimeList) > 10}">
+          <a th:href="@{/dashboard/chart/learning_time/all_tags}"
+             class="all-tag-link">すべてのタグを確認する</a>
+        </div>
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+          const dailyTimeList = /*[[${learningTimeDto.dailyTotalTimeList}]]*/ [];
+          const dayOfWeekTimeList = /*[[${learningTimeDto.dayOfWeekAvgTimeList}]]*/ [];
+          const monthlyTimeList = /*[[${learningTimeDto.monthlyTotalTimeList}]]*/ [];
+          const tagTimeList = /*[[${learningTimeDto.topTenTagTotalTimeList}]]*/ [];
+      /*]]>*/
+    </script>
+    <script th:src="@{/js/dashboard-learning-time-charts.js}"></script>
+  </div>
+  </body>
+</html>

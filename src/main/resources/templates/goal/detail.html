@@ -1,106 +1,106 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-  <meta charset="UTF-8">
-  <title>目標・詳細</title>
-  <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <title>目標・詳細</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+  </head>
 
-<body>
-  <div>
-    <header th:replace="~{fragments/header::header}"></header>
-  </div>
-
-  <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
-
-  <div class="main-container">
-    <div class="back-indicator">
-      <a th:href="@{/goal}">
-        <img th:src="@{/image/back-icon.svg}" alt="戻る">
-        <span>戻る</span>
-      </a>
+  <body>
+    <div>
+      <header th:replace="~{fragments/header::header}"></header>
     </div>
 
-    <div class="action-message-area">
-      <div class="success-message"
-           th:if="${successMessage != null}"
-           th:text="${successMessage}"></div>
-    </div>
+    <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
 
-    <div class="action-content">
-      <div class="action-content-inner">
-        <div class="inner-title">目標・詳細</div>
-        <div class="content-header">
-          <div class="at-info">
-            <p th:text="'登録日時: ' + ${goalResponseDto.registeredAt}"></p>
-            <p th:if="${goalResponseDto.updatedAt} != null"
-               th:text="'更新日時: ' + ${goalResponseDto.updatedAt}"></p>
-          </div>
-
-          <div class="edit-delete-area">
-            <a th:href="@{/goal/detail/edit/{id}(id=*{id})}"
-               class="edit-link-area">
-              <img th:src="@{/image/edit-icon.svg}" alt="編集">
-            </a>
-            <a href="#" class="delete-area" id="delete-link">
-              <img th:src="@{/image/delete-icon.svg}" alt="削除">
-            </a>
-          </div>
-        </div>
-
-        <table class="view-table">
-          <tr>
-            <th scope="row" class="view-row-th">目標タイトル</th>
-            <td th:text="${goalResponseDto.title}"></td>
-          </tr>
-          <tr>
-            <th scope="row" class="view-row-th">内容</th>
-            <td class="goal-content" th:text="${goalResponseDto.content}"></td>
-          </tr>
-          <tr>
-            <th scope="row" class="view-row-th">達成状況</th>
-            <td th:text="${goalResponseDto.statusLabel}"></td>
-          </tr>
-          <tr>
-            <th scope="row" class="view-row-th">タグ</th>
-            <td class="tag-td">
-              <div class="tag-area">
-                          <span th:each="tag : ${goalResponseDto.tagList}"
-                                th:text="${tag}" class="tag-badge"></span>
-              </div>
-            </td>
-          </tr>
-          </table>
+    <div class="main-container">
+      <div class="back-indicator">
+        <a th:href="@{/goal}">
+          <img th:src="@{/image/back-icon.svg}" alt="戻る">
+          <span>戻る</span>
+        </a>
       </div>
+
+      <div class="action-message-area">
+        <div class="success-message"
+             th:if="${successMessage != null}"
+             th:text="${successMessage}"></div>
+      </div>
+
+      <div class="action-content">
+        <div class="action-content-inner">
+          <div class="inner-title">目標・詳細</div>
+          <div class="content-header">
+            <div class="at-info">
+              <p th:text="'登録日時: ' + ${goalResponseDto.registeredAt}"></p>
+              <p th:if="${goalResponseDto.updatedAt} != null"
+                 th:text="'更新日時: ' + ${goalResponseDto.updatedAt}"></p>
+            </div>
+
+            <div class="edit-delete-area">
+              <a th:href="@{/goal/detail/edit/{id}(id=*{id})}"
+                 class="edit-link-area">
+                <img th:src="@{/image/edit-icon.svg}" alt="編集">
+              </a>
+              <a href="#" class="delete-area" id="delete-link">
+                <img th:src="@{/image/delete-icon.svg}" alt="削除">
+              </a>
+            </div>
+          </div>
+
+          <table class="view-table">
+            <tr>
+              <th scope="row" class="view-row-th">目標タイトル</th>
+              <td th:text="${goalResponseDto.title}"></td>
+            </tr>
+            <tr>
+              <th scope="row" class="view-row-th">内容</th>
+              <td class="goal-content" th:text="${goalResponseDto.content}"></td>
+            </tr>
+            <tr>
+              <th scope="row" class="view-row-th">達成状況</th>
+              <td th:text="${goalResponseDto.statusLabel}"></td>
+            </tr>
+            <tr>
+              <th scope="row" class="view-row-th">タグ</th>
+              <td class="tag-td">
+                <div class="tag-area">
+                  <span th:each="tag : ${goalResponseDto.tagList}"
+                        th:text="${tag}" class="tag-badge"></span>
+                </div>
+              </td>
+            </tr>
+            </table>
+        </div>
+      </div>
+
+      <form id="deleteGoal"
+            th:action="@{/goal/detail/{id}(id=${goalResponseDto.id})}"
+            method="post" style="display:none;">
+        <input type="hidden" name="_method" value="delete">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+      </form>
+
+      <!-- 削除ボタンクリック時に表示するダイアログ -->
+      <script th:inline="javascript">
+        /*<![CDATA[*/
+            const deleteMsg = /*[[#{action.delete.confirm('目標')}]]*/;
+
+            document.getElementById('delete-link').addEventListener('click', function(e){
+                e.preventDefault();
+                if(confirm(deleteMsg)){
+                  document.getElementById('deleteGoal').submit();
+                }
+            });
+        /*]]>*/
+      </script>
     </div>
 
-    <form id="deleteGoal"
-          th:action="@{/goal/detail/{id}(id=${goalResponseDto.id})}"
-          method="post" style="display:none;">
-      <input type="hidden" name="_method" value="delete">
-      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-    </form>
-
-    <!-- 削除ボタンクリック時にダイアログを表示 -->
-    <script th:inline="javascript">
-      /*<![CDATA[*/
-        const deleteMsg = /*[[#{action.delete.confirm('目標')}]]*/;
-
-        document.getElementById('delete-link').addEventListener('click', function(e){
-          e.preventDefault();
-          if(confirm(deleteMsg)){
-            document.getElementById('deleteGoal').submit();
-          }
-        });
-      /*]]>*/
-    </script>
-  </div>
-
-  <!-- 初回登録時 & ステータス更新時に表示するポップアップウィンドウ -->
-  <div th:if="${achievementPopup != null}">
-    <div class="popup"
-         th:replace="~{fragments/popup::popup}"></div>
-  </div>
-</body>
+    <!-- 登録時 & ステータス更新時に表示するポップアップウィンドウ -->
+    <div th:if="${achievementPopup != null}">
+      <div class="popup"
+           th:replace="~{fragments/popup::popup}"></div>
+    </div>
+  </body>
 </html>

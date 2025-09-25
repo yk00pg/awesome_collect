@@ -31,18 +31,18 @@ public interface GoalMapper {
       VALUES(#{userId}, #{title}, #{content}, #{achieved}, #{registeredAt})
       """)
   @Options(useGeneratedKeys = true, keyProperty = "id")
-  int insertGoal(Goal goal);
+  void insertGoal(Goal goal);
 
   @Update("""
       UPDATE goal
       SET title=#{title}, content=#{content}, achieved=#{achieved}, updated_at=#{updatedAt}
       WHERE id=#{id}
       """)
-  int updateGoal(Goal goal);
+  void updateGoal(Goal goal);
 
   @Delete("""
       DELETE FROM goal
       WHERE id=#{id}
       """)
-  int deleteGoal(int id);
+  void deleteGoal(int id);
 }

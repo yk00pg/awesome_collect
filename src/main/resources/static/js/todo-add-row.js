@@ -46,7 +46,7 @@ function initTodoAddTbody() {
         }
     };
 
-    // ラベルの番号を振り直す。
+    // ラベルの番号を振り直す関数
     function updateLabels() {
         const blocks = table.querySelectorAll("tbody[data-row-id]");
         blocks.forEach((block, i) => {

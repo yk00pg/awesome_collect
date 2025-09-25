@@ -1,6 +1,9 @@
 package webapp.AwesomeCollect.common.constant;
 
-public class AttributeNames {
+/**
+ * アトリビュート名の定数クラス。
+ */
+public final class AttributeNames {
 
   // message
   public static final String SUCCESS_MESSAGE = "successMessage";
@@ -32,8 +35,13 @@ public class AttributeNames {
   public static final String ARTICLE_REQUEST_DTO = "articleRequestDto";
 
   public static final String DASHBOARD_DTO = "dashboardDto";
-  public static final String TAG_TOTAL_TIME_LIST = "tagTotalTimeList";
+  public static final String LEARNING_TIME_DTO = "learningTimeDto";
 
   // others
   public static final String TAG_NAME_LIST = "tagNameList";
+  public static final String TAG_TOTAL_TIME_LIST = "tagTotalTimeList";
+
+  private AttributeNames(){
+    // インスタンス化を防止
+  }
 }
