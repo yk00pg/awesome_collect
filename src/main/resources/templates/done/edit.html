@@ -18,7 +18,7 @@
 
     <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
 
-    <div class="done-edit-container">
+    <div class="task-container">
       <div class="reference-todo-container">
         <div class="date-label">
           <p th:text="${todoResponseDto.formattedDate}"></p>
@@ -76,7 +76,7 @@
               <th scope="row" class="task-th">日付</th>
               <td class="blank-cell"></td>
               <td>
-                <input type="date" class="date-input-area"
+                <input type="date" class="input-date-area"
                        th:field="*{date}" required/>
               </td>
             </tr>
@@ -118,7 +118,8 @@
                   </label>
                   <!-- JSで追加した行の場合は削除ボタンを表示 -->
                   <button type="button" class="remove-row-button"
-                          th:if="*{idList[__${iterStat.index}__] == 0} and ${iterStat.index > 0}">×</button>
+                          th:unless="*{idList[__${iterStat.index}__] > 0}
+                              or ${iterStat.index == 0}">×</button>
                 </td>
               </tr>
               <tr class="time-row">
