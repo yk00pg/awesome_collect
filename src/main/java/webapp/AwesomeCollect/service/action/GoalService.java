@@ -170,8 +170,7 @@ public class GoalService {
     int goalId = dto.getId();
     SaveResult saveResult;
     if(goalId == 0){
-      goalId = registerGoal(userId, dto, tagIdList);
-      saveResult = new SaveResult(goalId, false);
+      saveResult = registerGoal(userId, dto, tagIdList);
     }else{
       saveResult = updateGoal(userId, dto, tagIdList, goalId);
     }
@@ -188,24 +187,25 @@ public class GoalService {
    * @param dto 目標入力用データオブジェクト
    * @param tagIdList タグIDリスト
    * @return  登録した目標ID
+   * @throws DuplicateException 同ユーザーが同じタイトルをすでに登録している場合
    */
   @Transactional
-  private int registerGoal(
+  private SaveResult registerGoal(
       int userId, GoalRequestDto dto, List<Integer> tagIdList)
       throws DuplicateException {
 
-    Goal goal = dto.toGoalForRegistration(userId);
-    int goalId = goal.getId();
-    if(isDuplicateTitle(goalId, userId, goal.getTitle())){
+    if(isDuplicateTitle(dto.getId(), userId, dto.getTitle())){
       throw new DuplicateException(DuplicateType.TITLE);
     }
 
+    Goal goal = dto.toGoalForRegistration(userId);
+    int goalId = goal.getId();
     goalRepository.registerGoal(goal);
     goalTagJunctionService.registerNewRelations(goalId, GoalTagJunction::new, tagIdList);
 
     userProgressService.updateUserProgress(userId);
 
-    return goalId;
+    return new SaveResult(goalId, false);
   }
 
   /**
@@ -216,17 +216,18 @@ public class GoalService {
    * @param tagIdList タグIDリスト
    * @param goalId  目標ID
    * @return  保存結果オブジェクト
+   * @throws DuplicateException 同ユーザーが同じタイトルをすでに登録している場合
    */
   @Transactional
   private SaveResult updateGoal(
       int userId, GoalRequestDto dto, List<Integer> tagIdList, int goalId)
       throws DuplicateException {
 
-    Goal goal = dto.toGoalForUpdate(userId);
-    if(isDuplicateTitle(goalId, userId, goal.getTitle())){
+    if(isDuplicateTitle(goalId, userId, dto.getTitle())){
       throw new DuplicateException(DuplicateType.TITLE);
     }
 
+    Goal goal = dto.toGoalForUpdate(userId);
     boolean isAchievedUpdate =
         !goalRepository.findGoalByIds(goalId, userId).isAchieved() && goal.isAchieved();
 
