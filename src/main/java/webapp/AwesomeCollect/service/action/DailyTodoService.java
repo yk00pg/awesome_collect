@@ -67,8 +67,8 @@ public class DailyTodoService {
   }
 
   /**
-   * データの種類を判別してDBに保存（登録・更新・削除）する。<br>
-   * 内容が空の場合は何もせずスキップする。
+   * データの種類を判別してDBに保存（登録・更新・削除、内容が空の場合はスキップ）し、
+   * セッションのレコード数更新情報を変更する。
    *
    * @param userId  ユーザーID
    * @param dto やること入力用データオブジェクト
@@ -92,17 +92,17 @@ public class DailyTodoService {
       } else {
         if (dto.isDeletable(i)) {
           dailyTodoRepository.deleteDailyTodoById(todoId);
-          sessionManger.setHasUpdatedRecordCount(true);
         } else {
           dailyTodoRepository.updateDailyTodo(dto.toDailyTodoForUpdate(userId, i));
         }
       }
     }
+
+    sessionManger.setHasUpdatedRecordCount(true);
   }
 
   /**
-   * DTOをエンティティに変換してDBに登録し、セッションのレコード数更新情報を変更する。<br>
-   * 日ごとの初回登録時のみユーザーの進捗情報を更新する。
+   * DTOをエンティティに変換してDBに登録し、日ごとの初回登録時の場合はユーザーの進捗情報も併せて変更する。
    *
    * @param userId  ユーザーID
    * @param dto やること入力用データオブジェクト
@@ -111,7 +111,7 @@ public class DailyTodoService {
   private void registerDailyTodo(int userId, TodoRequestDto dto, int index) {
     DailyTodo dailyTodo = dto.toDailyTodoForRegistration(userId, index);
     dailyTodoRepository.registerDailyTodo(dailyTodo);
-    sessionManger.setHasUpdatedRecordCount(true);
+
     if(index == 0){
       userProgressService.updateUserProgress(userId);
     }

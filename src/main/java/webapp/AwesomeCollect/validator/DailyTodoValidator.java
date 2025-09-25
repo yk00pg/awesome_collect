@@ -1,13 +1,16 @@
 package webapp.AwesomeCollect.validator;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.util.MessageUtil;
+import webapp.AwesomeCollect.dto.action.request.DoneRequestDto;
 import webapp.AwesomeCollect.dto.action.request.TodoRequestDto;
 
 /**
@@ -32,15 +35,9 @@ public class DailyTodoValidator implements Validator {
   public void validate(@NotNull Object target, @NotNull Errors errors) {
     TodoRequestDto dto = (TodoRequestDto) target;
     validateContentList(dto, errors);
-    validateContent(dto, errors);
   }
 
-  /**
-   * 内容がすべて空欄の場合はエラーに追加する。
-   *
-   * @param dto やること入力用データオブジェクト
-   * @param errors  エラー
-   */
+  // すべての内容が空欄の場合はエラーに追加する。
   private void validateContentList(TodoRequestDto dto, Errors errors){
     if(dto.getContentList() == null ||
         dto.getContentList().stream()
@@ -49,27 +46,22 @@ public class DailyTodoValidator implements Validator {
       errors.rejectValue(
           "contentList", "blankContent",
           messageUtil.getMessage(MessageKeys.CONTENT_BLANK));
+    }else{
+      validateContent(dto, errors);
     }
   }
 
-  /**
-   * 同じ内容が含まれている場合はエラーに追加する。
-   *
-   * @param dto やること入力用データオブジェクト
-   * @param errors  エラー
-   */
+  // 内容が重複している場合はエラーに追加する。
   private void validateContent(TodoRequestDto dto, Errors errors){
     List<String> contentList = dto.getContentList();
-    if(contentList == null ||
-        contentList.stream()
-            .allMatch(content -> content == null || content.isBlank())){
+    List<String> nonNullContentList =
+        new ArrayList<>(contentList.stream()
+            .filter(Objects :: nonNull)
+            .toList());
 
-      return;
-    }
-
-    contentList.replaceAll(String::strip);
-    HashSet<String> uniqueElements = new HashSet<>(contentList);
-    if(contentList.size() > uniqueElements.size()){
+    nonNullContentList.replaceAll(String::strip);
+    HashSet<String> uniqueElements = new HashSet<>(nonNullContentList);
+    if(nonNullContentList.size() > uniqueElements.size()){
       errors.rejectValue(
           "contentList", "duplicateContent",
           messageUtil.getMessage(MessageKeys.CONTENT_DUPLICATE));
