@@ -42,7 +42,7 @@ public class DailyDoneService {
   }
 
   /**
-   * DBにできたことが登録されていない場合は空の表示用データオブジェクトを、<br>
+   * ユーザーIDと日付を基にDBを確認し、できたことが登録されていない場合は空の表示用データオブジェクトを、
    * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
    *
    * @param userId  ユーザーID
@@ -59,7 +59,7 @@ public class DailyDoneService {
   }
 
   /**
-   * DBにできたことが登録されていない場合は空の入力用データオブジェクトを、<br>
+   * ユーザーIDと日付を基にDBを確認し、できたことが登録されていない場合は空の入力用データオブジェクトを、
    * 登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
    *
    * @param userId  ユーザーID
@@ -120,8 +120,7 @@ public class DailyDoneService {
   }
 
   /**
-   * データの種類に応じてDBに保存（登録・更新・削除）する。<br>
-   * 内容が空の場合は何もせずスキップする。<br>
+   * データの種類に応じてDBに保存（登録・更新・削除、内容が空の場合はスキップ）し、
    * セッションのレコード数更新情報、学習日数更新情報、学習時間更新情報を変更する。
    *
    * @param userId  ユーザーID
@@ -135,10 +134,14 @@ public class DailyDoneService {
       if(content == null || content.isBlank()){
         continue;
       }
+      // 可変行のID=0が効かないケースに備えてnullを回避
+      int doneId =
+          dto.getIdList().get(i) == null
+              ? 0
+              : dto.getIdList().get(i);
 
-      int doneId = dto.getIdList().get(i);
-      List<String> pureTagList = pureTagsList.get(i);
-      List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
+      List<Integer> tagIdList =
+          tagService.resolveTagIdList(userId, pureTagsList.get(i));
 
       if(doneId == 0){
         registerDailyDone(userId, dto, tagIdList, i);
@@ -157,8 +160,8 @@ public class DailyDoneService {
   }
 
   /**
-   * DTOをエンティティに変換してDBに登録し、タグ情報を登録し、
-   * 日ごとの初回登録時のみユーザーの進捗情報を更新する。
+   * DTOをエンティティに変換してDBに登録し、タグ情報を登録する。<br>
+   * 日ごとの初回登録時の場合は、ユーザーの進捗情報も併せて更新する。
    *
    * @param userId  ユーザーID
    * @param dto できたこと入力用データオブジェクト
@@ -180,7 +183,7 @@ public class DailyDoneService {
   }
 
   /**
-   * できたことIDを基にDBからタグレコード、できたことレコードを削除する。
+   * できたことIDを基にDBから紐付けられたタグとの関係情報、できたことを削除する。
    *
    * @param doneId  できたことID
    */
@@ -191,7 +194,7 @@ public class DailyDoneService {
   }
 
   /**
-   * DTOをエンティティに変換してDBのできたことレコードとタグレコードを更新する。
+   * DTOをエンティティに変換してDBのできたこと、紐付けれたタグとの関係情報を更新する。
    *
    * @param userId  ユーザーID
    * @param dto できたこと入力用データオブジェクト
@@ -209,7 +212,8 @@ public class DailyDoneService {
   }
 
   /**
-   * 指定の日付のできたことをすべて削除し、セッションのレコード数更新情報、学習時間更新情報を変更する。
+   * 指定の日付のできたこと、紐付けられたタグとの関係情報をすべて削除し、
+   * セッションのレコード数更新情報、学習時間更新情報、学習日数更新情報を変更する。
    *
    * @param userId  ユーザーID
    * @param date  日付

@@ -1,6 +1,10 @@
 package webapp.AwesomeCollect.validator;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -34,7 +38,7 @@ public class DailyDoneValidator implements Validator {
   public void validate(@NotNull Object target, @NotNull Errors errors) {
     DoneRequestDto dto = (DoneRequestDto)  target;
     validateDate(dto, errors);
-    validateContent(dto, errors);
+    validateContentList(dto, errors);
     validateLearningTime(dto, errors);
     validateTotalLearningTime(dto, errors);
   }
@@ -49,7 +53,7 @@ public class DailyDoneValidator implements Validator {
   }
 
   // すべての内容が空欄の場合はエラーに追加する。
-  private void validateContent(DoneRequestDto dto, Errors errors){
+  private void validateContentList(DoneRequestDto dto, Errors errors){
     if(dto.getContentList() == null ||
         dto.getContentList().stream()
             .allMatch(content -> content == null || content.isBlank())){
@@ -57,6 +61,25 @@ public class DailyDoneValidator implements Validator {
       errors.rejectValue(
           "contentList", "blankContent",
           messageUtil.getMessage(MessageKeys.CONTENT_BLANK));
+    }else{
+      validateContent(dto, errors);
+    }
+  }
+
+  // 内容が重複している場合はエラーに追加する。
+  private void validateContent(DoneRequestDto dto, Errors errors){
+    List<String> contentList = dto.getContentList();
+    List<String> nonNullContentList =
+        new ArrayList<>(contentList.stream()
+            .filter(Objects :: nonNull)
+            .toList());
+
+    nonNullContentList.replaceAll(String::strip);
+    HashSet<String> uniqueElements = new HashSet<>(nonNullContentList);
+    if(nonNullContentList.size() > uniqueElements.size()){
+      errors.rejectValue(
+          "contentList", "duplicateContent",
+          messageUtil.getMessage(MessageKeys.CONTENT_DUPLICATE));
     }
   }
 
@@ -75,12 +98,14 @@ public class DailyDoneValidator implements Validator {
     }
   }
 
-  // 1日の学習時間尾合計が24時間を超える場合はエラーに追加する。
+  // 1日の学習時間の合計が24時間を超える場合はエラーに追加する。
   private void validateTotalLearningTime(DoneRequestDto dto, Errors errors){
     int totalHours = dto.getHoursList().stream()
+        .filter(Objects::nonNull)
         .mapToInt(Integer::intValue)
         .sum();
     int totalMinutes = dto.getMinutesList().stream()
+        .filter(Objects::nonNull)
         .mapToInt(Integer::intValue)
         .sum();
 
