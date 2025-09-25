@@ -13,8 +13,10 @@ public enum DuplicateType {
       MessageKeys.DUPLICATE_LOGIN_ID),
   EMAIL("email",
       "basicInfoDto.email",
-      MessageKeys.DUPLICATE_EMAIL);
-
+      MessageKeys.DUPLICATE_EMAIL),
+  TITLE("title",
+      "",
+      MessageKeys.DUPLICATE_TITLE);
 
   // 分割DTO用
   private final String fieldName;
@@ -26,5 +28,23 @@ public enum DuplicateType {
     this.fieldName = fieldName;
     this.compositeFiledName = compositeFiledName;
     this.messageKey = messageKey;
+  }
+
+  /**
+   * （タイトル用）アクションの種類に応じたメッセージキーを取得する。
+   *
+   * @param action  アクション
+   * @return  メッセージキー
+   */
+  public String getMessageKey(String action){
+    if(this == TITLE){
+      return switch (action) {
+        case "goal" -> MessageKeys.DUPLICATE_GOAL_TITLE;
+        case "memo" -> MessageKeys.DUPLICATE_MEMO_TITLE;
+        case "article" -> MessageKeys.DUPLICATE_ARTICLE_TITLE;
+        default -> this.messageKey;
+      };
+    }
+    return this.messageKey;
   }
 }

@@ -25,6 +25,10 @@ public class GoalRepository {
     return mapper.selectGoalByIds(id, userId);
   }
 
+  public Integer findIdByUserIdAndTitle(int userId, String title){
+    return mapper.selectIdByUserIdAndTitle(userId, title);
+  }
+
   public void registerGoal(Goal goal){
     mapper.insertGoal(goal);
   }
