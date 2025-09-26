@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import webapp.AwesomeCollect.common.SessionManager;
+import webapp.AwesomeCollect.common.util.SessionManager;
 import webapp.AwesomeCollect.dto.dashboard.AwesomePointDto;
 import webapp.AwesomeCollect.repository.dashboard.AwesomeCountRepository;
 import webapp.AwesomeCollect.service.BonusAwesomeService;
@@ -31,7 +31,7 @@ public class AwesomeCountService {
 
   public AwesomeCountService(
       SessionManager sessionManager, AwesomeCountRepository awesomeCountRepository,
-      BonusAwesomeService bonusAwesomeService){
+      BonusAwesomeService bonusAwesomeService) {
 
     this.sessionManager = sessionManager;
     this.awesomeCountRepository = awesomeCountRepository;
@@ -43,14 +43,14 @@ public class AwesomeCountService {
    * 累計えらい！ポイントを算出し、分割したえらい！ポイントリストを作成してDTOに詰め、
    * セッション情報を更新する。
    *
-   * @param userId  ユーザーID
-   * @return  えらい！ポイント表示用データオブジェクト
+   * @param userId ユーザーID
+   * @return えらい！ポイント表示用データオブジェクト
    */
-  public AwesomePointDto prepareAwesomePointDto(int userId){
+  public AwesomePointDto prepareAwesomePointDto(int userId) {
     AwesomePointDto awesomePointDto = sessionManager.getCachedAwesomePointDto();
     Boolean hasNewRecord = sessionManager.hasUpdatedRecordCount();
 
-    if(hasNewRecord == null || hasNewRecord || awesomePointDto == null){
+    if (hasNewRecord == null || hasNewRecord || awesomePointDto == null) {
       int totalAwesomePoint = calculateTotalAwesome(userId);
       List<Integer> splitTotalAwesomeList = createSplitTotalAwesomeList(totalAwesomePoint);
 
@@ -65,11 +65,11 @@ public class AwesomeCountService {
    * 各アクションのレコード数と配点を掛け合わせたポイントと、ボーナスえらい！ポイントを
    * 足し合わせて累計えらい！ポイントを算出する。
    *
-   * @param userId  ユーザーID
-   * @return  累計えらい！ポイント
+   * @param userId ユーザーID
+   * @return 累計えらい！ポイント
    */
   @Transactional
-  private int calculateTotalAwesome(int userId){
+  private int calculateTotalAwesome(int userId) {
     int todoPoint = awesomeCountRepository.countDailyTodoRecord(userId) * TODO;
     int donePoint = awesomeCountRepository.countDailyDoneRecord(userId) * DONE;
     int goalPoint = awesomeCountRepository.countGoalRecord(userId) * GOAL;
@@ -93,19 +93,19 @@ public class AwesomeCountService {
   /**
    * 累計えらい！ポイントを100ごとに分割してリスト化し、先頭に余りを追加する。
    *
-   * @param totalAwesome  累計えらい！ポイント
-   * @return  分割したえらい！ポイントリスト
+   * @param totalAwesome 累計えらい！ポイント
+   * @return 分割したえらい！ポイントリスト
    */
   private List<Integer> createSplitTotalAwesomeList(int totalAwesome) {
     List<Integer> splitTotalAwesomeList = new ArrayList<>();
     int remainingNum = totalAwesome % 100;
     int hundreds = totalAwesome / 100;
 
-    if(remainingNum != 0){
+    if (remainingNum != 0) {
       splitTotalAwesomeList.add(remainingNum);
     }
     IntStream.range(0, hundreds)
-        .mapToObj(i -> 100).forEach(splitTotalAwesomeList::add);
+        .mapToObj(i -> 100).forEach(splitTotalAwesomeList :: add);
 
     return splitTotalAwesomeList;
   }

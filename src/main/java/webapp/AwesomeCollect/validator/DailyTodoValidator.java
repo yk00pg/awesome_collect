@@ -10,7 +10,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.util.MessageUtil;
-import webapp.AwesomeCollect.dto.action.request.DoneRequestDto;
 import webapp.AwesomeCollect.dto.action.request.TodoRequestDto;
 
 /**
@@ -22,7 +21,7 @@ public class DailyTodoValidator implements Validator {
 
   private final MessageUtil messageUtil;
 
-  public DailyTodoValidator(MessageUtil messageUtil){
+  public DailyTodoValidator(MessageUtil messageUtil) {
     this.messageUtil = messageUtil;
   }
 
@@ -38,30 +37,30 @@ public class DailyTodoValidator implements Validator {
   }
 
   // すべての内容が空欄の場合はエラーに追加する。
-  private void validateContentList(TodoRequestDto dto, Errors errors){
-    if(dto.getContentList() == null ||
+  private void validateContentList(TodoRequestDto dto, Errors errors) {
+    if (dto.getContentList() == null ||
         dto.getContentList().stream()
-            .allMatch(content -> content == null || content.isBlank())){
+            .allMatch(content -> content == null || content.isBlank())) {
 
       errors.rejectValue(
           "contentList", "blankContent",
           messageUtil.getMessage(MessageKeys.CONTENT_BLANK));
-    }else{
+    } else {
       validateContent(dto, errors);
     }
   }
 
   // 内容が重複している場合はエラーに追加する。
-  private void validateContent(TodoRequestDto dto, Errors errors){
+  private void validateContent(TodoRequestDto dto, Errors errors) {
     List<String> contentList = dto.getContentList();
     List<String> nonNullContentList =
         new ArrayList<>(contentList.stream()
             .filter(Objects :: nonNull)
             .toList());
 
-    nonNullContentList.replaceAll(String::strip);
+    nonNullContentList.replaceAll(String :: strip);
     HashSet<String> uniqueElements = new HashSet<>(nonNullContentList);
-    if(nonNullContentList.size() > uniqueElements.size()){
+    if (nonNullContentList.size() > uniqueElements.size()) {
       errors.rejectValue(
           "contentList", "duplicateContent",
           messageUtil.getMessage(MessageKeys.CONTENT_DUPLICATE));

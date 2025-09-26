@@ -37,7 +37,7 @@ public class DailyTodoController {
 
   public DailyTodoController(
       DailyTodoService dailyTodoService, DailyTodoValidator dailyTodoValidator,
-      MessageUtil messageUtil){
+      MessageUtil messageUtil) {
 
     this.dailyTodoService = dailyTodoService;
     this.dailyTodoValidator = dailyTodoValidator;
@@ -49,7 +49,7 @@ public class DailyTodoController {
   public String showDailyTodo(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      Model model){
+      Model model) {
 
     model.addAttribute(
         AttributeNames.TODO_RESPONSE_DTO,
@@ -69,7 +69,7 @@ public class DailyTodoController {
   public String showDailyTodoForm(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      Model model){
+      Model model) {
 
     model.addAttribute(
         AttributeNames.TODO_REQUEST_DTO,
@@ -80,7 +80,7 @@ public class DailyTodoController {
 
   // DTOアノテーションで制御できないバリデーションを確認する。
   @InitBinder(AttributeNames.TODO_REQUEST_DTO)
-  public void initBinder(WebDataBinder dataBinder){
+  public void initBinder(WebDataBinder dataBinder) {
     dataBinder.addValidators(dailyTodoValidator);
   }
 
@@ -89,12 +89,12 @@ public class DailyTodoController {
    * エラーメッセージを表示し、そうでない場合はDBにデータを保存（登録・更新・削除）し、
    * 閲覧ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    *
-   * @param date  日付
-   * @param dto やること入力用データオブジェクト
-   * @param result  バインディングの結果
-   * @param customUserDetails カスタムユーザー情報
-   * @param redirectAttributes  リダイレクト後に一度だけ表示されるデータをViewに渡すインターフェース
-   * @return  やること閲覧ページ
+   * @param date               日付
+   * @param dto                やること入力用データオブジェクト
+   * @param result             バインディングの結果
+   * @param customUserDetails  カスタムユーザー情報
+   * @param redirectAttributes リダイレクト後に一度だけ表示されるデータをViewに渡すインターフェース
+   * @return やること閲覧ページ
    */
   @PostMapping(ViewNames.DAILY_TODO_EDIT_PAGE)
   public String editDailyTodo(
@@ -102,9 +102,9 @@ public class DailyTodoController {
       @Valid @ModelAttribute(AttributeNames.TODO_REQUEST_DTO) TodoRequestDto dto,
       BindingResult result,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      RedirectAttributes redirectAttributes){
+      RedirectAttributes redirectAttributes) {
 
-    if(result.hasErrors()){
+    if (result.hasErrors()) {
       return ViewNames.TODO_EDIT_PAGE;
     }
 
@@ -114,12 +114,31 @@ public class DailyTodoController {
     return RedirectUtil.redirectView(ViewNames.TODO_PAGE, date);
   }
 
+  // 新規登録か更新（削除含む）かを判定してサクセスメッセージとポップアップウィンドウを表示する。
+  private void addAttributeBySaveType(
+      TodoRequestDto dto, RedirectAttributes redirectAttributes) {
+
+    boolean isFirstRegistration = dto.getIdList().getFirst() == 0;
+    if (isFirstRegistration) {
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.ACHIEVEMENT_POPUP,
+          messageUtil.getMessage(MessageKeys.TODO_AWESOME));
+    } else {
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
+    }
+  }
+
   // 指定の日付のやることをすべて削除して閲覧ページにリダイレクトする。
   @DeleteMapping(ViewNames.DAILY_TODO_VIEW_PAGE)
   public String deleteDailyAllTodo(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      RedirectAttributes redirectAttributes){
+      RedirectAttributes redirectAttributes) {
 
     dailyTodoService.deleteDailyAllTodo(customUserDetails.getId(), date);
 
@@ -128,24 +147,5 @@ public class DailyTodoController {
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
     return RedirectUtil.redirectView(ViewNames.TODO_PAGE, date);
-  }
-
-  // 新規登録か更新（削除含む）かを判定してサクセスメッセージとポップアップウィンドウを表示する。
-  private void addAttributeBySaveType(
-      TodoRequestDto dto, RedirectAttributes redirectAttributes) {
-
-    boolean isFirstRegistration = dto.getIdList().getFirst() == 0;
-    if(isFirstRegistration){
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.ACHIEVEMENT_POPUP,
-          messageUtil.getMessage(MessageKeys.TODO_AWESOME));
-    }else{
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
-    }
   }
 }

@@ -9,13 +9,13 @@ import java.util.stream.Collectors;
  */
 public class TagProvider {
 
-  // Mapperに渡されたリストを文字列結合して返す
+  // Mapperに渡されたリストを文字列結合する。
   public String selectIdsByTagIdList(Map<String, Object> params) {
     @SuppressWarnings("unchecked")
     List<Integer> tagIdList = (List<Integer>) params.get("tagIdList");
 
     String inClause = tagIdList.stream()
-        .map(String::valueOf)
+        .map(String :: valueOf)
         .collect(Collectors.joining(","));
 
     return "SELECT name FROM tag WHERE id IN (" + inClause + ")";

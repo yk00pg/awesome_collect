@@ -8,7 +8,7 @@ import webapp.AwesomeCollect.entity.junction.ArticleTagJunction;
 import webapp.AwesomeCollect.repository.junction.ArticleTagJunctionRepository;
 
 /**
- * 記事ストック×タグのサービスクラス。
+ * 記事ストックとタグの関係性のサービスクラス。
  */
 @Service
 public class ArticleTagJunctionService extends BaseActionTagJunctionService<ArticleTagJunction> {

@@ -33,7 +33,7 @@ public class SignupController {
 
   public SignupController(
       UserInfoService userInfoService, SignupValidator signupValidator,
-      MessageUtil messageUtil){
+      MessageUtil messageUtil) {
 
     this.userInfoService = userInfoService;
     this.signupValidator = signupValidator;
@@ -42,39 +42,39 @@ public class SignupController {
 
   // 新規登録フォームを表示する。
   @GetMapping(ViewNames.SIGNUP_PAGE)
-  public String showSignUpForm(Model model){
+  public String showSignUpForm(Model model) {
     model.addAttribute(AttributeNames.USER_INFO_DTO, new UserInfoDto());
     return ViewNames.SIGNUP_PAGE;
   }
 
   // DTOのアノテーションで制御できないバリデーションを確認する。
   @InitBinder(AttributeNames.USER_INFO_DTO)
-  public void initBinder(WebDataBinder dataBinder){
+  public void initBinder(WebDataBinder dataBinder) {
     dataBinder.addValidators(signupValidator);
   }
 
   /**
-   * 入力されたデータにバインディングエラーまたはDB登録時の例外が発生した場合は
-   * サインアップページに戻ってエラーメッセージを表示し、
-   * そうでない場合はDBに登録してログインページに遷移し、サクセスメッセージを表示する。
+   * 入力されたデータにバインディングエラーまたは例外が発生した場合はサインアップページに戻って
+   * エラーメッセージを表示し、そうでない場合はDBに登録してログインページに遷移し、
+   * サクセスメッセージを表示する。
    *
-   * @param dto ユーザー情報を扱うデータオブジェクト
-   * @param result  バインディングの結果
-   * @param redirectAttributes  リダイレクト後に一度だけ表示されるデータをViewに渡すインターフェース
-   * @return  ログインページ
+   * @param dto                ユーザー情報を扱うデータオブジェクト
+   * @param result             バインディングの結果
+   * @param redirectAttributes リダイレクト後に一度だけ表示されるデータをViewに渡すインターフェース
+   * @return ログインページ
    */
   @PostMapping(ViewNames.SIGNUP_PAGE)
   public String registerUserInfo(
       @Valid @ModelAttribute(AttributeNames.USER_INFO_DTO) UserInfoDto dto,
       BindingResult result, RedirectAttributes redirectAttributes) {
 
-    if(result.hasErrors()){
+    if (result.hasErrors()) {
       return ViewNames.SIGNUP_PAGE;
     }
 
     try {
       userInfoService.registerNewUser(dto);
-    }catch(DuplicateException ex){
+    } catch (DuplicateException ex) {
       result.rejectValue(
           ex.getType().getCompositeFiledName(),
           ex.getType().getCompositeFiledName(),

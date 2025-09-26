@@ -37,10 +37,10 @@ public class DoneResponseDto {
   /**
    * DBから取得したできたことリストを表示用データオブジェクトに変換する。
    *
-   * @param doneList  できたことリスト
-   * @return  表示用データオブジェクト
+   * @param doneList できたことリスト
+   * @return 表示用データオブジェクト
    */
-  public static DoneResponseDto fromDailyDone(List<DailyDone> doneList){
+  public static DoneResponseDto fromDailyDone(List<DailyDone> doneList) {
     DoneResponseDto dto = new DoneResponseDto();
     dto.date = doneList.getFirst().getDate();
 
@@ -84,10 +84,10 @@ public class DoneResponseDto {
   /**
    * 日付以外空欄の表示用データオブジェクトを作成する。
    *
-   * @param date  日付
-   * @return  表示用データオブジェクト
+   * @param date 日付
+   * @return 表示用データオブジェクト
    */
-  public static DoneResponseDto createBlankDto(LocalDate date){
+  public static DoneResponseDto createBlankDto(LocalDate date) {
     DoneResponseDto dto = new DoneResponseDto();
     dto.date = date;
     dto.formattedDate = DateTimeFormatUtil.formatDate(date);

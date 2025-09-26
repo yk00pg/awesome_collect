@@ -19,7 +19,7 @@ public interface UserProgressMapper {
       INSERT user_progress(user_id, registered_date)
       VALUES(#{userId}, #{registeredDate})
       """)
-  int insertUserProgress(UserProgress userProgress);
+  void insertUserProgress(UserProgress userProgress);
 
   @Update("""
       UPDATE user_progress
@@ -29,5 +29,5 @@ public interface UserProgressMapper {
         streak_bonus_count=#{streakBonusCount}
       WHERE user_id=#{userId}
       """)
-  int updateUserProgress(UserProgress userProgress);
+  void updateUserProgress(UserProgress userProgress);
 }

@@ -6,7 +6,7 @@ import webapp.AwesomeCollect.entity.junction.MemoTagJunction;
 import webapp.AwesomeCollect.mapper.junction.MemoTagJunctionMapper;
 
 /**
- * メモ×タグのリポジトリクラス。
+ * メモとタグの関係性のリポジトリクラス。
  */
 @Repository
 public class MemoTagJunctionRepository extends BaseActionTagJunctionRepository<MemoTagJunction> {
