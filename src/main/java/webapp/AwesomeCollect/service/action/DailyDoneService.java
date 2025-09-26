@@ -131,9 +131,10 @@ public class DailyDoneService {
 
     for (int i = 0; i < dto.getContentList().size(); i++) {
       String content = dto.getContentList().get(i);
-      if (content == null || content.isBlank()) {
+      if (content.isBlank()) {
         continue;
       }
+
       // 可変行のID=0が効かないケースに備えてnullを回避
       int doneId =
           dto.getIdList().get(i) == null
