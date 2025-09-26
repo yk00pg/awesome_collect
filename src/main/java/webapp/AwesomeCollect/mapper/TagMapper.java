@@ -19,12 +19,6 @@ public interface TagMapper {
       """)
   List<String> selectTagNameListByUserId(int userId);
 
-  @Select("""
-      SELECT name FROM tag
-      WHERE id=#{id}
-      """)
-  String findTagNameById(int id);
-
   // WHERE IN句に変数を用いるためにプロバイダを通す
   @SelectProvider(type = TagProvider.class, method = "selectIdsByTagIdList")
   List<String> selectTagNameListByTagIdList(@Param("tagIdList") List<Integer> tagIdList);

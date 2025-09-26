@@ -42,7 +42,7 @@ public class DailyDoneController {
   public DailyDoneController(
       DailyDoneService dailyDoneService, DailyTodoService dailyTodoService,
       TagService tagService, DailyDoneValidator dailyDoneValidator,
-      MessageUtil messageUtil){
+      MessageUtil messageUtil) {
 
     this.dailyDoneService = dailyDoneService;
     this.dailyTodoService = dailyTodoService;
@@ -56,7 +56,7 @@ public class DailyDoneController {
   public String showDailyDone(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      Model model){
+      Model model) {
 
     model.addAttribute(
         AttributeNames.DONE_RESPONSE_DTO,
@@ -87,15 +87,14 @@ public class DailyDoneController {
         AttributeNames.DONE_REQUEST_DTO,
         dailyDoneService.prepareRequestDto(userId, date));
     model.addAttribute(
-        AttributeNames.TAG_NAME_LIST,
-        tagService.getTagNameListByUserId(userId));
+        AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
     return ViewNames.DONE_EDIT_PAGE;
   }
 
   // DTOのアノテーションで制御できないバリデーションを確認する。
   @InitBinder(AttributeNames.DONE_REQUEST_DTO)
-  public void initBinder(WebDataBinder dataBinder){
+  public void initBinder(WebDataBinder dataBinder) {
     dataBinder.addValidators(dailyDoneValidator);
   }
 
@@ -105,13 +104,13 @@ public class DailyDoneController {
    * そうでない場合はDBにデータを保存（登録・更新・削除）し、閲覧ページに遷移して
    * 保存の種類に応じたサクセスメッセージを表示する。
    *
-   * @param date  日付
-   * @param dto できたこと入力用データオブジェクト
-   * @param result  バインディングの結果
-   * @param model データをViewに渡すオブジェクト
-   * @param customUserDetails カスタムユーザー情報
-   * @param redirectAttributes  リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
-   * @return  できたこと閲覧ページ
+   * @param date               日付
+   * @param dto                できたこと入力用データオブジェクト
+   * @param result             バインディングの結果
+   * @param model              データをViewに渡すオブジェクト
+   * @param customUserDetails  カスタムユーザー情報
+   * @param redirectAttributes リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
+   * @return できたこと閲覧ページ
    */
   @PostMapping(ViewNames.DAILY_DONE_EDIT_PAGE)
   public String editDailyDone(
@@ -123,13 +122,12 @@ public class DailyDoneController {
 
     int userId = customUserDetails.getId();
 
-    if(result.hasErrors()){
+    if (result.hasErrors()) {
       model.addAttribute(
           AttributeNames.TODO_RESPONSE_DTO,
           dailyTodoService.prepareResponseDto(userId, date));
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST,
-          tagService.getTagNameListByUserId(userId));
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
       return ViewNames.DONE_EDIT_PAGE;
     }
@@ -140,12 +138,31 @@ public class DailyDoneController {
     return RedirectUtil.redirectView(ViewNames.DONE_PAGE, date);
   }
 
+  // 新規登録か更新（削除含む）かを判定してサクセスメッセージとポップアップウィンドウを表示する。
+  private void addAttributeBySaveType(
+      DoneRequestDto dto, RedirectAttributes redirectAttributes) {
+
+    boolean isFirstRegistration = dto.getIdList().getFirst() == 0;
+    if (isFirstRegistration) {
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.ACHIEVEMENT_POPUP,
+          messageUtil.getMessage(MessageKeys.DONE_AWESOME));
+    } else {
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
+    }
+  }
+
   // 指定の日付のできたことをすべて削除して閲覧ページにリダイレクトする。
   @DeleteMapping(ViewNames.DAILY_DONE_VIEW_PAGE)
   public String deleteDone(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      RedirectAttributes redirectAttributes){
+      RedirectAttributes redirectAttributes) {
 
     dailyDoneService.deleteDailyAllDoneByDate(customUserDetails.getId(), date);
 
@@ -154,24 +171,5 @@ public class DailyDoneController {
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
     return RedirectUtil.redirectView(ViewNames.DONE_PAGE, date);
-  }
-
-  // 新規登録か更新（削除含む）かを判定してサクセスメッセージとポップアップウィンドウを表示する。
-  private void addAttributeBySaveType(
-      DoneRequestDto dto, RedirectAttributes redirectAttributes) {
-
-    boolean isFirstRegistration = dto.getIdList().getFirst() == 0;
-    if(isFirstRegistration){
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.ACHIEVEMENT_POPUP,
-          messageUtil.getMessage(MessageKeys.DONE_AWESOME));
-    }else{
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
-    }
   }
 }

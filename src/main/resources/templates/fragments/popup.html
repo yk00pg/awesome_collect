@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
-  <!-- 登録時（やること・できたことは日付あたりひとつめの登録時） & ステータス初回変更時に表示するポップアップウィンドウ -->
-  <div id="popup" class="popup" role="alert" th:fragment="popup">
-    <div class="outside-border">
-      <div class="inside-border">
-        <div class="popup-message">
-          <h1 class="action-text" th:text="${achievementPopup}"></h1>
-          <span class="awesome-word" th:text="#{awesome.word}"></span>
-        </div>
-        <div class="awesome-stamp">
-          <img th:src="@{/image/awesome-stamp.svg}" class="stamp-bg">
-          <span class="stamp-text" th:text="#{awesome.word}"></span>
-        </div>
+<!-- 登録時（やること・できたことは日付あたりひとつめの登録時）
+        & ステータス初回変更時に表示するポップアップウィンドウ -->
+<div id="popup" class="popup" role="alert" th:fragment="popup">
+  <div class="outside-border">
+    <div class="inside-border">
+      <div class="popup-message">
+        <h1 class="action-text" th:text="${achievementPopup}"></h1>
+        <span class="awesome-word" th:text="#{awesome.word}"></span>
+      </div>
+      <div class="awesome-stamp">
+        <img th:src="@{/image/awesome-stamp.svg}" class="stamp-bg">
+        <span class="stamp-text" th:text="#{awesome.word}"></span>
       </div>
     </div>
-
-
-    <!-- ポップアップウィンドウの動きを設定 -->
-    <script>
-      window.addEventListener("DOMContentLoaded", () => {
-          const popup = document.getElementById("popup");
-          const stamp = document.querySelector(".awesome-stamp");
-
-          if(popup && stamp) {
-              setTimeout(() => stamp.classList.add("pop"), 1000);   // 1秒後にスタンプ出現
-              setTimeout(() => popup.classList.add("hide"), 2500);  // 3秒後に縮小
-              setTimeout(() => popup.remove(), 3500);   // 4秒後に消滅
-          }
-      });
-    </script>
   </div>
+
+
+  <!-- ポップアップウィンドウの動きを設定 -->
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+        const popup = document.getElementById("popup");
+        const stamp = document.querySelector(".awesome-stamp");
+
+        if(popup && stamp) {
+            setTimeout(() => stamp.classList.add("pop"), 1000);   // 1秒後にスタンプ出現
+            setTimeout(() => popup.classList.add("hide"), 2500);  // 2.5秒後に縮小
+            setTimeout(() => popup.remove(), 3500);   // 3.5秒後に消滅
+        }
+    });
+  </script>
+</div>
 </html>

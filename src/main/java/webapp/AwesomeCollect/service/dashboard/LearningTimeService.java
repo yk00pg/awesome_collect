@@ -9,12 +9,12 @@ import java.util.stream.IntStream;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import webapp.AwesomeCollect.common.SessionManager;
 import webapp.AwesomeCollect.common.util.LearningTimeConverter;
+import webapp.AwesomeCollect.common.util.SessionManager;
 import webapp.AwesomeCollect.dto.dashboard.LearningTimeDto;
 import webapp.AwesomeCollect.entity.dashboard.AvgLearningTime;
-import webapp.AwesomeCollect.entity.dashboard.TotalLearningTime;
 import webapp.AwesomeCollect.entity.dashboard.TagLearningTime;
+import webapp.AwesomeCollect.entity.dashboard.TotalLearningTime;
 import webapp.AwesomeCollect.repository.dashboard.LearningTimeRepository;
 
 /**
@@ -29,7 +29,7 @@ public class LearningTimeService {
   private static final String UNCATEGORIZED = "(未設定)";
 
   public LearningTimeService(
-      LearningTimeRepository learningTimeRepository, SessionManager sessionManager){
+      LearningTimeRepository learningTimeRepository, SessionManager sessionManager) {
 
     this.learningTimeRepository = learningTimeRepository;
     this.sessionManager = sessionManager;
@@ -37,18 +37,18 @@ public class LearningTimeService {
 
   /**
    * セッション情報を確認し、学習時間更新情報がnullまたは更新有りあるいはセッションのDTOがnullの場合は、
-   * 累計学習時間（時間、分）、日別学習時間、曜日別平均学習時間、月別学習時間、タグ別学習時間を
-   * 算出し、DTOに詰めて、セッション情報を更新する。
+   * 累計学習時間（時間、分）、日別学習時間、曜日別平均学習時間、月別学習時間、タグ別学習時間を算出し、
+   * DTOに詰めて、セッション情報を更新する。
    *
-   * @param userId  ユーザーID
-   * @return  学習時間表示用データオブジェクト
+   * @param userId ユーザーID
+   * @return 学習時間表示用データオブジェクト
    */
   @Transactional
-  public LearningTimeDto prepareLearningTimeDto(int userId){
+  public LearningTimeDto prepareLearningTimeDto(int userId) {
     Boolean hasUpdatedTime = sessionManager.hasUpdatedTime();
     LearningTimeDto learningTimeDto = sessionManager.getCachedLearningTimeDto();
 
-    if(hasUpdatedTime == null || hasUpdatedTime || learningTimeDto == null){
+    if (hasUpdatedTime == null || hasUpdatedTime || learningTimeDto == null) {
       int totalTime = learningTimeRepository.getTotalHours(userId);
       int totalHours = LearningTimeConverter.toHoursPart(totalTime);
       int totalMinutes = LearningTimeConverter.toMinutesPart(totalTime);
@@ -58,7 +58,7 @@ public class LearningTimeService {
       List<AvgLearningTime> dayOfWeekTimeList = getDayOfWeekAvgTimeList(userId);
       List<TotalLearningTime> sixMonthTimeList = getMonthlyTotalTimeList(userId, today);
       List<TagLearningTime> tagTotalTimeList = getTagTotalTimeList(userId);
-      // タグ別学習時間・上位抜粋用に上位10こを抽出
+      // タグ別学習時間・上位抜粋用に上位10件を抽出
       List<TagLearningTime> topTenTagTotalTimeList =
           tagTotalTimeList.stream().limit(10).toList();
 
@@ -77,9 +77,9 @@ public class LearningTimeService {
    * 今日を含めた7日分の日付リストを作成し、マップと照らしてレコードのない日は学習時間を0として、
    * 7日分の日別学習時間リストを作成する。
    *
-   * @param userId  ユーザーID
-   * @param today 今日の日付
-   * @return  7日分の日別学習時間リスト
+   * @param userId ユーザーID
+   * @param today  今日の日付
+   * @return 7日分の日別学習時間リスト
    */
   private @NotNull List<TotalLearningTime> getDailyTotalTimeList(
       int userId, LocalDate today) {
@@ -90,7 +90,7 @@ public class LearningTimeService {
 
     Map<LocalDate, Integer> timeMap = dailyTimeList.stream()
         .collect(Collectors
-            .toMap(TotalLearningTime::getDate, TotalLearningTime::getTotalTime));
+            .toMap(TotalLearningTime :: getDate, TotalLearningTime :: getTotalTime));
 
     List<LocalDate> dateList =
         IntStream.rangeClosed(0, 6)
@@ -110,8 +110,8 @@ public class LearningTimeService {
    * 曜日リストを作成し、マップと照らしてレコードのない曜日は学習時間を0として、
    * 曜日別平均学習時間リストを作成する。
    *
-   * @param userId  ユーザーID
-   * @return  曜日別平均学習時間リスト
+   * @param userId ユーザーID
+   * @return 曜日別平均学習時間リスト
    */
   private @NotNull List<AvgLearningTime> getDayOfWeekAvgTimeList(int userId) {
     List<AvgLearningTime> dayOfWeekAvgTimeList =
@@ -120,13 +120,13 @@ public class LearningTimeService {
     Map<Integer, Integer> avgTimeMap = dayOfWeekAvgTimeList.stream()
         .collect(Collectors
             .toMap(avgLearningTime ->
-                    (avgLearningTime.getDayOfWeek() - 1) % 7, AvgLearningTime::getAvgTime));
+                (avgLearningTime.getDayOfWeek() - 1) % 7, AvgLearningTime :: getAvgTime));
 
     List<Integer> dayOfWeekList = IntStream.rangeClosed(0, 7).boxed().toList();
 
     return dayOfWeekList.stream()
         .map(d -> {
-          int avgTime =avgTimeMap.getOrDefault(d, 0);
+          int avgTime = avgTimeMap.getOrDefault(d, 0);
           return new AvgLearningTime(d, avgTime);
         })
         .toList();
@@ -137,9 +137,9 @@ public class LearningTimeService {
    * 今月を含めた6ヶ月分の月間リストを作成し、マップと照らしてレコードのない月は学習時間を0として、
    * 6ヶ月分の月別学習時間リストを作成する。
    *
-   * @param userId  ユーザーID
-   * @param today 今日
-   * @return  6ヶ月分の月別学習時間リスト
+   * @param userId ユーザーID
+   * @param today  今日
+   * @return 6ヶ月分の月別学習時間リスト
    */
   private @NotNull List<TotalLearningTime> getMonthlyTotalTimeList(
       int userId, LocalDate today) {
@@ -151,7 +151,7 @@ public class LearningTimeService {
 
     Map<LocalDate, Integer> timeMap = monthlyTimeList.stream()
         .collect(Collectors.
-            toMap(TotalLearningTime::getDate, TotalLearningTime::getTotalTime));
+            toMap(TotalLearningTime :: getDate, TotalLearningTime :: getTotalTime));
 
     List<LocalDate> monthList =
         IntStream.rangeClosed(0, 5)
@@ -169,8 +169,8 @@ public class LearningTimeService {
   /**
    * DBからタグ別学習時間リストを取得し、学習時間が多い順（未設定は最後）に並び替える。
    *
-   * @param userId  ユーザーID
-   * @return  タグ別学習時間リスト
+   * @param userId ユーザーID
+   * @return タグ別学習時間リスト
    */
   private @NotNull List<TagLearningTime> getTagTotalTimeList(int userId) {
     List<TagLearningTime> tagTimeList =
@@ -181,7 +181,7 @@ public class LearningTimeService {
             Comparator
                 .comparing((TagLearningTime t) -> UNCATEGORIZED.equals(t.getTagName()))
                 .thenComparing(
-                    Comparator.comparingInt(TagLearningTime::getTotalTime)
+                    Comparator.comparingInt(TagLearningTime :: getTotalTime)
                         .reversed())
         )
         .toList();

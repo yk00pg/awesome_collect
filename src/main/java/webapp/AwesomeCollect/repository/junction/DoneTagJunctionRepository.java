@@ -7,10 +7,10 @@ import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
 import webapp.AwesomeCollect.mapper.junction.DoneTagJunctionMapper;
 
 /**
- * できたこと×タグのリポジトリクラス。
+ * できたこととタグの関係性のリポジトリクラス。
  */
 @Repository
-public class DoneTagJunctionRepository extends BaseActionTagJunctionRepository<DoneTagJunction>{
+public class DoneTagJunctionRepository extends BaseActionTagJunctionRepository<DoneTagJunction> {
 
   private final DoneTagJunctionMapper doneTagJunctionMapper;
 
@@ -20,7 +20,7 @@ public class DoneTagJunctionRepository extends BaseActionTagJunctionRepository<D
   }
 
   @Override
-  public List<Integer> searchTagIdsByActionId(int doneId){
+  public List<Integer> searchTagIdsByActionId(int doneId) {
     return super.searchTagIdsByActionId(doneId);
   }
 

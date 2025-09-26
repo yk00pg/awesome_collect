@@ -1,4 +1,4 @@
-package webapp.AwesomeCollect.common;
+package webapp.AwesomeCollect.common.util;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
@@ -21,55 +21,55 @@ public class SessionManager {
   private static final String LEARNING_TIME_DTO = "learningTimeDto";
   private static final String LEARNING_DAYS_DTO = "learningDaysDto";
 
-  public SessionManager(HttpSession httpSession){
+  public SessionManager(HttpSession httpSession) {
     this.httpSession = httpSession;
   }
 
-  public void setHasUpdatedRecordCount(boolean value){
+  public void setHasUpdatedRecordCount(boolean value) {
     httpSession.setAttribute(HAS_UPDATED_RECORD_COUNT, value);
   }
 
-  public Boolean hasUpdatedRecordCount(){
+  public Boolean hasUpdatedRecordCount() {
     return (Boolean) httpSession.getAttribute(HAS_UPDATED_RECORD_COUNT);
   }
 
-  public void setHasUpdatedLearningDays(boolean value){
+  public void setHasUpdatedLearningDays(boolean value) {
     httpSession.setAttribute(HAS_UPDATED_LEARNING_DAYS, value);
   }
 
-  public Boolean hasUpdatedLearningDays(){
+  public Boolean hasUpdatedLearningDays() {
     return (Boolean) httpSession.getAttribute(HAS_UPDATED_LEARNING_DAYS);
   }
 
-  public void setHasUpdateTime(boolean value){
+  public void setHasUpdateTime(boolean value) {
     httpSession.setAttribute(HAS_UPDATED_TIME, value);
   }
 
-  public Boolean hasUpdatedTime(){
+  public Boolean hasUpdatedTime() {
     return (Boolean) httpSession.getAttribute(HAS_UPDATED_TIME);
   }
 
-  public void setAwesomePointDto(AwesomePointDto awesomePointDto){
+  public void setAwesomePointDto(AwesomePointDto awesomePointDto) {
     httpSession.setAttribute(AWESOME_POINT_DTO, awesomePointDto);
   }
 
-  public AwesomePointDto getCachedAwesomePointDto(){
+  public AwesomePointDto getCachedAwesomePointDto() {
     return (AwesomePointDto) httpSession.getAttribute(AWESOME_POINT_DTO);
   }
 
-  public void setLearningTimeDto(LearningTimeDto learningTimeDto){
+  public void setLearningTimeDto(LearningTimeDto learningTimeDto) {
     httpSession.setAttribute(LEARNING_TIME_DTO, learningTimeDto);
   }
 
-  public LearningTimeDto getCachedLearningTimeDto(){
+  public LearningTimeDto getCachedLearningTimeDto() {
     return (LearningTimeDto) httpSession.getAttribute(LEARNING_TIME_DTO);
   }
 
-  public void setLearningDaysDto(LearningDaysDto learningDaysDto){
+  public void setLearningDaysDto(LearningDaysDto learningDaysDto) {
     httpSession.setAttribute(LEARNING_DAYS_DTO, learningDaysDto);
   }
 
-  public LearningDaysDto getCachedLearningDaysDto(){
+  public LearningDaysDto getCachedLearningDaysDto() {
     return (LearningDaysDto) httpSession.getAttribute(LEARNING_DAYS_DTO);
   }
 

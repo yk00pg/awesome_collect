@@ -16,7 +16,7 @@ CREATE TABLE user_info(
 
 -- ユーザー進捗状況
 CREATE TABLE user_progress(
-  user_id INT,
+  user_id INT NOT NULL,
   registered_date DATE,
   total_action_days INT,
   last_action_date DATE,
@@ -54,7 +54,7 @@ CREATE TABLE daily_todo(
   id INT AUTO_INCREMENT,
   user_id INT NOT NULL,
   date DATE NOT NULL,
-  content VARCHAR(100),
+  content VARCHAR(100) NOT NULL,
   registered_at DATETIME,
   updated_at DATETIME,
   FOREIGN KEY (user_id) REFERENCES user_info(id),

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 目標を扱うオブジェクト。DBに存在するテーブルと連動する。
+ * 目標情報を扱うオブジェクト。DBに存在するテーブルと連動する。
  */
 @Getter
 @Setter
