@@ -55,8 +55,7 @@ public class DailyDoneValidator implements Validator {
   // すべての内容が空欄の場合はエラーに追加する。
   private void validateContentList(DoneRequestDto dto, Errors errors) {
     if (dto.getContentList() == null ||
-        dto.getContentList().stream()
-            .allMatch(content -> content == null || content.isBlank())) {
+        dto.getContentList().stream().allMatch(String :: isBlank)) {
 
       errors.rejectValue(
           "contentList", "blankContent",

@@ -16,7 +16,7 @@ public class MyPageValidator implements Validator {
 
   private final MessageUtil messageUtil;
 
-  public MyPageValidator(MessageUtil messageUtil){
+  public MyPageValidator(MessageUtil messageUtil) {
     this.messageUtil = messageUtil;
   }
 
@@ -33,8 +33,8 @@ public class MyPageValidator implements Validator {
   }
 
   // 現在のパスワードが空欄の場合はエラーに追加する。
-  private void validateCurrentPassword(UserPasswordDto dto, Errors errors){
-    if(dto.getCurrentPassword() == null || dto.getCurrentPassword().isBlank()){
+  private void validateCurrentPassword(UserPasswordDto dto, Errors errors) {
+    if (dto.getCurrentPassword().isBlank()) {
       errors.rejectValue(
           "currentPassword", "blankCurrentPassword",
           messageUtil.getMessage(MessageKeys.CURRENT_PASSWORD_BLANK));
@@ -42,8 +42,8 @@ public class MyPageValidator implements Validator {
   }
 
   // パスワードと確認用パスワードが不一致の場合はエラーに追加する。
-  private void validateConfirmPassword(UserPasswordDto dto, Errors errors){
-    if(!dto.getPassword().equals(dto.getConfirmPassword())){
+  private void validateConfirmPassword(UserPasswordDto dto, Errors errors) {
+    if (!dto.getPassword().equals(dto.getConfirmPassword())) {
       errors.rejectValue(
           "password", "mismatchPassword",
           messageUtil.getMessage(MessageKeys.PASSWORD_MISMATCH));
