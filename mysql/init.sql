@@ -1,8 +1,5 @@
-CREATE DATABASE IF NOT EXISTS awesome_collect
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-USE awesome_collect;
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
 
 -- ユーザー登録情報
 CREATE TABLE user_info(
