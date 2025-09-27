@@ -42,5 +42,4 @@ out/
 
 ### DB関連 ###
 .env
-.application.properties
 db_data/
