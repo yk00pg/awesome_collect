@@ -6,7 +6,7 @@ CREATE TABLE user_info(
   id INT AUTO_INCREMENT,
   user_id VARCHAR(20) UNIQUE NOT NULL,
   user_name VARCHAR(20),
-  email VARCHAR(255) UNIQUE NOT NULL,
+  email VARCHAR(255) UNIQUE,
   password VARCHAR(32) NOT NULL,
   PRIMARY KEY (id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

@@ -25,7 +25,6 @@ public class UserBasicInfoDto {
   @Size(max = NAME_MAX_SIZE, message = "{userName.invalid}")
   private String userName;
 
-  @NotBlank(message = "{email.blank}")
   @Email(message = "{email.invalid.pattern}")
   @Size(max = EMAIL_MAX_SIZE, message = "{email.invalid.size}")
   private String email;
@@ -33,10 +32,10 @@ public class UserBasicInfoDto {
   /**
    * 入力されたデータを更新用のエンティティに変換する。
    *
-   * @param id  ユーザーID
-   * @return  更新用のエンティティ
+   * @param id ユーザーID
+   * @return 更新用のエンティティ
    */
-  public UserInfo toEntityForUpdate(int id){
+  public UserInfo toEntityForUpdate(int id) {
     UserInfo userInfo = new UserInfo();
     userInfo.setId(id);
     userInfo.setLoginId(loginId);
@@ -48,10 +47,10 @@ public class UserBasicInfoDto {
   /**
    * DBから取得したユーザー情報を基本情報データオブジェクトに変換する。
    *
-   * @param userInfo  ユーザー情報
-   * @return  データオブジェクト
+   * @param userInfo ユーザー情報
+   * @return データオブジェクト
    */
-  public static UserBasicInfoDto fromEntity(UserInfo userInfo){
+  public static UserBasicInfoDto fromEntity(UserInfo userInfo) {
     UserBasicInfoDto dto = new UserBasicInfoDto();
     dto.loginId = userInfo.getLoginId();
     dto.userName = userInfo.getUserName();
