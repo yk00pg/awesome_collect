@@ -542,10 +542,16 @@ table th {
 
 /* 共通設定 */
 .failure-message, .failure-hint,
-.success-message, .error-message {
+.success-message, .error-message,
+.required-mark {
   font-size: 12px;
   color: var(--ruby-red);
   margin: 0;
+}
+
+.required-mark {
+  vertical-align: top;
+  padding-left: 3px;
 }
 
 .notice-area {
