@@ -1,5 +1,6 @@
 package webapp.AwesomeCollect.service.action;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -187,7 +188,7 @@ public class ArticleStockService {
   }
 
   /**
-   * DTOをエンティティに変換してDBに登録してタグ情報を登録し、ユーザーの進捗情報を更新する。
+   * DTOをエンティティに変換してDBに登録し、タグ情報を登録してユーザーの進捗情報を更新する。
    *
    * @param userId    ユーザーID
    * @param dto       記事ストック入力用データオブジェクト
@@ -219,7 +220,7 @@ public class ArticleStockService {
   }
 
   /**
-   * DTOをエンティティに変換してDBの記事ストックレコードとタグレコードを更新する。
+   * DTOをエンティティに変換してDBの記事ストック、タグとの関係情報を更新する。
    *
    * @param userId    ユーザーID
    * @param dto       記事ストック入力用データオブジェクト
@@ -242,14 +243,25 @@ public class ArticleStockService {
     }
 
     ArticleStock articleStock = dto.toArticleStockForUpdate(userId);
-    boolean isFinishedUpdate =
-        !articleStockRepository.findArticleStockByIds(articleId, userId).isFinished()
-            && articleStock.isFinished();
+    boolean isFinishedUpdate = checkUpdatedStatus(userId, articleId, articleStock);
 
     articleStockRepository.updateArticleStock(articleStock);
     articleTagJunctionService.updateRelations(articleId, ArticleTagJunction :: new, tagIdList);
 
     return new SaveResult(articleId, isFinishedUpdate);
+  }
+
+  // 閲覧状況が更新されたか確認し、読了へ更新された場合はステータス更新日時を設定する。
+  private boolean checkUpdatedStatus(int userId, int articleId, ArticleStock articleStock) {
+    boolean isFinishedUpdate = false;
+    ArticleStock currentRecord = articleStockRepository.findArticleStockByIds(articleId, userId);
+    if (currentRecord.getStatusUpdatedAt() == null
+        && !currentRecord.isFinished() && articleStock.isFinished()) {
+
+      articleStock.setStatusUpdatedAt(LocalDateTime.now());
+      isFinishedUpdate = true;
+    }
+    return isFinishedUpdate;
   }
 
   // 記事ストックタイトルが重複しているか確認する。

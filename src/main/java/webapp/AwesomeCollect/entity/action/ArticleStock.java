@@ -21,4 +21,5 @@ public class ArticleStock {
   private boolean finished;
   private LocalDateTime registeredAt;
   private LocalDateTime updatedAt;
+  private LocalDateTime statusUpdatedAt;
 }
