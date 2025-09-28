@@ -1,5 +1,6 @@
 package webapp.AwesomeCollect.service.action;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -228,13 +229,25 @@ public class GoalService {
     }
 
     Goal goal = dto.toGoalForUpdate(userId);
-    boolean isAchievedUpdate =
-        !goalRepository.findGoalByIds(goalId, userId).isAchieved() && goal.isAchieved();
+    boolean isAchievedUpdate = checkUpdatedStatus(userId, goalId, goal);
 
     goalRepository.updateGoal(goal);
     goalTagJunctionService.updateRelations(goalId, GoalTagJunction :: new, tagIdList);
 
     return new SaveResult(goalId, isAchievedUpdate);
+  }
+
+  // 進捗状況が更新されたか確認し、達成へ更新された場合はステータス更新日時を設定する。
+  private boolean checkUpdatedStatus(int userId, int goalId, Goal goal) {
+    boolean isAchievedUpdate = false;
+    Goal currentGoal = goalRepository.findGoalByIds(goalId, userId);
+    if (currentGoal.getUpdatedAt() == null
+        && !currentGoal.isAchieved() && goal.isAchieved()) {
+
+      goal.setStatusUpdatedAt(LocalDateTime.now());
+      isAchievedUpdate = true;
+    }
+    return isAchievedUpdate;
   }
 
   // 目標タイトルが重複しているか確認する。

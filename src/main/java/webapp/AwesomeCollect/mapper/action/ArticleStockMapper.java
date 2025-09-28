@@ -46,7 +46,9 @@ public interface ArticleStockMapper {
 
   @Update("""
       UPDATE article_stock
-      SET title=#{title}, url=#{url}, memo=#{memo}, finished=#{finished}, updated_at=#{updatedAt}
+      SET
+        title=#{title}, url=#{url}, memo=#{memo}, finished=#{finished},
+        updated_at=#{updatedAt}, status_updated_at=#{statusUpdatedAt}
       WHERE id=#{id}
       """)
   void updateArticleStock(ArticleStock articleStock);

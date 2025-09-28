@@ -81,6 +81,7 @@ CREATE TABLE goal(
   achieved BOOLEAN,
   registered_at DATETIME,
   updated_at DATETIME,
+  status_updated_at DATETIME,
   FOREIGN KEY (user_id) REFERENCES user_info(id),
   PRIMARY KEY (id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -107,6 +108,7 @@ CREATE TABLE article_stock(
   finished BOOLEAN,
   registered_at DATETIME,
   updated_at DATETIME,
+  status_updated_at DATETIME,
   FOREIGN KEY (user_id) REFERENCES user_info(id),
   PRIMARY KEY (id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

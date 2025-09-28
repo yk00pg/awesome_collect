@@ -41,7 +41,9 @@ public interface GoalMapper {
 
   @Update("""
       UPDATE goal
-      SET title=#{title}, content=#{content}, achieved=#{achieved}, updated_at=#{updatedAt}
+      SET
+        title=#{title}, content=#{content}, achieved=#{achieved},
+        updated_at=#{updatedAt}, status_updated_at=#{statusUpdatedAt}
       WHERE id=#{id}
       """)
   void updateGoal(Goal goal);

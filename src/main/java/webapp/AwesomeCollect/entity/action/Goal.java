@@ -20,4 +20,5 @@ public class Goal {
   private boolean achieved;
   private LocalDateTime registeredAt;
   private LocalDateTime updatedAt;
+  private LocalDateTime statusUpdatedAt;
 }
