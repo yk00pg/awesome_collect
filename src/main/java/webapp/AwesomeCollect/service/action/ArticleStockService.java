@@ -251,6 +251,18 @@ public class ArticleStockService {
     return new SaveResult(articleId, isFinishedUpdate);
   }
 
+  // 記事ストックタイトルが重複しているか確認する。
+  private boolean isDuplicateTitle(int articleId, int userId, String title) {
+    Integer recordId = articleStockRepository.findIdByUserIdAndTitle(userId, title.strip());
+    return recordId != null && !recordId.equals(articleId);
+  }
+
+  // 記事のURLが重複しているか確認する。
+  private boolean isDuplicateUrl(int articleId, int userId, String url) {
+    Integer recordId = articleStockRepository.findIdByUserIdAndUrl(userId, url.strip());
+    return recordId != null && !recordId.equals(articleId);
+  }
+
   // 閲覧状況が更新されたか確認し、読了へ更新された場合はステータス更新日時を設定する。
   private boolean checkUpdatedStatus(int userId, int articleId, ArticleStock articleStock) {
     boolean isFinishedUpdate = false;
@@ -262,18 +274,6 @@ public class ArticleStockService {
       isFinishedUpdate = true;
     }
     return isFinishedUpdate;
-  }
-
-  // 記事ストックタイトルが重複しているか確認する。
-  private boolean isDuplicateTitle(int articleId, int userId, String title) {
-    Integer recordId = articleStockRepository.findIdByUserIdAndTitle(userId, title.strip());
-    return recordId != null && !recordId.equals(articleId);
-  }
-
-  // 記事のURLが重複しているか確認する。
-  private boolean isDuplicateUrl(int articleId, int userId, String url) {
-    Integer recordId = articleStockRepository.findIdByUserIdAndUrl(userId, url.strip());
-    return recordId != null && !recordId.equals(articleId);
   }
 
   /**
