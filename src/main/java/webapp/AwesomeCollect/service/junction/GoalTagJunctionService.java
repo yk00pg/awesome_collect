@@ -24,19 +24,19 @@ public class GoalTagJunctionService extends BaseActionTagJunctionService<GoalTag
 
   @Override
   public void registerNewRelations(
-      int actionId, BiFunction<Integer, Integer, GoalTagJunction> relationFactory,
+      int goalId, BiFunction<Integer, Integer, GoalTagJunction> relationFactory,
       List<Integer> tagIdList) {
 
-    super.registerNewRelations(actionId, relationFactory, tagIdList);
+    super.registerNewRelations(goalId, relationFactory, tagIdList);
   }
 
   @Override
   @Transactional
   public void updateRelations(
-      int actionId, BiFunction<Integer, Integer, GoalTagJunction> relationFactory,
+      int goalId, BiFunction<Integer, Integer, GoalTagJunction> relationFactory,
       List<Integer> tagIdList) {
 
-    super.updateRelations(actionId, relationFactory, tagIdList);
+    super.updateRelations(goalId, relationFactory, tagIdList);
   }
 
   @Override

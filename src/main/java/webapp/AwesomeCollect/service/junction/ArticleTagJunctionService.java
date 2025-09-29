@@ -24,19 +24,19 @@ public class ArticleTagJunctionService extends BaseActionTagJunctionService<Arti
 
   @Override
   public void registerNewRelations(
-      int actionId, BiFunction<Integer, Integer, ArticleTagJunction> relationFactory,
+      int articleId, BiFunction<Integer, Integer, ArticleTagJunction> relationFactory,
       List<Integer> tagIdList) {
 
-    super.registerNewRelations(actionId, relationFactory, tagIdList);
+    super.registerNewRelations(articleId, relationFactory, tagIdList);
   }
 
   @Override
   @Transactional
   public void updateRelations(
-      int actionId, BiFunction<Integer, Integer, ArticleTagJunction> relationFactory,
+      int articleId, BiFunction<Integer, Integer, ArticleTagJunction> relationFactory,
       List<Integer> tagIdList) {
 
-    super.updateRelations(actionId, relationFactory, tagIdList);
+    super.updateRelations(articleId, relationFactory, tagIdList);
   }
 
   @Override

@@ -24,19 +24,19 @@ public class MemoTagJunctionService extends BaseActionTagJunctionService<MemoTag
 
   @Override
   public void registerNewRelations(
-      int actionId, BiFunction<Integer, Integer, MemoTagJunction> relationFactory,
+      int memoId, BiFunction<Integer, Integer, MemoTagJunction> relationFactory,
       List<Integer> tagIdList) {
 
-    super.registerNewRelations(actionId, relationFactory, tagIdList);
+    super.registerNewRelations(memoId, relationFactory, tagIdList);
   }
 
   @Override
   @Transactional
   public void updateRelations(
-      int actionId, BiFunction<Integer, Integer, MemoTagJunction> relationFactory,
+      int memoId, BiFunction<Integer, Integer, MemoTagJunction> relationFactory,
       List<Integer> tagIdList) {
 
-    super.updateRelations(actionId, relationFactory, tagIdList);
+    super.updateRelations(memoId, relationFactory, tagIdList);
   }
 
   @Override
