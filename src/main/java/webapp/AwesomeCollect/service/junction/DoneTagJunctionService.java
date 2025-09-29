@@ -28,19 +28,19 @@ public class DoneTagJunctionService extends BaseActionTagJunctionService<DoneTag
 
   @Override
   public void registerNewRelations(
-      int actionId, BiFunction<Integer, Integer, DoneTagJunction> relationFactory,
+      int doneId, BiFunction<Integer, Integer, DoneTagJunction> relationFactory,
       List<Integer> tagIdList) {
 
-    super.registerNewRelations(actionId, relationFactory, tagIdList);
+    super.registerNewRelations(doneId, relationFactory, tagIdList);
   }
 
   @Override
   @Transactional
   public void updateRelations(
-      int actionId, BiFunction<Integer, Integer, DoneTagJunction> relationFactory,
+      int doneId, BiFunction<Integer, Integer, DoneTagJunction> relationFactory,
       List<Integer> tagIdList) {
 
-    super.updateRelations(actionId, relationFactory, tagIdList);
+    super.updateRelations(doneId, relationFactory, tagIdList);
   }
 
   @Override
