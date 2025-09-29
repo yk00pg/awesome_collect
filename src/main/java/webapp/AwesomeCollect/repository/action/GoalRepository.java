@@ -13,31 +13,31 @@ public class GoalRepository {
 
   private final GoalMapper mapper;
 
-  public GoalRepository(GoalMapper mapper){
+  public GoalRepository(GoalMapper mapper) {
     this.mapper = mapper;
   }
 
-  public List<Goal> searchGoal(int userId){
+  public List<Goal> searchGoal(int userId) {
     return mapper.selectGoal(userId);
   }
 
-  public Goal findGoalByIds(int id, int userId){
-    return mapper.selectGoalByIds(id, userId);
+  public Goal findGoalByIds(int goalId, int userId) {
+    return mapper.selectGoalByIds(goalId, userId);
   }
 
-  public Integer findIdByUserIdAndTitle(int userId, String title){
+  public Integer findIdByUserIdAndTitle(int userId, String title) {
     return mapper.selectIdByUserIdAndTitle(userId, title);
   }
 
-  public void registerGoal(Goal goal){
+  public void registerGoal(Goal goal) {
     mapper.insertGoal(goal);
   }
 
-  public void updateGoal(Goal goal){
+  public void updateGoal(Goal goal) {
     mapper.updateGoal(goal);
   }
 
-  public void deleteGoal(int id){
-    mapper.deleteGoal(id);
+  public void deleteGoal(int goalId) {
+    mapper.deleteGoal(goalId);
   }
 }
