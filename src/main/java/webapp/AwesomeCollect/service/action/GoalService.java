@@ -237,6 +237,12 @@ public class GoalService {
     return new SaveResult(goalId, isAchievedUpdate);
   }
 
+  // 目標タイトルが重複しているか確認する。
+  private boolean isDuplicateTitle(int goalId, int userId, String title) {
+    Integer recordId = goalRepository.findIdByUserIdAndTitle(userId, title.strip());
+    return recordId != null && !recordId.equals(goalId);
+  }
+
   // 進捗状況が更新されたか確認し、達成へ更新された場合はステータス更新日時を設定する。
   private boolean checkUpdatedStatus(int userId, int goalId, Goal goal) {
     boolean isAchievedUpdate = false;
@@ -248,12 +254,6 @@ public class GoalService {
       isAchievedUpdate = true;
     }
     return isAchievedUpdate;
-  }
-
-  // 目標タイトルが重複しているか確認する。
-  private boolean isDuplicateTitle(int goalId, int userId, String title) {
-    Integer recordId = goalRepository.findIdByUserIdAndTitle(userId, title.strip());
-    return recordId != null && !recordId.equals(goalId);
   }
 
   /**
