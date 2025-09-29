@@ -14,27 +14,27 @@ public class DailyTodoRepository {
 
   private final DailyTodoMapper mapper;
 
-  public DailyTodoRepository(DailyTodoMapper mapper){
+  public DailyTodoRepository(DailyTodoMapper mapper) {
     this.mapper = mapper;
   }
 
-  public List<DailyTodo> searchDailyTodo(int userId, LocalDate date){
+  public List<DailyTodo> searchDailyTodo(int userId, LocalDate date) {
     return mapper.selectDailyTodo(userId, date);
   }
 
-  public void registerDailyTodo(DailyTodo todo){
+  public void registerDailyTodo(DailyTodo todo) {
     mapper.insertTodo(todo);
   }
 
-  public void updateDailyTodo(DailyTodo todo){
+  public void updateDailyTodo(DailyTodo todo) {
     mapper.updateTodo(todo);
   }
 
-  public void deleteDailyTodoById(int id){
-    mapper.deleteTodoById(id);
+  public void deleteDailyTodoById(int todoId) {
+    mapper.deleteTodoById(todoId);
   }
 
-  public void deleteDailyTodoByDate(int userId, LocalDate date){
+  public void deleteDailyTodoByDate(int userId, LocalDate date) {
     mapper.deleteTodoByDate(userId, date);
   }
 }

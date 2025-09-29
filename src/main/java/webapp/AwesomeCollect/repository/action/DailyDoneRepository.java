@@ -14,27 +14,27 @@ public class DailyDoneRepository {
 
   private final DailyDoneMapper mapper;
 
-  public DailyDoneRepository(DailyDoneMapper mapper){
+  public DailyDoneRepository(DailyDoneMapper mapper) {
     this.mapper = mapper;
   }
 
-  public List<DailyDone> searchDailyDone(int userId, LocalDate date){
+  public List<DailyDone> searchDailyDone(int userId, LocalDate date) {
     return mapper.selectDailyDone(userId, date);
   }
 
-  public void registerDailyDone(DailyDone done){
+  public void registerDailyDone(DailyDone done) {
     mapper.insertDone(done);
   }
 
-  public void updateDailyDone(DailyDone done){
+  public void updateDailyDone(DailyDone done) {
     mapper.updateDone(done);
   }
 
-  public void deleteDailyDoneById(int id){
-    mapper.deleteDoneById(id);
+  public void deleteDailyDoneById(int doneId) {
+    mapper.deleteDoneById(doneId);
   }
 
-  public void deleteDailyDoneByDate(int userId, LocalDate date){
+  public void deleteDailyDoneByDate(int userId, LocalDate date) {
     mapper.deleteDoneByDate(userId, date);
   }
 }

@@ -13,36 +13,36 @@ public class ArticleStockRepository {
 
   private final ArticleStockMapper mapper;
 
-  public ArticleStockRepository(ArticleStockMapper mapper){
+  public ArticleStockRepository(ArticleStockMapper mapper) {
     this.mapper = mapper;
   }
 
-  public List<ArticleStock> searchArticleStock(int userId){
+  public List<ArticleStock> searchArticleStock(int userId) {
     return mapper.selectArticleStock(userId);
   }
 
-  public ArticleStock findArticleStockByIds(int id, int userId){
-    return mapper.selectArticleStockByIds(id, userId);
+  public ArticleStock findArticleStockByIds(int articleId, int userId) {
+    return mapper.selectArticleStockByIds(articleId, userId);
   }
 
-  public Integer findIdByUserIdAndTitle(int userId, String title){
+  public Integer findIdByUserIdAndTitle(int userId, String title) {
     return mapper.selectIdByUserIdAndTitle(userId, title);
   }
 
-  public Integer findIdByUserIdAndUrl(int userId, String url){
+  public Integer findIdByUserIdAndUrl(int userId, String url) {
     return mapper.selectIdByUserIdAndUrl(userId, url);
   }
 
-  public void registerArticleStock(ArticleStock articleStock){
+  public void registerArticleStock(ArticleStock articleStock) {
     mapper.insertArticleStock(articleStock);
   }
 
-  public void updateArticleStock(ArticleStock articleStock){
+  public void updateArticleStock(ArticleStock articleStock) {
     mapper.updateArticleStock(articleStock);
   }
 
-  public void deleteArticleStock(int id){
-    mapper.deleteArticleStock(id);
+  public void deleteArticleStock(int articleId) {
+    mapper.deleteArticleStock(articleId);
   }
 
 }
