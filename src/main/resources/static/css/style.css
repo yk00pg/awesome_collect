@@ -1140,7 +1140,24 @@ table th {
 .illustration-graph-area img {
   box-sizing: border-box;
   width: 100%;
-  padding-left: 5px;
+  max-height: 200px;
+  object-fit: contain;
+  padding: 5px;
+  transition: transform 0.3s ease;
+  transform-origin: bottom center;
+  cursor: pointer;
+}
+
+.illustration-graph-area img:hover {
+  animation: pulseTilt 1s infinite;
+}
+
+@keyframes pulseTilt {
+  0%   { transform: scaleY(1) rotate(0deg); }
+  25%  { transform: scaleY(1.2) rotate(-5deg); }
+  50%  { transform: scaleY(0.7) rotate(0deg); }
+  75%  { transform: scaleY(1.35) rotate(5deg); }
+  100% { transform: scaleY(1) rotate(0deg); }
 }
 
 .learning-time-link-area {
