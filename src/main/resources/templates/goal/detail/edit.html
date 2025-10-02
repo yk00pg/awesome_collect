@@ -19,10 +19,18 @@
 
     <div class="main-container">
       <div class="back-indicator">
-        <a th:href="@{/goal/detail/{id}(id=${goalRequestDto.id})}">
-          <img th:src="@{/image/back-icon.svg}" alt="戻る">
-          <span>戻る</span>
-        </a>
+        <div th:if="${goalRequestDto.id == 0}">
+          <a th:href="@{/goal}">
+            <img th:src="@{/image/back-icon.svg}" alt="戻る">
+            <span>戻る</span>
+          </a>
+        </div>
+        <div th:unless="${goalRequestDto.id == 0}">
+          <a th:href="@{/goal/detail/{id}(id=${goalRequestDto.id})}">
+            <img th:src="@{/image/back-icon.svg}" alt="戻る">
+            <span>戻る</span>
+          </a>
+        </div>
       </div>
 
       <form class="form-group"
