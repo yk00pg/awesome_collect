@@ -184,7 +184,7 @@ public class ArticleStockController {
 
   // 指定のIDの目標を削除して一覧ページにリダイレクトする。
   @DeleteMapping(ViewNames.ARTICLE_STOCK_DETAIL_BY_ID)
-  public String deleteStock(
+  public String deleteArticleStock(
       @PathVariable int id, RedirectAttributes redirectAttributes) {
 
     articleStockService.deleteArticleStock(id);

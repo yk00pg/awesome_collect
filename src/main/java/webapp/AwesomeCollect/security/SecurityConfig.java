@@ -14,9 +14,7 @@ import webapp.AwesomeCollect.common.constant.ViewNames;
 
 /**
  * Spring Securityのセキュリティ設定を管理するクラス。<br>
- * <p>
- * ログイン認証をログインIDに変更するなどのカスタマイズや、
- * 認証後の遷移ページ、アクセス制御の設定を行う。
+ * ログイン認証をログインIDに変更するなどのカスタマイズ、認証後の遷移ページ、アクセス制御の設定を行う。
  */
 @Configuration
 @EnableWebSecurity

@@ -159,7 +159,7 @@ public class DailyDoneController {
 
   // 指定の日付のできたことをすべて削除して閲覧ページにリダイレクトする。
   @DeleteMapping(ViewNames.DAILY_DONE_VIEW_PAGE)
-  public String deleteDone(
+  public String deleteDailyAllDone(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes) {

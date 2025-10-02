@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * 学習日数表示用データオブジェクト
+ * 学習日数表示用データオブジェクト。
  */
 @Data
 @AllArgsConstructor
