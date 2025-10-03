@@ -77,6 +77,8 @@
 
 ## 📽️ デモ動画
 
+https://github.com/user-attachments/assets/bc7d3bd0-8c44-4505-96e5-99ce8eebde5b
+
 <br/>
 <br/>
 
