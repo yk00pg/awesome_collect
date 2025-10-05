@@ -102,7 +102,9 @@ public class MyPageController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes) {
 
-    if (result.hasErrors()) {
+    int userId = customUserDetails.getId();
+
+    if (result.hasErrors() || userId == 1) {
       return ViewNames.MY_PAGE_EDIT;
     }
 
@@ -142,7 +144,9 @@ public class MyPageController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
-    if (result.hasErrors()) {
+    int userId = customUserDetails.getId();
+
+    if (result.hasErrors() || userId == 0) {
       return ViewNames.MY_PAGE_CHANGE_PASSWORD;
     }
 

@@ -38,10 +38,10 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
     httpSecurity
+        .authenticationProvider(daoAuthenticationProvider())
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(CSS_FILE, IMAGE_FILE, JS_FILE).permitAll()
-            .requestMatchers(ViewNames.LOGIN_PAGE).permitAll()
-            .requestMatchers(ViewNames.SIGNUP_PAGE).permitAll()
+            .requestMatchers(ViewNames.LOGIN_PAGE, ViewNames.GUEST_LOGIN, ViewNames.SIGNUP_PAGE).permitAll()
             .anyRequest().authenticated())
         .formLogin(login -> login
             .loginPage(ViewNames.LOGIN_PAGE)
