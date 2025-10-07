@@ -24,6 +24,10 @@ public class UserInfoRepository {
     return mapper.findUserInfoById(id);
   }
 
+  public UserInfo findUserInfoByLoginId(String loginId){
+    return mapper.findUserInfoByLoginId(loginId);
+  }
+
   public Integer findIdByLoginId(String loginId){
     return mapper.findIdByLoginId(loginId);
   }
@@ -42,5 +46,9 @@ public class UserInfoRepository {
 
   public void updatePassword(UserInfo userInfo){
     mapper.updatePassword(userInfo);
+  }
+
+  public void deleteUserInfoById(int id){
+    mapper.deleteUserInfo(id);
   }
 }

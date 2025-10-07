@@ -13,6 +13,12 @@ import webapp.AwesomeCollect.entity.action.Memo;
 public interface MemoMapper {
 
   @Select("""
+      SELECT id FROM memo
+      WHERE user_id=#{userId}
+      """)
+  List<Integer> selectIdByUserId(int userId);
+
+  @Select("""
       SELECT * FROM memo
       WHERE user_id=#{userId}
       ORDER BY id ASC
@@ -51,4 +57,10 @@ public interface MemoMapper {
       WHERE id=#{id}
       """)
   void deleteMemo(int id);
+
+  @Delete("""
+      DELETE FROM memo
+      WHERE user_id=#{userId}
+      """)
+  void deleteAllMemoByUserId(int userId);
 }

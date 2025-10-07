@@ -8,7 +8,8 @@ CREATE TABLE user_info(
   login_id VARCHAR(20) UNIQUE NOT NULL,
   user_name VARCHAR(20),
   email VARCHAR(255) UNIQUE,
-  password VARCHAR(60) NOT NULL
+  password VARCHAR(60) NOT NULL,
+  isGuest BOOLEAN,
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- ユーザー進捗状況

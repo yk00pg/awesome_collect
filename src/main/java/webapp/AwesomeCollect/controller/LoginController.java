@@ -15,6 +15,8 @@ import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.constant.ViewNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
+import webapp.AwesomeCollect.entity.user.UserInfo;
+import webapp.AwesomeCollect.service.user.GuestUserService;
 
 /**
  * ログインページのコントローラークラス。
@@ -22,12 +24,15 @@ import webapp.AwesomeCollect.common.util.RedirectUtil;
 @Controller
 public class LoginController {
 
+  private final GuestUserService guestUserService;
   private final AuthenticationManager authenticationManager;
   private final MessageUtil messageUtil;
 
   public LoginController(
-      AuthenticationManager authenticationManager, MessageUtil messageUtil){
+      GuestUserService guestUserService, AuthenticationManager authenticationManager,
+      MessageUtil messageUtil){
 
+    this.guestUserService = guestUserService;
     this.authenticationManager = authenticationManager;
     this.messageUtil = messageUtil;
   }
@@ -54,8 +59,11 @@ public class LoginController {
   // ゲスト情報でログインする。
   @PostMapping("/guest_login")
   public String guestLogin(HttpServletRequest request){
+
+    UserInfo guestUser = guestUserService.createGuestUser();
+
     UsernamePasswordAuthenticationToken authToken =
-        new UsernamePasswordAuthenticationToken("Guest_User01", "GuestUser@123");
+        new UsernamePasswordAuthenticationToken(guestUser.getLoginId(), "GuestUser@123");
 
     Authentication auth = authenticationManager.authenticate(authToken);
     SecurityContextHolder.getContext().setAuthentication(auth);

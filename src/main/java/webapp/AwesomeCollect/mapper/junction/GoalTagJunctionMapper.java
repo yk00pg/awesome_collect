@@ -5,7 +5,10 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 import webapp.AwesomeCollect.entity.junction.GoalTagJunction;
+import webapp.AwesomeCollect.provider.ActionTagJunctionProvider;
+import webapp.AwesomeCollect.provider.param.JunctionDeleteParams;
 
 @Mapper
 public interface GoalTagJunctionMapper extends BaseActionTagJunctionMapper<GoalTagJunction> {
@@ -41,4 +44,7 @@ public interface GoalTagJunctionMapper extends BaseActionTagJunctionMapper<GoalT
       WHERE goal_id=#{goalId} AND tag_id=#{tagId}
       """)
   void deleteRelationByRelatedId(GoalTagJunction relation);
+
+  @SelectProvider(type = ActionTagJunctionProvider.class, method = "deleteRelationsByActionIdList")
+  void deleteAllRelationsByActionIdList(JunctionDeleteParams params);
 }

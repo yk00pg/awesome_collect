@@ -28,4 +28,7 @@ public class UserProgressRepository {
     mapper.updateUserProgress(userProgress);
   }
 
+  public void deleteUserProgressByUserId(int userId){
+    mapper.deleteUserProgressByUserId(userId);
+  }
 }

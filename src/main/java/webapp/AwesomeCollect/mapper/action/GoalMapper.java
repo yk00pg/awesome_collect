@@ -13,6 +13,12 @@ import webapp.AwesomeCollect.entity.action.Goal;
 public interface GoalMapper {
 
   @Select("""
+      SELECT id FROM goal
+      WHERE user_id=#{userId}
+      """)
+  List<Integer> selectIdByUserId(int userId);
+
+  @Select("""
       SELECT * FROM goal
       WHERE user_id=#{userId}
       ORDER BY id ASC
@@ -53,4 +59,10 @@ public interface GoalMapper {
       WHERE id=#{id}
       """)
   void deleteGoal(int id);
+
+  @Delete("""
+      DELETE FROM goal
+      WHERE user_id=#{userId}
+      """)
+  void deleteAllGoalByUserId(int userId);
 }

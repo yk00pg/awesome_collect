@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 import webapp.AwesomeCollect.entity.junction.GoalTagJunction;
 import webapp.AwesomeCollect.mapper.junction.GoalTagJunctionMapper;
+import webapp.AwesomeCollect.provider.param.JunctionDeleteParams;
 
 /**
  * 目標とタグの関係性のリポジトリクラス。
@@ -38,5 +39,10 @@ public class GoalTagJunctionRepository extends BaseActionTagJunctionRepository<G
   @Override
   public void deleteRelationByRelatedId(GoalTagJunction relation) {
     super.deleteRelationByRelatedId(relation);
+  }
+
+  @Override
+  public void deleteAllRelationsByActionIdList(JunctionDeleteParams params){
+    super.deleteAllRelationsByActionIdList(params);
   }
 }

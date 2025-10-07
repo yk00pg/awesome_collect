@@ -42,4 +42,10 @@ public interface DailyTodoMapper {
       WHERE user_id=#{userId} AND date=#{date}
       """)
   void deleteTodoByDate(int userId, LocalDate date);
+
+  @Delete("""
+      DELETE FROM daily_todo
+      WHERE user_id=#{userId}
+      """)
+  void deleteAllTodoByUserId(int userId);
 }

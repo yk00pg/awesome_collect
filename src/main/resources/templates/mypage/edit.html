@@ -94,12 +94,12 @@
       </tr>
     </table>
 
-    <div class="button-area" th:unless="${#authentication.principal.id.equals(1)}">
+    <div class="button-area" th:unless="${#authentication.principal.isGuest}">
       <button type="submit" class="save-button">保存する</button>
     </div>
   </form>
 
-  <div class="guest-user-alert" th:if="${#authentication.principal.id.equals(1)}">
+  <div class="guest-user-alert" th:if="${#authentication.principal.isGuest}">
     <p class="guest-login-message" th:text="#{guest.user.alert}"></p>
     <div class="button-area">
       <button class="dummy-button">保存する</button>

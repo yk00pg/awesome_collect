@@ -1,5 +1,6 @@
 package webapp.AwesomeCollect.mapper.user;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -30,4 +31,10 @@ public interface UserProgressMapper {
       WHERE user_id=#{userId}
       """)
   void updateUserProgress(UserProgress userProgress);
+
+  @Delete("""
+      DELETE FROM user_progress
+      WHERE user_id=#{userId}
+      """)
+  void deleteUserProgressByUserId(int userId);
 }
