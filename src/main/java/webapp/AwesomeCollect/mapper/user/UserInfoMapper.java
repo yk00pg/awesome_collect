@@ -1,5 +1,6 @@
 package webapp.AwesomeCollect.mapper.user;
 
+import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -10,6 +11,12 @@ import webapp.AwesomeCollect.entity.user.UserInfo;
 
 @Mapper
 public interface UserInfoMapper {
+
+  @Select("""
+      SELECT id FROM user_info
+      WHERE isGuest=true
+      """)
+  List<Integer> searchGuestUserId();
 
   @Select("""
       SELECT * FROM user_info

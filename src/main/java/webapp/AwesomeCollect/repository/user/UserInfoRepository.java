@@ -1,5 +1,6 @@
 package webapp.AwesomeCollect.repository.user;
 
+import java.util.List;
 import org.springframework.stereotype.Repository;
 import webapp.AwesomeCollect.entity.user.UserInfo;
 import webapp.AwesomeCollect.mapper.user.UserInfoMapper;
@@ -14,6 +15,10 @@ public class UserInfoRepository {
 
   public UserInfoRepository(UserInfoMapper mapper) {
     this.mapper = mapper;
+  }
+
+  public List<Integer> selectGuestUserId(){
+    return mapper.searchGuestUserId();
   }
 
   public UserInfo findUserInfoByBinaryLoginId(String loginId){

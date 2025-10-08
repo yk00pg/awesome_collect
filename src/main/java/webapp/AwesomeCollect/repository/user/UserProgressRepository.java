@@ -1,8 +1,10 @@
 package webapp.AwesomeCollect.repository.user;
 
+import java.util.List;
 import org.springframework.stereotype.Repository;
 import webapp.AwesomeCollect.entity.user.UserProgress;
 import webapp.AwesomeCollect.mapper.user.UserProgressMapper;
+import webapp.AwesomeCollect.provider.param.ExpiredUserParams;
 
 /**
  * ユーザー進捗状況のリポジトリクラス。
@@ -14,6 +16,10 @@ public class UserProgressRepository {
 
   public UserProgressRepository(UserProgressMapper mapper){
     this.mapper = mapper;
+  }
+
+  public List<Integer> searchExpiredUserIdByUserId(ExpiredUserParams params){
+    return mapper.selectExpiredUserIdByUserIdList(params);
   }
 
   public UserProgress findUserProgressByUserId(int userId){

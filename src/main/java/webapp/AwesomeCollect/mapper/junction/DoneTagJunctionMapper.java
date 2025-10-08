@@ -3,10 +3,10 @@ package webapp.AwesomeCollect.mapper.junction;
 import java.time.LocalDate;
 import java.util.List;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
 import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
 import webapp.AwesomeCollect.provider.ActionTagJunctionProvider;
 import webapp.AwesomeCollect.provider.param.JunctionDeleteParams;
@@ -55,6 +55,6 @@ public interface DoneTagJunctionMapper extends BaseActionTagJunctionMapper<DoneT
       """)
   void deleteRelationByDate(int userId, LocalDate date);
 
-  @SelectProvider(type = ActionTagJunctionProvider.class, method = "deleteRelationsByActionIdList")
+  @DeleteProvider(type = ActionTagJunctionProvider.class, method = "deleteRelationsByActionIdList")
   void deleteAllRelationsByActionIdList(JunctionDeleteParams params);
 }
