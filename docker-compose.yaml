@@ -1,16 +1,24 @@
 services:
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+
   db:
     image: mysql:8.0.42
-    container_name: awesome_collect_db
     environment:
-      MYSQL_DATABASE: awesome_collect
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: awesome_collect
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: Asia/Tokyo
-    ports:
-      - "3307:3306"
     volumes:
+      - db_data:/var/lib/mysql
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db_date:/var/lib/mysql
 
 volumes:
-  db_date:
+  db_data:

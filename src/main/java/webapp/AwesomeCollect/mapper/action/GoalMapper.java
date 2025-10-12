@@ -13,6 +13,12 @@ import webapp.AwesomeCollect.entity.action.Goal;
 public interface GoalMapper {
 
   @Select("""
+      SELECT id FROM goal
+      WHERE user_id=#{userId}
+      """)
+  List<Integer> selectIdByUserId(int userId);
+
+  @Select("""
       SELECT * FROM goal
       WHERE user_id=#{userId}
       ORDER BY id ASC
@@ -25,6 +31,12 @@ public interface GoalMapper {
       """)
   Goal selectGoalByIds(int id, int userId);
 
+  @Select("""
+      SELECT id FROM goal
+      WHERE user_id=#{userId} AND title=#{title}
+      """)
+  Integer selectIdByUserIdAndTitle(int userId, String title);
+
   // @OptionsをつけてDBで自動採番されるIDを取得してエンティティに付与
   @Insert("""
       INSERT goal(user_id, title, content, achieved, registered_at)
@@ -35,7 +47,9 @@ public interface GoalMapper {
 
   @Update("""
       UPDATE goal
-      SET title=#{title}, content=#{content}, achieved=#{achieved}, updated_at=#{updatedAt}
+      SET
+        title=#{title}, content=#{content}, achieved=#{achieved},
+        updated_at=#{updatedAt}, status_updated_at=#{statusUpdatedAt}
       WHERE id=#{id}
       """)
   void updateGoal(Goal goal);
@@ -45,4 +59,10 @@ public interface GoalMapper {
       WHERE id=#{id}
       """)
   void deleteGoal(int id);
+
+  @Delete("""
+      DELETE FROM goal
+      WHERE user_id=#{userId}
+      """)
+  void deleteAllGoalByUserId(int userId);
 }

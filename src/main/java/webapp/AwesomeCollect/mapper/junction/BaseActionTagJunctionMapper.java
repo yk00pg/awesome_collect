@@ -1,6 +1,7 @@
 package webapp.AwesomeCollect.mapper.junction;
 
 import java.util.List;
+import webapp.AwesomeCollect.provider.param.JunctionDeleteParams;
 
 public interface BaseActionTagJunctionMapper<T> {
 
@@ -9,4 +10,5 @@ public interface BaseActionTagJunctionMapper<T> {
   void insertRelation(T relation);
   void deleteRelationByActionId(int actionId);
   void deleteRelationByRelatedId(T relation);
+  void deleteAllRelationsByActionIdList(JunctionDeleteParams params);
 }

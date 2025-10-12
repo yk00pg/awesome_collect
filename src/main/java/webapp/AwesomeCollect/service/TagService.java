@@ -16,17 +16,17 @@ public class TagService {
 
   private final TagRepository tagRepository;
 
-  public TagService(TagRepository tagRepository){
+  public TagService(TagRepository tagRepository) {
     this.tagRepository = tagRepository;
   }
 
   /**
    * ユーザーIDを基にDBからタグ名リストを取得する。
    *
-   * @param userId  ユーザーID
-   * @return  タグ名リスト
+   * @param userId ユーザーID
+   * @return タグ名リスト
    */
-  public List<String> getTagNameListByUserId(int userId){
+  public List<String> getTagNameListByUserId(int userId) {
     return tagRepository.searchTagNameList(userId);
   }
 
@@ -35,9 +35,9 @@ public class TagService {
    * そうでない場合はタグIDリストを基にDBからタグ名リストを取得する。
    *
    * @param tagIdList タグIDリスト
-   * @return  タグ名リスト
+   * @return タグ名リスト
    */
-  public List<String> prepareTagNameListByTagIdList(List<Integer> tagIdList){
+  public List<String> prepareTagNameListByTagIdList(List<Integer> tagIdList) {
     return tagIdList == null || tagIdList.isEmpty()
         ? Collections.emptyList()
         : tagRepository.searchTagNameListByTagIdList(tagIdList);
@@ -48,9 +48,9 @@ public class TagService {
    * タグIDリストを基にDBからタグ名リストを取得し、コンマで結合した文字列を用意する。
    *
    * @param tagIdList タグIDリスト
-   * @return
+   * @return 文字列結合したタグ名
    */
-  public String prepareCombinedTagName(List<Integer> tagIdList){
+  public String prepareCombinedTagName(List<Integer> tagIdList) {
     return tagIdList == null || tagIdList.isEmpty()
         ? ""
         : String.join(",", prepareTagNameListByTagIdList(tagIdList));
@@ -60,16 +60,16 @@ public class TagService {
    * 変換後のタグリストがnullの場合はnullを返し、そうでない場合は
    * 変換後のタグリストの中身を確認し、タグIDリストを作成する。
    *
-   * @param userId  ユーザーID
+   * @param userId      ユーザーID
    * @param pureTagList 変換後のタグリスト
-   * @return  タグIDリスト
+   * @return タグIDリスト
    */
-  public List<Integer> resolveTagIdList(int userId, List<String> pureTagList){
+  public List<Integer> resolveTagIdList(int userId, List<String> pureTagList) {
     return pureTagList == null
         ? null
         : pureTagList.stream()
-        .map(tagName -> resolveTagId(userId, tagName))
-        .collect(Collectors.toList());
+            .map(tagName -> resolveTagId(userId, tagName))
+            .collect(Collectors.toList());
   }
 
   /**
@@ -77,7 +77,7 @@ public class TagService {
    *
    * @param userId  ユーザーID
    * @param tagName タグ名
-   * @return  タグID
+   * @return タグID
    */
   @Transactional
   private int resolveTagId(int userId, String tagName) {

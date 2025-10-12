@@ -3,7 +3,7 @@ package webapp.AwesomeCollect.exception;
 import lombok.Getter;
 
 /**
- * ログインIDまたはメールアドレスが重複している場合に投げられる例外クラス。
+ * 登録内容が重複している場合に投げられる例外クラス。
  */
 @Getter
 public class DuplicateException extends RuntimeException{

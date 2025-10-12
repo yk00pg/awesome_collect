@@ -13,6 +13,12 @@ import webapp.AwesomeCollect.entity.action.Memo;
 public interface MemoMapper {
 
   @Select("""
+      SELECT id FROM memo
+      WHERE user_id=#{userId}
+      """)
+  List<Integer> selectIdByUserId(int userId);
+
+  @Select("""
       SELECT * FROM memo
       WHERE user_id=#{userId}
       ORDER BY id ASC
@@ -24,6 +30,12 @@ public interface MemoMapper {
       WHERE id=#{id} AND user_id=#{userId}
       """)
   Memo selectMemoByIds(int id, int userId);
+
+  @Select("""
+      SELECT id FROM memo
+      WHERE user_id=#{userId} AND title=#{title}
+      """)
+  Integer selectIdByUserIdAndTitle(int userId, String title);
 
   // @OptionsをつけてDBで自動採番されるIDを取得してエンティティに付与
   @Insert("""
@@ -45,4 +57,10 @@ public interface MemoMapper {
       WHERE id=#{id}
       """)
   void deleteMemo(int id);
+
+  @Delete("""
+      DELETE FROM memo
+      WHERE user_id=#{userId}
+      """)
+  void deleteAllMemoByUserId(int userId);
 }

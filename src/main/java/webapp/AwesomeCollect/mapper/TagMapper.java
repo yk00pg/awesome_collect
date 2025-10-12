@@ -1,6 +1,7 @@
 package webapp.AwesomeCollect.mapper;
 
 import java.util.List;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
@@ -19,12 +20,6 @@ public interface TagMapper {
       """)
   List<String> selectTagNameListByUserId(int userId);
 
-  @Select("""
-      SELECT name FROM tag
-      WHERE id=#{id}
-      """)
-  String findTagNameById(int id);
-
   // WHERE IN句に変数を用いるためにプロバイダを通す
   @SelectProvider(type = TagProvider.class, method = "selectIdsByTagIdList")
   List<String> selectTagNameListByTagIdList(@Param("tagIdList") List<Integer> tagIdList);
@@ -42,4 +37,10 @@ public interface TagMapper {
       """)
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void insertTag(Tag tag);
+
+  @Delete("""
+      DELETE FROM tag
+      WHERE user_id=#{userId}
+      """)
+  void deleteAllTagByUserId(int userId);
 }

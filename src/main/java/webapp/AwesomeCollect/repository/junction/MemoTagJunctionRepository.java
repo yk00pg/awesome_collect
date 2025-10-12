@@ -4,9 +4,10 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 import webapp.AwesomeCollect.entity.junction.MemoTagJunction;
 import webapp.AwesomeCollect.mapper.junction.MemoTagJunctionMapper;
+import webapp.AwesomeCollect.provider.param.JunctionDeleteParams;
 
 /**
- * メモ×タグのリポジトリクラス。
+ * メモとタグの関係性のリポジトリクラス。
  */
 @Repository
 public class MemoTagJunctionRepository extends BaseActionTagJunctionRepository<MemoTagJunction> {
@@ -38,5 +39,10 @@ public class MemoTagJunctionRepository extends BaseActionTagJunctionRepository<M
   @Override
   public void deleteRelationByRelatedId(MemoTagJunction relation) {
     super.deleteRelationByRelatedId(relation);
+  }
+
+  @Override
+  public void deleteAllRelationsByActionIdList(JunctionDeleteParams params){
+    super.deleteAllRelationsByActionIdList(params);
   }
 }

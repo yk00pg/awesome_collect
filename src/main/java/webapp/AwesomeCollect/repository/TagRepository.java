@@ -13,27 +13,27 @@ public class TagRepository {
 
   private final TagMapper mapper;
 
-  public TagRepository(TagMapper mapper){
+  public TagRepository(TagMapper mapper) {
     this.mapper = mapper;
   }
 
-  public List<String> searchTagNameList(int userId){
+  public List<String> searchTagNameList(int userId) {
     return mapper.selectTagNameListByUserId(userId);
   }
 
-  public String searchTagName(int tagId){
-    return mapper.findTagNameById(tagId);
-  }
-
-  public List<String> searchTagNameListByTagIdList(List<Integer> tagIdList){
+  public List<String> searchTagNameListByTagIdList(List<Integer> tagIdList) {
     return mapper.selectTagNameListByTagIdList(tagIdList);
   }
 
-  public Integer searchTagIdByUserIdAndTagName(Tag tag){
+  public Integer searchTagIdByUserIdAndTagName(Tag tag) {
     return mapper.findTagIdByUserIdAndTagName(tag.getUserId(), tag.getName());
   }
 
-  public void registerTag(Tag tag){
+  public void registerTag(Tag tag) {
     mapper.insertTag(tag);
+  }
+
+  public void deleteAllTagByUserId(int userId){
+    mapper.deleteAllTagByUserId(userId);
   }
 }

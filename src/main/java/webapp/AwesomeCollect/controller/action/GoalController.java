@@ -1,6 +1,7 @@
 package webapp.AwesomeCollect.controller.action;
 
 import jakarta.validation.Valid;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,9 +22,10 @@ import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.action.request.GoalRequestDto;
 import webapp.AwesomeCollect.dto.action.response.GoalResponseDto;
+import webapp.AwesomeCollect.exception.DuplicateException;
 import webapp.AwesomeCollect.security.CustomUserDetails;
-import webapp.AwesomeCollect.service.action.GoalService;
 import webapp.AwesomeCollect.service.TagService;
+import webapp.AwesomeCollect.service.action.GoalService;
 import webapp.AwesomeCollect.validator.GoalValidator;
 
 /**
@@ -39,7 +41,7 @@ public class GoalController {
 
   public GoalController(
       GoalService goalService, TagService tagService,
-      GoalValidator goalValidator, MessageUtil messageUtil){
+      GoalValidator goalValidator, MessageUtil messageUtil) {
 
     this.goalService = goalService;
     this.tagService = tagService;
@@ -51,7 +53,7 @@ public class GoalController {
   @GetMapping(ViewNames.GOAL_PAGE)
   public String showGoal(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      Model model){
+      Model model) {
 
     model.addAttribute(
         AttributeNames.GOAL_RESPONSE_DTO_LIST,
@@ -88,9 +90,9 @@ public class GoalController {
     int userId = customUserDetails.getId();
     GoalRequestDto goalRequestDto = goalService.prepareRequestDto(id, userId);
 
-    if(goalRequestDto == null) {
+    if (goalRequestDto == null) {
       return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
-    }else{
+    } else {
       model.addAttribute(AttributeNames.GOAL_REQUEST_DTO, goalRequestDto);
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
@@ -101,22 +103,22 @@ public class GoalController {
 
   // DTOのアノテーションで制御できないバリデーションを確認する。
   @InitBinder(AttributeNames.GOAL_REQUEST_DTO)
-  public void initBinder(WebDataBinder dataBinder){
+  public void initBinder(WebDataBinder dataBinder) {
     dataBinder.addValidators(goalValidator);
   }
 
   /**
-   * 入力されたデータにバインディングエラーが発生した場合はタグリストを詰め直して
+   * 入力されたデータにバインディングエラーまたは例外が発生した場合はタグリストを詰め直して
    * 編集ページに戻り、エラーメッセージを表示する。そうでない場合はDBにデータを
    * 保存（登録・更新）し、詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    *
-   * @param id  目標ID
-   * @param dto 目標入力用データオブジェクト
-   * @param result  バインディングの結果
-   * @param model データをViewに渡すオブジェクト
-   * @param customUserDetails カスタムユーザー情報
-   * @param redirectAttributes  リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
-   * @return  目標・詳細ページ
+   * @param id                 目標ID
+   * @param dto                目標入力用データオブジェクト
+   * @param result             バインディングの結果
+   * @param model              データをViewに渡すオブジェクト
+   * @param customUserDetails  カスタムユーザー情報
+   * @param redirectAttributes リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
+   * @return 目標・詳細ページ
    */
   @PostMapping(ViewNames.GOAL_EDIT_BY_ID)
   public String editGoal(
@@ -128,16 +130,65 @@ public class GoalController {
 
     int userId = customUserDetails.getId();
 
-    if(result.hasErrors()){
+    if (result.hasErrors()) {
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
       return ViewNames.GOAL_EDIT_PAGE;
     }
 
-    SaveResult saveResult = goalService.saveGoal(userId, dto);
+    SaveResult saveResult = trySaveGoal(dto, result, model, userId);
+    if (saveResult == null) {
+      return ViewNames.GOAL_EDIT_PAGE;
+    }
+
     addAttributeBySaveType(id, redirectAttributes, saveResult);
 
     return RedirectUtil.redirectView(ViewNames.GOAL_DETAIL_PAGE, saveResult.id());
+  }
+
+  // DBへの保存を試みて保存結果を取得する。
+  private @Nullable SaveResult trySaveGoal(
+      GoalRequestDto dto, BindingResult result, Model model, int userId) {
+
+    SaveResult saveResult;
+    try {
+      saveResult = goalService.saveGoal(userId, dto);
+    } catch (DuplicateException ex) {
+      result.rejectValue(
+          ex.getType().getFieldName(), "duplicate",
+          messageUtil.getMessage(ex.getType().getMessageKey("goal")));
+
+      model.addAttribute(
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
+
+      return null;
+    }
+    return saveResult;
+  }
+
+  // 登録か更新か、更新の場合は進捗状況が更新されたかを判定してサクセスメッセージとポップアップウィンドウを表示する。
+  private void addAttributeBySaveType(
+      int id, RedirectAttributes redirectAttributes, SaveResult saveResult) {
+
+    boolean isRegistration = id == 0;
+    if (isRegistration) {
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.ACHIEVEMENT_POPUP,
+          messageUtil.getMessage(MessageKeys.GOAL_AWESOME));
+    } else {
+      redirectAttributes.addFlashAttribute(
+          AttributeNames.SUCCESS_MESSAGE,
+          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
+
+      if (saveResult.isUpdatedStatus()) {
+        redirectAttributes.addFlashAttribute(
+            AttributeNames.ACHIEVEMENT_POPUP,
+            messageUtil.getMessage(MessageKeys.ACHIEVED_AWESOME));
+      }
+    }
   }
 
   // 指定のIDの目標を削除して一覧ページにリダイレクトする。
@@ -152,30 +203,5 @@ public class GoalController {
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
     return RedirectUtil.redirectView(ViewNames.GOAL_PAGE);
-  }
-
-  // 登録か更新か、更新の場合は進捗状況が更新されたかを判定してサクセスメッセージとポップアップウィンドウを表示する。
-  private void addAttributeBySaveType(
-      int id, RedirectAttributes redirectAttributes, SaveResult saveResult) {
-
-    boolean isRegistration = id == 0;
-    if(isRegistration){
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.ACHIEVEMENT_POPUP,
-          messageUtil.getMessage(MessageKeys.GOAL_AWESOME));
-    }else{
-      redirectAttributes.addFlashAttribute(
-          AttributeNames.SUCCESS_MESSAGE,
-          messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
-
-      if(saveResult.isUpdatedStatus()){
-        redirectAttributes.addFlashAttribute(
-            AttributeNames.ACHIEVEMENT_POPUP,
-            messageUtil.getMessage(MessageKeys.ACHIEVED_AWESOME));
-      }
-    }
   }
 }

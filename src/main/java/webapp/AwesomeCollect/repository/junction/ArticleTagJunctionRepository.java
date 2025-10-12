@@ -4,9 +4,10 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 import webapp.AwesomeCollect.entity.junction.ArticleTagJunction;
 import webapp.AwesomeCollect.mapper.junction.ArticleTagsJunctionMapper;
+import webapp.AwesomeCollect.provider.param.JunctionDeleteParams;
 
 /**
- * 記事ストック×タグのリポジトリクラス。
+ * 記事ストックとタグの関係性のリポジトリクラス。
  */
 @Repository
 public class ArticleTagJunctionRepository extends BaseActionTagJunctionRepository<ArticleTagJunction> {
@@ -38,5 +39,10 @@ public class ArticleTagJunctionRepository extends BaseActionTagJunctionRepositor
   @Override
   public void deleteRelationByRelatedId(ArticleTagJunction relation) {
     super.deleteRelationByRelatedId(relation);
+  }
+
+  @Override
+  public void deleteAllRelationsByActionIdList(JunctionDeleteParams params) {
+    super.deleteAllRelationsByActionIdList(params);
   }
 }

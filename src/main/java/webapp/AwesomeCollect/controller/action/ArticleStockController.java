@@ -1,6 +1,7 @@
 package webapp.AwesomeCollect.controller.action;
 
 import jakarta.validation.Valid;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,7 @@ import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.action.request.ArticleRequestDto;
 import webapp.AwesomeCollect.dto.action.response.ArticleResponseDto;
+import webapp.AwesomeCollect.exception.DuplicateException;
 import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.TagService;
 import webapp.AwesomeCollect.service.action.ArticleStockService;
@@ -35,18 +37,18 @@ public class ArticleStockController {
 
   public ArticleStockController(
       ArticleStockService articleStockService, TagService tagService,
-      MessageUtil messageUtil){
+      MessageUtil messageUtil) {
 
     this.articleStockService = articleStockService;
     this.tagService = tagService;
     this.messageUtil = messageUtil;
   }
 
-  // 記事ストックの一覧ページ（記事ストックリスト）を表示する。`
+  // 記事ストックの一覧ページ（記事ストックリスト）を表示する。
   @GetMapping(ViewNames.ARTICLE_STOCK_PAGE)
   public String showArticleStock(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
-      Model model){
+      Model model) {
 
     model.addAttribute(
         AttributeNames.ARTICLE_RESPONSE_DTO_LIST,
@@ -65,9 +67,9 @@ public class ArticleStockController {
     ArticleResponseDto articleResponseDto =
         articleStockService.prepareResponseDto(id, customUserDetails.getId());
 
-    if(articleResponseDto == null){
+    if (articleResponseDto == null) {
       return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
-    }else{
+    } else {
       model.addAttribute(AttributeNames.ARTICLE_RESPONSE_DTO, articleResponseDto);
       return ViewNames.ARTICLE_STOCK_DETAIL_PAGE;
     }
@@ -84,9 +86,9 @@ public class ArticleStockController {
     ArticleRequestDto articleRequestDto =
         articleStockService.prepareRequestDto(id, userId);
 
-    if(articleRequestDto == null){
+    if (articleRequestDto == null) {
       return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
-    }else{
+    } else {
       model.addAttribute(AttributeNames.ARTICLE_REQUEST_DTO, articleRequestDto);
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
@@ -96,17 +98,17 @@ public class ArticleStockController {
   }
 
   /**
-   * 入力されたデータにバインディングエラーが発生した場合はタグリストを詰め直して
+   * 入力されたデータにバインディングエラーまたは例外が発生した場合はタグリストを詰め直して
    * 編集ページに戻ってエラーメッセージを表示し、そうでない場合はDBに保存（登録・更新）し、
    * 詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    *
-   * @param id  記事ストックID
-   * @param dto 記事ストック入力用データオブジェクト
-   * @param result  バインディングの結果
-   * @param model データをViewに渡すオブジェクト
-   * @param customUserDetails カスタムユーザー情報
-   * @param redirectAttributes  リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
-   * @return  記事ストック・詳細ページ
+   * @param id                 記事ストックID
+   * @param dto                記事ストック入力用データオブジェクト
+   * @param result             バインディングの結果
+   * @param model              データをViewに渡すオブジェクト
+   * @param customUserDetails  カスタムユーザー情報
+   * @param redirectAttributes リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
+   * @return 記事ストック・詳細ページ
    */
   @PostMapping(ViewNames.ARTICLE_STOCK_EDIT_BY_ID)
   public String editArticleStock(
@@ -116,34 +118,43 @@ public class ArticleStockController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes) {
 
+    int userId = customUserDetails.getId();
+
     if (result.hasErrors()) {
       model.addAttribute(
-          AttributeNames.TAG_NAME_LIST,
-          tagService.getTagNameListByUserId(customUserDetails.getId()));
-
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
       return ViewNames.ARTICLE_STOCK_EDIT_PAGE;
     }
 
-    SaveResult saveResult =
-        articleStockService.saveArticleStock(customUserDetails.getId(), dto);
+    SaveResult saveResult = trySaveArticleStock(dto, result, model, userId);
+    if (saveResult == null) {
+      return ViewNames.ARTICLE_STOCK_EDIT_PAGE;
+    }
+
     addAttributeBySaveType(id, redirectAttributes, saveResult);
 
     return RedirectUtil.redirectView(
         ViewNames.ARTICLE_STOCK_DETAIL_PAGE, saveResult.id());
   }
 
-  // 指定のIDの目標を削除して一覧ページにリダイレクトする。
-  @DeleteMapping(ViewNames.ARTICLE_STOCK_DETAIL_BY_ID)
-  public String deleteStock(
-      @PathVariable int id, RedirectAttributes redirectAttributes) {
+  // DBへの保存を試みて保存結果を取得する。
+  private @Nullable SaveResult trySaveArticleStock(
+      ArticleRequestDto dto, BindingResult result, Model model, int userId) {
 
-    articleStockService.deleteArticleStock(id);
+    SaveResult saveResult;
+    try {
+      saveResult = articleStockService.saveArticleStock(userId, dto);
+    } catch (DuplicateException ex) {
+      result.rejectValue(
+          ex.getType().getFieldName(), "duplicate",
+          messageUtil.getMessage(ex.getType().getMessageKey("article")));
 
-    redirectAttributes.addFlashAttribute(
-        AttributeNames.SUCCESS_MESSAGE,
-        messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
+      model.addAttribute(
+          AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
-    return RedirectUtil.redirectView(ViewNames.ARTICLE_STOCK_PAGE);
+      return null;
+    }
+    return saveResult;
   }
 
   // 登録か更新か、更新の場合は閲覧状況が更新されたかを判定してサクセスメッセージとポップアップウィンドウを表示する。
@@ -169,5 +180,19 @@ public class ArticleStockController {
             messageUtil.getMessage(MessageKeys.FINISHED_AWESOME));
       }
     }
+  }
+
+  // 指定のIDの目標を削除して一覧ページにリダイレクトする。
+  @DeleteMapping(ViewNames.ARTICLE_STOCK_DETAIL_BY_ID)
+  public String deleteStock(
+      @PathVariable int id, RedirectAttributes redirectAttributes) {
+
+    articleStockService.deleteArticleStock(id);
+
+    redirectAttributes.addFlashAttribute(
+        AttributeNames.SUCCESS_MESSAGE,
+        messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
+
+    return RedirectUtil.redirectView(ViewNames.ARTICLE_STOCK_PAGE);
   }
 }

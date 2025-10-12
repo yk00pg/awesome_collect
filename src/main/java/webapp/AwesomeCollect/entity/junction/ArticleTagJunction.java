@@ -1,12 +1,12 @@
 package webapp.AwesomeCollect.entity.junction;
 
 /**
- * 記事ストック×タグを扱うオブジェクト。DBに存在するテーブルと連動する。
+ * 記事ストックとタグの関係性情報を扱うオブジェクト。DBに存在するテーブルと連動する。
  *
  * @param articleId 記事ストックID
- * @param tagId タグID
+ * @param tagId     タグID
  */
-public record ArticleTagJunction(int articleId, int tagId) implements ActionTagJunction{
+public record ArticleTagJunction(int articleId, int tagId) implements ActionTagJunction {
 
   @Override
   public int getActionId() {

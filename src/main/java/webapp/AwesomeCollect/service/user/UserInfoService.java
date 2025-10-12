@@ -5,9 +5,9 @@ import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.dto.user.UserBasicInfoDto;
 import webapp.AwesomeCollect.dto.user.UserInfoDto;
 import webapp.AwesomeCollect.dto.user.UserPasswordDto;
+import webapp.AwesomeCollect.entity.user.UserInfo;
 import webapp.AwesomeCollect.exception.DuplicateException;
 import webapp.AwesomeCollect.exception.DuplicateType;
-import webapp.AwesomeCollect.entity.user.UserInfo;
 import webapp.AwesomeCollect.exception.IncorrectPasswordException;
 import webapp.AwesomeCollect.repository.user.UserInfoRepository;
 import webapp.AwesomeCollect.security.SecurityConfig;
@@ -24,9 +24,9 @@ public class UserInfoService {
 
   public UserInfoService(
       UserInfoRepository userInfoRepository, SecurityConfig securityConfig,
-      UserProgressService userProgressService){
+      UserProgressService userProgressService) {
 
-    this.userInfoRepository= userInfoRepository;
+    this.userInfoRepository = userInfoRepository;
     this.securityConfig = securityConfig;
     this.userProgressService = userProgressService;
   }
@@ -34,10 +34,10 @@ public class UserInfoService {
   /**
    * ユーザーIDを基にユーザー情報を取得し、基本情報データオブジェクトに変換する。
    *
-   * @param id  ユーザーID
-   * @return  ユーザー基本情報データオブジェクト
+   * @param id ユーザーID
+   * @return ユーザー基本情報データオブジェクト
    */
-  public UserBasicInfoDto prepareUserInfoDto(int id){
+  public UserBasicInfoDto prepareUserInfoDto(int id) {
     return UserBasicInfoDto.fromEntity(userInfoRepository.findUserInfoById(id));
   }
 
@@ -54,12 +54,14 @@ public class UserInfoService {
 
     UserInfo userInfo = dto.toEntityForSignup(securityConfig.passwordEncoder());
     // 新規ユーザのためid=0
-    if(isDuplicateLoginId(userInfo.getLoginId(), 0)) {
+    if (isDuplicateLoginId(userInfo.getLoginId(), 0)) {
       throw new DuplicateException(DuplicateType.USER_ID);
     }
 
-    if (isDuplicateEmail(userInfo.getEmail(), 0)){
-      throw new DuplicateException(DuplicateType.EMAIL);
+    if (userInfo.getEmail() != null) {
+      if (isDuplicateEmail(userInfo.getEmail(), 0)) {
+        throw new DuplicateException(DuplicateType.EMAIL);
+      }
     }
 
     userInfoRepository.registerNewUserInfo(userInfo);
@@ -79,15 +81,29 @@ public class UserInfoService {
       throws DuplicateException {
 
     UserInfo userInfo = dto.toEntityForUpdate(id);
-    if(isDuplicateLoginId(userInfo.getLoginId(), id)) {
+    if (isDuplicateLoginId(userInfo.getLoginId(), id)) {
       throw new DuplicateException(DuplicateType.USER_ID);
     }
 
-    if (isDuplicateEmail(userInfo.getEmail(), id)){
-      throw new DuplicateException(DuplicateType.EMAIL);
+    if (userInfo.getEmail() != null) {
+      if (isDuplicateEmail(userInfo.getEmail(), id)) {
+        throw new DuplicateException(DuplicateType.EMAIL);
+      }
     }
 
     userInfoRepository.updateUserInfo(userInfo);
+  }
+
+  // ログインIDが重複しているか確認する。
+  private boolean isDuplicateLoginId(String loginId, int id) {
+    Integer recordId = userInfoRepository.findIdByLoginId(loginId);
+    return recordId != null && !recordId.equals(id);
+  }
+
+  // メールアドレスが重複しているか確認する。
+  private boolean isDuplicateEmail(String email, int id) {
+    Integer recordId = userInfoRepository.findIdByEmail(email);
+    return recordId != null && !recordId.equals(id);
   }
 
   /**
@@ -96,13 +112,13 @@ public class UserInfoService {
    *
    * @param dto ユーザーパスワード情報データオブジェクト
    * @param id  ユーザーID
-   * @throws IncorrectPasswordException 入力された現在のパスワードと登録されているパスワードが不一致が場合
+   * @throws IncorrectPasswordException 入力された現在のパスワードと登録されているパスワードが不一致の場合
    */
   @Transactional
   public void updatePassword(UserPasswordDto dto, int id)
       throws IncorrectPasswordException {
 
-    if(isPasswordIncorrect(dto, id)){
+    if (isPasswordIncorrect(dto, id)) {
       throw new IncorrectPasswordException();
     }
 
@@ -111,20 +127,8 @@ public class UserInfoService {
     userInfoRepository.updatePassword(userInfo);
   }
 
-  // ログインIDが重複しているか確認する。
-  private boolean isDuplicateLoginId(String loginId, int id){
-    Integer recordId = userInfoRepository.findIdByLoginId(loginId);
-    return recordId != null && !recordId.equals(id);
-  }
-
-  // メールアドレスが重複しているか確認する。
-  private boolean isDuplicateEmail(String email, int id){
-    Integer recordId = userInfoRepository.findIdByEmail(email);
-    return recordId != null && !recordId.equals(id);
-  }
-
   // 現在のパスワードが間違っているか確認する。
-  private boolean isPasswordIncorrect(UserPasswordDto dto, int id){
+  private boolean isPasswordIncorrect(UserPasswordDto dto, int id) {
     String inputPassword = dto.getCurrentPassword();
     String currentPassword = userInfoRepository.findUserInfoById(id).getPassword();
     return (!securityConfig.passwordEncoder().matches(inputPassword, currentPassword));

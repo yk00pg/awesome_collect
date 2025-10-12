@@ -9,6 +9,11 @@ public final class MessageKeys {
   public static final String DUPLICATE_LOGIN_ID = "duplicate.loginId";
   public static final String DUPLICATE_EMAIL = "duplicate.email";
   public static final String CURRENT_PASSWORD_INCORRECT = "currentPassword.incorrect";
+  public static final String DUPLICATE_TITLE = "duplicate.title";
+  public static final String DUPLICATE_GOAL_TITLE = "duplicate.goal.title";
+  public static final String DUPLICATE_MEMO_TITLE = "duplicate.memo.title";
+  public static final String DUPLICATE_ARTICLE_TITLE = "duplicate.article.title";
+  public static final String DUPLICATE_URL = "duplicate.url";
 
   // validation
   public static final String PASSWORD_MISMATCH = "password.mismatch";

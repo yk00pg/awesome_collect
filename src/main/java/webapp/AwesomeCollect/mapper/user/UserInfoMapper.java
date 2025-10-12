@@ -1,5 +1,7 @@
 package webapp.AwesomeCollect.mapper.user;
 
+import java.util.List;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
@@ -9,6 +11,12 @@ import webapp.AwesomeCollect.entity.user.UserInfo;
 
 @Mapper
 public interface UserInfoMapper {
+
+  @Select("""
+      SELECT id FROM user_info
+      WHERE isGuest=true
+      """)
+  List<Integer> searchGuestUserId();
 
   @Select("""
       SELECT * FROM user_info
@@ -21,6 +29,12 @@ public interface UserInfoMapper {
       WHERE id=#{id}
       """)
   UserInfo findUserInfoById(int id);
+
+  @Select("""
+      SELECT * FROM user_info
+      WHERE login_id=#{loginId}
+      """)
+  UserInfo findUserInfoByLoginId(String loginId);
 
   @Select("""
       SELECT id FROM user_info
@@ -36,8 +50,8 @@ public interface UserInfoMapper {
 
   // @OptionsをつけてDBで自動採番されるIDを取得してエンティティに付与
   @Insert("""
-      INSERT user_info(login_id, user_name, email, password)
-      VALUES(#{loginId}, #{userName}, #{email}, #{password})
+      INSERT user_info(login_id, user_name, email, password, isGuest)
+      VALUES(#{loginId}, #{userName}, #{email}, #{password}, #{isGuest})
       """)
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void insertUserInfo(UserInfo userInfo);
@@ -55,4 +69,10 @@ public interface UserInfoMapper {
       WHERE id=#{id}
       """)
   void updatePassword(UserInfo userInfo);
+
+  @Delete("""
+      DELETE FROM user_info
+      WHERE id=#{id}
+      """)
+  void deleteUserInfo(int id);
 }

@@ -9,14 +9,14 @@ import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
 import webapp.AwesomeCollect.repository.junction.DoneTagJunctionRepository;
 
 /**
- * できたこと×タグのサービスクラス。
+ * できたこととタグの関係性のサービスクラス。
  */
 @Service
-public class DoneTagJunctionService extends BaseActionTagJunctionService<DoneTagJunction>{
+public class DoneTagJunctionService extends BaseActionTagJunctionService<DoneTagJunction> {
 
   private final DoneTagJunctionRepository doneTagJunctionRepository;
 
-  public DoneTagJunctionService(DoneTagJunctionRepository repository){
+  public DoneTagJunctionService(DoneTagJunctionRepository repository) {
     super(repository);
     this.doneTagJunctionRepository = repository;
   }
@@ -28,19 +28,19 @@ public class DoneTagJunctionService extends BaseActionTagJunctionService<DoneTag
 
   @Override
   public void registerNewRelations(
-      int actionId, BiFunction<Integer, Integer, DoneTagJunction> relationFactory,
+      int doneId, BiFunction<Integer, Integer, DoneTagJunction> relationFactory,
       List<Integer> tagIdList) {
 
-    super.registerNewRelations(actionId, relationFactory, tagIdList);
+    super.registerNewRelations(doneId, relationFactory, tagIdList);
   }
 
   @Override
   @Transactional
   public void updateRelations(
-      int actionId, BiFunction<Integer, Integer, DoneTagJunction> relationFactory,
+      int doneId, BiFunction<Integer, Integer, DoneTagJunction> relationFactory,
       List<Integer> tagIdList) {
 
-    super.updateRelations(actionId, relationFactory, tagIdList);
+    super.updateRelations(doneId, relationFactory, tagIdList);
   }
 
   @Override
@@ -61,8 +61,8 @@ public class DoneTagJunctionService extends BaseActionTagJunctionService<DoneTag
   /**
    * 日付を基にDBからできたことIDとタグIDの関係を削除する。
    *
-   * @param userId  ユーザーID
-   * @param date  日付
+   * @param userId ユーザーID
+   * @param date   日付
    */
   public void deleteRelationByDate(int userId, LocalDate date) {
     doneTagJunctionRepository.deleteRelationByDate(userId, date);

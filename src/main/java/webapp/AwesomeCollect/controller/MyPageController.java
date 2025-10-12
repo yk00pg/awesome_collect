@@ -48,48 +48,52 @@ public class MyPageController {
   // ユーザー登録情報を表示する。
   @GetMapping(ViewNames.MY_PAGE)
   public String showUserBasicInfo(
-      @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      Model model) {
 
-    UserBasicInfoDto basicInfoDto =
-        userInfoService.prepareUserInfoDto(customUserDetails.getId());
-    model.addAttribute(AttributeNames.BASIC_INFO_DTO, basicInfoDto);
+    model.addAttribute(
+        AttributeNames.BASIC_INFO_DTO,
+        userInfoService.prepareUserInfoDto(customUserDetails.getId()));
+
     return ViewNames.MY_PAGE;
   }
 
   // ユーザー登録情報の編集フォームを表示する。
   @GetMapping(ViewNames.MY_PAGE_EDIT)
   public String showUserBasicInfoEditForm(
-      @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model){
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      Model model) {
 
-    UserBasicInfoDto basicInfoDto =
-        userInfoService.prepareUserInfoDto(customUserDetails.getId());
-    model.addAttribute(AttributeNames.BASIC_INFO_DTO, basicInfoDto);
+    model.addAttribute(
+        AttributeNames.BASIC_INFO_DTO,
+        userInfoService.prepareUserInfoDto(customUserDetails.getId()));
+
     return ViewNames.MY_PAGE_EDIT;
   }
 
   // パスワード変更フォームを表示する。
   @GetMapping(ViewNames.MY_PAGE_CHANGE_PASSWORD)
-  public String showPasswordChangeForm(Model model){
+  public String showPasswordChangeForm(Model model) {
     model.addAttribute(AttributeNames.PASSWORD_DTO, new UserPasswordDto());
     return ViewNames.MY_PAGE_CHANGE_PASSWORD;
   }
 
   // DTOアノテーションで制御できないバリデーションを確認する。
   @InitBinder(AttributeNames.PASSWORD_DTO)
-  public void initBinder(WebDataBinder dataBinder){
+  public void initBinder(WebDataBinder dataBinder) {
     dataBinder.addValidators(myPageValidator);
   }
 
   /**
-   * 入力されたデータにバインディングエラーまたはDB更新時の例外が発生した場合は
-   * 編集ページに戻ってエラーメッセージを表示し、
-   * そうでない場合はマイページに遷移し、サクセスメッセージを表示する。
+   * 入力されたデータにバインディングエラーまたは例外が発生した場合は編集ページに戻って
+   * エラーメッセージを表示し、そうでない場合はDBを更新し、マイページに遷移して
+   * サクセスメッセージを表示する。
    *
-   * @param dto ユーザーの基本情報のデータオブジェクト
-   * @param result  バインディングの結果
-   * @param customUserDetails カスタムユーザー情報
-   * @param redirectAttributes  リダイレクト後に一度だけ表示されるデータをViewに渡すインターフェース
-   * @return  マイページ
+   * @param dto                ユーザーの基本情報のデータオブジェクト
+   * @param result             バインディングの結果
+   * @param customUserDetails  カスタムユーザー情報
+   * @param redirectAttributes リダイレクト後に一度だけ表示されるデータをViewに渡すインターフェース
+   * @return マイページ
    */
   @PostMapping(ViewNames.MY_PAGE_EDIT)
   public String updateUserBasicInfo(
@@ -98,16 +102,18 @@ public class MyPageController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes) {
 
-    if(result.hasErrors()){
+    int userId = customUserDetails.getId();
+
+    if (result.hasErrors() || userId == 1) {
       return ViewNames.MY_PAGE_EDIT;
     }
 
-    try{
+    try {
       userInfoService.updateUserInfo(dto, customUserDetails.getId());
-    }catch(DuplicateException ex) {
-        result.rejectValue(
-            ex.getType().getFieldName(), "duplicate",
-            messageUtil.getMessage(ex.getType().getMessageKey()));
+    } catch (DuplicateException ex) {
+      result.rejectValue(
+          ex.getType().getFieldName(), "duplicate",
+          messageUtil.getMessage(ex.getType().getMessageKey()));
 
       return ViewNames.MY_PAGE_EDIT;
     }
@@ -120,16 +126,16 @@ public class MyPageController {
   }
 
   /**
-   * 入力されたデータにバインディングエラーまたはパスワード照合エラーが発生した場合は
-   * 変更ページに戻ってエラーメッセージを表示し、そうでない場合はセッションを削除して
-   * ログアウトし、ログインページに遷移してサクセスメッセージを表示する。
+   * 入力されたデータにバインディングエラーまたは例外が発生した場合は変更ページに戻って
+   * エラーメッセージを表示し、そうでない場合はDBを更新し、セッションを削除してログアウトし、
+   * ログインページに遷移してサクセスメッセージを表示する。
    *
-   * @param dto パスワード情報を扱うデータオブジェクト
-   * @param result  バインディングの結果
-   * @param customUserDetails カスタムユーザー情報
-   * @param redirectAttributes  リダイレクト後に一度だけ表示されるデータをViewに渡すインターフェース
-   * @param request クライアントからサーバーに送られたリクエスト情報を保持するオブジェクト
-   * @return  ログインページ
+   * @param dto                パスワード情報を扱うデータオブジェクト
+   * @param result             バインディングの結果
+   * @param customUserDetails  カスタムユーザー情報
+   * @param redirectAttributes リダイレクト後に一度だけ表示されるデータをViewに渡すインターフェース
+   * @param request            クライアントからサーバーに送られたリクエスト情報を保持するオブジェクト
+   * @return ログインページ
    */
   @PostMapping(ViewNames.MY_PAGE_CHANGE_PASSWORD)
   public String changePassword(
@@ -138,13 +144,15 @@ public class MyPageController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
-    if(result.hasErrors()){
+    int userId = customUserDetails.getId();
+
+    if (result.hasErrors() || userId == 0) {
       return ViewNames.MY_PAGE_CHANGE_PASSWORD;
     }
 
-    try{
+    try {
       userInfoService.updatePassword(dto, customUserDetails.getId());
-    }catch(IncorrectPasswordException ex){
+    } catch (IncorrectPasswordException ex) {
       result.rejectValue(
           ex.getFieldName(), ex.getMessageKey(),
           messageUtil.getMessage(ex.getMessageKey()));

@@ -5,16 +5,20 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import webapp.AwesomeCollect.common.SessionManager;
+import webapp.AwesomeCollect.common.SaveResult;
 import webapp.AwesomeCollect.common.util.JsonConverter;
+import webapp.AwesomeCollect.common.util.SessionManager;
 import webapp.AwesomeCollect.dto.action.request.MemoRequestDto;
 import webapp.AwesomeCollect.dto.action.response.MemoResponseDto;
-import webapp.AwesomeCollect.entity.junction.MemoTagJunction;
+import webapp.AwesomeCollect.dto.dummy.DummyMemoDto;
 import webapp.AwesomeCollect.entity.action.Memo;
+import webapp.AwesomeCollect.entity.junction.MemoTagJunction;
+import webapp.AwesomeCollect.exception.DuplicateException;
+import webapp.AwesomeCollect.exception.DuplicateType;
 import webapp.AwesomeCollect.repository.action.MemoRepository;
 import webapp.AwesomeCollect.service.TagService;
-import webapp.AwesomeCollect.service.user.UserProgressService;
 import webapp.AwesomeCollect.service.junction.MemoTagJunctionService;
+import webapp.AwesomeCollect.service.user.UserProgressService;
 
 /**
  * メモのサービスクラス。
@@ -31,7 +35,7 @@ public class MemoService {
   public MemoService(
       MemoRepository memoRepository, MemoTagJunctionService memoTagJunctionService,
       TagService tagService, UserProgressService userProgressService,
-      SessionManager sessionManager){
+      SessionManager sessionManager) {
 
     this.memoRepository = memoRepository;
     this.memoTagJunctionService = memoTagJunctionService;
@@ -41,72 +45,32 @@ public class MemoService {
   }
 
   /**
-   * DBにメモが登録されていない場合は空のリストを、
+   * ユーザーIDを基にDBを確認し、メモが登録されていない場合は空のリストを、
    * 登録されている場合は登録データを詰めた表示用データオブジェクトのリストを用意する。
    *
-   * @param userId  ユーザーId
-   * @return  メモ表示用データオブジェクト
+   * @param userId ユーザーId
+   * @return メモ表示用データオブジェクト
    */
-  public List<MemoResponseDto> prepareResponseDtoList(int userId){
+  public List<MemoResponseDto> prepareResponseDtoList(int userId) {
     List<Memo> memoList = memoRepository.searchMemo(userId);
-    if(memoList == null || memoList.isEmpty()){
+    if (memoList == null || memoList.isEmpty()) {
       return new ArrayList<>();
-    }else{
+    } else {
       return assembleCurrentResponseDtoList(memoList);
-    }
-  }
-
-  /**
-   * DBにメモが登録されていない場合はエラー画面に遷移させるためにnullを返し、
-   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
-   *
-   * @param memoId  メモID
-   * @param userId  ユーザーID
-   * @return  メモ表示用データオブジェクト
-   */
-  public MemoResponseDto prepareResponseDto(int memoId, int userId){
-    Memo memo = memoRepository.findMemoByIds(memoId, userId);
-    if(memo == null){
-      return null;
-    }else{
-      return assembleCurrentResponseDto(
-          MemoResponseDto.fromEntityForDetail(memo), memoId);
-    }
-  }
-
-  /**
-   * メモIDが0の場合は空の入力用データオブジェクトを用意する。<br>
-   * そうでない場合は、DBにメモが登録されていない場合はエラー画面に遷移させるためにnullを返し、
-   * 登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
-   *
-   * @param memoId  メモID
-   * @param userId  ユーザーID
-   * @return  メモ入力用データオブジェクト
-   */
-  public MemoRequestDto prepareRequestDto(int memoId, int userId){
-    if(memoId == 0){
-      return new MemoRequestDto();
-    }
-
-    Memo memo = memoRepository.findMemoByIds(memoId, userId);
-    if(memo == null){
-      return null;
-    }else{
-      return assembleCurrentRequestDto(memoId, memo);
     }
   }
 
   /**
    * メモリストを一覧ページの表示用データオブジェクトに変換し、紐付けられたタグ名リストを設定する。
    *
-   * @param memoList  メモリスト
-   * @return  メモ表示用データオブジェクトのリスト
+   * @param memoList メモリスト
+   * @return メモ表示用データオブジェクトのリスト
    */
   private @NotNull List<MemoResponseDto> assembleCurrentResponseDtoList(
       List<Memo> memoList) {
 
     List<MemoResponseDto> dtoList = new ArrayList<>();
-    for(Memo memo : memoList){
+    for (Memo memo : memoList) {
       MemoResponseDto dto =
           assembleCurrentResponseDto(
               MemoResponseDto.fromEntityForList(memo), memo.getId());
@@ -116,11 +80,29 @@ public class MemoService {
   }
 
   /**
+   * メモIDとユーザーIDを基にDBを確認し、メモが登録されていない場合はnullを返し、
+   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
+   *
+   * @param memoId メモID
+   * @param userId ユーザーID
+   * @return メモ表示用データオブジェクト
+   */
+  public MemoResponseDto prepareResponseDto(int memoId, int userId) {
+    Memo memo = memoRepository.findMemoByIds(memoId, userId);
+    if (memo == null) {
+      return null;
+    } else {
+      return assembleCurrentResponseDto(
+          MemoResponseDto.fromEntityForDetail(memo), memoId);
+    }
+  }
+
+  /**
    * メモに紐付けられたタグ名リストを表示用データオブジェクトに設定する。
    *
-   * @param dto メモ表示用データオブジェクト
-   * @param memoId  メモID
-   * @return  メモ表示用データオブジェクト
+   * @param dto    メモ表示用データオブジェクト
+   * @param memoId メモID
+   * @return メモ表示用データオブジェクト
    */
   @Transactional
   private @NotNull MemoResponseDto assembleCurrentResponseDto(
@@ -137,20 +119,41 @@ public class MemoService {
 
 
   /**
+   * メモIDが0の場合は空の入力用データオブジェクトを用意する。<br>
+   * そうでない場合は、メモIDとユーザーIDを基にDBを確認し、メモが登録されていない場合は
+   * nullを返し、登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   *
+   * @param memoId メモID
+   * @param userId ユーザーID
+   * @return メモ入力用データオブジェクト
+   */
+  public MemoRequestDto prepareRequestDto(int memoId, int userId) {
+    if (memoId == 0) {
+      return new MemoRequestDto();
+    }
+
+    Memo memo = memoRepository.findMemoByIds(memoId, userId);
+    if (memo == null) {
+      return null;
+    } else {
+      return assembleCurrentRequestDto(memoId, memo);
+    }
+  }
+
+  /**
    * メモを入力用データオブジェクトに変換し、紐付けられたタグ名を設定する。
    *
-   * @param memoId  メモID
-   * @param memo  メモ
-   * @return  メモ入力用データオブジェクト
+   * @param memoId メモID
+   * @param memo   メモ
+   * @return メモ入力用データオブジェクト
    */
   @Transactional
   private @NotNull MemoRequestDto assembleCurrentRequestDto(int memoId, Memo memo) {
-    MemoRequestDto dto = MemoRequestDto.fromEntity(memo);
-
     List<Integer> tagIdList =
         memoTagJunctionService.prepareTagIdListByActionId(memoId);
     String tagName = tagService.prepareCombinedTagName(tagIdList);
 
+    MemoRequestDto dto = MemoRequestDto.fromEntity(memo);
     dto.setTags(tagName);
     return dto;
   }
@@ -158,41 +161,46 @@ public class MemoService {
   /**
    * データの種類に応じてDBに保存（登録・更新）し、セッションのレコード数更新情報を変更する。
    *
-   * @param userId  ユーザーID
-   * @param dto メモ入力用データオブジェクト
-   * @return  メモID
+   * @param userId ユーザーID
+   * @param dto    メモ入力用データオブジェクト
+   * @return 保存結果オブジェクト
    */
-  public int saveMemo(int userId, MemoRequestDto dto){
+  public SaveResult saveMemo(int userId, MemoRequestDto dto) {
     List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
     List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
 
     int memoId = dto.getId();
-    if(memoId == 0){
+    if (memoId == 0) {
       memoId = registerMemo(userId, dto, tagIdList);
-    }else{
+    } else {
       updateMemo(userId, dto, tagIdList, memoId);
     }
 
-    return memoId;
+    return new SaveResult(memoId, false);
   }
 
   /**
    * DTOをエンティティに変換してDBに登録し、タグ情報を登録する。<br>
    * セッションのレコード数更新情報を変更し、ユーザーの進捗情報を更新する。
    *
-   * @param userId  ユーザーID
-   * @param dto メモ入力用データオブジェクト
+   * @param userId    ユーザーID
+   * @param dto       メモ入力用データオブジェクト
    * @param tagIdList タグIDリスト
-   * @return  登録したメモID
+   * @return 登録したメモID
+   * @throws DuplicateException 同ユーザーが同じタイトルをすでに登録している場合
    */
   @Transactional
   private int registerMemo(
       int userId, MemoRequestDto dto, List<Integer> tagIdList) {
 
+    if (isDuplicateTitle(dto.getId(), userId, dto.getTitle())) {
+      throw new DuplicateException(DuplicateType.TITLE);
+    }
+
     Memo memo = dto.toMemoForRegistration(userId);
     memoRepository.registerMemo(memo);
     memoTagJunctionService.registerNewRelations(
-        memo.getId(), MemoTagJunction::new, tagIdList);
+        memo.getId(), MemoTagJunction :: new, tagIdList);
 
     sessionManager.setHasUpdatedRecordCount(true);
     userProgressService.updateUserProgress(userId);
@@ -201,31 +209,59 @@ public class MemoService {
   }
 
   /**
-   * DTOをエンティティに変換してDBのメモレコードをタグレコードを更新する。
+   * DTOをエンティティに変換してDBのメモ、紐付けられたタグとの関係情報を更新する。
    *
-   * @param userId  ユーザーID
-   * @param dto メモ入力用データオブジェクト
+   * @param userId    ユーザーID
+   * @param dto       メモ入力用データオブジェクト
    * @param tagIdList タグIDリスト
-   * @param memoId  メモID
+   * @param memoId    メモID
+   * @throws DuplicateException 同ユーザーが同じタイトルをすでに登録している場合
    */
   @Transactional
   private void updateMemo(
-      int userId, MemoRequestDto dto, List<Integer> tagIdList, int memoId){
+      int userId, MemoRequestDto dto, List<Integer> tagIdList, int memoId)
+      throws DuplicateException {
+
+    if (isDuplicateTitle(memoId, userId, dto.getTitle())) {
+      throw new DuplicateException(DuplicateType.TITLE);
+    }
 
     Memo memo = dto.toMemoForUpdate(userId);
     memoRepository.updateMemo(memo);
-    memoTagJunctionService.updateRelations(memoId, MemoTagJunction::new, tagIdList);
+    memoTagJunctionService.updateRelations(memoId, MemoTagJunction :: new, tagIdList);
+  }
+
+  // メモタイトルが重複しているか確認する。
+  private boolean isDuplicateTitle(int memoId, int userId, String title) {
+    Integer recordId = memoRepository.findIdByUserIdAndTitle(userId, title.strip());
+    return recordId != null && !recordId.equals(memoId);
   }
 
   /**
-   * 指定のIDのメモを削除し、セッションのレコード数更新情報を変更する。
+   * 指定のIDのメモ、紐付けられたタグとの関係情報を削除し、
+   * セッションのレコード数更新情報を変更する。
    *
-   * @param memoId  メモID
+   * @param memoId メモID
    */
   @Transactional
-  public void deleteMemo(int memoId){
+  public void deleteMemo(int memoId) {
     memoTagJunctionService.deleteRelationByActionId(memoId);
     memoRepository.deleteMemo(memoId);
+
+    sessionManager.setHasUpdatedRecordCount(true);
+  }
+
+  @Transactional
+  public void registerDummyMemo(int guestUserId, List<DummyMemoDto> recordList){
+    recordList.forEach(dto -> {
+      Memo memo = dto.toEntity(guestUserId);
+      memoRepository.registerMemo(memo);
+
+      List<Integer> tagIdList =
+          tagService.resolveTagIdList(guestUserId, dto.getTagList());
+      memoTagJunctionService.registerNewRelations(
+          memo.getId(), MemoTagJunction :: new, tagIdList);
+    });
 
     sessionManager.setHasUpdatedRecordCount(true);
   }
