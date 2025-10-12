@@ -8,6 +8,7 @@ public final class ViewNames {
   public static final String SIGNUP_PAGE = "/signup";
   public static final String LOGIN_PAGE = "/login";
   public static final String LOGIN_ERROR_PAGE = LOGIN_PAGE + "?error";
+  public static final String GUEST_LOGIN = "/guest_login";
   public static final String LOGOUT_PAGE = "/logout";
   public static final String HOME_PAGE = "/home";
 

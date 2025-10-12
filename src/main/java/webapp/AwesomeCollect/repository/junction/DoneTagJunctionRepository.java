@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
 import webapp.AwesomeCollect.mapper.junction.DoneTagJunctionMapper;
+import webapp.AwesomeCollect.provider.param.JunctionDeleteParams;
 
 /**
  * できたこととタグの関係性のリポジトリクラス。
@@ -42,6 +43,11 @@ public class DoneTagJunctionRepository extends BaseActionTagJunctionRepository<D
   @Override
   public void deleteRelationByRelatedId(DoneTagJunction relation) {
     super.deleteRelationByRelatedId(relation);
+  }
+
+  @Override
+  public void deleteAllRelationsByActionIdList(JunctionDeleteParams params) {
+    super.deleteAllRelationsByActionIdList(params);
   }
 
   public void deleteRelationByDate(int userId, LocalDate date) {

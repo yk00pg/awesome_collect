@@ -17,6 +17,10 @@ public class ArticleStockRepository {
     this.mapper = mapper;
   }
 
+  public List<Integer> searchIdByUserId(int userId){
+    return mapper.selectIdByUserId(userId);
+  }
+
   public List<ArticleStock> searchArticleStock(int userId) {
     return mapper.selectArticleStock(userId);
   }
@@ -45,4 +49,7 @@ public class ArticleStockRepository {
     mapper.deleteArticleStock(articleId);
   }
 
+  public void deleteAllArticleStockByUserId(int userId){
+    mapper.deleteAllArticleStockByUserId(userId);
+  }
 }

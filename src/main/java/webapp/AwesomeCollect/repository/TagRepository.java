@@ -32,4 +32,8 @@ public class TagRepository {
   public void registerTag(Tag tag) {
     mapper.insertTag(tag);
   }
+
+  public void deleteAllTagByUserId(int userId){
+    mapper.deleteAllTagByUserId(userId);
+  }
 }

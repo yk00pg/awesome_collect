@@ -35,9 +35,9 @@ public class UserPasswordDto {
    * @return  更新用のエンティティ
    */
   public UserInfo toEntityForUpdate(int id, PasswordEncoder passwordEncoder){
-    UserInfo userInfo = new UserInfo();
-    userInfo.setId(id);
-    userInfo.setPassword(passwordEncoder.encode(password));
-    return userInfo;
+    return UserInfo.builder()
+        .id(id)
+        .password(passwordEncoder.encode(password))
+        .build();
   }
 }

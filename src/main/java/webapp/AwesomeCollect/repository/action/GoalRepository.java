@@ -17,6 +17,10 @@ public class GoalRepository {
     this.mapper = mapper;
   }
 
+  public List<Integer> searchIdByUserId(int userId){
+    return mapper.selectIdByUserId(userId);
+  }
+
   public List<Goal> searchGoal(int userId) {
     return mapper.selectGoal(userId);
   }
@@ -39,5 +43,9 @@ public class GoalRepository {
 
   public void deleteGoal(int goalId) {
     mapper.deleteGoal(goalId);
+  }
+
+  public void deleteAllGoalByUserId(int userId){
+    mapper.deleteAllGoalByUserId(userId);
   }
 }

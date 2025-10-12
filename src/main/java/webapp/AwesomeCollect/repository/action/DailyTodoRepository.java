@@ -37,4 +37,8 @@ public class DailyTodoRepository {
   public void deleteDailyTodoByDate(int userId, LocalDate date) {
     mapper.deleteTodoByDate(userId, date);
   }
+
+  public void deleteALlTodoByUserId(int userId){
+    mapper.deleteAllTodoByUserId(userId);
+  }
 }

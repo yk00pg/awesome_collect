@@ -24,4 +24,8 @@ public class BonusAwesomeRepository {
   public void registerBonusAwesome(BonusAwesome bonusAwesome){
     mapper.insertBonusAwesome(bonusAwesome);
   }
+
+  public void deleteAllBonusAwesomeByUserId(int userId){
+    mapper.deleteAllBonusAwesomeByUserId(userId);
+  }
 }

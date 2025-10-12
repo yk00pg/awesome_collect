@@ -23,11 +23,12 @@ public class UserInfoDto {
    * @return 新規登録用のエンティティ
    */
   public UserInfo toEntityForSignup(PasswordEncoder passwordEncoder) {
-    UserInfo userInfo = new UserInfo();
-    userInfo.setLoginId(basicInfoDto.getLoginId());
-    userInfo.setUserName(basicInfoDto.getUserName());
-    userInfo.setEmail(basicInfoDto.getEmail().isBlank() ? null : basicInfoDto.getEmail());
-    userInfo.setPassword(passwordEncoder.encode(passwordDto.getPassword()));
-    return userInfo;
+    return UserInfo.builder()
+        .loginId(basicInfoDto.getLoginId())
+        .userName(basicInfoDto.getUserName())
+        .email(basicInfoDto.getEmail())
+        .password(passwordEncoder.encode(passwordDto.getPassword()))
+        .isGuest(false)
+        .build();
   }
 }

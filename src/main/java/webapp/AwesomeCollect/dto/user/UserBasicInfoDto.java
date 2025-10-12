@@ -36,12 +36,12 @@ public class UserBasicInfoDto {
    * @return 更新用のエンティティ
    */
   public UserInfo toEntityForUpdate(int id) {
-    UserInfo userInfo = new UserInfo();
-    userInfo.setId(id);
-    userInfo.setLoginId(loginId);
-    userInfo.setUserName(userName);
-    userInfo.setEmail(email);
-    return userInfo;
+    return UserInfo.builder()
+        .id(id)
+        .loginId(loginId)
+        .userName(userName)
+        .email(email)
+        .build();
   }
 
   /**

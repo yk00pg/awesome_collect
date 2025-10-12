@@ -1,0 +1,10 @@
+﻿title,url,memo,status,tag
+【（Mac） Docker × MySQL × MyBatis】MyBatisと連携させたアプリケーションから、コンテナ内のDBへ接続する（①コンテナ作成編）,https://qiita.com/yk00pg/items/4bc6e5d512b6363bbd7b,"Dockerコンテナ内にMySQLのDBを作成し、MyBatisと連携させたJavaアプリケーションから接続しようとした際につまずいたポイントなどを備忘録的に残したQiita記事。
+本編（①コンテナ作成編）では、Docker Desktopのインストール〜コンテナを作成するまで記載。",finished,"#Docker, #MySQL, #Qiita"
+【（Mac） Docker × MySQL × MyBatis】MyBatisと連携させたアプリケーションから、コンテナ内のDBへ接続する（②コンテナ接続編）,https://qiita.com/yk00pg/items/3c0613c91ec15ed7f212,"Dockerコンテナ内にMySQLのDBを作成し、MyBatisと連携させたJavaアプリケーションから接続しようとした際につまずいたポイントなどを備忘録的に残したQiita記事。
+本編（②コンテナ接続編）では、MyBatisと連携させたJavaアプリケーションから「①コンテナ作成編」で作成したコンテナ内のDBへ接続する手順を記載。",finished,"#Java, #Docker, #MySQL, #MyBatis, #Qiita"
+【（Mac） Docker × MySQL × MyBatis】MyBatisと連携させたアプリケーションから、コンテナ内のDBへ接続する（③番外編）,https://qiita.com/yk00pg/items/5301425f34ceb1e79f96,"Dockerコンテナ内にMySQLのDBを作成し、MyBatisと連携させたJavaアプリケーションから接続しようとした際につまずいたポイントなどを備忘録的に残したQiita記事。
+本編（③番外編）では、コンテナ作成時にログに出力された警告メッセージを紐解いていきます。",finished,"#Docker, #MySQL"
+ポートフォリオ第1弾「Myアイテム図鑑」のリポジトリ,https://github.com/yk00pg/MyItemBook,ポートフォリオ第1弾として作成した、Minecraftプラグイン「Myアイテム図鑑」のGitHubリポジトリ。,finished,"#Java, #Minecraftプラグイン開発, #個人開発, #GitHub, #Myアイテム図鑑"
+ポートフォリオ第2弾「Break Spell 〜呪いを解いて！〜」のリポジトリ,https://github.com/yk00pg/BreakSpell,ポートフォリオ第2弾として作成した、Minecraftプラグイン・ミニゲーム「Break Spell 〜呪いを解いて！〜」のGitHubリポジトリ。,finished,"#Java, #Minecraftプラグイン開発, #個人開発, #GitHub, #BreakSpell"
+ポートフォリオ第3弾「えらいコレクト」のリポジトリ,https://github.com/yk00pg/AwesomeCollect,ポートフォリオ第3弾として作成した、Webアプリ「えらいコレクト」（本アプリ）のGitHubリポジトリ。,stillNot,"#Java, #Minecraftプラグイン開発, #個人開発, #GitHub, #えらいコレクト"

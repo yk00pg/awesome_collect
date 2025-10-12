@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  */
 public class TagProvider {
 
-  // Mapperに渡されたリストを文字列結合する。
+  // Mapperに渡されたリストを文字列結合してSQL文を作成する。
   public String selectIdsByTagIdList(Map<String, Object> params) {
     @SuppressWarnings("unchecked")
     List<Integer> tagIdList = (List<Integer>) params.get("tagIdList");

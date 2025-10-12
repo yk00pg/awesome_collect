@@ -543,7 +543,7 @@ table th {
 /* 共通設定 */
 .failure-message, .failure-hint,
 .success-message, .error-message,
-.required-mark {
+.required-mark, .guest-login-message {
   font-size: 12px;
   color: var(--ruby-red);
   margin: 0;
@@ -672,6 +672,16 @@ table th {
 .save-button, .history-back-button {
   color: var(--reddish-brown);
   background-color: var(--pink-beige);
+  border-radius: 10px;
+}
+
+.dummy-button {
+  padding: 15px 40px;
+  font-weight: bold;
+  text-decoration: line-through;
+  text-decoration-thickness: 3px;
+  color: var(--reddish-brown);
+  background-color: var(--brown-grey);
   border-radius: 10px;
 }
 

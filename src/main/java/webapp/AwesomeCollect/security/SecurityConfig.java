@@ -22,6 +22,7 @@ import webapp.AwesomeCollect.common.constant.ViewNames;
 @EnableWebSecurity
 public class SecurityConfig {
 
+  private final GuestLogoutSuccessHandler logoutSuccessHandler;
   private final CustomUserDetailsService customUserDetailsService;
 
   private static final String CSS_FILE = "/css/**";
@@ -30,7 +31,11 @@ public class SecurityConfig {
 
   private static final String LOGIN_ID = "loginId";
 
-  public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+  public SecurityConfig(
+      GuestLogoutSuccessHandler logoutSuccessHandler,
+      CustomUserDetailsService customUserDetailsService) {
+
+    this.logoutSuccessHandler = logoutSuccessHandler;
     this.customUserDetailsService = customUserDetailsService;
   }
 
@@ -38,10 +43,10 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
     httpSecurity
+        .authenticationProvider(daoAuthenticationProvider())
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(CSS_FILE, IMAGE_FILE, JS_FILE).permitAll()
-            .requestMatchers(ViewNames.LOGIN_PAGE).permitAll()
-            .requestMatchers(ViewNames.SIGNUP_PAGE).permitAll()
+            .requestMatchers(ViewNames.LOGIN_PAGE, ViewNames.GUEST_LOGIN, ViewNames.SIGNUP_PAGE).permitAll()
             .anyRequest().authenticated())
         .formLogin(login -> login
             .loginPage(ViewNames.LOGIN_PAGE)
@@ -50,6 +55,7 @@ public class SecurityConfig {
             .failureUrl(ViewNames.LOGIN_ERROR_PAGE)
             .defaultSuccessUrl(ViewNames.HOME_PAGE))
         .logout(logout -> logout
+            .logoutSuccessHandler(logoutSuccessHandler)
             .logoutUrl(ViewNames.LOGOUT_PAGE)
             .logoutSuccessUrl(ViewNames.LOGIN_PAGE));
     return httpSecurity.build();

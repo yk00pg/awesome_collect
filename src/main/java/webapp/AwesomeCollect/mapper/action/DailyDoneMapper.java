@@ -14,6 +14,12 @@ import webapp.AwesomeCollect.entity.action.DailyDone;
 public interface DailyDoneMapper {
 
   @Select("""
+      SELECT id FROM daily_done
+      WHERE user_id=#{userId}
+      """)
+  List<Integer> selectIdByUserId(int userId);
+
+  @Select("""
       SELECT * FROM daily_done
       WHERE user_id=#{userId} AND date=#{date}
       ORDER BY id ASC
@@ -46,4 +52,10 @@ public interface DailyDoneMapper {
       WHERE user_id=#{userId} AND date=#{date}
       """)
   void deleteDoneByDate(int userId, LocalDate date);
+
+  @Delete("""
+      DELETE FROM daily_done
+      WHERE user_id=#{userId}
+      """)
+  void deleteAllDoneByUserId(int userId);
 }

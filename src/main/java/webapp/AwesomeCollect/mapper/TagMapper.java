@@ -1,6 +1,7 @@
 package webapp.AwesomeCollect.mapper;
 
 import java.util.List;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
@@ -36,4 +37,10 @@ public interface TagMapper {
       """)
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void insertTag(Tag tag);
+
+  @Delete("""
+      DELETE FROM tag
+      WHERE user_id=#{userId}
+      """)
+  void deleteAllTagByUserId(int userId);
 }

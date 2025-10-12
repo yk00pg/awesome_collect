@@ -1,48 +1,46 @@
+ALTER DATABASE awesome_collect
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
 -- ユーザー登録情報
 CREATE TABLE user_info(
-  id INT AUTO_INCREMENT,
-  user_id VARCHAR(20) UNIQUE NOT NULL,
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  login_id VARCHAR(20) UNIQUE NOT NULL,
   user_name VARCHAR(20),
   email VARCHAR(255) UNIQUE,
-  password VARCHAR(32) NOT NULL,
-  PRIMARY KEY (id)
+  password VARCHAR(60) NOT NULL,
+  isGuest BOOLEAN,
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- ユーザー進捗状況
 CREATE TABLE user_progress(
-  user_id INT NOT NULL,
+  user_id INT NOT NULL PRIMARY KEY,
   registered_date DATE,
   total_action_days INT,
   last_action_date DATE,
   current_streak INT,
   longest_streak INT,
   streak_bonus_count INT,
-  FOREIGN KEY (user_id) REFERENCES user_info(id),
-  PRIMARY KEY (user_id)
+  FOREIGN KEY (user_id) REFERENCES user_info(id)
 );
 
 -- ボーナスえらい！獲得状況
 CREATE TABLE bonus_awesome(
-  id INT AUTO_INCREMENT,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   awesome_points INT,
   reason VARCHAR(100),
   collected_date DATE,
-  FOREIGN KEY (user_id) REFERENCES user_info(id),
-  PRIMARY KEY (id)
+  FOREIGN KEY (user_id) REFERENCES user_info(id)
 );
 
 -- タグ情報
 CREATE TABLE tag(
-  id INT AUTO_INCREMENT,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   name VARCHAR(30) NOT NULL,
   FOREIGN KEY (user_id) REFERENCES user_info(id),
-  UNIQUE (user_id, name),
-  PRIMARY KEY (id)
+  UNIQUE (user_id, name)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- アクション管理
@@ -60,21 +58,20 @@ CREATE TABLE daily_todo(
 
 -- できたこと
 CREATE TABLE daily_done(
-  id INT AUTO_INCREMENT,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   date DATE NOT NULL,
   content VARCHAR(100) NOT NULL,
   minutes INT NOT NULL,
-  memo VARCHAR(500),
+  memo VARCHAR(1000),
   registered_at DATETIME,
   updated_at DATETIME,
-  FOREIGN KEY (user_id) REFERENCES user_info(id),
-  PRIMARY KEY (id)
+  FOREIGN KEY (user_id) REFERENCES user_info(id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- 目標
 CREATE TABLE goal(
-  id INT AUTO_INCREMENT,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   title VARCHAR(100) NOT NULL,
   content VARCHAR(500) NOT NULL,
@@ -82,25 +79,23 @@ CREATE TABLE goal(
   registered_at DATETIME,
   updated_at DATETIME,
   status_updated_at DATETIME,
-  FOREIGN KEY (user_id) REFERENCES user_info(id),
-  PRIMARY KEY (id)
+  FOREIGN KEY (user_id) REFERENCES user_info(id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- メモ
 CREATE TABLE memo(
-  id INT AUTO_INCREMENT,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   title VARCHAR(100) NOT NULL,
   content MEDIUMTEXT NOT NULL,
   registered_at DATETIME,
   updated_at DATETIME,
-  FOREIGN KEY (user_id) REFERENCES user_info(id),
-  PRIMARY KEY (id)
+  FOREIGN KEY (user_id) REFERENCES user_info(id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
---記事ストック
+-- 記事ストック
 CREATE TABLE article_stock(
-  id INT AUTO_INCREMENT,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   title VARCHAR(100) NOT NULL,
   url VARCHAR(2083),
@@ -109,8 +104,7 @@ CREATE TABLE article_stock(
   registered_at DATETIME,
   updated_at DATETIME,
   status_updated_at DATETIME,
-  FOREIGN KEY (user_id) REFERENCES user_info(id),
-  PRIMARY KEY (id)
+  FOREIGN KEY (user_id) REFERENCES user_info(id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- 中間テーブル
