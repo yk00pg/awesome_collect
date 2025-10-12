@@ -3,6 +3,7 @@ package webapp.AwesomeCollect.service.user;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,30 +13,22 @@ import webapp.AwesomeCollect.entity.user.UserInfo;
 import webapp.AwesomeCollect.provider.param.ExpiredUserParams;
 import webapp.AwesomeCollect.repository.user.UserInfoRepository;
 import webapp.AwesomeCollect.repository.user.UserProgressRepository;
+import webapp.AwesomeCollect.service.DummyDataService;
 
 @Service
+@RequiredArgsConstructor
 public class GuestUserService {
 
   private final UserInfoRepository userInfoRepository;
   private final UserProgressService userProgressService;
   private final UserProgressRepository userProgressRepository;
   private final PasswordEncoder passwordEncoder;
+  private final DummyDataService dummyDataService;
   private final DeleteUserDataService deleteUserDataService;
 
   private static final Logger logger = LoggerFactory.getLogger(GuestUserService.class);
 
-  public GuestUserService(
-      UserInfoRepository userInfoRepository, UserProgressService userProgressService,
-      UserProgressRepository userProgressRepository, PasswordEncoder passwordEncoder,
-      DeleteUserDataService deleteUserDataService) {
-
-    this.userInfoRepository = userInfoRepository;
-    this.userProgressService = userProgressService;
-    this.userProgressRepository = userProgressRepository;
-    this.passwordEncoder = passwordEncoder;
-    this.deleteUserDataService = deleteUserDataService;
-  }
-
+  @Transactional
   public UserInfo createGuestUser() {
     String randomId = UUID.randomUUID().toString().substring(0, 8);
     String loginId = "guest_" + randomId;
@@ -54,7 +47,10 @@ public class GuestUserService {
         .build();
 
     userInfoRepository.registerNewUserInfo(guestUser);
-    userProgressService.createUserProgress(guestUser.getId());
+    int guestUserId = guestUser.getId();
+    userProgressService.createUserProgress(guestUserId);
+
+    dummyDataService.registerDummyData(guestUserId);
 
     return guestUser;
   }

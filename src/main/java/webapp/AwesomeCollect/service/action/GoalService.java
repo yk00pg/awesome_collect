@@ -11,6 +11,7 @@ import webapp.AwesomeCollect.common.util.JsonConverter;
 import webapp.AwesomeCollect.common.util.SessionManager;
 import webapp.AwesomeCollect.dto.action.request.GoalRequestDto;
 import webapp.AwesomeCollect.dto.action.response.GoalResponseDto;
+import webapp.AwesomeCollect.dto.dummy.DummyGoalDto;
 import webapp.AwesomeCollect.entity.action.Goal;
 import webapp.AwesomeCollect.entity.junction.GoalTagJunction;
 import webapp.AwesomeCollect.exception.DuplicateException;
@@ -266,6 +267,21 @@ public class GoalService {
   public void deleteGoal(int goalId) {
     goalTagJunctionService.deleteRelationByActionId(goalId);
     goalRepository.deleteGoal(goalId);
+
+    sessionManager.setHasUpdatedRecordCount(true);
+  }
+
+  @Transactional
+  public void registerDummyGoal(int guestUserId, List<DummyGoalDto> recordList){
+    recordList.forEach(dto -> {
+      Goal goal = dto.toEntity(guestUserId);
+      goalRepository.registerGoal(goal);
+
+      List<Integer> tagIdList =
+          tagService.resolveTagIdList(guestUserId, dto.getTagList());
+      goalTagJunctionService.registerNewRelations(
+          goal.getId(), GoalTagJunction :: new, tagIdList);
+    });
 
     sessionManager.setHasUpdatedRecordCount(true);
   }

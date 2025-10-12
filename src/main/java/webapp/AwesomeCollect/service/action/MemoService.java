@@ -10,6 +10,7 @@ import webapp.AwesomeCollect.common.util.JsonConverter;
 import webapp.AwesomeCollect.common.util.SessionManager;
 import webapp.AwesomeCollect.dto.action.request.MemoRequestDto;
 import webapp.AwesomeCollect.dto.action.response.MemoResponseDto;
+import webapp.AwesomeCollect.dto.dummy.DummyMemoDto;
 import webapp.AwesomeCollect.entity.action.Memo;
 import webapp.AwesomeCollect.entity.junction.MemoTagJunction;
 import webapp.AwesomeCollect.exception.DuplicateException;
@@ -246,6 +247,21 @@ public class MemoService {
   public void deleteMemo(int memoId) {
     memoTagJunctionService.deleteRelationByActionId(memoId);
     memoRepository.deleteMemo(memoId);
+
+    sessionManager.setHasUpdatedRecordCount(true);
+  }
+
+  @Transactional
+  public void registerDummyMemo(int guestUserId, List<DummyMemoDto> recordList){
+    recordList.forEach(dto -> {
+      Memo memo = dto.toEntity(guestUserId);
+      memoRepository.registerMemo(memo);
+
+      List<Integer> tagIdList =
+          tagService.resolveTagIdList(guestUserId, dto.getTagList());
+      memoTagJunctionService.registerNewRelations(
+          memo.getId(), MemoTagJunction :: new, tagIdList);
+    });
 
     sessionManager.setHasUpdatedRecordCount(true);
   }

@@ -63,7 +63,7 @@ CREATE TABLE daily_done(
   date DATE NOT NULL,
   content VARCHAR(100) NOT NULL,
   minutes INT NOT NULL,
-  memo VARCHAR(500),
+  memo VARCHAR(1000),
   registered_at DATETIME,
   updated_at DATETIME,
   FOREIGN KEY (user_id) REFERENCES user_info(id)
