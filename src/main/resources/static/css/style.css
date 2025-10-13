@@ -331,8 +331,8 @@ option:focus-visible {
 }
 
 .form-border {
-  margin: 30px auto;
-  border: 1px solid var(--reddish-brown);
+  margin: 20px 0;
+  border: 0.5px solid var(--brown-grey);
 }
 
 /* 共通インプットエリア */
@@ -598,7 +598,7 @@ table th {
 }
 
 /* 共通・ボタンエリア、リンクボタンエリア */
-.button-area {
+.button-area, .signup-link-button-area {
   text-align: center;
   margin: 20px auto;
 }
@@ -658,9 +658,9 @@ table th {
 }
 
 /* 共通・ボタン、リンクボタン */
-.login-button, .register-button,
-.save-button, .edit-button,
-.history-back-button,
+.login-button, .guest-login-button,
+.register-button, .save-button,
+.edit-button, .history-back-button,
 .signup-link, .edit-link,
 .learning-time-link {
   cursor: pointer;
@@ -672,6 +672,16 @@ table th {
 .save-button, .history-back-button {
   color: var(--reddish-brown);
   background-color: var(--pink-beige);
+  border-radius: 10px;
+}
+
+.login-button, .guest-login-button {
+  width: 250px;
+}
+
+.guest-login-button {
+  color: var(--mint);
+  background-color: var(--olive);
   border-radius: 10px;
 }
 
@@ -698,6 +708,11 @@ table th {
   background-color: var(--bordeaux);
   border: 3px solid var(--reddish-brown);
   border-radius: 10px;
+}
+
+.signup-link {
+  padding-left: 95px;
+  padding-right: 95px;
 }
 
 /* やること、できたことの編集ページ用 */
@@ -745,7 +760,7 @@ table th {
 ============================ */
 
 /* 共通設定 */
-.main-container, .login-container, .error-container {
+.main-container, .error-container {
   width: 500px;
   padding: 30px;
   font-size: 14px;
@@ -758,16 +773,6 @@ table th {
 /* 共通コンテナ */
 .main-container {
   margin: 120px auto;
-}
-
-/* ログインページ用 */
-.login-container {
-  margin: 300px auto;
-}
-
-.login-container p {
-  text-align: center;
-  margin: 15px 0;
 }
 
 /* エラーページ用 */
@@ -824,6 +829,105 @@ table th {
 .done-memo, .goal-content, .article-memo {
   white-space: pre-line;
   padding: 5px 0;
+}
+
+/* ==================
+  ログインページの設定
+================== */
+
+.login-container {
+  width: 100%;
+  height: 700px;
+  display: flex;
+  justify-content: center;
+  margin-top: 35px;
+  font-size: 14px;
+  background-color: var(--pink-beige);
+}
+
+.login-container > div {
+  margin: 80px 20px;
+}
+
+.login-form-container{
+  width: 380px;
+  padding: 30px;
+  background-color: white;
+  border: 3px solid var(--reddish-brown);
+  border-radius: 30px;
+  box-shadow: 5px 5px 5px var(--reddish-brown);
+}
+
+.login-form-container p {
+  text-align: center;
+}
+
+.title-image-container {
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 30px 20px;
+}
+
+.title-container {
+  padding-bottom: 15px;
+  font-family: var(--highlight-font-set);
+}
+
+.title-container span {
+  color: var(--bordeaux);
+  font-size: 1.5rem;
+  font-family: var*
+}
+
+.title-container h3 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.title-container h1 {
+  margin: 20px 0;
+  font-size: 3.2rem;
+  text-align: center;
+  text-shadow: 2px 2px 3px var(--reddish-brown);
+}
+
+.image-container img {
+  width: 100%;
+}
+
+.app-info-container {
+  display: flex;
+  justify-content: center;
+  margin: 100px 200px;
+  font-size: 14px;
+}
+
+.app-info-container h3 {
+  font-size: 1.3rem;
+  font-family: var(--highlight-font-set);
+  text-align: center;
+}
+
+.app-info-container img {
+  height: 130px;
+  margin: 30px auto;
+}
+
+.app-info-container span {
+  font-weight: bold;
+}
+
+.log-function, .awesome-gain-function,
+.dashboard-function {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 30px;
+  padding: 20px 30px;
+  background-color: var(--cherry-blossom);
 }
 
 /* ===============================
