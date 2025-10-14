@@ -58,8 +58,10 @@ public class UserInfoService {
       throw new DuplicateException(DuplicateType.USER_ID);
     }
 
-    if (isDuplicateEmail(userInfo.getEmail(), 0)) {
-      throw new DuplicateException(DuplicateType.EMAIL);
+    if (userInfo.getEmail() != null) {
+      if (isDuplicateEmail(userInfo.getEmail(), 0)) {
+        throw new DuplicateException(DuplicateType.EMAIL);
+      }
     }
 
     userInfoRepository.registerNewUserInfo(userInfo);
@@ -83,8 +85,10 @@ public class UserInfoService {
       throw new DuplicateException(DuplicateType.USER_ID);
     }
 
-    if (isDuplicateEmail(userInfo.getEmail(), id)) {
-      throw new DuplicateException(DuplicateType.EMAIL);
+    if (userInfo.getEmail() != null) {
+      if (isDuplicateEmail(userInfo.getEmail(), id)) {
+        throw new DuplicateException(DuplicateType.EMAIL);
+      }
     }
 
     userInfoRepository.updateUserInfo(userInfo);

@@ -5,6 +5,7 @@ function initTagify(input){
         whitelist: tagNameList,
         dropdown: {
             enabled: 0,
+            maxItems: 50,
             classname: "tagsList-look",
             closeOnSelect: false
         },

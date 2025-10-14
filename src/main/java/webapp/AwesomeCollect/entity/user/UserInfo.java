@@ -1,15 +1,13 @@
 package webapp.AwesomeCollect.entity.user;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * ユーザー情報を扱うオブジェクト。DBに存在するテーブルと連動する。
  */
 @Getter
-@Setter
-@NoArgsConstructor
+@Builder
 public class UserInfo {
 
   private int id;
@@ -17,4 +15,6 @@ public class UserInfo {
   private String userName;
   private String email;
   private String password;
+  private boolean isGuest;
+
 }

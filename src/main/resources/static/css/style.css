@@ -101,6 +101,27 @@
   margin: 0 auto;
 }
 
+.guest-login-mark {
+  width: 70%;
+  margin: 5px auto;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: var(--mint);
+  background-color: var(--olive);
+  text-align: center;
+  border: 1px solid var(--reddish-brown);
+  border-radius: 8px;
+}
+
+.menu-category {
+  width: 75%;
+  font-weight: bold;
+  font-family: var(--highlight-font-set);
+  margin: 20px 5px 0 5px;
+  padding: 0 15px;
+  border-bottom: 1px solid var(--olive);
+}
+
 .sidebar-menu {
   display: flex;
   flex-direction: column;
@@ -331,8 +352,8 @@ option:focus-visible {
 }
 
 .form-border {
-  margin: 30px auto;
-  border: 1px solid var(--reddish-brown);
+  margin: 20px 0;
+  border: 0.5px solid var(--brown-grey);
 }
 
 /* 共通インプットエリア */
@@ -386,7 +407,8 @@ table th {
 }
 
 /* 入力用テーブル共通設定 */
-.input-table, .variable-input-table {
+.input-table, .login-input-table,
+.variable-input-table {
   box-sizing: border-box;
   width: 100%;
   overflow-wrap: anywhere;
@@ -395,7 +417,7 @@ table th {
 }
 
 /* 共通テーブル */
-.input-table {
+.input-table, .login-input-table {
   table-layout: fixed;
   padding-bottom: 15px;
   margin: 30px auto;
@@ -414,6 +436,10 @@ table th {
   height: 30px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+}
+
+.login-input-table {
+  margin-top: 5px;
 }
 
 .error-message-td {
@@ -542,10 +568,16 @@ table th {
 
 /* 共通設定 */
 .failure-message, .failure-hint,
-.success-message, .error-message {
+.success-message, .error-message,
+.required-mark, .guest-login-message {
   font-size: 12px;
   color: var(--ruby-red);
   margin: 0;
+}
+
+.required-mark {
+  vertical-align: top;
+  padding-left: 3px;
 }
 
 .notice-area {
@@ -592,7 +624,7 @@ table th {
 }
 
 /* 共通・ボタンエリア、リンクボタンエリア */
-.button-area {
+.button-area, .signup-link-button-area {
   text-align: center;
   margin: 20px auto;
 }
@@ -652,9 +684,9 @@ table th {
 }
 
 /* 共通・ボタン、リンクボタン */
-.login-button, .register-button,
-.save-button, .edit-button,
-.history-back-button,
+.login-button, .guest-login-button,
+.register-button, .save-button,
+.edit-button, .history-back-button,
 .signup-link, .edit-link,
 .learning-time-link {
   cursor: pointer;
@@ -666,6 +698,26 @@ table th {
 .save-button, .history-back-button {
   color: var(--reddish-brown);
   background-color: var(--pink-beige);
+  border-radius: 10px;
+}
+
+.login-button, .guest-login-button {
+  width: 250px;
+}
+
+.guest-login-button {
+  color: var(--mint);
+  background-color: var(--olive);
+  border-radius: 10px;
+}
+
+.dummy-button {
+  padding: 15px 40px;
+  font-weight: bold;
+  text-decoration: line-through;
+  text-decoration-thickness: 3px;
+  color: var(--reddish-brown);
+  background-color: var(--brown-grey);
   border-radius: 10px;
 }
 
@@ -682,6 +734,11 @@ table th {
   background-color: var(--bordeaux);
   border: 3px solid var(--reddish-brown);
   border-radius: 10px;
+}
+
+.signup-link {
+  padding-left: 95px;
+  padding-right: 95px;
 }
 
 /* やること、できたことの編集ページ用 */
@@ -729,7 +786,7 @@ table th {
 ============================ */
 
 /* 共通設定 */
-.main-container, .login-container, .error-container {
+.main-container, .error-container {
   width: 500px;
   padding: 30px;
   font-size: 14px;
@@ -742,16 +799,6 @@ table th {
 /* 共通コンテナ */
 .main-container {
   margin: 120px auto;
-}
-
-/* ログインページ用 */
-.login-container {
-  margin: 300px auto;
-}
-
-.login-container p {
-  text-align: center;
-  margin: 15px 0;
 }
 
 /* エラーページ用 */
@@ -810,48 +857,252 @@ table th {
   padding: 5px 0;
 }
 
+/* ==================
+  ログインページの設定
+================== */
+
+.login-container {
+  width: 100%;
+  height: 700px;
+  display: flex;
+  justify-content: center;
+  margin-top: 35px;
+  font-size: 14px;
+  background-color: var(--pink-beige);
+}
+
+.login-container > div {
+  margin: 80px 20px;
+}
+
+.login-form-container{
+  width: 380px;
+  padding: 30px;
+  background-color: white;
+  border: 3px solid var(--reddish-brown);
+  border-radius: 30px;
+  box-shadow: 5px 5px 5px var(--reddish-brown);
+}
+
+.login-form-container p {
+  text-align: center;
+}
+
+.title-image-container {
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 30px 20px;
+}
+
+.title-container {
+  padding-bottom: 15px;
+  font-family: var(--highlight-font-set);
+}
+
+.title-container span {
+  color: var(--bordeaux);
+  font-size: 1.5rem;
+  font-family: var*
+}
+
+.title-container h3 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.title-container h1 {
+  margin: 20px 0;
+  font-size: 3.2rem;
+  text-align: center;
+  text-shadow: 2px 2px 3px var(--reddish-brown);
+}
+
+.image-container img {
+  width: 100%;
+}
+
+.app-info-container {
+  display: flex;
+  justify-content: center;
+  margin: 100px 200px;
+  font-size: 14px;
+}
+
+.app-info-container h3 {
+  font-size: 1.3rem;
+  font-family: var(--highlight-font-set);
+  text-align: center;
+}
+
+.app-info-container img {
+  height: 130px;
+  margin: 30px auto;
+}
+
+.app-info-container span {
+  font-weight: bold;
+}
+
+.log-function, .awesome-gain-function,
+.dashboard-function {
+  width: 300px;
+  height: 380px;
+  display: grid;
+  grid-template-rows: 70px 200px 110px;
+  justify-content: center;
+  align-items: center;
+  margin: 30px;
+  padding: 20px 30px;
+  background-color: var(--cherry-blossom);
+  border: 1px solid var(--cherry-blossom);
+  border-radius: 10px;
+}
+
 /* ===============================
-  ホームページ（メインメニュー）の設定
+  トップページ（メインメニュー）の設定
 =============================== */
 
-.home-container {
+.main-menu-container {
   display: flex;
-  height: 100vh;
+  width: 1000px;
+  margin: 80px auto;
   justify-content: center;
   align-items:center;
 }
 
-.home-inner {
-  position: relative;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.background-wrapper {
-  position: relative;
-  width: 40vw;
-  margin: 0 auto;
-}
-
-.background-img {
-  display: block;
+.main-menu-inner {
   width: 100%;
-  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.menu-icons-grid {
-  position: absolute;
-  top: 26%;
-  left: 12.5%;
-  width: 75%;
-  height: 40%;
+.grid-title {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 30px;
+  font-family: var(--highlight-font-set);
+  text-align: left;
+  border-bottom: 2px solid var(--olive);
+}
+
+.learning-action-grid, .user-info-grid {
+  box-sizing: border-box;
+  width: 100%;
   display: grid;
-  place-content: center;
-  grid-template-columns: repeat(4, 1fr);
-  column-gap: 0.1%;
-  row-gap: 15%;
+  place-items: center;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 50px;
+  padding: 15px 30px 80px 30px;
+}
+
+.task-card {
+  grid-row: 1;
+}
+
+.action-card {
+  grid-row: 2;
+}
+
+.card {
+	width: 200px;
+	height: 200px;
+	display: grid;
+	grid-template-columns: auto auto auto;
+	grid-template-rows: auto auto auto;
+	justify-content: center;
+	text-decoration: none;
+	background-color: var(--cherry-blossom);
+	position: relative;
+	overflow: hidden;
+  border: 3px solid var(--pink-beige);
+  border-radius: 10px;
+  box-shadow: 3px 3px 3px var(--pink-beige);
+}
+
+.card-image {
+	width: 45%;
+	grid-column: 1 / 3;
+	grid-row: 2;
+	padding: 16px;
+	margin: 0 auto;
+	background-color: white;
+	object-fit: cover;
+	z-index: 1;
+	border: 3px solid var(--pink-beige);
+	box-shadow: 3px 3px 3px var(--pink-beige);
+	transition: opacity 0.3s ease;
+}
+
+.card-title {
+  grid-column: 1 / 3;
+	grid-row: 1;
+	margin: 0;
+	font-size: 18px;
+	font-family: var(--highlight-font-set);
+	font-weight: bold;
+	color: var(--bordeaux);
+	z-index: 2;
+	padding-top: 10px;
+	padding-left: 10px;
+	padding-bottom: 5px;
+}
+
+.card-text {
+  grid-column: 1 / 3;
+	grid-row: 2;
+	font-size: 16px;
+	margin: 0;
+	padding: 0 20px;
+	padding-top: 5px;
+	color: var(--pink-cream);
+	z-index: 2;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.card-click {
+  grid-column: 2 / 3;
+  grid-row: 3;
+  font-size: 18px;
+	font-family: var(--highlight-font-set);
+  font-weight: bold;
+  margin: 0;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  color: var(--pink-beige);
+	z-index: 2;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+/* ホバー効果 */
+.card:hover::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: var(--bordeaux);
+	z-index: 1;
+	opacity: 1;
+	transition: opacity 0.3s ease;
+}
+
+.card:hover .card-image {
+	opacity: 0;
+}
+
+.card:hover .card-title {
+  color: var(--pink-beige);
+}
+
+.card:hover .card-text,
+.card:hover .card-click {
+	opacity: 1;
 }
 
 .menu-icon {
@@ -859,9 +1110,11 @@ table th {
   display:flex;
   flex-direction: column;
   align-items: center;
+  padding: 30px;
   font-weight: bold;
   color: var(--pink-beige);
   text-decoration: none;
+  background-color: var(--cherry-blossom);
 }
 
 .menu-icon span {
@@ -872,6 +1125,10 @@ table th {
 .menu-icon img {
   width: 75%;
   height: auto;
+  padding: 20px;
+  background-color: white;
+  border: 3px solid var(--pink-beige);
+  box-shadow: 3px 3px 3px var(--pink-beige);
 }
 
 /* ===============
@@ -1035,8 +1292,12 @@ table th {
 }
 
 .input-time-area {
-  width: 150px;
+  width: 145px;
   height: 50px;
+}
+
+.time-unit-cell {
+  width: 45px;
 }
 
 /* ==================================
@@ -1134,7 +1395,24 @@ table th {
 .illustration-graph-area img {
   box-sizing: border-box;
   width: 100%;
-  padding-left: 5px;
+  max-height: 200px;
+  object-fit: contain;
+  padding: 5px;
+  transition: transform 0.3s ease;
+  transform-origin: bottom center;
+  cursor: pointer;
+}
+
+.illustration-graph-area img:hover {
+  animation: pulseTilt 1s infinite;
+}
+
+@keyframes pulseTilt {
+  0%   { transform: scaleY(1) rotate(0deg); }
+  25%  { transform: scaleY(1.2) rotate(-5deg); }
+  50%  { transform: scaleY(0.7) rotate(0deg); }
+  75%  { transform: scaleY(1.35) rotate(5deg); }
+  100% { transform: scaleY(1) rotate(0deg); }
 }
 
 .learning-time-link-area {

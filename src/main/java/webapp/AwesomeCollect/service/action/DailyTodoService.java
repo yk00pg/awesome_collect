@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.common.util.SessionManager;
 import webapp.AwesomeCollect.dto.action.request.TodoRequestDto;
 import webapp.AwesomeCollect.dto.action.response.TodoResponseDto;
+import webapp.AwesomeCollect.dto.dummy.DummyTodoDto;
 import webapp.AwesomeCollect.entity.action.DailyTodo;
 import webapp.AwesomeCollect.repository.action.DailyTodoRepository;
 import webapp.AwesomeCollect.service.user.UserProgressService;
@@ -125,6 +126,24 @@ public class DailyTodoService {
    */
   public void deleteDailyAllTodo(int userId, LocalDate date) {
     dailyTodoRepository.deleteDailyTodoByDate(userId, date);
+    sessionManger.setHasUpdatedRecordCount(true);
+  }
+
+  public void registerDummyTodo(int guestUserId, List<DummyTodoDto> recordList){
+    LocalDate referenceDate = LocalDate.now();
+    for (int i = 0; i < recordList.size(); i++) {
+      LocalDate date = referenceDate;
+      DummyTodoDto dto = recordList.get(i);
+      if(i == 0 || (!dto.getDate().equals(recordList.get(i - 1).getDate()))){
+        date = referenceDate.minusDays(1);
+      }
+
+      DailyTodo dailyTodo = dto.toEntity(guestUserId, date);
+      dailyTodoRepository.registerDailyTodo(dailyTodo);
+
+      referenceDate = date;
+    }
+
     sessionManger.setHasUpdatedRecordCount(true);
   }
 }

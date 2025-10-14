@@ -17,6 +17,10 @@ public class MemoRepository {
     this.mapper = mapper;
   }
 
+  public List<Integer> searchIdByUserId(int userId){
+    return mapper.selectIdByUserId(userId);
+  }
+
   public List<Memo> searchMemo(int userId) {
     return mapper.selectMemo(userId);
   }
@@ -39,5 +43,9 @@ public class MemoRepository {
 
   public void deleteMemo(int memoId) {
     mapper.deleteMemo(memoId);
+  }
+
+  public void deleteAllMemoByUserId(int userId){
+    mapper.deleteAllMemoByUserId(userId);
   }
 }

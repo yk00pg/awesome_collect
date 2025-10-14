@@ -35,7 +35,7 @@
             <div th:unless="${#lists.isEmpty(dashboardDto.awesomePointDto.splitTotalAwesomeList)}"
                  th:each="num : ${dashboardDto.awesomePointDto.splitTotalAwesomeList}" >
               <img th:if="${num > 0 and num <= 9}"
-                   th:src="@{/image/sowing-seeds-icon.svg}" alt="種まき"/>
+                   th:src="@{/image/sowing-seeds-icon.svg}" alt="種まき" />
               <img th:if="${num > 9 and num <= 29}"
                    th:src="@{/image/watering-icon.svg}" alt="水やり"/>
               <img th:if="${num > 29 and num <= 69}"

@@ -11,6 +11,7 @@ import webapp.AwesomeCollect.common.util.JsonConverter;
 import webapp.AwesomeCollect.common.util.SessionManager;
 import webapp.AwesomeCollect.dto.action.request.ArticleRequestDto;
 import webapp.AwesomeCollect.dto.action.response.ArticleResponseDto;
+import webapp.AwesomeCollect.dto.dummy.DummyArticleStockDto;
 import webapp.AwesomeCollect.entity.action.ArticleStock;
 import webapp.AwesomeCollect.entity.junction.ArticleTagJunction;
 import webapp.AwesomeCollect.exception.DuplicateException;
@@ -285,6 +286,21 @@ public class ArticleStockService {
   public void deleteArticleStock(int articleId) {
     articleTagJunctionService.deleteRelationByActionId(articleId);
     articleStockRepository.deleteArticleStock(articleId);
+
+    sessionManager.setHasUpdatedRecordCount(true);
+  }
+
+  @Transactional
+  public void registerDummyArticleStock(int guestUserId, List<DummyArticleStockDto> recordList){
+    recordList.forEach(dto ->{
+      ArticleStock articleStock = dto.toEntity(guestUserId);
+      articleStockRepository.registerArticleStock(articleStock);
+
+      List<Integer> tagIdList =
+          tagService.resolveTagIdList(guestUserId, dto.getTagList());
+      articleTagJunctionService.registerNewRelations(
+          articleStock.getId(), ArticleTagJunction::new, tagIdList);
+    });
 
     sessionManager.setHasUpdatedRecordCount(true);
   }

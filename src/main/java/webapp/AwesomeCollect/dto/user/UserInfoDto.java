@@ -20,14 +20,15 @@ public class UserInfoDto {
    * 入力されたデータをエンティティに変換する。
    *
    * @param passwordEncoder パスワードエンコーダー
-   * @return  新規登録用のエンティティ
+   * @return 新規登録用のエンティティ
    */
-  public UserInfo toEntityForSignup(PasswordEncoder passwordEncoder){
-    UserInfo userInfo = new UserInfo();
-    userInfo.setLoginId(basicInfoDto.getLoginId());
-    userInfo.setUserName(basicInfoDto.getUserName());
-    userInfo.setEmail(basicInfoDto.getEmail());
-    userInfo.setPassword(passwordEncoder.encode(passwordDto.getPassword()));
-    return userInfo;
+  public UserInfo toEntityForSignup(PasswordEncoder passwordEncoder) {
+    return UserInfo.builder()
+        .loginId(basicInfoDto.getLoginId())
+        .userName(basicInfoDto.getUserName())
+        .email(basicInfoDto.getEmail())
+        .password(passwordEncoder.encode(passwordDto.getPassword()))
+        .isGuest(false)
+        .build();
   }
 }

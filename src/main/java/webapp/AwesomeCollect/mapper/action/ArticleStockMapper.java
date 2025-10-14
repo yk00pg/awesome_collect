@@ -13,6 +13,12 @@ import webapp.AwesomeCollect.entity.action.ArticleStock;
 public interface ArticleStockMapper {
 
   @Select("""
+      SELECT id FROM article_stock
+      WHERE user_id=#{userId}
+      """)
+  List<Integer> selectIdByUserId(int userId);
+
+  @Select("""
       SELECT * FROM article_stock
       WHERE user_id=#{userId}
       """)
@@ -58,4 +64,10 @@ public interface ArticleStockMapper {
       WHERE id=#{id}
       """)
   void deleteArticleStock(int id);
+
+  @Delete("""
+      DELETE FROM article_stock
+      WHERE user_id=#{user_id}
+      """)
+  void deleteAllArticleStockByUserId(int userId);
 }

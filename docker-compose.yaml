@@ -17,8 +17,8 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: Asia/Tokyo
     volumes:
-      - db_date:/var/lib/mysql
+      - db_data:/var/lib/mysql
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
-  db_date:
+  db_data:

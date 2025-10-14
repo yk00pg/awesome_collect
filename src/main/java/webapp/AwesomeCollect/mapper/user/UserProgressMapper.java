@@ -1,13 +1,21 @@
 package webapp.AwesomeCollect.mapper.user;
 
+import java.util.List;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
 import webapp.AwesomeCollect.entity.user.UserProgress;
+import webapp.AwesomeCollect.provider.UserProgressProvider;
+import webapp.AwesomeCollect.provider.param.ExpiredUserParams;
 
 @Mapper
 public interface UserProgressMapper {
+
+  @SelectProvider(type = UserProgressProvider.class, method = "selectUserIdByUserIdList")
+  List<Integer> selectExpiredUserIdByUserIdList(ExpiredUserParams params);
 
   @Select("""
       SELECT * FROM user_progress
@@ -30,4 +38,10 @@ public interface UserProgressMapper {
       WHERE user_id=#{userId}
       """)
   void updateUserProgress(UserProgress userProgress);
+
+  @Delete("""
+      DELETE FROM user_progress
+      WHERE user_id=#{userId}
+      """)
+  void deleteUserProgressByUserId(int userId);
 }

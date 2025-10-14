@@ -33,4 +33,8 @@ public record CustomUserDetails(UserInfo userInfo) implements UserDetails {
   public String getEmail() {
     return userInfo.getEmail();
   }
+
+  public boolean isGuest(){
+    return userInfo.isGuest();
+  }
 }

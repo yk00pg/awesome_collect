@@ -2,6 +2,7 @@ package webapp.AwesomeCollect.repository.junction;
 
 import java.util.List;
 import webapp.AwesomeCollect.mapper.junction.BaseActionTagJunctionMapper;
+import webapp.AwesomeCollect.provider.param.JunctionDeleteParams;
 
 /**
  * アクションとタグの関係性のリポジトリの基底クラス。
@@ -34,5 +35,9 @@ public abstract class BaseActionTagJunctionRepository<T> {
 
   public void deleteRelationByRelatedId(T relation) {
     mapper.deleteRelationByRelatedId(relation);
+  }
+
+  public void deleteAllRelationsByActionIdList(JunctionDeleteParams params){
+    mapper.deleteAllRelationsByActionIdList(params);
   }
 }

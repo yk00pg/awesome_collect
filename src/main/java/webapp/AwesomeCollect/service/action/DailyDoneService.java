@@ -10,6 +10,7 @@ import webapp.AwesomeCollect.common.util.JsonConverter;
 import webapp.AwesomeCollect.common.util.SessionManager;
 import webapp.AwesomeCollect.dto.action.request.DoneRequestDto;
 import webapp.AwesomeCollect.dto.action.response.DoneResponseDto;
+import webapp.AwesomeCollect.dto.dummy.DummyDoneDto;
 import webapp.AwesomeCollect.entity.action.DailyDone;
 import webapp.AwesomeCollect.entity.junction.DoneTagJunction;
 import webapp.AwesomeCollect.repository.action.DailyDoneRepository;
@@ -223,6 +224,31 @@ public class DailyDoneService {
   public void deleteDailyAllDoneByDate(int userId, LocalDate date) {
     doneTagJunctionService.deleteRelationByDate(userId, date);
     dailyDoneRepository.deleteDailyDoneByDate(userId, date);
+
+    sessionManager.setHasUpdatedRecordCount(true);
+    sessionManager.setHasUpdatedLearningDays(true);
+    sessionManager.setHasUpdateTime(true);
+  }
+
+  @Transactional
+  public void registerDummyDone(int guestUserId, List<DummyDoneDto> recordList){
+    LocalDate referenceDate = LocalDate.now();
+    for (int i = 0; i < recordList.size(); i++) {
+      LocalDate date = referenceDate;
+      DummyDoneDto dto = recordList.get(i);
+      if(i == 0 || (!dto.getDate().equals(recordList.get(i - 1).getDate()))){
+        date = referenceDate.minusDays(1);
+      }
+
+      DailyDone dailyDone = dto.toEntity(guestUserId, date);
+      dailyDoneRepository.registerDailyDone(dailyDone);
+
+      List<Integer> tagIdList = tagService.resolveTagIdList(guestUserId, dto.getTagList());
+      doneTagJunctionService.registerNewRelations(
+          dailyDone.getId(), DoneTagJunction :: new, tagIdList);
+
+      referenceDate = date;
+    }
 
     sessionManager.setHasUpdatedRecordCount(true);
     sessionManager.setHasUpdatedLearningDays(true);

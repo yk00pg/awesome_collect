@@ -18,6 +18,10 @@ public class DailyDoneRepository {
     this.mapper = mapper;
   }
 
+  public List<Integer> searchIdByUserId(int userId){
+    return mapper.selectIdByUserId(userId);
+  }
+
   public List<DailyDone> searchDailyDone(int userId, LocalDate date) {
     return mapper.selectDailyDone(userId, date);
   }
@@ -36,5 +40,9 @@ public class DailyDoneRepository {
 
   public void deleteDailyDoneByDate(int userId, LocalDate date) {
     mapper.deleteDoneByDate(userId, date);
+  }
+
+  public void deleteAllDoneByUserId(int userId){
+    mapper.deleteAllDoneByUserId(userId);
   }
 }
