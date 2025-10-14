@@ -56,7 +56,7 @@ public class LoginController {
     return ViewNames.LOGIN_PAGE;
   }
 
-  // ゲスト情報でログインする。
+  // ゲストユーザーとしてログインする。
   @PostMapping("/guest_login")
   public String guestLogin(HttpServletRequest request){
 
@@ -73,6 +73,6 @@ public class LoginController {
         HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
         SecurityContextHolder.getContext());
 
-    return RedirectUtil.redirectView(ViewNames.HOME_PAGE);
+    return RedirectUtil.redirectView(ViewNames.TOP_PAGE);
   }
 }

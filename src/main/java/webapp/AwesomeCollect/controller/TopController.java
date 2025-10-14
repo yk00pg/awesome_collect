@@ -6,14 +6,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import webapp.AwesomeCollect.common.constant.ViewNames;
 
 /**
- * ホーム画面のコントローラークラス。
+ * トップページ（メインメニュー画面）のコントローラークラス。
  */
 @Controller
-public class HomeController {
+public class TopController {
 
-  // ホーム画面を表示する。
-  @GetMapping(ViewNames.HOME_PAGE)
+  // トップページ（メインメニュー画面）を表示する。
+  @GetMapping(ViewNames.TOP_PAGE)
   public String showHomeView(){
-    return ViewNames.HOME_PAGE;
+    return ViewNames.TOP_PAGE;
   }
 }
