@@ -1,9 +1,13 @@
 // Chart.jsの設定（全タグ別学習時間グラフページ用）
 // タグ別学習時間グラフ
-const ctx = document.getElementById('allTagTime');
+const canvas = document.getElementById('allTagTime');
+const ctx = canvas.getContext('2d')
 
 const tagNameList = tagTimeList.map(dto => dto.tagName);
 const tagTotalTimeList = tagTimeList.map(dto => dto.totalTime);
+
+const rowHeight = 15;
+canvas.height = tagNameList.length * rowHeight;
 
 // 上位3位だけ不透明度を上げてハイライト
 const highlightRank = 3;
@@ -22,7 +26,8 @@ new Chart(ctx, {
             data: tagTotalTimeList,
             backgroundColor: colorsTags,
             borderColor: 'rgba(189, 221, 196, 1)',
-            borderWidth: 1
+            borderWidth: 1,
+            barThickness: 25
         }]
     },
     plugins: [ChartDataLabels],
@@ -60,7 +65,7 @@ new Chart(ctx, {
                                     : 'normal'
                         };
                     },
-                    color: '#627962',
+                    color: '#627962'
                 }
             },
             x: {
@@ -70,7 +75,7 @@ new Chart(ctx, {
                 grid: {
                     display: false
                 },
-                suggestedMax: Math.max(...tagTotalTimeList) * 1.1,
+                suggestedMax: Math.max(...tagTotalTimeList) * 1.1
             }
         }
     }
