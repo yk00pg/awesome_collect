@@ -5,15 +5,12 @@
     <a th:href="@{/home}">
       <img th:src="@{/image/title-logo.svg}" alt="">
     </a>
+
+    <div class="guest-login-mark"
+         th:if="${#authentication.principal.isGuest}">ゲストログイン中</div>
+
     <nav class="sidebar-menu">
-      <a th:href="@{/mypage}" class="sidebar-item">
-        <img th:src="@{/image/member-icon.svg}" alt="マイページ">
-        <span>マイページ</span>
-      </a>
-      <a th:href="@{/dashboard}" class="sidebar-item">
-        <img th:src="@{/image/dashboard-icon.svg}" alt="ダッシュボード">
-        <span>ダッシュボード</span>
-      </a>
+      <div class="menu-category">学習アクション</div>
       <a th:href="@{/todo/{date}(date=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')})}"
          class="sidebar-item">
         <img th:src="@{/image/todo-icon.svg}" alt="やること">
@@ -35,6 +32,15 @@
       <a th:href="@{/article_stock}" class="sidebar-item">
         <img th:src="@{/image/article-icon.svg}" alt="記事ストック">
         <span>記事ストック</span>
+      </a>
+      <div class="menu-category">ユーザー情報</div>
+      <a th:href="@{/dashboard}" class="sidebar-item">
+        <img th:src="@{/image/dashboard-icon.svg}" alt="ダッシュボード">
+        <span>ダッシュボード</span>
+      </a>
+      <a th:href="@{/mypage}" class="sidebar-item">
+        <img th:src="@{/image/member-icon.svg}" alt="マイページ">
+        <span>マイページ</span>
       </a>
       <a href="#"
          onclick="if(confirm('ログアウトしますか？')) {

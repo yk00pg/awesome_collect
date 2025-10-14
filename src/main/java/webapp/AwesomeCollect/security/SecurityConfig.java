@@ -53,7 +53,7 @@ public class SecurityConfig {
             .loginProcessingUrl(ViewNames.LOGIN_PAGE)
             .usernameParameter(LOGIN_ID)
             .failureUrl(ViewNames.LOGIN_ERROR_PAGE)
-            .defaultSuccessUrl(ViewNames.HOME_PAGE))
+            .defaultSuccessUrl(ViewNames.TOP_PAGE))
         .logout(logout -> logout
             .logoutSuccessHandler(logoutSuccessHandler)
             .logoutUrl(ViewNames.LOGOUT_PAGE)

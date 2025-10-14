@@ -8,65 +8,98 @@
   </head>
 
   <body>
-    <div th:with="isVisible=${true}">
+    <div>
       <header th:replace="~{fragments/header::header}"></header>
     </div>
 
     <div class="login-container">
-      <form class="form-group"
-            th:action="@{/login}"
-            method="post">
+      <div class="login-form-container">
+        <form class="form-group"
+              th:action="@{/login}"
+              method="post">
+          <div class="message-area">
+            <div class="success-message"
+                 th:if="${successMessage != null}"
+                 th:text="${successMessage}"></div>
+            <div class="failure-message"
+                 th:if="${failureMessage != null}"
+                 th:text="${failureMessage}"></div>
+            <div class="failure-hint"
+                 th:if="${failureHint != null}"
+                 th:text="${failureHint}"></div>
+          </div>
 
-        <div class="message-area">
-          <div class="success-message"
-               th:if="${successMessage != null}"
-               th:text="${successMessage}"></div>
-          <div class="failure-message"
-               th:if="${failureMessage != null}"
-               th:text="${failureMessage}"></div>
-          <div class="failure-hint"
-               th:if="${failureHint != null}"
-               th:text="${failureHint}"></div>
-        </div>
+          <table class="login-input-table">
+            <tr>
+              <th scope="row" class="input-row-th">ログインID</th>
+              <td class="blank-cell"></td>
+              <td colspan="2">
+                <input type="text" class="input-area"
+                       name="loginId"
+                       th:placeholder="#{login.placeholder}" required />
+              </td>
+            </tr>
+            <tr class="blank-row"></tr>
+            <tr>
+              <th scope="row" class="input-row-th">パスワード</th>
+              <td class="blank-cell"></td>
+              <td colspan="2">
+                <input type="password" class="input-area"
+                       name="password"
+                       th:placeholder="#{login.placeholder}" required />
+              </td>
+            </tr>
+          </table>
 
-        <table class="input-table">
-          <tr>
-            <th scope="row" class="input-row-th">ログインID</th>
-            <td class="blank-cell"></td>
-            <td>
-              <input type="text" class="input-area"
-                     name="loginId"
-                     th:placeholder="#{login.placeholder}" required />
-            </td>
-          </tr>
-          <tr class="blank-row"></tr>
-          <tr>
-            <th scope="row" class="input-row-th">パスワード</th>
-            <td class="blank-cell"></td>
-            <td>
-              <input type="password" class="input-area"
-                     name="password"
-                     th:placeholder="#{login.placeholder}" required />
-            </td>
-          </tr>
-        </table>
+          <div class="button-area">
+            <button type="submit" class="login-button">ログイン</button>
+          </div>
+        </form>
 
-        <div class="button-area">
-          <button type="submit" class="login-button">ログイン</button>
-        </div>
-      </form>
+        <form class="form-group"
+              th:action="@{/guest_login}"
+              method="post">
+          <div class="button-area">
+            <button type="submit"
+                    class="guest-login-button">ゲストログイン</button>
+          </div>
+        </form>
 
-      <form class="form-group"
-            th:action="@{/guest_login}"
-            method="post">
         <div class="form-border"></div>
-        <button type="submit" class="login-button">ゲストログイン</button>
-      </form>
+        <p>または</p>
+        <div class="signup-link-button-area">
+          <a th:href="@{/signup}" class="signup-link">新規登録</a>
+        </div>
+      </div>
 
-      <div class="form-border"></div>
-      <p>または</p>
-      <div class="link-button-area">
-        <a th:href="@{/signup}" class="signup-link">新規登録</a>
+      <div class="title-image-container">
+        <div class="title-container">
+          <h3><span>えらい！</span>を貯めて</h3>
+          <h3>　　 自信を育む学習記録アプリ</h3>
+          <h1>えらいコレクト</h1>
+        </div>
+
+        <div class="image-container">
+          <img th:src="@{/image/study-icon.svg}" alt="学習">
+        </div>
+      </div>
+    </div>
+
+    <div class="app-info-container">
+      <div class="log-function">
+        <h3>学習アクション登録機能</h3>
+        <img th:src="@{/image/log-icon.svg}" alt="学習アクション">
+        <p><span>学習にまつわるアクション（やること・できたこと・目標・メモ・記事ストック）</span>を登録することができます。</p>
+      </div>
+      <div class="awesome-gain-function">
+        <h3>えらい！獲得機能</h3>
+        <img th:src="@{/image/awesome-icon.svg}" alt="えらい！">
+        <p>学習アクションを登録することにより、<span>えらい！ポイント</span>が貯まり、<span>えらい！メッセージ</span>が表示されます。</p>
+      </div>
+      <div class="dashboard-function">
+        <h3>ダッシュボード機能</h3>
+        <img th:src="@{/image/graph-icon.svg}" alt="ダッシュボード">
+        <p>獲得した<span>えらい！ポイント</span>や<span>学習日数</span>、<span>学習時間</span>を<span>数値やグラフ</span>で確認することができます。</p>
       </div>
     </div>
   </body>

@@ -10,7 +10,7 @@ public final class ViewNames {
   public static final String LOGIN_ERROR_PAGE = LOGIN_PAGE + "?error";
   public static final String GUEST_LOGIN = "/guest_login";
   public static final String LOGOUT_PAGE = "/logout";
-  public static final String HOME_PAGE = "/home";
+  public static final String TOP_PAGE = "/top";
 
   private static final String EDIT_PAGE = "/edit";
 
