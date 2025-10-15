@@ -56,14 +56,28 @@
           </div>
         </form>
 
-        <form class="form-group"
+        <form id="guestLoginForm" class="form-group"
               th:action="@{/guest_login}"
               method="post">
           <div class="button-area">
-            <button type="submit"
+            <button type="submit" id="guestLoginBtn"
                     class="guest-login-button">ゲストログイン</button>
           </div>
         </form>
+
+        <!-- ゲストログイン押下時に表示するローディングオーバーレイ -->
+        <div id="loadingOverlay" class="hidden">
+          <div class="loading-popup">
+            <div class="spinner"></div>
+            <p>ゲストアカウントを作成中...</p>
+          </div>
+        </div>
+        <script>
+          document.getElementById('guestLoginForm').addEventListener('submit', function(e) {
+              document.getElementById('guestLoginBtn').disabled = true;
+              document.getElementById('loadingOverlay').classList.remove('hidden');
+          });
+        </script>
 
         <div class="form-border"></div>
         <p>または</p>
@@ -89,17 +103,20 @@
       <div class="log-function">
         <h3>学習アクション登録機能</h3>
         <img th:src="@{/image/log-icon.svg}" alt="学習アクション">
-        <p><span>学習にまつわるアクション（やること・できたこと・目標・メモ・記事ストック）</span>を登録することができます。</p>
+        <p><span>学習にまつわるアクション（やること・できたこと・目標・メモ・記事ストック）</span>
+          を登録することができます。</p>
       </div>
       <div class="awesome-gain-function">
         <h3>えらい！獲得機能</h3>
         <img th:src="@{/image/awesome-icon.svg}" alt="えらい！">
-        <p>学習アクションを登録することにより、<span>えらい！ポイント</span>が貯まり、<span>えらい！メッセージ</span>が表示されます。</p>
+        <p>学習アクションを登録することにより、<span>えらい！ポイント</span>が貯まり、
+          <span>えらい！メッセージ</span>が表示されます。</p>
       </div>
       <div class="dashboard-function">
         <h3>ダッシュボード機能</h3>
         <img th:src="@{/image/graph-icon.svg}" alt="ダッシュボード">
-        <p>獲得した<span>えらい！ポイント</span>や<span>学習日数</span>、<span>学習時間</span>を<span>数値やグラフ</span>で確認することができます。</p>
+        <p>獲得した<span>えらい！ポイント</span>や<span>学習日数</span>、
+          <span>学習時間</span>を<span>数値やグラフ</span>で確認することができます。</p>
       </div>
     </div>
   </body>
