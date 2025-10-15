@@ -22,18 +22,25 @@ public interface LearningTimeMapper {
   int calculateTotalTime(int userId);
 
   @Select("""
+    SELECT
+      DAYOFWEEK(date) AS dayOfWeek,
+      ROUND(AVG(total_minutes)) AS avgTime
+    FROM (
       SELECT
-        DAYOFWEEK(date) AS dayOfWeek,
-        ROUND(AVG(minutes)) AS avgTime
+        date,
+        SUM(minutes) AS total_minutes
       FROM
         daily_done
       WHERE
-        user_id=#{userId}
+        user_id = #{userId}
       GROUP BY
-        dayOfWeek
-      ORDER BY
-        dayOfWeek
-      """)
+        date
+    ) AS daily_sum
+    GROUP BY
+      dayOfWeek
+    ORDER BY
+      dayOfWeek
+    """)
   List<AvgLearningTime> averageDayOfWeekTime(int userId);
 
   @Select("""
