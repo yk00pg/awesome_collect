@@ -1,74 +1,67 @@
 # えらいコレクト
 <p align=center>
-  <img src=https://github.com/user-attachments/assets/22dddbe2-9d49-47a8-81bb-7247fd2e29bf alt="アプリロゴ">
+    <!-- アプリロゴ貼る -->
 </p>
 <br/>
 
 ## はじめに
-- 本リポジトリは、Java学習者の「ゆうき」（Xアカウント： [@yk00pg](https://x.com/yk00pg)）が作成したWebアプリ『えらいコレクト 〜自己肯定感を高める学習記録アプリ〜』に関するものです
+- 本リポジトリは、Java学習者の「ゆうき」（Xアカウント： [@yk00pg](https://x.com/yk00pg)）が作成したWebアプリ『えらいコレクト（学習記録アプリ）』に関するものです
 - ご利用いただくことによるトラブル等につきましては、一切の責任を負いかねますことを予めご了承ください
   <br/>
   <br/>
-  <br/>
 
+## 🌐 アプリURL
+<!-- アプリURL貼る -->
+ゲストログイン機能を有しており、ユーザー登録をせずにお試しいただくことができます。<br>
+<br/>
+<br/>
 
 ## 🔖 目次
-- [アプリURL](#-アプリurl)
-- [デモ動画](#%EF%B8%8F-デモ動画)
-- [背景](#-背景)
+- [デモ動画](#-デモ動画)
+- [制作背景](#-制作背景)
 - [コンセプト・概要](#-コンセプト概要)
 - [想定ユーザー](#-想定ユーザー)
+- [環境・使用技術](#%EF%B8%8F-開発環境使用技術)
 - [機能一覧](#%EF%B8%8F-機能一覧)
-- [えらい！獲得条件](#-えらい獲得条件)
 - [ER図](#-er図)
-- [シーケンス図](#-シーケンス図)
-- [クラス図](#-クラス図)
+- [インフラ構成図](#-インフラ構成図)
+- [機能紹介](#-機能紹介)
+  - [1. ユーザー新規登録機能](#1--ユーザー新規登録機能)
+  - [2. ログイン・ログアウト機能](#2--ログインログアウト機能)
+  - [3. ゲストログイン機能](#3--ゲストログイン機能)
+  - [4. 学習アクション登録機能 & 5. タグ付け機能](#4--学習アクション登録機能--5-%EF%B8%8F-タグ付け機能)
+    - [シーケンス図](#-シーケンス図例-目標登録)
+    - [クラス図](#-クラス図ユーティリティークラスは除く)
+  - [6. ダッシュボード機能](#6--ダッシュボード機能)
+  - [7. えらい！ポイント & えらい！メッセージ獲得機能](#7--えらいポイント--えらいメッセージ獲得機能)
 - [工夫したところ](#-工夫したところ)
-- [環境・使用技術](#%EF%B8%8F-環境使用技術)
+  - [ユーザーを意識した工夫](#-ユーザーを意識した工夫)
+  - [技術的な工夫](#-技術的な工夫)
 - [今後実装予定の機能](#-今後実装予定の機能)
 - [おわりに](#おわりに)
   <br/>
   <br/>
   <br/>
 
-## 🌐 アプリURL
-<!-- アプリURL貼る -->
-（期間限定での公開を予定しており、予告なく公開を停止する場合がございます）<br/>
-<br/>
-<br/>
-<br/>
-
-## 📽️ デモ動画
+## 🎥 デモ動画
 
 https://github.com/user-attachments/assets/bc7d3bd0-8c44-4505-96e5-99ce8eebde5b
 
 <br/>
 <br/>
 
-## ❓ 背景
-### 🌀 学習中の落ち込み期
-学習を続けていると、定期的に落ち込み期が訪れます。<br/>
-この期間に突入すると、なぜかネガティブな考えばかりが浮かび、心に居座ってじわじわとやる気と自信を削いでいきます。
+## ❓ 制作背景
+- 学習を続けていくなかで定期的に訪れる**落ち込み期**に着目し、不安な思いに囚われて手が止まりそうになった際に、学習日数や学習時間のほかに**自分の日々の頑張りを実感できる指標**のようなものがあればモチベーションを維持する一助になるのではないかと考えました
+- 本アプリを通して自分の日々の行動を褒めることで、**「よし、ちゃんと頑張れているぞ！ この調子で引き続き頑張ろう！」** と **自分の頑張りを認め、自身を鼓舞する**きっかけになれば良いなと思い、作成しました
 
-- **「自分は本当に頑張れているのだろうか」「このままで良いのだろうか」** と落ち込む
-- 学習継続日数や累計学習時間が積み上がっていっても、**学習の実感が湧かず、数字だけが増えていく気がして** 不安になる
-- 同じように学習を続けている方のことは「すごいな」「頑張っているな」と思えるのに、**自分のことはそう思えずもやもや**<br/>
-
-ですが、そんな思いに囚われて手が止まってしまっては元も子もないことです。<br/>
-そこで、学習日数や学習時間のほかに**自分の日々の頑張りを実感できる指標**
-のようなものがあればモチベーションを維持する一助になるのではないかと考え、同じような思いを抱える学習者の方が　**「行動している自分、えらい！」「よし、ちゃんと頑張れている！」と日々の努力を実感し、自分を認めてあげる**きっかけになればと思い、作成しました。<br/>
 <br/>
 <br/>
 <br/>
 
 ## 🎯 コンセプト・概要
-- 学習にまつわるアクション（学習記録（やること・できたこと）、目標、学習に関するメモ、参考記事）を登録することができる学習記録アプリです
-- アクションを登録することにより、**えらい！ポイント**が貯まり、登録時には**えらい！メッセージ**が表示されます
-- **えらい！ポイント、学習日数、学習時間を可視化**し、ダッシュボードページにて確認することができます
-- 一般的に、小さな成功体験を積み重ねることにより自己肯定感が向上すると考えられていることから、**自分の行動によって獲得したえらい！が増えていく様子や、自分を褒めるメッセージを日常的に目にすることにより**、学習者であるユーザーの**自己肯定感を高める**ことを期待しています<br/>
-
-> [!NOTE]
-> このアプリは自己肯定感を高めることによってモチベーションの維持・学習の継続をサポートするものであり、その効果を保証するものではございません。
+- 学習にまつわるアクション（やること・できたこと・目標・メモ・記事ストック）を登録することで**えらい！ポイント**が貯まり、**えらい！メッセージ**が贈られる『学習記録アプリ』です
+- 獲得した**えらい！ポイント、学習日数、学習時間**を**数値やグラフ**で確認することができます
+- **自分の行動によって獲得したえらい！が増えていく様子や、自分を褒めるメッセージを日常的に目にする**といった小さな成功体験の積み重ねにより、学習者の**自己肯定感を高めて自信を育み、モチベーションの維持・学習の継続をサポートする**ことを目的としています
 
 <br/>
 <br/>
@@ -76,57 +69,157 @@ https://github.com/user-attachments/assets/bc7d3bd0-8c44-4505-96e5-99ce8eebde5b
 ## 👥 想定ユーザー
 - 何かしらの学習に取り組んでいる / 取り組もうとしている個人
 - 学習中に落ち込み期を経験している / 経験したたことのある個人
-  <br/>
-  <br/>
-  <br/>
+
+<br/>
+<br/>
+
+## 🛠️ 開発環境・使用技術
+- **開発環境:** Mac OS (Sequoia 15.7.1), IntelliJ IDEA
+- **フロントエンド:**
+    - 言語: HTML (Thymeleaf), CSS, JavaScript
+    - ライブラリ: Chart.js (グラフ描画), Tagify (タグ入力補助), EasyMDE (Markdownエディタ)
+- **バックエンド:**
+    - 言語: Java (Oracle OpenJDK 21.0.9)
+    - フレームワーク: Spring Boot (3.4.7)
+- **認証:** Spring Security
+- **データベース:** MySQL (8.0.42 / Docker, MyBatis)
+- **インフラ:** Docker Compose, AWS EC2 (Amazon Linux 2023)
+- **バージョン管理:** Git, GitHub
+
+<br/>
+<br/>
+<br/>
 
 ## ⚙️ 機能一覧
-| 機能 | 詳細 |
-|:--|:--|
-| **👤 <br/>ユーザー登録機能** | <ul><li>ログインID、ユーザー名、メールアドレス、パスワードで新規登録<br/>（ユーザー名、メールアドレスは任意）</li><li>パスワードはハッシュ化してDBに保存</li><li>登録内容はマイページにて変更可能</li></ul> |
-| **🚪 <br/>ログイン・ログアウト機能** | <ul><li>ログインID、パスワードでログイン</li><li>Spring Securityを用いた認証・認可</li></ul> |
-| **📝 <br/>アクション登録機能** | <ul><li>学習にまつわるアクションを登録<ul><li>やること（日付、内容）</li><li>できこと（日付、内容、学習時間、メモ、タグ）</li><li>目標（タイトル、内容、進捗状況、タグ）</li><li>メモ（タイトル、内容、タグ）</li><li>記事ストック（タイトル、URL、メモ、閲覧状況、タグ）</li></ul></li></ul> |
-| **📊 <br/>ダッシュボード機能** | <ul><li>累計えらい！ポイント（ポイント数、イラストグラフ）</li><li>累計学習日数</li><li>連続学習日数（日数、最後に学習した日）</li><li>累計学習時間</li><li>学習時間グラフ<ul><li>日別学習時間（過去7日分）</li><li>曜日別平均学習時間</li><li>月別学習時間（過去6ヶ月分）</li><li>タグ別学習時間（上位10件、全件）</li></ul></li></ul> |
-| **👍 <br/>えらい！ポイント<br/>えらい！メッセージ獲得機能** | <ul><li>学習にまつわるアクションを登録することで、えらい！ポイントを獲得</li><li>アクション登録時（やること・できたことは日付あたり1件目の登録時）に<br/>えらい！メッセージを表示</li><li>アクション登録の継続日数に応じてボーナスえらい！ポイントを獲得</li></ul> |
+| No. | 機能 | |
+| :-: | :-- |:-:|
+| 1 | **👤 ユーザー新規登録機能** |     [詳細](#-ユーザー新規登録機能)      |
+| 2 | **🚪 ログイン・ログアウト機能** |    [詳細](#-ログイン・ログアウト機能)     |
+| 3 | **👤 ゲストログイン機能** |      [詳細](#-ゲストログイン機能)      |
+| 4 | **📝 学習アクション登録機能** |     [詳細](#-学習アクション登録機能)     |
+| 5 | **🏷️ タグ付け機能** |       [詳細](#-タグ付け機能)        |
+| 6 | **📊 ダッシュボード機能** |      [詳細](#-ダッシュボード機能)      |
+| 7 | **👍 えらい！ポイント & えらい！メッセージ獲得機能** | [詳細](#-えらいポイントえらいメッセージ獲得機能) |
 <br/>
 <br/>
 
-## 👑 えらい！獲得条件
-### 通常えらい！ポイント
-| 条件 | 1件あたりのポイント | メッセージ |
-|:--|:-:|:--|
-| やることを登録 | 1えらい！ | やることを決めてえらい！ |
-| できたことを登録 | 3えらい！ | 実行できてえらい！ |
-| 目標を登録 | 5えらい！ | 目標を立ててえらい！ |
-| 目標を達成 | 10えらい！ | 達成できてえらい！ |
-| メモを登録 | 5えらい！ | メモに残してえらい！ |
-| 記事ストックを登録 | 3えらい！ | 情報を集めてえらい！ |
-| 登録した記事を読了 | 5えらい！ | 知識を深めてえらい！ |
-
-### ボーナスえらい！ポイント
-| 条件（n日ごと） | 1日あたりの追加ポイント |
-|:--|:-:|
-| いずれかのアクションを登録 | 1えらい！ |
-| 3日連続でいずれかのアクションを登録 | 3えらい！ |
-| 7日連続でいずれかのアクションを登録 | 7えらい！ |
-| 30日連続でいずれかのアクションを登録 | 10えらい！ |
-
-<br/>
-<br/>
 
 ## 🟠 ER図
-下図は「ユーザー情報」、「ユーザー進捗状況」、「ボーナスえらい！獲得状況」、「各アクション情報」、「タグ情報」、「各アクションとタグの関係性」のテーブル間の関係を表しています。
-
 ```mermaid
 erDiagram
+    USER_INFO {
+        INT id PK "AUTO_INCREMENT"
+        VARCHAR(20) login_id UK "NOT NULL"
+        VARCHAR(20) user_name
+        VARCHAR(255) email UK
+        VARCHAR(60) password "NOT NULL"
+        BOOLEAN isGuest
+    }
+    
+    USER_PROGRESS {
+        INT user_id PK, FK "NOT NULL"
+        DATE registered_date
+        INT total_action_days
+        DATE last_action_date
+        INT current_streak
+        INT longest_streak
+        INT streak_bonus_count
+    }
+    
+    BONUS_AWESOME {
+        INT id PK "AUTO_INCREMENT"
+        INT user_id FK "NOT NULL"
+        INT awesome_points
+        VARCHAR(100) reason
+        DATE collected_date
+    }
+    
+    TAG {
+        INT id PK "AUTO_INCREMENT"
+        INT user_id FK, UK "NOT NULL, 複合UK"
+        VARCHAR(30) name UK "NOT_NULL, 複合UK"
+    }
+    
+    DAILY_TODO {
+        INT id PK "AUTO_INCREMENT"
+        INT user_id FK "NOT NULL"
+        DATE date "NOT NULL"
+        VARCHAR(100) content "NOT NULL"
+        DATETIME registered_at
+        DATETIME updated_at
+    }
+    
+    DAILY_DONE {
+        INT id PK "AUTO_INCREMENT"
+        INT user_id FK "NOT NULL"
+        DATE date "NOT NULL"
+        VARCHAR(100) content "NOT NULL"
+        INT minutes "NOT NULL"
+        VARCHAR(500) memo
+        DATETIME registered_at
+        DATETIME updaterd_at
+    }
+    
+    GOAL {
+        INT id PK "AUTO_INCREMENT"
+        INT user_id FK, UK "NOT NULL, 複合UK"
+        VARCHAR(100) title UK "NOT NULL, 複合UK"
+        VARCHAR(500) content "NOT NULL"
+        BOOLEAN achieved "NOT NULL"
+        DATETIME registered_at
+        DATETIME updated_at
+        DATETIME status_updated_at
+    }
+    
+    MEMO {
+        INT id PK "AUTO_INCREMENT"
+        INT user_id FK "NOT NULL"
+        VARCHAR(100) title "NOT NULL"
+        MEDIUMTEXT content "NOT NULL"
+        DATETIME registered_at
+        DATETIME updated_at
+    }
+    
+    ARTICLE_STOCK {
+        INT id PK "AUTO_INCREMENT"
+        INT user_id FK, UK "NOT NULL, 複合UK"
+        VARCHAR(100) title "NOT NULL"
+        VARCHAR(2083) url UK "複合UK"
+        VARCHAR(500) memo
+        BOOLEAN finished "NOT NULL"
+        DATETIME registered_at
+        DATETIME updated_at
+        DATETIME status_updated_at
+    }
+    
+    DONE_TAG_JUNCTION {
+        INT done_id PK, FK "複合PK"
+        INT tag_id PK, FK　"複合PK"
+    }
+    
+    GOAL_TAG_JUNCTION {
+        INT goal_id PK, FK "複合PK"
+        INT tag_id PK, FK "複合PK"
+    }
+    
+    MEMO_TAG_JUNCTION {
+        INT memo_id PK, FK "複合PK"
+        INT tag_id PK, FK "複合PK"
+    }
+    
+    ARTICLE_TAG_JUNCTION {
+        INT article_id PK, FK "複合PK"
+        INT tag_id PK, FK "複合PK"
+    }
+    
     USER_INFO||--o{USER_PROGRESS: "user_id"
+    USER_INFO||--o{BONUS_AWESOME: "user_id"
     USER_INFO||--o{DAILY_TODO: "user_id"
     USER_INFO||--o{DAILY_DONE: "user_id"
     USER_INFO||--o{GOAL: "user_id"
     USER_INFO||--o{MEMO: "user_id"
     USER_INFO||--o{ARTICLE_STOCK: "user_id"
     USER_INFO||--o{TAG: "user_id"
-    USER_INFO||--o{BONUS_AWESOME: "user_id"
     DAILY_DONE||--o{DONE_TAG_JUNCTION: "done_id"
     GOAL||--o{GOAL_TAG_JUNCTION: "goal_id"
     MEMO||--o{MEMO_TAG_JUNCTION: "memo_id"
@@ -137,18 +230,213 @@ erDiagram
     TAG||--o{ARTICLE_TAG_JUNCTION: "tag_id"
 ```
 
-- ユーザー登録時に自動採番されるuser_info.idを他テーブルのuser_idにFKとして関連付けています
-- Spring SecurityのCustomUserDetailsのidとしてuser_info.idを設定しているため、AuthenticationPrincipalからuser_idを参照することができます
-- これらの紐付けにより、ユーザー単位での関連データの容易な取得を実現しています
+- ユーザー登録時に自動採番されるuser_info.idを他テーブルのuser_idにFKとして関連付け
+- Spring SecurityのCustomUserDetailsのidとしてuser_info.idを設定することで、AuthenticationPrincipalからuser_idを参照可能
+- これらの紐付けにより、ユーザー単位での関連データの容易な取得を実現
   <br/>
   <br/>
   <br/>
 
-## 🟢 シーケンス図
-下図は学習にまつわるアクションのうち『目標』を登録する際のフローを表しています。
+## 🟣 インフラ構成図
+<!-- インフラ構成図を貼る -->
+<br>
+<br>
 
+
+## 🚀 機能紹介
+### 1. 👤 ユーザー新規登録機能
+<!-- GIF画像（新規登録フロー）を貼る -->
+- ログインID、ユーザー名、メールアドレス、パスワードで新規登録を行います（ユーザー名・メールアドレスは任意）
+- パスワードはハッシュ化してDBに保存されます
+- 登録内容はマイページにて変更することができます（ゲストユーザーアカウントを除く）
+
+#### ✅ フォームバリデーション
+| 項目 | 内容                                                                                                   |
+| :-- |:-----------------------------------------------------------------------------------------------------|
+| ログインID | <ul><li>入力必須</li><li>英字・数字を各1字以上含む6〜20字の半角英数字および記号(-_)</li><li>重複不可（大文字・小文字を区別せず判定）</li></ul>        |
+| ユーザ名 | <ul><li>20字以内</li></ul>                                                                              |
+| メールアドレス | <ul><li>メールアドレス形式（@を含む、254字以内）</li><li>重複不可</li></ul>                                                |
+| パスワード | <ul><li>入力必須</li><li>英字(大文字・小文字)・数字・記号をそれぞれ1字以上含む8〜32字の半角英数字および記号(-_*)</li><li>確認用パスワードと一致</li></ul> 
+<br/>
+
+### 2. 🚪 ログイン・ログアウト機能
+<!-- GIF画像（ログインフロー） & 画像（エラーメッセージ）を貼る -->
+- 登録したログインID（大文字・小文字を区別して判定）とパスワードでログインします
+- 認証・認可にはSpring Securityを使用しています
+
+💡 セキュリティを考慮し、ログイン失敗時のエラーメッセージには詳細を記載していません
+<br/>
+<br/>
+
+### 3. 👤 ゲストログイン機能
+<!-- GIF画像（ゲストログインフロー）を貼る -->
+- ユーザー登録をすることなく、アプリをお試しいただくことができます
+- ログイン時に新規ゲストユーザーアカウントが作成され、CSVファイルからダミーデータを読み込んでDBに登録します（処理中はローディングオーバーレイを表示）
+- アカウント情報はログアウト時にすべて削除されます（ログアウト漏れに備え、定期的な削除処理も実行しています）
+
+💡 開発者の4〜9月の学習記録を基に作成したダミーデータを使用しているため、リアルな使用感を体験していただくことができます
+
+#### ログイン時
+- *LoginController* でゲストユーザーアカウント作成処理を呼び出して実行し、作成したユーザー情報を*Spring Security* の*SecurityContextHolder* に渡して認証してセッションに保存
+- *GuestUserService* でゲストユーザーアカウントおよびユーザー進捗状況を作成し、ダミーデータ登録処理を呼び出して実行
+- *DummyDataService* でCSVファイルからダミーデータを読み込み、DBに登録
+```java
+// LoginController.java
+
+@PostMapping(ViewNames.GUEST_LOGIN)
+public String guestLogin(HttpServletRequest request){
+
+  UserInfo guestUser = guestUserService.createGuestUser();
+
+  UsernamePasswordAuthenticationToken authToken =
+      new UsernamePasswordAuthenticationToken(guestUser.getLoginId(), GUEST_PASSWORD);
+
+  Authentication auth = authenticationManager.authenticate(authToken);
+  SecurityContextHolder.getContext().setAuthentication(auth);
+
+  // SecurityContextをセッションに保存
+  request.getSession(true).setAttribute(
+      HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+      SecurityContextHolder.getContext());
+
+  return RedirectUtil.redirectView(ViewNames.TOP_PAGE);
+}
+```
+```java
+// GuestUserService.java
+
+@Transactional
+public UserInfo createGuestUser() {
+  String randomId = UUID.randomUUID().toString().substring(0, 8);
+  String loginId = GUEST + randomId;
+
+  while(userInfoRepository.findUserInfoByLoginId(loginId) != null){
+    randomId = UUID.randomUUID().toString().substring(0, 8);
+    loginId = GUEST + randomId;
+  }
+
+  UserInfo guestUser = UserInfo.builder()
+      .loginId(loginId)
+      .userName(GUEST_USER)
+      .email(loginId + GUEST_EMAIL)
+      .password(passwordEncoder.encode(GUEST_PASSWORD))
+      .isGuest(true)
+      .build();
+
+  userInfoRepository.registerNewUserInfo(guestUser);
+  int guestUserId = guestUser.getId();
+  userProgressService.createUserProgress(guestUserId);
+
+  dummyDataService.registerDummyData(guestUserId);
+
+  return guestUser;
+}
+```
+```java
+// DummyDataService.java
+
+public void registerDummyData(int guestUserId){
+  injectDummyTodo(guestUserId);
+  injectDummyDone(guestUserId);
+  injectDummyGoal(guestUserId);
+  injectDummyMemo(guestUserId);
+  injectDummyArticleStock(guestUserId);
+}
+
+private void injectDummyTodo(int guestUserId) {
+  InputStream inputStream;
+  try {
+    inputStream = new ClassPathResource(CsvFileName.DUMMY_TODO).getInputStream();
+  } catch (IOException e) {
+    throw new RuntimeException(e);
+  }
+
+  List<DummyTodoDto> recordList =
+      CsvLoader.load(inputStream, DummyTodoDto :: fromCsvRecord);
+
+  dailyTodoService.registerDummyTodo(guestUserId, recordList);
+}
+
+// 〜〜 以下、できたこと・目標・メモ・記事ストックも同様の処理を実行 〜〜
+```
+
+#### ログアウト時
+- *SecurityConfig.java* でログアウト成功時の処理を実装したハンドラとして*LogoutSuccessHandler* を設定（コード割愛）
+- *LogoutSuccessHandler* を実装した*GuestLogoutSuccessHandler* にて、削除処理を呼び出して実行
+```java
+// GuestLogoutSuccessHandler.java ( implements LogoutSuccessHandler )
+
+@Transactional
+@Override
+public void onLogoutSuccess(
+    HttpServletRequest request, HttpServletResponse response,
+    Authentication authentication)
+    throws IOException {
+
+  if(authentication != null) {
+    CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+
+    if(user.isGuest()){
+      deleteUserDataService.deleteUserData(user.getId());
+    }
+  }
+
+  response.sendRedirect(ViewNames.LOGIN_PAGE);
+}
+```
+
+#### 定期実行
+- メインクラスに`@EnableScheduling`アノテーションをつけてスケジュールされたタスク実行機能を有効化（コード割愛）
+- *GuestUserCleanupScheduler* でスケジュールを設定し、*GuestUserService* にて削除処理を呼び出して実行し、ログを出力
+```java
+// GuestUserCleanupScheduler.java
+
+@Scheduled(cron = "0 0 12 * * *", zone = "Asia/Tokyo")
+public void cleanupGuestUsers() {
+guestUserService.cleanupGuestUsers();
+}
+```
+```java
+// GuestUserService.java
+
+@Transactional
+public void cleanupGuestUsers(){
+List<Integer> guestUserIdList = userInfoRepository.selectGuestUserId();
+if(guestUserIdList==null || guestUserIdList.isEmpty()){
+  logger.info("No expired guest users found. Cleanup skipped.");
+  return;
+}
+
+logger.info("=== Guest User Cleanup Started. Target count: {} ===", guestUserIdList.size());
+
+List<Integer> expiredGuestUserIdList =
+    userProgressRepository.searchExpiredUserIdByUserId(
+        new ExpiredUserParams(guestUserIdList, LocalDate.now().minusDays(1)));
+
+for(int expiredGuestUserId: expiredGuestUserIdList) {
+  deleteUserDataService.deleteUserData(expiredGuestUserId);
+  logger.info("Deleted guest user data: userId={}", expiredGuestUserId);
+}
+
+logger.info("=== Guest User Cleanup Finished. Total deleted: {} ===", expiredGuestUserIdList.size());
+}
+```
+<br>
+<br>
+
+### 4. 📝 学習アクション登録機能 & 5. 🏷️ タグ付け機能
+<!-- GIF画像（登録フロー & 編集フロー & 削除フロー）を貼る -->
+- 学習にまつわる下記のアクションを登録することができます
+    - やること（日付、内容）
+    - できこと（日付、内容、学習時間、メモ、タグ）
+    - 目標（タイトル、内容、進捗状況、タグ）
+    - メモ（タイトル、内容、タグ）
+    - 記事ストック（タイトル、URL、メモ、閲覧状況、タグ）
+- 学習アクション（できたこと・目標・メモ・記事ストック）にタグを紐付けて登録することができます
+
+#### 🟢 シーケンス図（例: 「目標」登録）
 - ユーザーリクエスト（フォーム入力 & 送信）により、大まかに分けて「データ確認」「目標登録」、「タグ & 目標とタグの関係性登録」、「ユーザー進捗状況 &
-  ボーナスえらい！獲得状況更新」の4つの処理が実行されます
+  ボーナスえらい！獲得状況更新」の4つの処理を実行
 
 ```mermaid
 sequenceDiagram
@@ -196,21 +484,16 @@ sequenceDiagram
     end
 ```
 
-- データ確認は2箇所で実施しています
-    - GoalController: DTOアノテーションとカスタムバリデータを通してバリデーションチェック（形式・内容が正しいか）を実施し、エラーを確認します
-    - GoalService: DB登録済みデータと照合して重複があるか確認し、例外処理を行います
+- データ確認は2箇所で実施
+    - GoalController: DTOアノテーションとカスタムバリデータを通してバリデーションチェック（形式・内容が正しいか）を実施し、エラーを確認
+    - GoalService: DB登録済みデータと照合して重複があるか確認し、例外処理
       <br/>
       <br/>
 
-## 🔵 クラス図
-下図は上記シーケンス図で示した「目標登録」「タグ & 目標とタグの関係性登録」「ユーザー進捗状況 & ボーナスえらい！獲得状況更新」の処理を行うクラス間の関係性を表しています。
+#### 🔵 クラス図（ユーティリティークラスは除く）
+※ 属性、操作はそれぞれ当該処理に関連するもののみ抜粋
 
-- 属性、操作はそれぞれ当該処理に関連するもののみ抜粋しております
-  <br/>
-  <br/>
-  <br/>
-
-### 🚩 目標登録
+**🚩 目標登録**
 
 ```mermaid
 ---
@@ -303,8 +586,9 @@ classDiagram
 ```
 
 <br/>
+<br/>
 
-### 🏷️ タグ登録 & 目標とタグの関係性登録
+**🏷️ タグ登録 & 目標とタグの関係性登録**
 
 ```mermaid
 ---
@@ -406,10 +690,82 @@ classDiagram
 ```
 
 ※ GoalTagJunctionService, BaseActionJunctionServiceのregisterNewRelationsの引数のBiFunctionは出力上正しくパースされませんが、中身がわかるように"~"
-で囲って記載してます<br/>
+で囲って記載してます
 <br/>
 
-### 👌 ユーザー進捗状況更新 & ボーナスえらい！獲得状況登録
+```java
+// GoalService.java
+
+public SaveResult saveGoal(int userId, GoalRequestDto dto) {
+  List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
+  List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
+
+  int goalId = dto.getId();
+  SaveResult saveResult;
+  if (goalId == 0) {
+    saveResult = registerGoal(userId, dto, tagIdList);
+  } else {
+    saveResult = updateGoal(userId, dto, tagIdList, goalId);
+  }
+
+  sessionManager.setHasUpdatedRecordCount(true);
+
+  return saveResult;
+}
+
+@Transactional
+private SaveResult registerGoal(
+    int userId, GoalRequestDto dto, List<Integer> tagIdList) throws DuplicateException {
+
+  if (isDuplicateTitle(dto.getId(), userId, dto.getTitle())) {
+    throw new DuplicateException(DuplicateType.TITLE);
+  }
+
+  Goal goal = dto.toGoalForRegistration(userId);
+  goalRepository.registerGoal(goal);
+  goalTagJunctionService.registerNewRelations(goal.getId(), GoalTagJunction :: new, tagIdList);
+
+  userProgressService.updateUserProgress(userId);
+
+  return new SaveResult(goal.getId(), false);
+}
+```
+```java
+// GoalTagJunctionService.java
+
+@Override
+public void registerNewRelations(
+  int goalId, BiFunction<Integer, Integer, GoalTagJunction> relationFactory,
+  List<Integer> tagIdList) {
+
+  super.registerNewRelations(goalId, relationFactory, tagIdList);
+}
+```
+```java
+// BaseActionTagJunctionService.java
+
+public void registerNewRelations(
+  int actionId, BiFunction<Integer, Integer, T> relationFactory,
+  List<Integer> tagIdList) {
+
+  if (tagIdList == null || tagIdList.isEmpty()) {
+    return;
+  }
+    
+  for (int tagId : tagIdList) {
+    T relation = relationFactory.apply(actionId, tagId);
+    registerRelation(relation);
+  }
+}
+
+protected void registerRelation(T relation) {
+  repository.registerRelation(relation);
+}
+```
+<br/>
+<br/>
+
+**👌 ユーザー進捗状況更新 & ボーナスえらい！獲得状況登録**
 
 ```mermaid
 ---
@@ -507,72 +863,101 @@ classDiagram
 
 <br/>
 <br/>
+
+### 6. 📊 ダッシュボード機能
+<!-- GIF画像（ダッシュボード確認フロー）を貼る -->
+- ダッシュボードページにて、下記の情報を数値やグラフで確認することができます
+  - 累計えらい！ポイント（ポイント数、イラストグラフ） 
+  - 累計学習日数 
+  - 連続学習日数（日数、最後に学習した日） 
+  - 累計学習時間 
+  - 学習時間グラフ 
+    - 日別学習時間（過去7日分） 
+    - 曜日別平均学習時間 
+    - 月別学習時間（過去6ヶ月分） 
+    - タグ別学習時間（上位10件、全件）
+
+<br/>
+<br/>
+
+### 7. 👍 えらい！ポイント & えらい！メッセージ獲得機能
+<!-- GIF画像（えらい！ポップアップメッセージ）を貼る-->
+- 学習にまつわるアクションを登録することで、えらい！ポイントを獲得することができます
+- アクション登録時（やること・できたことは日付あたり1件目の登録時）にえらい！メッセージが表示されます
+- アクション登録の継続日数に応じてボーナスえらい！ポイントを獲得することができます
+#### 👑 ノーマルえらい！獲得条件
+| 条件 | 1件あたりのポイント | メッセージ |
+|:-:|:-:|:-:|
+| やることを登録 | 1えらい！ | やることを決めてえらい！ |
+| できたことを登録 | 3えらい！ | 実行できてえらい！ |
+| 目標を登録 | 5えらい！ | 目標を立ててえらい！ |
+| 目標を達成 | 10えらい！ | 達成できてえらい！ |
+| メモを登録 | 5えらい！ | メモに残してえらい！ |
+| 記事ストックを登録 | 3えらい！ | 情報を集めてえらい！ |
+| 登録した記事を読了 | 5えらい！ | 知識を深めてえらい！ |
+
+#### 👑 ボーナスえらい！獲得条件
+| 条件（n日ごと） | 1日あたりの追加ポイント |
+|:-:|:-:|
+| いずれかのアクションを登録 | 1えらい！ |
+| 3日連続でいずれかのアクションを登録 | 3えらい！ |
+| 7日連続でいずれかのアクションを登録 | 7えらい！ |
+| 30日連続でいずれかのアクションを登録 | 10えらい！ |
+<br/>
+<br/>
 <br/>
 
 ## ✨ 工夫したところ
 ### 💖 ユーザーを意識した工夫
-- 内容ではなく行動そのものに焦点を当て、学習にまつわるアクションの登録してえらい！を貯めていくことで、学習者が自分の行動を肯定的に受け止められるようにしました
-- えらい！を貯めることが目的となってしまわないように過度な演出やゲーム要素は省きつつ、達成感は得られるようにバランスを調整しました
+#### ユーザーの心に寄り添う設計
+- 入力内容の多いユーザー・少ないユーザー双方が登録しやすいように、やること・できたことの入力枠を可変にしました
+- えらい！を貯めること自体が目的となってしまわないように、過度な演出やゲーム要素は省きつつ、達成感は得られるようにバランスを調整しました
     - 登録時に表示するポップアップウィンドウにアニメーションを加えて動きをつけることで、特別感を演出
-    - えらい！ポイントが貯まっていく様子をイラストグラフで表示し、マウスホバー時にアニメーションを加えて動きをつけることで、えらい！が育っていく様子を演出
-- ユーザーの心に寄り添った設計を意識し、やること・できたことの入力枠を固定した場合に想定される下記の懸念点を解消するために、入力枠を可変にしました
-    - 予定・実行した内容が入力枠に満たないユーザーは空欄の枠を見て「今日も書けることが少ないな」と気分が落ち込んでしまう
-    - 入力枠を超える内容を予定・実行しているユーザーは「もっと書けることあるのに！」と不完全燃焼に思う
-- ダッシュボードページにてユーザーの努力を可視化し、学習の振り返りをサポートできるようにしました
-    - 累計えらい！ポイント・累計学習日数・連続学習日数・累計学習時間を算出して表示
-    - 前日に学習ができなかった場合にも誤解が生じないように、連続学習日数とともに最終学習日を併記
-    - 数値だけでなく、累計えらい！ポイントはイラストグラフ、学習時間はChart.jsを活用して横棒・縦棒グラフとして可視化することで、直感的な理解を実現
-    - Chart.jsのグラフ描画において、不要なラベルを削除し、ツールチップを調整することで視覚的なノイズを排除
-- メインメニューやサイドメニュー、編集・削除をアイコンで表現し、直感的に操作できるように工夫しました
-- メモの入力フォームにはEasyMDEを活用してマークダウンエディタを実装し、構造的な文章を作成しやすくしています
+    - えらい！ポイントが貯まっていく様子をイラストグラフで表示
+    - イラストグラフには、マウスホバー時にアニメーションを加えて動きをつけることで、えらい！が育っていく様子を演出
 - ユーザーの心理的負担を減らせるように、エラーページやエラーメッセージを適切に表示しています
-    - 入力エラーがあった場合、エラーメッセージをどこがどのように間違っているか「フィールド単位のエラー」と「全体に関わるエラー」に分けて表示することで、入力のストレスを軽減（セキュリティを考慮し、ログインページでは非表示）
-    - アプリのデザインに合わせたエラーページを作成し、ユーザーの不安を緩和し、その後の行動を案内
+  - 入力エラー時にどこがどのように間違っているかを表示することで、入力のストレスを軽減（セキュリティを考慮し、ログインフォームでは詳細は表示しない）
+  - アプリのデザインに合わせたエラーページを用意し、ユーザーの不安を緩和し、その後の行動を案内
+#### 努力を可視化し、学習の振り返りをサポート
+- 数値だけでなく、累計えらい！ポイントはイラストグラフ、学習時間はChart.jsを活用して横棒・縦棒グラフとして可視化することで、直感的に理解できるようにしています
+- Chart.jsのグラフ描画において、不要なラベルを削除し、ツールチップを調整することで視覚的なノイズを排除しました
+#### 直感的に操作できるUI
+- メインメニューやサイドメニュー、編集・削除などをアイコンで表現し、直感的に操作できるようにしました
+- メモの入力フォームにEasyMDE（マークダウンエディタ）を導入し、構造的な文章作成の補助を実現しています
+
+<br/>
 <br/>
 
 ### 🔨 技術的な工夫
+#### 可読性・保守性・拡張性・再利用性を意識した設計
 - 可読性・保守性を意識し、各クラスの責任や役割が明確になるように設計しました
     - Controller / Service / Repositoryの3層構造を採用し、責務を明確化
     - クラス内においても処理ごとにメソッドを細分化あるいはまとめることで、可読性を向上し、各メソッドの役割を明確化
-- バリデーションチェック、エラーチェックを種類ごとに三段階に分けて実施し、適切なデータ登録を実現しています（[シーケンス図](#-シーケンス図)参照）
-    - 「入力必須」「文字数」「形式」などの単純なバリデーションチェックをDTOアノテーションで実施
-    - 「未来の日付不可」「他フィールドの入力に応じて入力必須」などの複雑なバリデーションチェックをカスタムバリデータクラスで実施
-    - 「重複不可」「現在のパスワードと入力パスワードの照合」などのDBに登録されたデータとの照合が必要なエラーチェックをサービスクラスで実施
-- えらい！ポイント・学習日数・学習時間の集計をダッシュボードアクセス時に限定し、かつ算出したデータをセッションに保持することで、DBへのアクセスを最小限にしています
+- バリデーションチェック、エラーチェックを種類ごとに実施し、適切なデータ登録を実現しています（[シーケンス図](#-シーケンス図)参照）
+    - DTO: アノテーションで「入力必須」「文字数」「形式」などの単純なバリデーションを制御
+    - カスタムバリデータクラス: 「未来の日付不可」「他フィールドの入力に応じて入力必須」などの複雑なバリデーションを制御
+    - サービスクラス: 「重複不可」「現在のパスワードと入力パスワードの照合」などのDBに登録されたデータとの照合が必要なバリデーションを制御
 - 中間テーブルへの関係性の登録処理を共通化し、保守性・再利用性の高いコード設計を心がけました（[クラス図](#-クラス図)参照）
     - 抽象クラスBaseActionJunctionServiceを用意し、BiFunctionを引数に取ることで柔軟な拡張を実現
+#### DBアクセス負荷軽減 / 一貫性・整合性のあるデータ処理
+- えらい！ポイント・学習日数・学習時間の集計をダッシュボードアクセス時に限定し、かつ算出したデータをセッションに保持することで、DBへのアクセスを最小限にしています
 - Spring Securityの認証情報とデータ取得を紐付けることにより、一貫性のあるデータ取得を実現しています（[ER図](#-ER図)参照）
     - ユーザー登録時にDBで自動採番されるuser_info.idをCustomUserDetailsのidとして設定することでAuthenticationPrincipalからidを参照可能
     - user_info.idを他テーブルの外部キーとして関連付けることで、データの整合性を保証
     - セキュリティを考慮し、認証情報とデータ取得を厳密に紐付け、ログイン中のユーザー以外のデータアクセスを防止
-      <br/>
-      <br/>
-      <br/>
-
-## 🛠️ 環境・使用技術
-- **検証済みOS:** Mac OS (Sequoia 15.7.1)
-- **バックエンド:**
-    - 言語: Java (Oracle OpenJDK 21.0.9)
-    - フレームワーク: Spring Boot (3.4.7)
-- **フロントエンド:**
-    - 言語: HTML (Thymeleaf), CSS, JavaScript
-    - ツール: Chart.js (グラフ描画), Tagify (タグ入力補助), EasyMDE (Markdownエディタ)
-- **認証:** Spring Security
-- **データベース:** MySQL (8.0.42 / Docker, MyBatis)
-- **インフラ:** Docker Compose, AWS EC2
-- **バージョン管理:** Git, GitHub
-  <br/>
-  <br/>
-  <br/>
+<br/>
+<br/>
+<br/>
 
 ## 💭 今後実装予定の機能
 - 登録済みタグの名称変更・削除機能
 - 獲得したえらい！ポイントの内訳・獲得履歴確認機能
-- 登録済みアクションの検索・絞り込み・並び替え機能
+- 登録済み学習アクションの検索・絞り込み・並び替え機能
 - メールアドレス認証によるパスワード再設定機能
-  <br/>
-  <br/>
-  <br/>
+- CSVファイルをアップロードによる過去の学習記録（できたこと）インポート機能
+- CSVファイルのエクスポート機能
+<br/>
+<br/>
 
 ## おわりに
 - Java学習のアウトプットとして、本リポジトリを公開させていただきました
