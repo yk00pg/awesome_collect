@@ -46,14 +46,13 @@ CREATE TABLE tag(
 -- アクション管理
 -- やること
 CREATE TABLE daily_todo(
-  id INT AUTO_INCREMENT,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   date DATE NOT NULL,
   content VARCHAR(100) NOT NULL,
   registered_at DATETIME,
   updated_at DATETIME,
-  FOREIGN KEY (user_id) REFERENCES user_info(id),
-  PRIMARY KEY (id)
+  FOREIGN KEY (user_id) REFERENCES user_info(id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- できたこと
@@ -75,7 +74,7 @@ CREATE TABLE goal(
   user_id INT NOT NULL,
   title VARCHAR(100) NOT NULL,
   content VARCHAR(500) NOT NULL,
-  achieved BOOLEAN,
+  achieved BOOLEAN NOT NULL,
   registered_at DATETIME,
   updated_at DATETIME,
   status_updated_at DATETIME,
@@ -100,7 +99,7 @@ CREATE TABLE article_stock(
   title VARCHAR(100) NOT NULL,
   url VARCHAR(2083),
   memo VARCHAR(500),
-  finished BOOLEAN,
+  finished BOOLEAN NOT NULL,
   registered_at DATETIME,
   updated_at DATETIME,
   status_updated_at DATETIME,

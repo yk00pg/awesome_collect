@@ -9,7 +9,7 @@ import webapp.AwesomeCollect.provider.param.JunctionDeleteParams;
  */
 public class ActionTagJunctionProvider {
 
-  // Mapperに渡されたリストを文字列結合してSQL文を作成する。
+  // Mapperに渡された引数オブジェクトから取得したリストを文字列結合してSQL文を作成する。
   public String deleteRelationsByActionIdList(JunctionDeleteParams params){
     List<Integer> actionIdList = params.actionIdList();
 
@@ -22,6 +22,7 @@ public class ActionTagJunctionProvider {
         .map(String::valueOf)
         .collect(Collectors.joining(","));
 
-    return "DELETE FROM " + params.tableName() + " WHERE " + params.columnName() + " IN (" + inClause + ")";
+    return "DELETE FROM " + params.tableName()
+        + " WHERE " + params.columnName() + " IN (" + inClause + ")";
   }
 }

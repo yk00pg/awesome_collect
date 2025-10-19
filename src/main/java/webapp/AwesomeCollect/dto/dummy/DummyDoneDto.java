@@ -10,6 +10,9 @@ import webapp.AwesomeCollect.common.constant.CsvHeader;
 import webapp.AwesomeCollect.common.util.LearningTimeConverter;
 import webapp.AwesomeCollect.entity.action.DailyDone;
 
+/**
+ * ダミーデータ用できたことデータオブジェクト。
+ */
 @Data
 public class DummyDoneDto {
 
@@ -20,6 +23,13 @@ public class DummyDoneDto {
   private String memo;
   private List<String> tagList;
 
+  /**
+   * ダミーデータ用データオブジェクトをエンティティに変換する。
+   *
+   * @param guestUserId ゲストユーザーID
+   * @param date  日付
+   * @return  できたこと
+   */
   public DailyDone toEntity(int guestUserId, LocalDate date){
     DailyDone dailyDone = new DailyDone();
     dailyDone.setUserId(guestUserId);
@@ -31,6 +41,12 @@ public class DummyDoneDto {
     return dailyDone;
   }
 
+  /**
+   * CSVファイルから読み込んだレコードをダミーデータ用データオブジェクトに変換する。
+   *
+   * @param record  CSVファイルから読み込んだレコード
+   * @return  ダミーデータ用データオブジェクト
+   */
   public static DummyDoneDto fromCsvRecord(CSVRecord record){
     DummyDoneDto dto = new DummyDoneDto();
     dto.date = LocalDate.parse(record.get(CsvHeader.DATE));

@@ -1,5 +1,8 @@
 package webapp.AwesomeCollect.common.constant;
 
+/**
+ * CSVファイルデータのヘッダー名の定数クラス。
+ */
 public class CsvHeader {
 
   public static final String DATE = "date";

@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.GuestUser;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
 import webapp.AwesomeCollect.common.constant.ViewNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
@@ -57,13 +58,13 @@ public class LoginController {
   }
 
   // ゲストユーザーとしてログインする。
-  @PostMapping("/guest_login")
+  @PostMapping(ViewNames.GUEST_LOGIN)
   public String guestLogin(HttpServletRequest request){
 
     UserInfo guestUser = guestUserService.createGuestUser();
 
     UsernamePasswordAuthenticationToken authToken =
-        new UsernamePasswordAuthenticationToken(guestUser.getLoginId(), "GuestUser@123");
+        new UsernamePasswordAuthenticationToken(guestUser.getLoginId(), GuestUser.PASSWORD);
 
     Authentication auth = authenticationManager.authenticate(authToken);
     SecurityContextHolder.getContext().setAuthentication(auth);

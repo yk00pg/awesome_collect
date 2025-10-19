@@ -9,12 +9,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import webapp.AwesomeCollect.common.constant.GuestUser;
 import webapp.AwesomeCollect.entity.user.UserInfo;
-import webapp.AwesomeCollect.provider.param.ExpiredUserParams;
+import webapp.AwesomeCollect.provider.param.ExpiredGuestUserParams;
 import webapp.AwesomeCollect.repository.user.UserInfoRepository;
 import webapp.AwesomeCollect.repository.user.UserProgressRepository;
 import webapp.AwesomeCollect.service.DummyDataService;
 
+/**
+ * ゲストユーザーのサービスクラス。
+ */
 @Service
 @RequiredArgsConstructor
 public class GuestUserService {
@@ -28,21 +32,26 @@ public class GuestUserService {
 
   private static final Logger logger = LoggerFactory.getLogger(GuestUserService.class);
 
+  /**
+   * 新規ゲストユーザーアカウントとユーザー進捗状況を作成し、ダミーデータを登録する。
+   *
+   * @return  ユーザー情報
+   */
   @Transactional
   public UserInfo createGuestUser() {
     String randomId = UUID.randomUUID().toString().substring(0, 8);
-    String loginId = "guest_" + randomId;
+    String loginId = GuestUser.LOGIN_ID + randomId;
 
     while(userInfoRepository.findUserInfoByLoginId(loginId) != null){
       randomId = UUID.randomUUID().toString().substring(0, 8);
-      loginId = "guest_" + randomId;
+      loginId = GuestUser.LOGIN_ID + randomId;
     }
 
     UserInfo guestUser = UserInfo.builder()
         .loginId(loginId)
-        .userName("ゲストユーザー")
-        .email(loginId + "@mail.com")
-        .password(passwordEncoder.encode("GuestUser@123"))
+        .userName(GuestUser.NAME)
+        .email(loginId + GuestUser.EMAIL)
+        .password(passwordEncoder.encode(GuestUser.PASSWORD))
         .isGuest(true)
         .build();
 
@@ -55,8 +64,11 @@ public class GuestUserService {
     return guestUser;
   }
 
+  /**
+   * 期限切れのゲストユーザーアカウントを削除し、ログを出力する。
+   */
   @Transactional
-  public void cleanupGuestUsers(){
+  public void cleanupExpiredGuestUsers(){
     List<Integer> guestUserIdList = userInfoRepository.selectGuestUserId();
     if(guestUserIdList==null || guestUserIdList.isEmpty()){
       logger.info("No expired guest users found. Cleanup skipped.");
@@ -67,7 +79,7 @@ public class GuestUserService {
 
     List<Integer> expiredGuestUserIdList =
         userProgressRepository.searchExpiredUserIdByUserId(
-            new ExpiredUserParams(guestUserIdList, LocalDate.now().minusDays(1)));
+            new ExpiredGuestUserParams(guestUserIdList, LocalDate.now().minusDays(1)));
 
     for(int expiredGuestUserId: expiredGuestUserIdList) {
       deleteUserDataService.deleteUserData(expiredGuestUserId);

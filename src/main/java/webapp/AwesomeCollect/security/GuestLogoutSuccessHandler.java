@@ -1,6 +1,5 @@
 package webapp.AwesomeCollect.security;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -12,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import webapp.AwesomeCollect.common.constant.ViewNames;
 import webapp.AwesomeCollect.service.user.DeleteUserDataService;
 
+/**
+ * ゲストユーザーがログアウトする際にデータを削除するクラス。
+ */
 @Component
 @RequiredArgsConstructor
 public class GuestLogoutSuccessHandler implements LogoutSuccessHandler {
@@ -22,8 +24,7 @@ public class GuestLogoutSuccessHandler implements LogoutSuccessHandler {
   @Override
   public void onLogoutSuccess(
       HttpServletRequest request, HttpServletResponse response,
-      Authentication authentication)
-      throws IOException, ServletException {
+      Authentication authentication) throws IOException {
 
     if(authentication != null) {
       CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
