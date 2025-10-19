@@ -2,12 +2,14 @@ package webapp.AwesomeCollect.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,6 +25,7 @@ import webapp.AwesomeCollect.dto.user.UserPasswordDto;
 import webapp.AwesomeCollect.exception.DuplicateException;
 import webapp.AwesomeCollect.exception.IncorrectPasswordException;
 import webapp.AwesomeCollect.security.CustomUserDetails;
+import webapp.AwesomeCollect.service.user.DeleteUserDataService;
 import webapp.AwesomeCollect.service.user.UserInfoService;
 import webapp.AwesomeCollect.validator.MyPageValidator;
 
@@ -30,20 +33,13 @@ import webapp.AwesomeCollect.validator.MyPageValidator;
  * マイページのコントローラークラス。
  */
 @Controller
+@RequiredArgsConstructor
 public class MyPageController {
 
   private final UserInfoService userInfoService;
   private final MyPageValidator myPageValidator;
   private final MessageUtil messageUtil;
-
-  public MyPageController(
-      UserInfoService userInfoService, MyPageValidator myPageValidator,
-      MessageUtil messageUtil) {
-
-    this.userInfoService = userInfoService;
-    this.myPageValidator = myPageValidator;
-    this.messageUtil = messageUtil;
-  }
+  private final DeleteUserDataService deleteUserDataService;
 
   // ユーザー登録情報を表示する。
   @GetMapping(ViewNames.MY_PAGE)
@@ -166,6 +162,19 @@ public class MyPageController {
     redirectAttributes.addFlashAttribute(
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.PASSWORD_CHANGE_SUCCESS));
+
+    return RedirectUtil.redirectView(ViewNames.LOGIN_PAGE);
+  }
+
+  // アカウントおよび登録データをすべて削除してログアウトし、ログイン画面に遷移する。
+  @DeleteMapping(ViewNames.DELETE_ACCOUNT)
+  public String deleteAccount(
+      @AuthenticationPrincipal CustomUserDetails customUserDetails,
+      HttpServletRequest request){
+
+    deleteUserDataService.deleteUserData(customUserDetails.getId());
+    SecurityContextHolder.clearContext();
+    request.getSession().invalidate();
 
     return RedirectUtil.redirectView(ViewNames.LOGIN_PAGE);
   }
