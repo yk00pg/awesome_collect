@@ -1,9 +1,11 @@
 package webapp.AwesomeCollect.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
@@ -17,30 +19,27 @@ import webapp.AwesomeCollect.common.constant.ViewNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.entity.user.UserInfo;
+import webapp.AwesomeCollect.security.CustomUserDetails;
 import webapp.AwesomeCollect.service.user.GuestUserService;
 
 /**
  * ログインページのコントローラークラス。
  */
 @Controller
+@RequiredArgsConstructor
 public class LoginController {
 
   private final GuestUserService guestUserService;
   private final AuthenticationManager authenticationManager;
   private final MessageUtil messageUtil;
 
-  public LoginController(
-      GuestUserService guestUserService, AuthenticationManager authenticationManager,
-      MessageUtil messageUtil){
-
-    this.guestUserService = guestUserService;
-    this.authenticationManager = authenticationManager;
-    this.messageUtil = messageUtil;
-  }
-
-  // ログインフォームを表示する。
+  // ログイン済みの場合はトップページに遷移し、そうでない場合はログインページを表示する。
   @GetMapping(ViewNames.LOGIN_PAGE)
-  public String showLoginForm() {
+  public String showLoginPage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    if(customUserDetails != null){
+      return RedirectUtil.redirectView(ViewNames.TOP_PAGE);
+    }
+
     return ViewNames.LOGIN_PAGE;
   }
 
