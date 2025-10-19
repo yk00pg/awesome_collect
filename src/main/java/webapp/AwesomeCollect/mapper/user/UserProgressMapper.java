@@ -9,13 +9,13 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
 import webapp.AwesomeCollect.entity.user.UserProgress;
 import webapp.AwesomeCollect.provider.UserProgressProvider;
-import webapp.AwesomeCollect.provider.param.ExpiredUserParams;
+import webapp.AwesomeCollect.provider.param.ExpiredGuestUserParams;
 
 @Mapper
 public interface UserProgressMapper {
 
   @SelectProvider(type = UserProgressProvider.class, method = "selectUserIdByUserIdList")
-  List<Integer> selectExpiredUserIdByUserIdList(ExpiredUserParams params);
+  List<Integer> selectExpiredUserIdByUserIdList(ExpiredGuestUserParams params);
 
   @Select("""
       SELECT * FROM user_progress

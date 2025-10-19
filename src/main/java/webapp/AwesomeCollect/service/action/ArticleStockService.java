@@ -290,6 +290,12 @@ public class ArticleStockService {
     sessionManager.setHasUpdatedRecordCount(true);
   }
 
+  /**
+   * CSVファイルから読み込んだダミーデータをDBに登録し、セッションのレコード数更新情報を変更する。
+   *
+   * @param guestUserId ゲストユーザーID
+   * @param recordList  CSVファイルから読み込んだレコードリスト
+   */
   @Transactional
   public void registerDummyArticleStock(int guestUserId, List<DummyArticleStockDto> recordList){
     recordList.forEach(dto ->{

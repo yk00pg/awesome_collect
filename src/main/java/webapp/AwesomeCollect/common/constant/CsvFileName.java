@@ -1,5 +1,8 @@
 package webapp.AwesomeCollect.common.constant;
 
+/**
+ * CSVファイル名の定数クラス
+ */
 public class CsvFileName {
 
   public static final String DUMMY_TODO = "dummy/daily_todo.csv";

@@ -12,8 +12,19 @@ import java.util.function.Function;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
+/**
+ * CSVファイルを読み込むクラス。
+ */
 public class CsvLoader {
 
+  /**
+   * CSVファイルを読み込み、レコードをオブジェクトに変換してリスト化する。
+   *
+   * @param inputStream 外部ファイルからデータを読み込む抽象クラス
+   * @param mapper CSVレコードをオブジェクトに変換するインターフェース
+   * @return  オブジェクト変換後のCSVレコードリスト
+   * @param <T> ジェネリクス
+   */
   public static <T> List<T> load(InputStream inputStream, Function<CSVRecord, T> mapper) {
     List<T> resultList = new ArrayList<>();
 
@@ -40,6 +51,7 @@ public class CsvLoader {
     return resultList;
   }
 
+  // BOMが含まれている場合は処理する。
   private static Reader createUtf8ReaderSkippingBOM(InputStream inputStream) throws IOException {
     PushbackInputStream pushbackInputStream = new PushbackInputStream(inputStream, 3);
     byte[] bom = new byte[3];
