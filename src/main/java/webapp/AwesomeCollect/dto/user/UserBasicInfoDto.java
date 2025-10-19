@@ -40,7 +40,7 @@ public class UserBasicInfoDto {
         .id(id)
         .loginId(loginId)
         .userName(userName)
-        .email(email)
+        .email(email.isBlank() ? null : email)
         .build();
   }
 
