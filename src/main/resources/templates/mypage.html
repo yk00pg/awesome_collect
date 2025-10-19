@@ -14,8 +14,8 @@
 
     <div class="sidebar" th:replace="~{fragments/sidebar::sidebar}"></div>
 
-    <div class="main-container">
-      <div class="mypage-inner">
+    <div class="mypage-container">
+      <div class="user-info-container">
         <div class="message-area">
           <div class="success-message"
                th:if="${successMessage != null}"
@@ -55,6 +55,32 @@
             </td>
           </tr>
         </table>
+      </div>
+
+      <div class="account-delete-container">
+        <form id="deleteUserAccount" class="form-group"
+              th:action="@{/mypage/delete_account}" method="post">
+          <input type="hidden" name="_method" value="delete">
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+          <div class="button-area">
+            <button type="submit"
+                    class="delete-account-button">アカウントを削除する</button>
+          </div>
+        </form>
+
+        <!-- アカウント削除ボタンクリック時に表示するダイアログ -->
+        <script th:inline="javascript">
+          /*<![CDATA[*/
+              const deleteConfirmMessage = /*[[#{delete.account}]]*/;
+
+              document.getElementById("deleteUserAccount")
+                  .addEventListener("submit", function(e) {
+                  if(!confirm(deleteConfirmMessage)) {
+                      e.preventDefault();
+                  }
+              });
+          /*]]>*/
+        </script>
       </div>
     </div>
   </body>
