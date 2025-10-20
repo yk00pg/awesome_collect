@@ -129,6 +129,12 @@ public class DailyTodoService {
     sessionManger.setHasUpdatedRecordCount(true);
   }
 
+  /**
+   * CSVファイルから読み込んだダミーデータをDBに登録し、セッションのレコード数更新情報を変更する。
+   *
+   * @param guestUserId ゲストユーザーID
+   * @param recordList  CSVファイルから読み込んだレコードリスト
+   */
   public void registerDummyTodo(int guestUserId, List<DummyTodoDto> recordList){
     LocalDate referenceDate = LocalDate.now();
     for (int i = 0; i < recordList.size(); i++) {

@@ -17,6 +17,7 @@ public final class ViewNames {
   public static final String MY_PAGE = "/mypage";
   public static final String MY_PAGE_EDIT = MY_PAGE + EDIT_PAGE;
   public static final String MY_PAGE_CHANGE_PASSWORD = MY_PAGE + "/change_password";
+  public static final String DELETE_ACCOUNT = MY_PAGE + "/delete_account";
 
   private static final String DATE = "/{date}";
   private static final String ID = "/{id}";

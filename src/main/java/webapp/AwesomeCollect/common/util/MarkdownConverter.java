@@ -1,8 +1,16 @@
 package webapp.AwesomeCollect.common.util;
 
+import com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension;
+import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
+import com.vladsch.flexmark.ext.emoji.EmojiExtension;
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
+import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
+import com.vladsch.flexmark.ext.tables.TablesExtension;
+import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.data.MutableDataSet;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.owasp.html.PolicyFactory;
@@ -13,12 +21,24 @@ import org.owasp.html.Sanitizers;
  */
 public final class MarkdownConverter {
 
-  // ソフトブレークを改行とみなす
+  // 表・取り消し線・タスクリスト・URL自動リンク化・絵文字変換を有効にし、flexmarkのHTMLを禁止し、ソフトブレークを改行とみなす
   private static final MutableDataSet options = new MutableDataSet()
+      .set(Parser.EXTENSIONS, List.of(
+          AnchorLinkExtension.create(),
+          TocExtension.create(),
+          TablesExtension.create(),
+          StrikethroughExtension.create(),
+          TaskListExtension.create(),
+          AutolinkExtension.create(),
+          EmojiExtension.create()
+      ))
+      .set(Parser.HTML_BLOCK_PARSER, false)
       .set(HtmlRenderer.SOFT_BREAK, "<br />\n");
 
   private static final Parser parser = Parser.builder(options).build();
-  private static final HtmlRenderer renderer = HtmlRenderer.builder(options).build();
+  private static final HtmlRenderer renderer = HtmlRenderer.builder(options)
+      .escapeHtml(true)
+      .build();
 
   // リンク、見出し・段落、表は許容
   private static final PolicyFactory policy = Sanitizers.FORMATTING

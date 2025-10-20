@@ -7,19 +7,22 @@ import org.apache.commons.csv.CSVRecord;
 import webapp.AwesomeCollect.common.constant.CsvHeader;
 import webapp.AwesomeCollect.entity.action.DailyTodo;
 
+/**
+ * ダミーデータ用やることデータオブジェクト。
+ */
 @Data
 public class DummyTodoDto {
 
   private LocalDate date;
   private String content;
 
-  public static DummyTodoDto fromCsvRecord(CSVRecord record){
-    DummyTodoDto dto = new DummyTodoDto();
-    dto.date = LocalDate.parse(record.get(CsvHeader.DATE));
-    dto.content = record.get(CsvHeader.CONTENT);
-    return dto;
-  }
-
+  /**
+   * ダミーデータ用データオブジェクトをエンティティに変換する。
+   *
+   * @param guestUserId ゲストユーザーID
+   * @param date  日付
+   * @return  やること
+   */
   public DailyTodo toEntity(int guestUserId, LocalDate date){
     DailyTodo dailyTodo = new DailyTodo();
     dailyTodo.setUserId(guestUserId);
@@ -29,4 +32,17 @@ public class DummyTodoDto {
     return dailyTodo;
   }
 
+
+  /**
+   * CSVファイルから読み込んだレコードをダミーデータ用データオブジェクトに変換する。
+   *
+   * @param record  CSVファイルから読み込んだレコード
+   * @return  ダミーデータ用データオブジェクト
+   */
+  public static DummyTodoDto fromCsvRecord(CSVRecord record){
+    DummyTodoDto dto = new DummyTodoDto();
+    dto.date = LocalDate.parse(record.get(CsvHeader.DATE));
+    dto.content = record.get(CsvHeader.CONTENT);
+    return dto;
+  }
 }

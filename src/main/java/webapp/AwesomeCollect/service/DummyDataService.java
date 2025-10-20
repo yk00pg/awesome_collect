@@ -19,6 +19,9 @@ import webapp.AwesomeCollect.service.action.DailyTodoService;
 import webapp.AwesomeCollect.service.action.GoalService;
 import webapp.AwesomeCollect.service.action.MemoService;
 
+/**
+ * ダミーデータのサービスクラス。
+ */
 @Service
 @RequiredArgsConstructor
 public class DummyDataService {
@@ -29,6 +32,11 @@ public class DummyDataService {
   private final MemoService memoService;
   private final ArticleStockService articleStockService;
 
+  /**
+   * CSVファイルからダミーデータを読み込み、エンティティに変換してDBに登録する。
+   *
+   * @param guestUserId ゲストユーザーID
+   */
   public void registerDummyData(int guestUserId){
     injectDummyTodo(guestUserId);
     injectDummyDone(guestUserId);

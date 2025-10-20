@@ -1,6 +1,7 @@
 package webapp.AwesomeCollect.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,22 +24,13 @@ import webapp.AwesomeCollect.validator.SignupValidator;
 /**
  * サインアップページのコントローラークラス。
  */
-
 @Controller
+@RequiredArgsConstructor
 public class SignupController {
 
   private final UserInfoService userInfoService;
   private final SignupValidator signupValidator;
   private final MessageUtil messageUtil;
-
-  public SignupController(
-      UserInfoService userInfoService, SignupValidator signupValidator,
-      MessageUtil messageUtil) {
-
-    this.userInfoService = userInfoService;
-    this.signupValidator = signupValidator;
-    this.messageUtil = messageUtil;
-  }
 
   // 新規登録フォームを表示する。
   @GetMapping(ViewNames.SIGNUP_PAGE)

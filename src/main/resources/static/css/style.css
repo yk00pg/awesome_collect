@@ -98,7 +98,7 @@
   object-fit: cover;
   width: 50%;
   height: auto;
-  margin: 0 auto;
+  margin: 10px auto;
 }
 
 .guest-login-mark {
@@ -687,6 +687,7 @@ table th {
 .login-button, .guest-login-button,
 .register-button, .save-button,
 .edit-button, .history-back-button,
+.delete-account-button,
 .signup-link, .edit-link,
 .learning-time-link {
   cursor: pointer;
@@ -695,7 +696,8 @@ table th {
 }
 
 .login-button, .register-button,
-.save-button, .history-back-button {
+.save-button, .history-back-button,
+.delete-account-button {
   color: var(--reddish-brown);
   background-color: var(--pink-beige);
   border-radius: 10px;
@@ -1183,11 +1185,29 @@ table th {
   マイページの設定
 =============== */
 
-.mypage-inner {
+.mypage-container {
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  margin: 120px auto;
+  font-size: 14px;
+}
+
+.user-info-container, .account-delete-container {
+  width: 100%;
+  margin: 0 20px;
+  padding: 30px;
+  background-color: white;
+  border: 3px solid var(--reddish-brown);
+  border-radius: 30px;
+  box-shadow: 10px 10px 10px var(--brown-grey);
+}
+
+.user-info-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 20px;
+  margin-bottom: 50px;
 }
 
 /* ================================

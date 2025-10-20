@@ -73,34 +73,6 @@ public abstract class BaseActionTagJunctionService<T> {
     deleteRelations(actionId, relationFactory, tagIdList, currentTagIdList);
   }
 
-  /**
-   * アクションIDとタグIDの関係をDBに登録する。
-   *
-   * @param relation アクションIDとタグIDの関係
-   */
-  protected void registerRelation(T relation) {
-    repository.registerRelation(relation);
-  }
-
-  /**
-   * アクションIDを基に、アクションIDとタグIDの関係をDBから削除する。
-   *
-   * @param actionId アクションID
-   */
-  protected void deleteRelationByActionId(int actionId) {
-    repository.deleteRelationByActionId(actionId);
-  }
-
-  /**
-   * アクションIDとタグIDの関係を基に、DBのレコードを削除する。
-   *
-   * @param relation アクションIDとタグIDの関係
-   */
-  protected void deleteRelationByRelatedId(T relation) {
-    repository.deleteRelationByRelatedId(relation);
-  }
-
-
   // 登録済みのタグ情報と入力されたタグ情報を比較し、差分をDBに登録する。
   private void registerRelations(
       int actionId, BiFunction<Integer, Integer, T> relationFactory,
@@ -127,4 +99,30 @@ public abstract class BaseActionTagJunctionService<T> {
     }
   }
 
+  /**
+   * アクションIDとタグIDの関係をDBに登録する。
+   *
+   * @param relation アクションIDとタグIDの関係
+   */
+  protected void registerRelation(T relation) {
+    repository.registerRelation(relation);
+  }
+
+  /**
+   * アクションIDを基に、アクションIDとタグIDの関係をDBから削除する。
+   *
+   * @param actionId アクションID
+   */
+  protected void deleteRelationByActionId(int actionId) {
+    repository.deleteRelationByActionId(actionId);
+  }
+
+  /**
+   * アクションIDとタグIDの関係を基に、DBのレコードを削除する。
+   *
+   * @param relation アクションIDとタグIDの関係
+   */
+  protected void deleteRelationByRelatedId(T relation) {
+    repository.deleteRelationByRelatedId(relation);
+  }
 }

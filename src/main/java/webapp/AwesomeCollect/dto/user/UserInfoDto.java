@@ -26,7 +26,7 @@ public class UserInfoDto {
     return UserInfo.builder()
         .loginId(basicInfoDto.getLoginId())
         .userName(basicInfoDto.getUserName())
-        .email(basicInfoDto.getEmail())
+        .email(basicInfoDto.getEmail().isBlank() ? null : basicInfoDto.getEmail())
         .password(passwordEncoder.encode(passwordDto.getPassword()))
         .isGuest(false)
         .build();

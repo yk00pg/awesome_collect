@@ -230,6 +230,13 @@ public class DailyDoneService {
     sessionManager.setHasUpdateTime(true);
   }
 
+  /**
+   * CSVファイルから読み込んだダミーデータをDBに登録し、
+   * セッションのレコード数更新情報、学習日数更新情報、学習時間更新情報を変更する。
+   *
+   * @param guestUserId ゲストユーザーID
+   * @param recordList  CSVファイルから読み込んだレコードリスト
+   */
   @Transactional
   public void registerDummyDone(int guestUserId, List<DummyDoneDto> recordList){
     LocalDate referenceDate = LocalDate.now();

@@ -8,6 +8,9 @@ import org.apache.commons.csv.CSVRecord;
 import webapp.AwesomeCollect.common.constant.CsvHeader;
 import webapp.AwesomeCollect.entity.action.ArticleStock;
 
+/**
+ * ダミーデータ用記事ストックデータオブジェクト。
+ */
 @Data
 public class DummyArticleStockDto {
 
@@ -19,6 +22,12 @@ public class DummyArticleStockDto {
   private String status;
   private List<String> tagList;
 
+  /**
+   * ダミーデータ用データオブジェクトをエンティティに変換する。
+   *
+   * @param guestUserId ゲストユーザーID
+   * @return  記事ストック
+   */
   public ArticleStock toEntity(int guestUserId){
     ArticleStock articleStock = new ArticleStock();
     articleStock.setUserId(guestUserId);
@@ -30,6 +39,12 @@ public class DummyArticleStockDto {
     return articleStock;
   }
 
+  /**
+   * CSVファイルから読み込んだレコードをダミーデータ用データオブジェクトに変換する。
+   *
+   * @param record  CSVファイルから読み込んだレコード
+   * @return  ダミーデータ用データオブジェクト
+   */
   public static DummyArticleStockDto fromCsvRecord(CSVRecord record){
     DummyArticleStockDto dto = new DummyArticleStockDto();
     dto.title = record.get(CsvHeader.TITLE);
