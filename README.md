@@ -1,7 +1,5 @@
 # えらいコレクト
-<p align=center>
-    <!-- アプリロゴ貼る -->
-</p>
+![えらいコレクト](https://github.com/user-attachments/assets/9e6e965a-bb59-4848-84f0-30d106fbaa5b)
 <br/>
 
 ## はじめに
@@ -45,7 +43,7 @@
 
 ## 🎥 デモ動画
 
-https://github.com/user-attachments/assets/bc7d3bd0-8c44-4505-96e5-99ce8eebde5b
+https://github.com/user-attachments/assets/f098c3ec-2882-4bb8-bb85-f70fc2ca7ddd
 
 <br/>
 <br/>
@@ -245,22 +243,32 @@ erDiagram
 
 ## 🚀 機能紹介
 ### 1. 👤 ユーザー新規登録機能
-<!-- GIF画像（新規登録フロー）を貼る -->
+| ユーザー新規登録フロー |
+| :-: |
+| ![サインアップフロー](https://github.com/user-attachments/assets/f85b2f67-6901-4258-8ae1-375d377b3d54) |
+
 - ログインID、ユーザー名、メールアドレス、パスワードで新規登録を行います（ユーザー名・メールアドレスは任意）
 - パスワードはハッシュ化してDBに保存されます
 - 登録内容はマイページにて変更することができます（ゲストユーザーアカウントを除く）
 
+| ユーザー基本情報変更フォーム | パスワード変更フォーム |
+| :-: | :-: |
+| ![ユーザー基本情報変更フォーム](https://github.com/user-attachments/assets/97e9e3c9-88ec-4655-aa61-f9a0cc240b10) | ![パスワード変更フォーム](https://github.com/user-attachments/assets/e8c79ecb-064a-4551-b96b-8a6053acb16b) |
+
 #### ✅ フォームバリデーション
-| 項目 | 内容                                                                                                   |
-| :-- |:-----------------------------------------------------------------------------------------------------|
-| ログインID | <ul><li>入力必須</li><li>英字・数字を各1字以上含む6〜20字の半角英数字および記号(-_)</li><li>重複不可（大文字・小文字を区別せず判定）</li></ul>        |
-| ユーザ名 | <ul><li>20字以内</li></ul>                                                                              |
-| メールアドレス | <ul><li>メールアドレス形式（@を含む、254字以内）</li><li>重複不可</li></ul>                                                |
-| パスワード | <ul><li>入力必須</li><li>英字(大文字・小文字)・数字・記号をそれぞれ1字以上含む8〜32字の半角英数字および記号(-_*)</li><li>確認用パスワードと一致</li></ul> 
+| 項目 | 内容 |
+|:--|:--|
+| ログインID | <ul><li>入力必須</li><li>英字・数字を各1字以上含む6〜20字の半角英数字および記号(-_)</li><li>重複不可（大文字・小文字を区別せず判定）</li></ul> |
+| ユーザ名 | <ul><li>20字以内</li></ul> |
+| メールアドレス | <ul><li>メールアドレス形式（@を含む、254字以内）</li><li>重複不可</li></ul> |
+| パスワード | <ul><li>入力必須</li><li>英字(大文字・小文字)・数字・記号をそれぞれ1字以上含む8〜32字の半角英数字および記号(-_*)</li><li>確認用パスワードと一致</li></ul> |
 <br/>
 
 ### 2. 🚪 ログイン・ログアウト機能
-<!-- GIF画像（ログインフロー） & 画像（エラーメッセージ）を貼る -->
+| ログインフロー | ログインエラー |
+| :-: | :-: |
+| ![ログインフロー](https://github.com/user-attachments/assets/67318023-0914-4cd4-b577-cc83c9bb934c) | ![ログインエラー](https://github.com/user-attachments/assets/67e02c8d-5ebf-44d9-a534-bf4a8c967f88) |
+
 - 登録したログインID（大文字・小文字を区別して判定）とパスワードでログインします
 - 認証・認可にはSpring Securityを使用しています
 
@@ -269,7 +277,10 @@ erDiagram
 <br/>
 
 ### 3. 👤 ゲストログイン機能
-<!-- GIF画像（ゲストログインフロー）を貼る -->
+| ゲストログインフロー |
+| :-: |
+| ![ゲストログインフロー](https://github.com/user-attachments/assets/1a57ea9f-38b9-4964-8543-7a09acdaecbe) |
+
 - ユーザー登録をすることなく、アプリをお試しいただくことができます
 - ログイン時に新規ゲストユーザーアカウントが作成され、CSVファイルからダミーデータを読み込んでDBに登録します（処理中はローディングオーバーレイを表示）
 - アカウント情報はログアウト時にすべて削除されます（ログアウト漏れに備え、定期的な削除処理も実行しています）
@@ -277,9 +288,9 @@ erDiagram
 💡 開発者の4〜9月の学習記録を基に作成したダミーデータを使用しているため、リアルな使用感を体験していただくことができます
 
 #### ログイン時
-- *LoginController* でゲストユーザーアカウント作成処理を呼び出して実行し、作成したユーザー情報を*Spring Security* の*SecurityContextHolder* に渡して認証してセッションに保存
-- *GuestUserService* でゲストユーザーアカウントおよびユーザー進捗状況を作成し、ダミーデータ登録処理を呼び出して実行
-- *DummyDataService* でCSVファイルからダミーデータを読み込み、DBに登録
+- *LoginController* でゲストユーザーアカウント作成処理を呼び出して実行し、作成したユーザー情報を*Spring Security* の*SecurityContextHolder* に渡して認証してセッションに保存する
+- *GuestUserService* でゲストユーザーアカウントおよびユーザー進捗状況を作成し、ダミーデータ登録処理を呼び出して実行する
+- *DummyDataService* でCSVファイルからダミーデータを読み込み、DBに登録する
 ```java
 // LoginController.java
 
@@ -361,8 +372,8 @@ private void injectDummyTodo(int guestUserId) {
 ```
 
 #### ログアウト時
-- *SecurityConfig.java* でログアウト成功時の処理を実装したハンドラとして*LogoutSuccessHandler* を設定（コード割愛）
-- *LogoutSuccessHandler* を実装した*GuestLogoutSuccessHandler* にて、削除処理を呼び出して実行
+- *SecurityConfig.java* でログアウト成功時の処理を実装したハンドラとして*LogoutSuccessHandler* を設定する（コード割愛）
+- *LogoutSuccessHandler* を実装した*GuestLogoutSuccessHandler* にて、削除処理を呼び出して実行する
 ```java
 // GuestLogoutSuccessHandler.java ( implements LogoutSuccessHandler )
 
@@ -386,8 +397,8 @@ public void onLogoutSuccess(
 ```
 
 #### 定期実行
-- メインクラスに`@EnableScheduling`アノテーションをつけてスケジュールされたタスク実行機能を有効化（コード割愛）
-- *GuestUserCleanupScheduler* でスケジュールを設定し、*GuestUserService* にて削除処理を呼び出して実行し、ログを出力
+- メインクラスに`@EnableScheduling`アノテーションをつけてスケジュールされたタスク実行機能を有効化する（コード割愛）
+- *GuestUserCleanupScheduler* でスケジュールを設定し、*GuestUserService* にて削除処理を呼び出して実行し、ログを出力する
 ```java
 // GuestUserCleanupScheduler.java
 
@@ -425,8 +436,14 @@ logger.info("=== Guest User Cleanup Finished. Total deleted: {} ===", expiredGue
 <br>
 
 ### 4. 📝 学習アクション登録機能 & 5. 🏷️ タグ付け機能
-<!-- GIF画像（登録フロー & 編集フロー & 削除フロー）を貼る -->
-- 学習にまつわる下記のアクションを登録することができます
+| 登録フロー（できたこと ver.） |
+| :-: |
+| ![できたこと登録フロー](https://github.com/user-attachments/assets/df473c02-c6db-4dc7-89d8-b96db85bb235) |
+
+| 編集フロー（できたこと ver.）　| 削除フロー（できたこと ver.） |
+| :-: | :-: |
+| ![できたこと編集フロー](https://github.com/user-attachments/assets/b62b6666-9845-447d-9348-ccb563ca2d0a) | ![できたこと削除フロー](https://github.com/user-attachments/assets/183c5a26-0706-448f-a70c-db75546dac62) |
+- 学習にまつわる下記のアクションを登録・編集・削除することができます
     - やること（日付、内容）
     - できこと（日付、内容、学習時間、メモ、タグ）
     - 目標（タイトル、内容、進捗状況、タグ）
@@ -590,6 +607,8 @@ classDiagram
 
 **🏷️ タグ登録 & 目標とタグの関係性登録**
 
+※ GoalTagJunctionService, BaseActionJunctionServiceのregisterNewRelationsの引数のBiFunctionは出力上正しくパースされませんが、中身がわかるように"~"
+で囲って記載してます
 ```mermaid
 ---
 title: TAGS REGISTRATION & GOAL-TAG-RELATIONS REGISTRATION
@@ -688,11 +707,10 @@ classDiagram
     ActionTagJunction: getActionId() int
     ActionTagJunction: getTagId() int
 ```
-
-※ GoalTagJunctionService, BaseActionJunctionServiceのregisterNewRelationsの引数のBiFunctionは出力上正しくパースされませんが、中身がわかるように"~"
-で囲って記載してます
 <br/>
 
+- *GoalService* でJSON形式のタグリストを文字列形式に置換し、*TagService* に渡してタグIDを解決（登録されていれば取得、されていなければ登録して取得）する
+- *BaseActionTagJunctionService* を継承した*GoalTagJunctionService* に目標IDとタグIDリストを渡し、関係性を中間テーブルに登録する
 ```java
 // GoalService.java
 
@@ -865,7 +883,10 @@ classDiagram
 <br/>
 
 ### 6. 📊 ダッシュボード機能
-<!-- GIF画像（ダッシュボード確認フロー）を貼る -->
+| ダッシュボード確認フロー |
+|:-:|
+| ![ダッシュボード確認フロー](https://github.com/user-attachments/assets/f8a7e616-7a4d-4775-8047-11c64946f1df) |
+
 - ダッシュボードページにて、下記の情報を数値やグラフで確認することができます
   - 累計えらい！ポイント（ポイント数、イラストグラフ） 
   - 累計学習日数 
@@ -881,7 +902,9 @@ classDiagram
 <br/>
 
 ### 7. 👍 えらい！ポイント & えらい！メッセージ獲得機能
-<!-- GIF画像（えらい！ポップアップメッセージ）を貼る-->
+| えらい！メッセージ（できたこと・登録ver.） |
+|:-:|
+| ![えらい！メッセージ（できたこと・登録）](https://github.com/user-attachments/assets/d3f47bd5-c0d7-4e27-bedc-b70b0c29cbbf) |
 - 学習にまつわるアクションを登録することで、えらい！ポイントを獲得することができます
 - アクション登録時（やること・できたことは日付あたり1件目の登録時）にえらい！メッセージが表示されます
 - アクション登録の継続日数に応じてボーナスえらい！ポイントを獲得することができます
@@ -925,9 +948,6 @@ classDiagram
 - メインメニューやサイドメニュー、編集・削除などをアイコンで表現し、直感的に操作できるようにしました
 - メモの入力フォームにEasyMDE（マークダウンエディタ）を導入し、構造的な文章作成の補助を実現しています
 
-<br/>
-<br/>
-
 ### 🔨 技術的な工夫
 #### 可読性・保守性・拡張性・再利用性を意識した設計
 - 可読性・保守性を意識し、各クラスの責任や役割が明確になるように設計しました
@@ -953,7 +973,7 @@ classDiagram
 - 登録済みタグの名称変更・削除機能
 - 獲得したえらい！ポイントの内訳・獲得履歴確認機能
 - 登録済み学習アクションの検索・絞り込み・並び替え機能
-- メールアドレス認証によるパスワード再設定機能
+- メールアドレス認証によるログインID照会 / パスワード再設定機能
 - CSVファイルをアップロードによる過去の学習記録（できたこと）インポート機能
 - CSVファイルのエクスポート機能
 <br/>
