@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webapp.AwesomeCollect.common.SaveResult;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.MappingValues;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
-import webapp.AwesomeCollect.common.constant.ViewNames;
+import webapp.AwesomeCollect.common.constant.TemplateNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.action.request.GoalRequestDto;
@@ -50,7 +51,7 @@ public class GoalController {
   }
 
   // 目標の一覧ページ（目標リスト）を表示する。
-  @GetMapping(ViewNames.GOAL_PAGE)
+  @GetMapping(MappingValues.GOAL)
   public String showGoal(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model) {
@@ -59,11 +60,11 @@ public class GoalController {
         AttributeNames.GOAL_RESPONSE_DTO_LIST,
         goalService.prepareResponseDtoList(customUserDetails.getId()));
 
-    return ViewNames.GOAL_PAGE;
+    return TemplateNames.GOAL;
   }
 
   // 目標の詳細ページを表示する。
-  @GetMapping(ViewNames.GOAL_DETAIL_BY_ID)
+  @GetMapping(MappingValues.GOAL_DETAIL_BY_ID)
   public String showGoalDetail(
       @PathVariable int id,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -73,15 +74,15 @@ public class GoalController {
         goalService.prepareResponseDto(id, customUserDetails.getId());
 
     if (goalResponseDto == null) {
-      return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
+      return RedirectUtil.redirectView(TemplateNames.ERROR_NOT_ACCESSIBLE);
     } else {
       model.addAttribute(AttributeNames.GOAL_RESPONSE_DTO, goalResponseDto);
-      return ViewNames.GOAL_DETAIL_PAGE;
+      return TemplateNames.GOAL_DETAIL;
     }
   }
 
   // 目標の編集ページを表示する。
-  @GetMapping(ViewNames.GOAL_EDIT_BY_ID)
+  @GetMapping(MappingValues.GOAL_EDIT_BY_ID)
   public String showGoalForm(
       @PathVariable int id,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -91,13 +92,13 @@ public class GoalController {
     GoalRequestDto goalRequestDto = goalService.prepareRequestDto(id, userId);
 
     if (goalRequestDto == null) {
-      return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
+      return RedirectUtil.redirectView(TemplateNames.ERROR_NOT_ACCESSIBLE);
     } else {
       model.addAttribute(AttributeNames.GOAL_REQUEST_DTO, goalRequestDto);
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
-      return ViewNames.GOAL_EDIT_PAGE;
+      return TemplateNames.GOAL_EDIT;
     }
   }
 
@@ -120,7 +121,7 @@ public class GoalController {
    * @param redirectAttributes リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
    * @return 目標・詳細ページ
    */
-  @PostMapping(ViewNames.GOAL_EDIT_BY_ID)
+  @PostMapping(MappingValues.GOAL_EDIT_BY_ID)
   public String editGoal(
       @PathVariable int id,
       @Valid @ModelAttribute(AttributeNames.GOAL_REQUEST_DTO) GoalRequestDto dto,
@@ -133,17 +134,17 @@ public class GoalController {
     if (result.hasErrors()) {
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
-      return ViewNames.GOAL_EDIT_PAGE;
+      return TemplateNames.GOAL_EDIT;
     }
 
     SaveResult saveResult = trySaveGoal(dto, result, model, userId);
     if (saveResult == null) {
-      return ViewNames.GOAL_EDIT_PAGE;
+      return TemplateNames.GOAL_EDIT;
     }
 
     addAttributeBySaveType(id, redirectAttributes, saveResult);
 
-    return RedirectUtil.redirectView(ViewNames.GOAL_DETAIL_PAGE, saveResult.id());
+    return RedirectUtil.redirectView(TemplateNames.GOAL_DETAIL, saveResult.id());
   }
 
   // DBへの保存を試みて保存結果を取得する。
@@ -192,7 +193,7 @@ public class GoalController {
   }
 
   // 指定のIDの目標を削除して一覧ページにリダイレクトする。
-  @DeleteMapping(ViewNames.GOAL_DETAIL_BY_ID)
+  @DeleteMapping(MappingValues.GOAL_DETAIL_BY_ID)
   public String deleteGoal(
       @PathVariable int id, RedirectAttributes redirectAttributes) {
 
@@ -202,6 +203,6 @@ public class GoalController {
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
-    return RedirectUtil.redirectView(ViewNames.GOAL_PAGE);
+    return RedirectUtil.redirectView(TemplateNames.GOAL);
   }
 }

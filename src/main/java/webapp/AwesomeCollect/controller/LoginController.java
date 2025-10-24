@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
 import webapp.AwesomeCollect.common.constant.GuestUser;
+import webapp.AwesomeCollect.common.constant.MappingValues;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
-import webapp.AwesomeCollect.common.constant.ViewNames;
+import webapp.AwesomeCollect.common.constant.TemplateNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.entity.user.UserInfo;
@@ -34,17 +35,17 @@ public class LoginController {
   private final MessageUtil messageUtil;
 
   // ログイン済みの場合はトップページに遷移し、そうでない場合はログインページを表示する。
-  @GetMapping(ViewNames.LOGIN_PAGE)
+  @GetMapping(MappingValues.LOGIN)
   public String showLoginPage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
     if(customUserDetails != null){
-      return RedirectUtil.redirectView(ViewNames.TOP_PAGE);
+      return RedirectUtil.redirectView(TemplateNames.TOP);
     }
 
-    return ViewNames.LOGIN_PAGE;
+    return TemplateNames.LOGIN;
   }
 
   // ログイン失敗時にエラーメッセージとヒントを表示する。
-  @GetMapping(value = ViewNames.LOGIN_PAGE, params = "error")
+  @GetMapping(value = MappingValues.LOGIN, params = "error")
   public String showLoginFailureMessage(Model model){
     model.addAttribute(
         AttributeNames.FAILURE_MESSAGE,
@@ -53,11 +54,11 @@ public class LoginController {
         AttributeNames.FAILURE_HINT,
         messageUtil.getMessage(MessageKeys.LOGIN_FAILURE_HINT));
 
-    return ViewNames.LOGIN_PAGE;
+    return TemplateNames.LOGIN;
   }
 
   // ゲストユーザーとしてログインする。
-  @PostMapping(ViewNames.GUEST_LOGIN)
+  @PostMapping(MappingValues.GUEST_LOGIN)
   public String guestLogin(HttpServletRequest request){
 
     UserInfo guestUser = guestUserService.createGuestUser();
@@ -73,6 +74,6 @@ public class LoginController {
         HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
         SecurityContextHolder.getContext());
 
-    return RedirectUtil.redirectView(ViewNames.TOP_PAGE);
+    return RedirectUtil.redirectView(TemplateNames.TOP);
   }
 }

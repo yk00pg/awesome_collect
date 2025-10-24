@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.MappingValues;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
-import webapp.AwesomeCollect.common.constant.ViewNames;
+import webapp.AwesomeCollect.common.constant.TemplateNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.action.request.TodoRequestDto;
@@ -45,7 +46,7 @@ public class DailyTodoController {
   }
 
   // やること閲覧ページ（やることリスト）を表示する。
-  @GetMapping(ViewNames.DAILY_TODO_VIEW_PAGE)
+  @GetMapping(MappingValues.DAILY_TODO)
   public String showDailyTodo(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -55,17 +56,17 @@ public class DailyTodoController {
         AttributeNames.TODO_RESPONSE_DTO,
         dailyTodoService.prepareResponseDto(customUserDetails.getId(), date));
 
-    return ViewNames.TODO_PAGE;
+    return TemplateNames.TODO;
   }
 
   // やること閲覧ページにリダイレクトする。
-  @GetMapping(ViewNames.TODO_PAGE)
+  @GetMapping(MappingValues.TODO)
   public String redirectByDate(@RequestParam LocalDate date) {
-    return RedirectUtil.redirectView(ViewNames.TODO_PAGE, date);
+    return RedirectUtil.redirectView(TemplateNames.TODO, date);
   }
 
   // やること編集ページを表示する。
-  @GetMapping(ViewNames.DAILY_TODO_EDIT_PAGE)
+  @GetMapping(MappingValues.DAILY_TODO_EDIT)
   public String showDailyTodoForm(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -75,7 +76,7 @@ public class DailyTodoController {
         AttributeNames.TODO_REQUEST_DTO,
         dailyTodoService.prepareRequestDto(customUserDetails.getId(), date));
 
-    return ViewNames.TODO_EDIT_PAGE;
+    return TemplateNames.TODO_EDIT;
   }
 
   // DTOアノテーションで制御できないバリデーションを確認する。
@@ -96,7 +97,7 @@ public class DailyTodoController {
    * @param redirectAttributes リダイレクト後に一度だけ表示されるデータをViewに渡すインターフェース
    * @return やること閲覧ページ
    */
-  @PostMapping(ViewNames.DAILY_TODO_EDIT_PAGE)
+  @PostMapping(MappingValues.DAILY_TODO_EDIT)
   public String editDailyTodo(
       @PathVariable LocalDate date,
       @Valid @ModelAttribute(AttributeNames.TODO_REQUEST_DTO) TodoRequestDto dto,
@@ -105,13 +106,13 @@ public class DailyTodoController {
       RedirectAttributes redirectAttributes) {
 
     if (result.hasErrors()) {
-      return ViewNames.TODO_EDIT_PAGE;
+      return TemplateNames.TODO_EDIT;
     }
 
     dailyTodoService.saveDailyTodo(customUserDetails.getId(), dto);
     addAttributeBySaveType(dto, redirectAttributes);
 
-    return RedirectUtil.redirectView(ViewNames.TODO_PAGE, date);
+    return RedirectUtil.redirectView(TemplateNames.TODO, date);
   }
 
   // 新規登録か更新（削除含む）かを判定してサクセスメッセージとポップアップウィンドウを表示する。
@@ -134,7 +135,7 @@ public class DailyTodoController {
   }
 
   // 指定の日付のやることをすべて削除して閲覧ページにリダイレクトする。
-  @DeleteMapping(ViewNames.DAILY_TODO_VIEW_PAGE)
+  @DeleteMapping(MappingValues.DAILY_TODO)
   public String deleteDailyAllTodo(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -146,6 +147,6 @@ public class DailyTodoController {
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
-    return RedirectUtil.redirectView(ViewNames.TODO_PAGE, date);
+    return RedirectUtil.redirectView(TemplateNames.TODO, date);
   }
 }

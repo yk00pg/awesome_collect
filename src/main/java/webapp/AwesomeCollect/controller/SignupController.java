@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.MappingValues;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
-import webapp.AwesomeCollect.common.constant.ViewNames;
+import webapp.AwesomeCollect.common.constant.TemplateNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.user.UserInfoDto;
@@ -33,10 +34,10 @@ public class SignupController {
   private final MessageUtil messageUtil;
 
   // 新規登録フォームを表示する。
-  @GetMapping(ViewNames.SIGNUP_PAGE)
+  @GetMapping(MappingValues.SIGNUP)
   public String showSignUpForm(Model model) {
     model.addAttribute(AttributeNames.USER_INFO_DTO, new UserInfoDto());
-    return ViewNames.SIGNUP_PAGE;
+    return TemplateNames.SIGNUP;
   }
 
   // DTOのアノテーションで制御できないバリデーションを確認する。
@@ -55,13 +56,13 @@ public class SignupController {
    * @param redirectAttributes リダイレクト後に一度だけ表示されるデータをViewに渡すインターフェース
    * @return ログインページ
    */
-  @PostMapping(ViewNames.SIGNUP_PAGE)
+  @PostMapping(MappingValues.SIGNUP)
   public String registerUserInfo(
       @Valid @ModelAttribute(AttributeNames.USER_INFO_DTO) UserInfoDto dto,
       BindingResult result, RedirectAttributes redirectAttributes) {
 
     if (result.hasErrors()) {
-      return ViewNames.SIGNUP_PAGE;
+      return TemplateNames.SIGNUP;
     }
 
     try {
@@ -72,13 +73,13 @@ public class SignupController {
           ex.getType().getCompositeFiledName(),
           messageUtil.getMessage(ex.getType().getMessageKey()));
 
-      return ViewNames.SIGNUP_PAGE;
+      return TemplateNames.SIGNUP;
     }
 
     redirectAttributes.addFlashAttribute(
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.SIGNUP_SUCCESS));
 
-    return RedirectUtil.redirectView(ViewNames.LOGIN_PAGE);
+    return RedirectUtil.redirectView(TemplateNames.LOGIN);
   }
 }

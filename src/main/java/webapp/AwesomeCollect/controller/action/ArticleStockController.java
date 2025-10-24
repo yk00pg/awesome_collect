@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webapp.AwesomeCollect.common.SaveResult;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.MappingValues;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
-import webapp.AwesomeCollect.common.constant.ViewNames;
+import webapp.AwesomeCollect.common.constant.TemplateNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.action.request.ArticleRequestDto;
@@ -45,7 +46,7 @@ public class ArticleStockController {
   }
 
   // 記事ストックの一覧ページ（記事ストックリスト）を表示する。
-  @GetMapping(ViewNames.ARTICLE_STOCK_PAGE)
+  @GetMapping(MappingValues.ARTICLE_STOCK)
   public String showArticleStock(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model) {
@@ -54,11 +55,11 @@ public class ArticleStockController {
         AttributeNames.ARTICLE_RESPONSE_DTO_LIST,
         articleStockService.prepareResponseDtoList(customUserDetails.getId()));
 
-    return ViewNames.ARTICLE_STOCK_PAGE;
+    return TemplateNames.ARTICLE_STOCK;
   }
 
   // 記事ストックの詳細ページを表示する。
-  @GetMapping(ViewNames.ARTICLE_STOCK_DETAIL_BY_ID)
+  @GetMapping(MappingValues.ARTICLE_STOCK_DETAIL_BY_ID)
   public String showArticleStockDetail(
       @PathVariable int id,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -68,15 +69,15 @@ public class ArticleStockController {
         articleStockService.prepareResponseDto(id, customUserDetails.getId());
 
     if (articleResponseDto == null) {
-      return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
+      return RedirectUtil.redirectView(TemplateNames.ERROR_NOT_ACCESSIBLE);
     } else {
       model.addAttribute(AttributeNames.ARTICLE_RESPONSE_DTO, articleResponseDto);
-      return ViewNames.ARTICLE_STOCK_DETAIL_PAGE;
+      return TemplateNames.ARTICLE_STOCK_DETAIL;
     }
   }
 
   // 記事ストックの編集ページを表示する。
-  @GetMapping(ViewNames.ARTICLE_STOCK_EDIT_BY_ID)
+  @GetMapping(MappingValues.ARTICLE_STOCK_EDIT_BY_ID)
   public String showArticleStockForm(
       @PathVariable int id,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -87,13 +88,13 @@ public class ArticleStockController {
         articleStockService.prepareRequestDto(id, userId);
 
     if (articleRequestDto == null) {
-      return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
+      return RedirectUtil.redirectView(TemplateNames.ERROR_NOT_ACCESSIBLE);
     } else {
       model.addAttribute(AttributeNames.ARTICLE_REQUEST_DTO, articleRequestDto);
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
-      return ViewNames.ARTICLE_STOCK_EDIT_PAGE;
+      return TemplateNames.ARTICLE_STOCK_EDIT;
     }
   }
 
@@ -110,7 +111,7 @@ public class ArticleStockController {
    * @param redirectAttributes リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
    * @return 記事ストック・詳細ページ
    */
-  @PostMapping(ViewNames.ARTICLE_STOCK_EDIT_BY_ID)
+  @PostMapping(MappingValues.ARTICLE_STOCK_EDIT_BY_ID)
   public String editArticleStock(
       @PathVariable int id,
       @Valid @ModelAttribute(AttributeNames.ARTICLE_REQUEST_DTO) ArticleRequestDto dto,
@@ -123,18 +124,18 @@ public class ArticleStockController {
     if (result.hasErrors()) {
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
-      return ViewNames.ARTICLE_STOCK_EDIT_PAGE;
+      return TemplateNames.ARTICLE_STOCK_EDIT;
     }
 
     SaveResult saveResult = trySaveArticleStock(dto, result, model, userId);
     if (saveResult == null) {
-      return ViewNames.ARTICLE_STOCK_EDIT_PAGE;
+      return TemplateNames.ARTICLE_STOCK_EDIT;
     }
 
     addAttributeBySaveType(id, redirectAttributes, saveResult);
 
     return RedirectUtil.redirectView(
-        ViewNames.ARTICLE_STOCK_DETAIL_PAGE, saveResult.id());
+        TemplateNames.ARTICLE_STOCK_DETAIL, saveResult.id());
   }
 
   // DBへの保存を試みて保存結果を取得する。
@@ -183,7 +184,7 @@ public class ArticleStockController {
   }
 
   // 指定のIDの目標を削除して一覧ページにリダイレクトする。
-  @DeleteMapping(ViewNames.ARTICLE_STOCK_DETAIL_BY_ID)
+  @DeleteMapping(MappingValues.ARTICLE_STOCK_DETAIL_BY_ID)
   public String deleteArticleStock(
       @PathVariable int id, RedirectAttributes redirectAttributes) {
 
@@ -193,6 +194,6 @@ public class ArticleStockController {
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
-    return RedirectUtil.redirectView(ViewNames.ARTICLE_STOCK_PAGE);
+    return RedirectUtil.redirectView(TemplateNames.ARTICLE_STOCK);
   }
 }
