@@ -41,7 +41,7 @@ jobs:
           echo "static directory missing!"
           exit 1
         fi
-        if [ ! -d src/main.resources/dummy ]; then
+        if [ ! -d src/main/resources/dummy ]; then
           echo "dummy directory missing!"
           exit 1
         fi
