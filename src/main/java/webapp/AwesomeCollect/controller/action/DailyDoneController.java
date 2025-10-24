@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.MappingValues;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
-import webapp.AwesomeCollect.common.constant.ViewNames;
+import webapp.AwesomeCollect.common.constant.TemplateNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.action.request.DoneRequestDto;
@@ -52,7 +53,7 @@ public class DailyDoneController {
   }
 
   // できたこと閲覧ページ（できたことリスト）を表示する。
-  @GetMapping(ViewNames.DAILY_DONE_VIEW_PAGE)
+  @GetMapping(MappingValues.DAILY_DONE)
   public String showDailyDone(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -62,17 +63,17 @@ public class DailyDoneController {
         AttributeNames.DONE_RESPONSE_DTO,
         dailyDoneService.prepareResponseDto(customUserDetails.getId(), date));
 
-    return ViewNames.DONE_PAGE;
+    return TemplateNames.DONE;
   }
 
   // できたこと閲覧ページにリダイレクトする。
-  @GetMapping(ViewNames.DONE_PAGE)
+  @GetMapping(MappingValues.DONE)
   public String redirectByDate(@RequestParam LocalDate date) {
-    return RedirectUtil.redirectView(ViewNames.DONE_PAGE, date);
+    return RedirectUtil.redirectView(TemplateNames.DONE, date);
   }
 
   // できたこと編集ページを表示する。
-  @GetMapping(ViewNames.DAILY_DONE_EDIT_PAGE)
+  @GetMapping(MappingValues.DAILY_DONE_EDIT)
   public String showDailyDoneForm(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -89,7 +90,7 @@ public class DailyDoneController {
     model.addAttribute(
         AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
-    return ViewNames.DONE_EDIT_PAGE;
+    return TemplateNames.DONE_EDIT;
   }
 
   // DTOのアノテーションで制御できないバリデーションを確認する。
@@ -112,7 +113,7 @@ public class DailyDoneController {
    * @param redirectAttributes リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
    * @return できたこと閲覧ページ
    */
-  @PostMapping(ViewNames.DAILY_DONE_EDIT_PAGE)
+  @PostMapping(MappingValues.DAILY_DONE_EDIT)
   public String editDailyDone(
       @PathVariable LocalDate date,
       @Valid @ModelAttribute(AttributeNames.DONE_REQUEST_DTO) DoneRequestDto dto,
@@ -129,13 +130,13 @@ public class DailyDoneController {
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
-      return ViewNames.DONE_EDIT_PAGE;
+      return TemplateNames.DONE_EDIT;
     }
 
     dailyDoneService.saveDailyDone(userId, dto);
     addAttributeBySaveType(dto, redirectAttributes);
 
-    return RedirectUtil.redirectView(ViewNames.DONE_PAGE, date);
+    return RedirectUtil.redirectView(TemplateNames.DONE, date);
   }
 
   // 新規登録か更新（削除含む）かを判定してサクセスメッセージとポップアップウィンドウを表示する。
@@ -158,7 +159,7 @@ public class DailyDoneController {
   }
 
   // 指定の日付のできたことをすべて削除して閲覧ページにリダイレクトする。
-  @DeleteMapping(ViewNames.DAILY_DONE_VIEW_PAGE)
+  @DeleteMapping(MappingValues.DAILY_DONE)
   public String deleteDailyAllDone(
       @PathVariable LocalDate date,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -170,6 +171,6 @@ public class DailyDoneController {
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
-    return RedirectUtil.redirectView(ViewNames.DONE_PAGE, date);
+    return RedirectUtil.redirectView(TemplateNames.DONE, date);
   }
 }

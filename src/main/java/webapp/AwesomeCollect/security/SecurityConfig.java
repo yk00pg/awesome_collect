@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import webapp.AwesomeCollect.common.constant.ViewNames;
+import webapp.AwesomeCollect.common.constant.MappingValues;
 
 /**
  * Spring Securityのセキュリティ設定を管理するクラス。<br>
@@ -23,9 +23,9 @@ public class SecurityConfig {
   private final GuestLogoutSuccessHandler logoutSuccessHandler;
   private final CustomUserDetailsService customUserDetailsService;
 
-  private static final String CSS_FILE = "/css/**";
-  private static final String IMAGE_FILE = "/image/**";
-  private static final String JS_FILE = "/js/**";
+  private static final String CSS = "/css/**";
+  private static final String IMAGE = "/image/**";
+  private static final String JS = "/js/**";
 
   private static final String LOGIN_ID = "loginId";
 
@@ -43,19 +43,19 @@ public class SecurityConfig {
     httpSecurity
         .authenticationProvider(daoAuthenticationProvider())
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers(CSS_FILE, IMAGE_FILE, JS_FILE).permitAll()
-            .requestMatchers(ViewNames.LOGIN_PAGE, ViewNames.GUEST_LOGIN, ViewNames.SIGNUP_PAGE).permitAll()
+            .requestMatchers(CSS, IMAGE, JS).permitAll()
+            .requestMatchers(MappingValues.LOGIN, MappingValues.GUEST_LOGIN, MappingValues.SIGNUP).permitAll()
             .anyRequest().authenticated())
         .formLogin(login -> login
-            .loginPage(ViewNames.LOGIN_PAGE)
-            .loginProcessingUrl(ViewNames.LOGIN_PAGE)
+            .loginPage(MappingValues.LOGIN)
+            .loginProcessingUrl(MappingValues.LOGIN)
             .usernameParameter(LOGIN_ID)
-            .failureUrl(ViewNames.LOGIN_ERROR_PAGE)
-            .defaultSuccessUrl(ViewNames.TOP_PAGE))
+            .failureUrl(MappingValues.LOGIN_ERROR)
+            .defaultSuccessUrl(MappingValues.TOP))
         .logout(logout -> logout
             .logoutSuccessHandler(logoutSuccessHandler)
-            .logoutUrl(ViewNames.LOGOUT_PAGE)
-            .logoutSuccessUrl(ViewNames.LOGIN_PAGE));
+            .logoutUrl(MappingValues.LOGOUT)
+            .logoutSuccessUrl(MappingValues.LOGIN));
     return httpSecurity.build();
   }
 

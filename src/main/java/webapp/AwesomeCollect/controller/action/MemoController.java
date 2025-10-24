@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webapp.AwesomeCollect.common.SaveResult;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.MappingValues;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
-import webapp.AwesomeCollect.common.constant.ViewNames;
+import webapp.AwesomeCollect.common.constant.TemplateNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.action.request.MemoRequestDto;
@@ -44,7 +45,7 @@ public class MemoController {
   }
 
   // メモの一覧ページ（メモリスト）を表示する。
-  @GetMapping(ViewNames.MEMO_PAGE)
+  @GetMapping(MappingValues.MEMO)
   public String showMemo(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model) {
@@ -53,11 +54,11 @@ public class MemoController {
         AttributeNames.MEMO_RESPONSE_DTO_LIST,
         memoService.prepareResponseDtoList(customUserDetails.getId()));
 
-    return ViewNames.MEMO_PAGE;
+    return TemplateNames.MEMO;
   }
 
   // メモの詳細ページを表示する。
-  @GetMapping(ViewNames.MEMO_DETAIL_BY_ID)
+  @GetMapping(MappingValues.MEMO_DETAIL_BY_ID)
   public String showMemoDetail(
       @PathVariable int id,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -67,15 +68,15 @@ public class MemoController {
         memoService.prepareResponseDto(id, customUserDetails.getId());
 
     if (memoResponseDto == null) {
-      return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
+      return RedirectUtil.redirectView(TemplateNames.ERROR_NOT_ACCESSIBLE);
     } else {
       model.addAttribute(AttributeNames.MEMO_RESPONSE_DTO, memoResponseDto);
-      return ViewNames.MEMO_DETAIL_PAGE;
+      return TemplateNames.MEMO_DETAIL;
     }
   }
 
   // メモの編集ページを表示する。
-  @GetMapping(ViewNames.MEMO_EDIT_BY_ID)
+  @GetMapping(MappingValues.MEMO_EDIT_BY_ID)
   public String showMemoForm(
       @PathVariable int id,
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -85,13 +86,13 @@ public class MemoController {
     MemoRequestDto memoRequestDto = memoService.prepareRequestDto(id, userId);
 
     if (memoRequestDto == null) {
-      return RedirectUtil.redirectView(ViewNames.ERROR_NOT_ACCESSIBLE);
+      return RedirectUtil.redirectView(TemplateNames.ERROR_NOT_ACCESSIBLE);
     } else {
       model.addAttribute(AttributeNames.MEMO_REQUEST_DTO, memoRequestDto);
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
-      return ViewNames.MEMO_EDIT_PAGE;
+      return TemplateNames.MEMO_EDIT;
     }
   }
 
@@ -108,7 +109,7 @@ public class MemoController {
    * @param redirectAttributes リダイレクト後に一度だけ表示するデータをViewに渡すインターフェース
    * @return メモ・詳細ページ
    */
-  @PostMapping(ViewNames.MEMO_EDIT_BY_ID)
+  @PostMapping(MappingValues.MEMO_EDIT_BY_ID)
   public String editMemo(
       @PathVariable int id,
       @Valid @ModelAttribute(AttributeNames.MEMO_REQUEST_DTO) MemoRequestDto dto,
@@ -121,17 +122,17 @@ public class MemoController {
     if (result.hasErrors()) {
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
-      return ViewNames.MEMO_EDIT_PAGE;
+      return TemplateNames.MEMO_EDIT;
     }
 
     SaveResult saveResult = trySaveMemo(dto, result, model, userId);
     if (saveResult == null) {
-      return ViewNames.MEMO_EDIT_PAGE;
+      return TemplateNames.MEMO_EDIT;
     }
 
     addAttributeBySaveType(id, redirectAttributes);
 
-    return RedirectUtil.redirectView(ViewNames.MEMO_DETAIL_PAGE, saveResult.id());
+    return RedirectUtil.redirectView(TemplateNames.MEMO_DETAIL, saveResult.id());
   }
 
   // DBへの保存を試みて保存結果を取得する。
@@ -172,7 +173,7 @@ public class MemoController {
   }
 
   // 指定のIDのメモを削除して一覧ページにリダイレクトする。
-  @DeleteMapping(ViewNames.MEMO_DETAIL_BY_ID)
+  @DeleteMapping(MappingValues.MEMO_DETAIL_BY_ID)
   public String deleteMemo(
       @PathVariable int id, RedirectAttributes redirectAttributes) {
 
@@ -182,6 +183,6 @@ public class MemoController {
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
-    return RedirectUtil.redirectView(ViewNames.MEMO_PAGE);
+    return RedirectUtil.redirectView(TemplateNames.MEMO);
   }
 }

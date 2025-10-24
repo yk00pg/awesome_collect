@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
+import webapp.AwesomeCollect.common.constant.MappingValues;
 import webapp.AwesomeCollect.common.constant.MessageKeys;
-import webapp.AwesomeCollect.common.constant.ViewNames;
+import webapp.AwesomeCollect.common.constant.TemplateNames;
 import webapp.AwesomeCollect.common.util.MessageUtil;
 import webapp.AwesomeCollect.common.util.RedirectUtil;
 import webapp.AwesomeCollect.dto.user.UserBasicInfoDto;
@@ -42,7 +43,7 @@ public class MyPageController {
   private final DeleteUserDataService deleteUserDataService;
 
   // ユーザー登録情報を表示する。
-  @GetMapping(ViewNames.MY_PAGE)
+  @GetMapping(MappingValues.MY_PAGE)
   public String showUserBasicInfo(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model) {
@@ -51,11 +52,11 @@ public class MyPageController {
         AttributeNames.BASIC_INFO_DTO,
         userInfoService.prepareUserInfoDto(customUserDetails.getId()));
 
-    return ViewNames.MY_PAGE;
+    return TemplateNames.MY_PAGE;
   }
 
   // ユーザー登録情報の編集フォームを表示する。
-  @GetMapping(ViewNames.MY_PAGE_EDIT)
+  @GetMapping(MappingValues.MY_PAGE_EDIT)
   public String showUserBasicInfoEditForm(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model) {
@@ -64,14 +65,14 @@ public class MyPageController {
         AttributeNames.BASIC_INFO_DTO,
         userInfoService.prepareUserInfoDto(customUserDetails.getId()));
 
-    return ViewNames.MY_PAGE_EDIT;
+    return TemplateNames.MY_PAGE_EDIT;
   }
 
   // パスワード変更フォームを表示する。
-  @GetMapping(ViewNames.MY_PAGE_CHANGE_PASSWORD)
+  @GetMapping(MappingValues.MY_PAGE_CHANGE_PASSWORD)
   public String showPasswordChangeForm(Model model) {
     model.addAttribute(AttributeNames.PASSWORD_DTO, new UserPasswordDto());
-    return ViewNames.MY_PAGE_CHANGE_PASSWORD;
+    return TemplateNames.MY_PAGE_CHANGE_PASSWORD;
   }
 
   // DTOアノテーションで制御できないバリデーションを確認する。
@@ -91,7 +92,7 @@ public class MyPageController {
    * @param redirectAttributes リダイレクト後に一度だけ表示されるデータをViewに渡すインターフェース
    * @return マイページ
    */
-  @PostMapping(ViewNames.MY_PAGE_EDIT)
+  @PostMapping(MappingValues.MY_PAGE_EDIT)
   public String updateUserBasicInfo(
       @Valid @ModelAttribute(AttributeNames.BASIC_INFO_DTO) UserBasicInfoDto dto,
       BindingResult result,
@@ -101,7 +102,7 @@ public class MyPageController {
     int userId = customUserDetails.getId();
 
     if (result.hasErrors() || userId == 1) {
-      return ViewNames.MY_PAGE_EDIT;
+      return TemplateNames.MY_PAGE_EDIT;
     }
 
     try {
@@ -111,14 +112,14 @@ public class MyPageController {
           ex.getType().getFieldName(), "duplicate",
           messageUtil.getMessage(ex.getType().getMessageKey()));
 
-      return ViewNames.MY_PAGE_EDIT;
+      return TemplateNames.MY_PAGE_EDIT;
     }
 
     redirectAttributes.addFlashAttribute(
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.USERINFO_EDIT_SUCCESS));
 
-    return RedirectUtil.redirectView(ViewNames.MY_PAGE);
+    return RedirectUtil.redirectView(TemplateNames.MY_PAGE);
   }
 
   /**
@@ -133,7 +134,7 @@ public class MyPageController {
    * @param request            クライアントからサーバーに送られたリクエスト情報を保持するオブジェクト
    * @return ログインページ
    */
-  @PostMapping(ViewNames.MY_PAGE_CHANGE_PASSWORD)
+  @PostMapping(MappingValues.MY_PAGE_CHANGE_PASSWORD)
   public String changePassword(
       @Valid @ModelAttribute(AttributeNames.PASSWORD_DTO) UserPasswordDto dto,
       BindingResult result,
@@ -143,7 +144,7 @@ public class MyPageController {
     int userId = customUserDetails.getId();
 
     if (result.hasErrors() || userId == 0) {
-      return ViewNames.MY_PAGE_CHANGE_PASSWORD;
+      return TemplateNames.MY_PAGE_CHANGE_PASSWORD;
     }
 
     try {
@@ -153,7 +154,7 @@ public class MyPageController {
           ex.getFieldName(), ex.getMessageKey(),
           messageUtil.getMessage(ex.getMessageKey()));
 
-      return ViewNames.MY_PAGE_CHANGE_PASSWORD;
+      return TemplateNames.MY_PAGE_CHANGE_PASSWORD;
     }
 
     SecurityContextHolder.clearContext();
@@ -163,11 +164,11 @@ public class MyPageController {
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.PASSWORD_CHANGE_SUCCESS));
 
-    return RedirectUtil.redirectView(ViewNames.LOGIN_PAGE);
+    return RedirectUtil.redirectView(TemplateNames.LOGIN);
   }
 
   // アカウントおよび登録データをすべて削除してログアウトし、ログイン画面に遷移する。
-  @DeleteMapping(ViewNames.DELETE_ACCOUNT)
+  @DeleteMapping(MappingValues.DELETE_ACCOUNT)
   public String deleteAccount(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       HttpServletRequest request){
@@ -176,6 +177,6 @@ public class MyPageController {
     SecurityContextHolder.clearContext();
     request.getSession().invalidate();
 
-    return RedirectUtil.redirectView(ViewNames.LOGIN_PAGE);
+    return RedirectUtil.redirectView(TemplateNames.LOGIN);
   }
 }

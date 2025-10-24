@@ -5,7 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import webapp.AwesomeCollect.common.constant.AttributeNames;
-import webapp.AwesomeCollect.common.constant.ViewNames;
+import webapp.AwesomeCollect.common.constant.MappingValues;
+import webapp.AwesomeCollect.common.constant.TemplateNames;
 import webapp.AwesomeCollect.dto.dashboard.AwesomePointDto;
 import webapp.AwesomeCollect.dto.dashboard.DashboardDto;
 import webapp.AwesomeCollect.dto.dashboard.LearningDaysDto;
@@ -35,7 +36,7 @@ public class DashboardController {
   }
 
   // ダッシュボードのトップページを表示する。
-  @GetMapping(ViewNames.DASHBOARD_PAGE)
+  @GetMapping(MappingValues.DASHBOARD)
   public String showDashboard(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model){
@@ -48,11 +49,11 @@ public class DashboardController {
     model.addAttribute(AttributeNames.DASHBOARD_DTO,
         new DashboardDto(awesomePointDto, learningDaysDto, learningTimeDto));
 
-    return ViewNames.DASHBOARD_PAGE;
+    return TemplateNames.DASHBOARD;
   }
 
   // 学習時間グラフページを表示する。
-  @GetMapping(ViewNames.DASHBOARD_LEARNING_TIME_CHART)
+  @GetMapping(MappingValues.DASHBOARD_LEARNING_TIME_CHART)
   public String showLearningTimeChart(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model){
@@ -60,11 +61,11 @@ public class DashboardController {
     model.addAttribute(AttributeNames.LEARNING_TIME_DTO,
         learningTimeService.prepareLearningTimeDto(customUserDetails.getId()));
 
-    return ViewNames.DASHBOARD_LEARNING_TIME_CHART;
+    return TemplateNames.DASHBOARD_LEARNING_TIME_CHART;
   }
 
   // 全タグ別学習時間グラフページを表示する。
-  @GetMapping(ViewNames.DASHBOARD_ALL_TAG_TIME_CHART)
+  @GetMapping(MappingValues.DASHBOARD_ALL_TAG_TIME_CHART)
   public String showAllTagsTimeChart(
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model){
@@ -74,6 +75,6 @@ public class DashboardController {
     model.addAttribute(
         AttributeNames.TAG_TOTAL_TIME_LIST, learningTimeDto.getTagTotalTimeList());
 
-    return ViewNames.DASHBOARD_ALL_TAG_TIME_CHART;
+    return TemplateNames.DASHBOARD_ALL_TAG_TIME_CHART;
   }
 }
