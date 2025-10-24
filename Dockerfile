@@ -5,7 +5,11 @@
 # ------------
 FROM gradle:8.10-jdk21-alpine AS builder
 WORKDIR /app
-COPY . .
+
+COPY build.gradle settings.gradle gradle* ./
+RUN gradle dependencies --no-daemon || true
+
+COPY src ./src
 RUN gradle clean bootJar --no-daemon
 
 # ----------
