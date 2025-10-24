@@ -31,8 +31,26 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
+    - name: Verify templates exist
+      run: |
+        if [ ! -d src/main/resources/templates ]; then
+          echo "templates directory missing!"
+          exit 1
+        fi
+        if [ ! -d src/main/resources/static ]; then
+          echo "static directory missing!"
+          exit 1
+        fi
+        if [ ! -d src/main.resources/dummy ]; then
+          echo "dummy directory missing!"
+          exit 1
+        fi
+
     - name: Build JAR with Gradle
       run: ./gradlew clean bootJar --no-daemon
+
+    - name: Verify JAR contents
+      run: jar tf build/libs/*.jar | grep templates
     
     - name: Login to GitHub Container Registory
       uses: docker/login-action@v3
