@@ -69,7 +69,7 @@ public class DailyDoneController {
   // できたこと閲覧ページにリダイレクトする。
   @GetMapping(MappingValues.DONE)
   public String redirectByDate(@RequestParam LocalDate date) {
-    return RedirectUtil.redirectView(TemplateNames.DONE, date);
+    return RedirectUtil.redirectView(MappingValues.DONE, date);
   }
 
   // できたこと編集ページを表示する。
@@ -136,7 +136,7 @@ public class DailyDoneController {
     dailyDoneService.saveDailyDone(userId, dto);
     addAttributeBySaveType(dto, redirectAttributes);
 
-    return RedirectUtil.redirectView(TemplateNames.DONE, date);
+    return RedirectUtil.redirectView(MappingValues.DONE, date);
   }
 
   // 新規登録か更新（削除含む）かを判定してサクセスメッセージとポップアップウィンドウを表示する。
@@ -171,6 +171,6 @@ public class DailyDoneController {
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
-    return RedirectUtil.redirectView(TemplateNames.DONE, date);
+    return RedirectUtil.redirectView(MappingValues.DONE, date);
   }
 }

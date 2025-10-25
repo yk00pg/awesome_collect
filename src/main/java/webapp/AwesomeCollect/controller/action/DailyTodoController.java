@@ -62,7 +62,7 @@ public class DailyTodoController {
   // やること閲覧ページにリダイレクトする。
   @GetMapping(MappingValues.TODO)
   public String redirectByDate(@RequestParam LocalDate date) {
-    return RedirectUtil.redirectView(TemplateNames.TODO, date);
+    return RedirectUtil.redirectView(MappingValues.TODO, date);
   }
 
   // やること編集ページを表示する。
@@ -112,7 +112,7 @@ public class DailyTodoController {
     dailyTodoService.saveDailyTodo(customUserDetails.getId(), dto);
     addAttributeBySaveType(dto, redirectAttributes);
 
-    return RedirectUtil.redirectView(TemplateNames.TODO, date);
+    return RedirectUtil.redirectView(MappingValues.TODO, date);
   }
 
   // 新規登録か更新（削除含む）かを判定してサクセスメッセージとポップアップウィンドウを表示する。
@@ -147,6 +147,6 @@ public class DailyTodoController {
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
-    return RedirectUtil.redirectView(TemplateNames.TODO, date);
+    return RedirectUtil.redirectView(MappingValues.TODO, date);
   }
 }

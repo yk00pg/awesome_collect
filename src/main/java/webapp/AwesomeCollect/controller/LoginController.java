@@ -74,6 +74,6 @@ public class LoginController {
         HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
         SecurityContextHolder.getContext());
 
-    return RedirectUtil.redirectView(TemplateNames.TOP);
+    return RedirectUtil.redirectView(MappingValues.TOP);
   }
 }

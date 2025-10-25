@@ -194,6 +194,6 @@ public class ArticleStockController {
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
-    return RedirectUtil.redirectView(TemplateNames.ARTICLE_STOCK);
+    return RedirectUtil.redirectView(MappingValues.ARTICLE_STOCK);
   }
 }

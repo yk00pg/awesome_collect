@@ -80,6 +80,6 @@ public class SignupController {
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.SIGNUP_SUCCESS));
 
-    return RedirectUtil.redirectView(TemplateNames.LOGIN);
+    return RedirectUtil.redirectView(MappingValues.LOGIN);
   }
 }

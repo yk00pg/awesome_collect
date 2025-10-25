@@ -144,7 +144,7 @@ public class GoalController {
 
     addAttributeBySaveType(id, redirectAttributes, saveResult);
 
-    return RedirectUtil.redirectView(TemplateNames.GOAL_DETAIL, saveResult.id());
+    return RedirectUtil.redirectView(MappingValues.GOAL_DETAIL, saveResult.id());
   }
 
   // DBへの保存を試みて保存結果を取得する。
@@ -203,6 +203,6 @@ public class GoalController {
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
-    return RedirectUtil.redirectView(TemplateNames.GOAL);
+    return RedirectUtil.redirectView(MappingValues.GOAL);
   }
 }

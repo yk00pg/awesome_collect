@@ -132,7 +132,7 @@ public class MemoController {
 
     addAttributeBySaveType(id, redirectAttributes);
 
-    return RedirectUtil.redirectView(TemplateNames.MEMO_DETAIL, saveResult.id());
+    return RedirectUtil.redirectView(MappingValues.MEMO_DETAIL, saveResult.id());
   }
 
   // DBへの保存を試みて保存結果を取得する。
@@ -183,6 +183,6 @@ public class MemoController {
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.DELETE_SUCCESS));
 
-    return RedirectUtil.redirectView(TemplateNames.MEMO);
+    return RedirectUtil.redirectView(MappingValues.MEMO);
   }
 }
