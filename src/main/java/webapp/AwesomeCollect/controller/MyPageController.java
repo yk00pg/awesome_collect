@@ -119,7 +119,7 @@ public class MyPageController {
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.USERINFO_EDIT_SUCCESS));
 
-    return RedirectUtil.redirectView(TemplateNames.MY_PAGE);
+    return RedirectUtil.redirectView(MappingValues.MY_PAGE);
   }
 
   /**
@@ -164,7 +164,7 @@ public class MyPageController {
         AttributeNames.SUCCESS_MESSAGE,
         messageUtil.getMessage(MessageKeys.PASSWORD_CHANGE_SUCCESS));
 
-    return RedirectUtil.redirectView(TemplateNames.LOGIN);
+    return RedirectUtil.redirectView(MappingValues.LOGIN);
   }
 
   // アカウントおよび登録データをすべて削除してログアウトし、ログイン画面に遷移する。
@@ -177,6 +177,6 @@ public class MyPageController {
     SecurityContextHolder.clearContext();
     request.getSession().invalidate();
 
-    return RedirectUtil.redirectView(TemplateNames.LOGIN);
+    return RedirectUtil.redirectView(MappingValues.LOGIN);
   }
 }
