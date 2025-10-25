@@ -1402,6 +1402,18 @@ table th {
   border: 1px solid var(--reddish-brown);
 }
 
+/* メモ・詳細ページ用 */
+.memo-content h1 a,
+.memo-content h2 a,
+.memo-content h3 a,
+.memo-content h4 a,
+.memo-content h5 a,
+.memo-content h6 a {
+  text-decoration: none;
+  color: inherit;
+  cursor: text;
+}
+
 /* =======================
   ダッシュボードページの設定
 ======================= */
