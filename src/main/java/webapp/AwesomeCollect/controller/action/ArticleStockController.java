@@ -69,7 +69,7 @@ public class ArticleStockController {
         articleStockService.prepareResponseDto(id, customUserDetails.getId());
 
     if (articleResponseDto == null) {
-      return RedirectUtil.redirectView(TemplateNames.ERROR_NOT_ACCESSIBLE);
+      return RedirectUtil.redirectView(MappingValues.ERROR_NOT_ACCESSIBLE);
     } else {
       model.addAttribute(AttributeNames.ARTICLE_RESPONSE_DTO, articleResponseDto);
       return TemplateNames.ARTICLE_STOCK_DETAIL;
@@ -88,7 +88,7 @@ public class ArticleStockController {
         articleStockService.prepareRequestDto(id, userId);
 
     if (articleRequestDto == null) {
-      return RedirectUtil.redirectView(TemplateNames.ERROR_NOT_ACCESSIBLE);
+      return RedirectUtil.redirectView(MappingValues.ERROR_NOT_ACCESSIBLE);
     } else {
       model.addAttribute(AttributeNames.ARTICLE_REQUEST_DTO, articleRequestDto);
       model.addAttribute(
@@ -135,7 +135,7 @@ public class ArticleStockController {
     addAttributeBySaveType(id, redirectAttributes, saveResult);
 
     return RedirectUtil.redirectView(
-        TemplateNames.ARTICLE_STOCK_DETAIL, saveResult.id());
+        MappingValues.ARTICLE_STOCK_DETAIL, saveResult.id());
   }
 
   // DBへの保存を試みて保存結果を取得する。

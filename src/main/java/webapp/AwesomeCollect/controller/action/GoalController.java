@@ -74,7 +74,7 @@ public class GoalController {
         goalService.prepareResponseDto(id, customUserDetails.getId());
 
     if (goalResponseDto == null) {
-      return RedirectUtil.redirectView(TemplateNames.ERROR_NOT_ACCESSIBLE);
+      return RedirectUtil.redirectView(MappingValues.ERROR_NOT_ACCESSIBLE);
     } else {
       model.addAttribute(AttributeNames.GOAL_RESPONSE_DTO, goalResponseDto);
       return TemplateNames.GOAL_DETAIL;
@@ -92,7 +92,7 @@ public class GoalController {
     GoalRequestDto goalRequestDto = goalService.prepareRequestDto(id, userId);
 
     if (goalRequestDto == null) {
-      return RedirectUtil.redirectView(TemplateNames.ERROR_NOT_ACCESSIBLE);
+      return RedirectUtil.redirectView(MappingValues.ERROR_NOT_ACCESSIBLE);
     } else {
       model.addAttribute(AttributeNames.GOAL_REQUEST_DTO, goalRequestDto);
       model.addAttribute(
