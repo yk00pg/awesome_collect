@@ -38,7 +38,7 @@ public class LoginController {
   @GetMapping(MappingValues.LOGIN)
   public String showLoginPage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
     if(customUserDetails != null){
-      return RedirectUtil.redirectView(TemplateNames.TOP);
+      return RedirectUtil.redirectView(MappingValues.TOP);
     }
 
     return TemplateNames.LOGIN;

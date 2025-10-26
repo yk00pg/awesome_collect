@@ -68,7 +68,7 @@ public class MemoController {
         memoService.prepareResponseDto(id, customUserDetails.getId());
 
     if (memoResponseDto == null) {
-      return RedirectUtil.redirectView(TemplateNames.ERROR_NOT_ACCESSIBLE);
+      return RedirectUtil.redirectView(MappingValues.ERROR_NOT_ACCESSIBLE);
     } else {
       model.addAttribute(AttributeNames.MEMO_RESPONSE_DTO, memoResponseDto);
       return TemplateNames.MEMO_DETAIL;
@@ -86,7 +86,7 @@ public class MemoController {
     MemoRequestDto memoRequestDto = memoService.prepareRequestDto(id, userId);
 
     if (memoRequestDto == null) {
-      return RedirectUtil.redirectView(TemplateNames.ERROR_NOT_ACCESSIBLE);
+      return RedirectUtil.redirectView(MappingValues.ERROR_NOT_ACCESSIBLE);
     } else {
       model.addAttribute(AttributeNames.MEMO_REQUEST_DTO, memoRequestDto);
       model.addAttribute(
