@@ -7,7 +7,7 @@ public class GuestUser {
 
   public static final String LOGIN_ID = "Guest_";
   public static final String NAME = "ゲストユーザー";
-  public static final String EMAIL = "@mail.com";
+  public static final String EMAIL = "@example.com";
   public static final String PASSWORD = "GuestUser_123*";
 
   private GuestUser(){
