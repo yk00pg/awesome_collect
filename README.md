@@ -9,8 +9,9 @@
   <br/>
 
 ## 🌐 アプリURL
-<!-- アプリURL貼る -->
-ゲストログイン機能を有しており、ユーザー登録をすることなくアプリをお試しいただくことができます。<br>
+https://www.awesome-collect.com <br/>
+ゲストログイン機能により、ユーザー登録をすることなくアプリをお試しいただくことができます。<br>
+
 <br/>
 <br/>
 
@@ -24,17 +25,17 @@
 - [ER図](#-er図)
 - [インフラ構成図](#-インフラ構成図)
 - [機能紹介](#-機能紹介)
-  - [1. ユーザー新規登録機能](#1--ユーザー新規登録機能)
-  - [2. ログイン・ログアウト機能](#2--ログインログアウト機能)
-  - [3. ゲストログイン機能](#3--ゲストログイン機能)
-  - [4. 学習アクション登録機能 & 5. タグ付け機能](#4--学習アクション登録機能--5-%EF%B8%8F-タグ付け機能)
-    - [シーケンス図](#-シーケンス図例-目標登録)
-    - [クラス図](#-クラス図ユーティリティークラスは除く)
-  - [6. ダッシュボード機能](#6--ダッシュボード機能)
-  - [7. えらい！ポイント & えらい！メッセージ獲得機能](#7--えらいポイント--えらいメッセージ獲得機能)
+    - [1. ユーザー新規登録機能](#1--ユーザー新規登録機能)
+    - [2. ログイン・ログアウト機能](#2--ログインログアウト機能)
+    - [3. ゲストログイン機能](#3--ゲストログイン機能)
+    - [4. 学習アクション登録機能 & 5. タグ付け機能](#4--学習アクション登録機能--5-%EF%B8%8F-タグ付け機能)
+        - [シーケンス図](#-シーケンス図例-目標登録)
+        - [クラス図](#-クラス図ユーティリティークラスは除く)
+    - [6. ダッシュボード機能](#6--ダッシュボード機能)
+    - [7. えらい！ポイント & えらい！メッセージ獲得機能](#7--えらいポイント--えらいメッセージ獲得機能)
 - [工夫したところ](#-工夫したところ)
-  - [ユーザーを意識した工夫](#-ユーザーを意識した工夫)
-  - [技術的な工夫](#-技術的な工夫)
+    - [ユーザーを意識した工夫](#-ユーザーを意識した工夫)
+    - [技術的な工夫](#-技術的な工夫)
 - [今後実装予定の機能](#-今後実装予定の機能)
 - [おわりに](#おわりに)
   <br/>
@@ -111,7 +112,7 @@ erDiagram
         VARCHAR(60) password "NOT NULL"
         BOOLEAN isGuest
     }
-    
+
     USER_PROGRESS {
         INT user_id PK, FK "NOT NULL"
         DATE registered_date
@@ -121,7 +122,7 @@ erDiagram
         INT longest_streak
         INT streak_bonus_count
     }
-    
+
     BONUS_AWESOME {
         INT id PK "AUTO_INCREMENT"
         INT user_id FK "NOT NULL"
@@ -129,13 +130,13 @@ erDiagram
         VARCHAR(100) reason
         DATE collected_date
     }
-    
+
     TAG {
         INT id PK "AUTO_INCREMENT"
         INT user_id FK, UK "NOT NULL, 複合UK"
         VARCHAR(30) name UK "NOT_NULL, 複合UK"
     }
-    
+
     DAILY_TODO {
         INT id PK "AUTO_INCREMENT"
         INT user_id FK "NOT NULL"
@@ -144,7 +145,7 @@ erDiagram
         DATETIME registered_at
         DATETIME updated_at
     }
-    
+
     DAILY_DONE {
         INT id PK "AUTO_INCREMENT"
         INT user_id FK "NOT NULL"
@@ -155,7 +156,7 @@ erDiagram
         DATETIME registered_at
         DATETIME updaterd_at
     }
-    
+
     GOAL {
         INT id PK "AUTO_INCREMENT"
         INT user_id FK, UK "NOT NULL, 複合UK"
@@ -166,7 +167,7 @@ erDiagram
         DATETIME updated_at
         DATETIME status_updated_at
     }
-    
+
     MEMO {
         INT id PK "AUTO_INCREMENT"
         INT user_id FK "NOT NULL"
@@ -175,7 +176,7 @@ erDiagram
         DATETIME registered_at
         DATETIME updated_at
     }
-    
+
     ARTICLE_STOCK {
         INT id PK "AUTO_INCREMENT"
         INT user_id FK, UK "NOT NULL, 複合UK"
@@ -187,27 +188,27 @@ erDiagram
         DATETIME updated_at
         DATETIME status_updated_at
     }
-    
+
     DONE_TAG_JUNCTION {
         INT done_id PK, FK "複合PK"
         INT tag_id PK, FK　"複合PK"
     }
-    
+
     GOAL_TAG_JUNCTION {
         INT goal_id PK, FK "複合PK"
         INT tag_id PK, FK "複合PK"
     }
-    
+
     MEMO_TAG_JUNCTION {
         INT memo_id PK, FK "複合PK"
         INT tag_id PK, FK "複合PK"
     }
-    
+
     ARTICLE_TAG_JUNCTION {
         INT article_id PK, FK "複合PK"
         INT tag_id PK, FK "複合PK"
     }
-    
+
     USER_INFO||--o{USER_PROGRESS: "user_id"
     USER_INFO||--o{BONUS_AWESOME: "user_id"
     USER_INFO||--o{DAILY_TODO: "user_id"
@@ -404,7 +405,7 @@ public void onLogoutSuccess(
 
 @Scheduled(cron = "0 0 12 * * *", zone = "Asia/Tokyo")
 public void cleanupGuestUsers() {
-guestUserService.cleanupGuestUsers();
+  guestUserService.cleanupGuestUsers();
 }
 ```
 ```java
@@ -412,24 +413,24 @@ guestUserService.cleanupGuestUsers();
 
 @Transactional
 public void cleanupGuestUsers(){
-List<Integer> guestUserIdList = userInfoRepository.selectGuestUserId();
-if(guestUserIdList==null || guestUserIdList.isEmpty()){
-  logger.info("No expired guest users found. Cleanup skipped.");
-  return;
-}
+  List<Integer> guestUserIdList = userInfoRepository.selectGuestUserId();
+  if(guestUserIdList==null || guestUserIdList.isEmpty()){
+    logger.info("No expired guest users found. Cleanup skipped.");
+    return;
+  }
 
-logger.info("=== Guest User Cleanup Started. Target count: {} ===", guestUserIdList.size());
+  logger.info("=== Guest User Cleanup Started. Target count: {} ===", guestUserIdList.size());
 
-List<Integer> expiredGuestUserIdList =
-    userProgressRepository.searchExpiredUserIdByUserId(
-        new ExpiredUserParams(guestUserIdList, LocalDate.now().minusDays(1)));
+  List<Integer> expiredGuestUserIdList =
+      userProgressRepository.searchExpiredUserIdByUserId(
+          new ExpiredUserParams(guestUserIdList, LocalDate.now().minusDays(1)));
 
-for(int expiredGuestUserId: expiredGuestUserIdList) {
-  deleteUserDataService.deleteUserData(expiredGuestUserId);
-  logger.info("Deleted guest user data: userId={}", expiredGuestUserId);
-}
+  for(int expiredGuestUserId: expiredGuestUserIdList) {
+    deleteUserDataService.deleteUserData(expiredGuestUserId);
+    logger.info("Deleted guest user data: userId={}", expiredGuestUserId);
+  }
 
-logger.info("=== Guest User Cleanup Finished. Total deleted: {} ===", expiredGuestUserIdList.size());
+  logger.info("=== Guest User Cleanup Finished. Total deleted: {} ===", expiredGuestUserIdList.size());
 }
 ```
 <br>
@@ -753,8 +754,8 @@ private SaveResult registerGoal(
 
 @Override
 public void registerNewRelations(
-  int goalId, BiFunction<Integer, Integer, GoalTagJunction> relationFactory,
-  List<Integer> tagIdList) {
+    int goalId, BiFunction<Integer, Integer, GoalTagJunction> relationFactory,
+    List<Integer> tagIdList) {
 
   super.registerNewRelations(goalId, relationFactory, tagIdList);
 }
@@ -763,13 +764,13 @@ public void registerNewRelations(
 // BaseActionTagJunctionService.java
 
 public void registerNewRelations(
-  int actionId, BiFunction<Integer, Integer, T> relationFactory,
-  List<Integer> tagIdList) {
+    int actionId, BiFunction<Integer, Integer, T> relationFactory,
+    List<Integer> tagIdList) {
 
   if (tagIdList == null || tagIdList.isEmpty()) {
     return;
   }
-    
+
   for (int tagId : tagIdList) {
     T relation = relationFactory.apply(actionId, tagId);
     registerRelation(relation);
@@ -888,15 +889,15 @@ classDiagram
 | ![ダッシュボード確認フロー](https://github.com/user-attachments/assets/f8a7e616-7a4d-4775-8047-11c64946f1df) |
 
 - ダッシュボードページにて、下記の情報を数値やグラフで確認することができます
-  - 累計えらい！ポイント（ポイント数、イラストグラフ） 
-  - 累計学習日数 
-  - 連続学習日数（日数、最後に学習した日） 
-  - 累計学習時間 
-  - 学習時間グラフ 
-    - 日別学習時間（過去7日分） 
-    - 曜日別平均学習時間 
-    - 月別学習時間（過去6ヶ月分） 
-    - タグ別学習時間（上位10件、全件）
+    - 累計えらい！ポイント（ポイント数、イラストグラフ）
+    - 累計学習日数
+    - 連続学習日数（日数、最後に学習した日）
+    - 累計学習時間
+    - 学習時間グラフ
+        - 日別学習時間（過去7日分）
+        - 曜日別平均学習時間
+        - 月別学習時間（過去6ヶ月分）
+        - タグ別学習時間（上位10件、全件）
 
 <br/>
 <br/>
@@ -939,8 +940,8 @@ classDiagram
     - えらい！ポイントが貯まっていく様子をイラストグラフで表示
     - イラストグラフには、マウスホバー時にアニメーションを加えて動きをつけることで、えらい！が育っていく様子を演出
 - ユーザーの心理的負担を減らせるように、エラーページやエラーメッセージを適切に表示しています
-  - 入力エラー時にどこがどのように間違っているかを表示することで、入力のストレスを軽減（セキュリティを考慮し、ログインフォームでは詳細は表示しない）
-  - アプリのデザインに合わせたエラーページを用意し、ユーザーの不安を緩和し、その後の行動を案内
+    - 入力エラー時にどこがどのように間違っているかを表示することで、入力のストレスを軽減（セキュリティを考慮し、ログインフォームでは詳細は表示しない）
+    - アプリのデザインに合わせたエラーページを用意し、ユーザーの不安を緩和し、その後の行動を案内
 #### 努力を可視化し、学習の振り返りをサポート
 - 数値だけでなく、累計えらい！ポイントはイラストグラフ、学習時間はChart.jsを活用して横棒・縦棒グラフとして可視化することで、直感的に理解できるようにしています
 - Chart.jsのグラフ描画において、不要なラベルを削除し、ツールチップを調整することで視覚的なノイズを排除しました
@@ -965,7 +966,9 @@ classDiagram
     - ユーザー登録時にDBで自動採番されるuser_info.idをCustomUserDetailsのidとして設定することでAuthenticationPrincipalからidを参照可能
     - user_info.idを他テーブルの外部キーとして関連付けることで、データの整合性を保証
     - セキュリティを考慮し、認証情報とデータ取得を厳密に紐付け、ログイン中のユーザー以外のデータアクセスを防止
-
+#### 本番環境の読込遅延対策
+- ゲストログインの場合、ゲストユーザーアカウント作成時のダミーデータ注入に時間を要するため、ローディングオーバーレイを実装
+- CSSや画像などの静的ファイルにキャッシュヘッダーを設定し、ブラウザが2回目以降に再取得しないようにすることで体感速度を改善
 <br/>
 <br/>
 
