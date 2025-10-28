@@ -1,5 +1,6 @@
 package webapp.AwesomeCollect.service.junction;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,11 +65,15 @@ public abstract class BaseActionTagJunctionService<T> {
       int actionId, BiFunction<Integer, Integer, T> relationFactory,
       List<Integer> tagIdList) {
 
-    if (tagIdList == null || tagIdList.isEmpty()) {
-      return;
-    }
-
     List<Integer> currentTagIdList = prepareTagIdListByActionId(actionId);
+
+    if (tagIdList == null) {
+      if (currentTagIdList == null || currentTagIdList.isEmpty()) {
+        return;
+      } else {
+        tagIdList = Collections.emptyList();
+      }
+    }
     registerRelations(actionId, relationFactory, tagIdList, currentTagIdList);
     deleteRelations(actionId, relationFactory, tagIdList, currentTagIdList);
   }

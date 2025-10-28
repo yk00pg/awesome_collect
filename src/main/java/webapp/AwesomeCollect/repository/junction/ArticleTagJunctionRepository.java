@@ -3,7 +3,7 @@ package webapp.AwesomeCollect.repository.junction;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 import webapp.AwesomeCollect.entity.junction.ArticleTagJunction;
-import webapp.AwesomeCollect.mapper.junction.ArticleTagsJunctionMapper;
+import webapp.AwesomeCollect.mapper.junction.ArticleTagJunctionMapper;
 import webapp.AwesomeCollect.provider.param.JunctionDeleteParams;
 
 /**
@@ -12,7 +12,7 @@ import webapp.AwesomeCollect.provider.param.JunctionDeleteParams;
 @Repository
 public class ArticleTagJunctionRepository extends BaseActionTagJunctionRepository<ArticleTagJunction> {
 
-  public ArticleTagJunctionRepository(ArticleTagsJunctionMapper mapper) {
+  public ArticleTagJunctionRepository(ArticleTagJunctionMapper mapper) {
     super(mapper);
   }
 
