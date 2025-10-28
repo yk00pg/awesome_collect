@@ -372,7 +372,8 @@ option:focus-visible {
 .input-done-memo-area,
 .input-goal-content-area,
 .input-article-memo-area {
-  height: 100px;
+  min-height: 100px;
+  resize: vertical;
   margin-top: 1px;
   padding-top: 10px;
   font-family: var(--normal-font-set);
