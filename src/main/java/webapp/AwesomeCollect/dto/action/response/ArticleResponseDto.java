@@ -47,6 +47,7 @@ public class ArticleResponseDto {
     ArticleResponseDto dto = new ArticleResponseDto();
     dto.id = articleStock.getId();
     dto.title = articleStock.getTitle();
+    dto.url = articleStock.getUrl();
     dto.status = articleStock.isFinished() ? FINISHED : STILL_NOT;
     return dto;
   }
