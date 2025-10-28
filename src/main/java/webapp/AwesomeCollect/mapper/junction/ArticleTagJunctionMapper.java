@@ -11,7 +11,7 @@ import webapp.AwesomeCollect.provider.ActionTagJunctionProvider;
 import webapp.AwesomeCollect.provider.param.JunctionDeleteParams;
 
 @Mapper
-public interface ArticleTagsJunctionMapper extends BaseActionTagJunctionMapper<ArticleTagJunction> {
+public interface ArticleTagJunctionMapper extends BaseActionTagJunctionMapper<ArticleTagJunction> {
 
   @Select("""
       SELECT tag_id FROM article_tag
@@ -41,7 +41,7 @@ public interface ArticleTagsJunctionMapper extends BaseActionTagJunctionMapper<A
 
   @Delete("""
       DELETE FROM article_tag
-      WHERE article_tag=#{articleId} AND tag_id=#{tagId}
+      WHERE article_id=#{articleId} AND tag_id=#{tagId}
       """)
   void deleteRelationByRelatedId(ArticleTagJunction relation);
 
