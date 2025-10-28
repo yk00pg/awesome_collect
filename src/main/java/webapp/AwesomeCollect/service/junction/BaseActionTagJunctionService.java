@@ -53,7 +53,7 @@ public abstract class BaseActionTagJunctionService<T> {
   }
 
   /**
-   * タグIDリストがnullまたは空の場合は何もしない。<br>
+   * タグIDリストがnullで、もともとタグが登録されていない場合は処理をスキップする。<br>
    * そうでない場合は、アクションIDとタグIDを組み合わせてエンティティを生成し、
    * DBのレコードを更新（登録・削除）する。
    *
