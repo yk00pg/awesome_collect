@@ -51,20 +51,14 @@
               <table class="view-table">
                 <tr>
                   <th scope="row" class="view-row-th">記事タイトル</th>
-                  <td th:text="${articleStock.title}"></td>
-                  <td rowspan="4" class="detail-link-td">
+                  <td class="url-area">
+                    <a th:href="${articleStock.url}" th:text="${articleStock.title}"></a>
+                  </td>
+                  <td rowspan="3" class="detail-link-td">
                     <div class="detail-link-area">
                       <a th:href="@{/article_stock/detail/{id}(id=${articleStock.id})}"
                          class="detail-link-button">詳細</a>
                     </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row" class="view-row-th">URL</th>
-                  <td class="url-area">
-                    <a th:href="${articleStock.url}">
-                      <div th:text="${articleStock.url}"></div>
-                    </a>
                   </td>
                 </tr>
                 <tr>
