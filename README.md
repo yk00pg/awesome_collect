@@ -84,7 +84,15 @@ https://github.com/user-attachments/assets/f098c3ec-2882-4bb8-bb85-f70fc2ca7ddd
     - フレームワーク: Spring Boot (3.4.7)
 - **認証:** Spring Security
 - **データベース:** MySQL (8.0.42 / Docker, MyBatis)
-- **インフラ:** Docker Compose, AWS EC2 (Amazon Linux 2023)
+- **インフラ:**
+    - AWS EC2 (Amazon Linux 2023)
+    - Docker Compose（開発環境: ローカルビルド / 本番環境: GHCR配布イメージ使用）
+    - AWS Elastic Load Balancer（負荷分散 & ルートドメインリダイレクト）
+    - AWS Route 53（独自ドメイン管理 & DNSルーティング）
+    - AWS Certificate Manager（SSL証明書の発行・管理）
+- **CI**
+  - GitHub Actions（自動ビルド）
+  - GitHub Container Registry（Dockerイメージ管理）
 - **バージョン管理:** Git, GitHub
 
 <br/>
