@@ -69,7 +69,7 @@ https://github.com/user-attachments/assets/f098c3ec-2882-4bb8-bb85-f70fc2ca7ddd
 
 ## 👥 想定ユーザー
 - 何かしらの学習に取り組んでいる / 取り組もうとしている個人
-- 学習中に落ち込み期を経験している / 経験したたことのある個人
+- 学習中に落ち込み期を経験している / 経験したことのある個人
 
 <br/>
 <br/>
@@ -331,18 +331,18 @@ public String guestLogin(HttpServletRequest request){
 @Transactional
 public UserInfo createGuestUser() {
   String randomId = UUID.randomUUID().toString().substring(0, 8);
-  String loginId = GUEST + randomId;
+  String loginId = GuestUser.LOGIN_ID + randomId;
 
   while(userInfoRepository.findUserInfoByLoginId(loginId) != null){
     randomId = UUID.randomUUID().toString().substring(0, 8);
-    loginId = GUEST + randomId;
+    loginId = GuestUser.LOGIN_ID + randomId;
   }
 
   UserInfo guestUser = UserInfo.builder()
       .loginId(loginId)
-      .userName(GUEST_USER)
-      .email(loginId + GUEST_EMAIL)
-      .password(passwordEncoder.encode(GUEST_PASSWORD))
+      .userName(GuestUser.NAME)
+      .email(loginId + GuestUser.EMAIL)
+      .password(passwordEncoder.encode(GuestUser.PASSWORD))
       .isGuest(true)
       .build();
 
