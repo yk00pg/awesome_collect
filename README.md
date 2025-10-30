@@ -312,7 +312,7 @@ public String guestLogin(HttpServletRequest request){
   UserInfo guestUser = guestUserService.createGuestUser();
 
   UsernamePasswordAuthenticationToken authToken =
-      new UsernamePasswordAuthenticationToken(guestUser.getLoginId(), GUEST_PASSWORD);
+      new UsernamePasswordAuthenticationToken(guestUser.getLoginId(), GuestUser.PASSWORD);
 
   Authentication auth = authenticationManager.authenticate(authToken);
   SecurityContextHolder.getContext().setAuthentication(auth);
