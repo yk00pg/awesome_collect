@@ -247,7 +247,7 @@ erDiagram
 
 ## 🟣 インフラ構成図
 
-![インフラ構成図](https://github.com/user-attachments/assets/fe06c075-c0ea-497e-bfa9-3e70944a1ad0)
+![インフラ構成図](https://github.com/user-attachments/assets/d735a2cc-5501-4cce-b1ff-2cf1d2a8c5e3)
 
 <br>
 <br>
