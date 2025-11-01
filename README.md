@@ -75,7 +75,7 @@ https://github.com/user-attachments/assets/f098c3ec-2882-4bb8-bb85-f70fc2ca7ddd
 <br/>
 
 ## 🛠️ 開発環境・使用技術
-- **開発環境:** Mac OS (Sequoia 15.7.1), IntelliJ IDEA
+- **開発環境:** macOS Sequoia(15.7.1), IntelliJ IDEA
 - **フロントエンド:**
     - 言語: HTML (Thymeleaf), CSS, JavaScript
     - ライブラリ: Chart.js (グラフ描画), Tagify (タグ入力補助), EasyMDE (Markdownエディタ)
@@ -87,7 +87,7 @@ https://github.com/user-attachments/assets/f098c3ec-2882-4bb8-bb85-f70fc2ca7ddd
 - **インフラ:**
     - AWS EC2 (Amazon Linux 2023)
     - Docker Compose（開発環境: ローカルビルド / 本番環境: GHCR配布イメージ使用）
-    - AWS Elastic Load Balancer（負荷分散 & ルートドメインリダイレクト）
+    - AWS Elastic Load Balancer（SSL終端 & EC2転送・リダイレクト処理）
     - AWS Route 53（独自ドメイン管理 & DNSルーティング）
     - AWS Certificate Manager（SSL証明書の発行・管理）
 - **CI**
@@ -247,7 +247,7 @@ erDiagram
 
 ## 🟣 インフラ構成図
 
-![インフラ構成図](https://github.com/user-attachments/assets/7299bf51-ef73-40b0-82ec-f6ae4709d9b8)
+![インフラ構成図](https://github.com/user-attachments/assets/fe06c075-c0ea-497e-bfa9-3e70944a1ad0)
 
 <br>
 <br>
