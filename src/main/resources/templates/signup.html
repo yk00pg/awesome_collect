@@ -20,7 +20,7 @@
     </a>
   </div>
 
-  <form class="form-group" id="targetForm"
+  <form class="form-group"
         th:action="@{signup}"
         th:object="${userInfoDto}" method="post">
 
@@ -144,14 +144,6 @@
       <button type="submit" class="register-button">登録する</button>
     </div>
   </form>
-
-  <!-- Enter押下時に次のフィールドに移動する関数を呼び出す -->
-  <script th:src="@{/js/move-focus-on-enter.js}"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        enableEnterToNextField('#targetForm');
-    });
-  </script>
 </div>
 </body>
 </html>
