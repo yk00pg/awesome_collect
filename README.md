@@ -249,6 +249,43 @@ erDiagram
 
 ![インフラ構成図](https://github.com/user-attachments/assets/fe06c075-c0ea-497e-bfa9-3e70944a1ad0)
 
+```yaml
+# docker-compose.yaml（Production Environment on AWS EC2）
+
+services:
+  app:
+    image: ghcr.io/yk00pg/awesome_collect:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    ports:
+      - "8080:8080"
+
+  db:
+    image: mysql:8.0.42
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: awesome_collect
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: Asia/Tokyo
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  db_data:
+```
+
+- 環境変数は.envにて管理
+- 開発環境との差分（開発環境用はリポジトリ内のdocker-compose.yamlを参照）
+  - イメージをGHCRから取得
+  - 再起動ポリシーを設定
 <br>
 <br>
 
