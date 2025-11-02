@@ -35,7 +35,7 @@
         </div>
       </div>
 
-      <form class="form-group"
+      <form class="form-group" id="targetForm"
             th:action="@{/memo/detail/edit/{id}(id=${memoRequestDto.id})}"
             th:object="${memoRequestDto}" method="post">
 
@@ -97,7 +97,11 @@
         </div>
       </form>
     </div>
+
+    <!-- EasyMDEの設定を呼び出す -->
     <script th:src="@{/js/easymde.js}"></script>
+
+    <!-- Tagifyの初期化関数を呼び出す -->
     <script th:src="@{/js/tagify.js}"></script>
     <script th:inline="javascript">
       /*<![CDATA[*/
