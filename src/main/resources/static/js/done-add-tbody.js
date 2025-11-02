@@ -99,6 +99,9 @@ function initDoneAddTbody() {
         const index = blocks.length;
         const newBlock = createBlock(index);
         table.appendChild(newBlock);
+
+        // 追加した入力枠でもEnterで次のフィールドに移動できるように関数を呼び出す。
+        enableEnterToNextField(`#variable-table tbody[data-row-id="${index}"]`);
     };
 
     // 削除ボタンをクリックしたときに行ブロックを削除する。
