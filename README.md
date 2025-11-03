@@ -247,7 +247,7 @@ erDiagram
 
 ## 🟣 インフラ構成図
 
-![インフラ構成図](https://github.com/user-attachments/assets/2278a92a-4404-4b96-b0d9-1266ecec82b8)
+![インフラ構成図](https://github.com/user-attachments/assets/64c69cf7-3e9c-4009-8754-336e8a84ca87)
 
 ```yaml
 # docker-compose.yaml（Production Environment on AWS EC2）
