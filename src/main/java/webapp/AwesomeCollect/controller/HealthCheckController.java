@@ -3,6 +3,7 @@ package webapp.AwesomeCollect.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import webapp.AwesomeCollect.common.constant.MappingValues;
 
 /**
  * ALBのヘルスチェック用のコントローラークラス。
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HealthCheckController {
 
-  @GetMapping("/health")
+  @GetMapping(MappingValues.HEALTH)
   public ResponseEntity<String> healthCheck(){
     return ResponseEntity.ok("OK");
   }
