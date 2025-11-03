@@ -25,17 +25,22 @@ function enableEnterToNextField(formSelector) {
 
                 const next = inputField[index + 1];
                 if (next) {
-                    // タグ入力欄はTagify.DOM.inputに変換されるため別出しで処理する。
+                    // 次のフィールドのクラスが"tags-input"の場合はtagify入力欄にフォーカスする。
                     if (next.classList.contains('tags-input')) {
                         const tagify = tagifyMap.get(next);
                         if (tagify && tagify.DOM && tagify.DOM.input) {
                             tagify.DOM.input.focus();
-                        } else {
-                            next.focus();
+                            return;
                         }
-                    } else {
-                        next.focus();
                     }
+
+                    // 次のフィールドのidが"content"でeasyMDEが存在する場合はeasyMDEエディタにフォーカスする。
+                    if (next.id === 'content' && typeof easyMDE !== 'undefined') {
+                        easyMDE.codemirror.focus();
+                        return;
+                    }
+
+                    next.focus();
                 } else {
                     const submitButton = form.querySelector('button[type="submit"]');
                     if (submitButton) submitButton.click();
