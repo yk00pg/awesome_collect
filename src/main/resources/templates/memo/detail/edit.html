@@ -96,6 +96,14 @@
           <button type="submit" class="register-button">登録</button>
         </div>
       </form>
+
+      <!-- Enter押下時に次のフィールドに移動する関数を呼び出す -->
+      <script th:src="@{/js/move-focus-on-enter.js}"></script>
+      <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            enableEnterToNextField('#targetForm');
+        });
+      </script>
     </div>
 
     <!-- EasyMDEの設定を呼び出す -->
