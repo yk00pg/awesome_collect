@@ -6,6 +6,8 @@ package webapp.AwesomeCollect.common.constant;
 public final class MappingValues {
 
   public static final String ROOT = "/";
+  public static final String HEALTH = "/health";
+
   public static final String SIGNUP = "/signup";
   public static final String LOGIN = "/login";
   public static final String LOGIN_ERROR = LOGIN + "?error";

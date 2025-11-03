@@ -45,6 +45,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(CSS, IMAGE, JS).permitAll()
             .requestMatchers(MappingValues.LOGIN, MappingValues.GUEST_LOGIN, MappingValues.SIGNUP).permitAll()
+            .requestMatchers(MappingValues.HEALTH).permitAll()
             .anyRequest().authenticated())
         .formLogin(login -> login
             .loginPage(MappingValues.LOGIN)
