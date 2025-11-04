@@ -10,11 +10,8 @@
 build
 out
 
-### VS Code ###
-.vscode
-
 ### キャッシュ ###
-.gradle
+.gradle/
 
 ### 環境変数ファイル ###
 *.env
