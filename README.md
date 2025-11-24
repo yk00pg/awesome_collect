@@ -86,6 +86,7 @@ https://github.com/user-attachments/assets/f098c3ec-2882-4bb8-bb85-f70fc2ca7ddd
 - **認証:** Spring Security
 - **データベース:** MySQL (8.0.42 / Docker, MyBatis)
 - **インフラ:**
+    - Amazon VPC (仮想ネットワーク)
     - AWS EC2 (Amazon Linux 2023)
     - Docker Compose（開発環境: ローカルビルド / 本番環境: GHCR配布イメージ使用）
     - AWS Elastic Load Balancer（SSL終端 & EC2転送・リダイレクト処理）
@@ -248,7 +249,8 @@ erDiagram
 
 ## 🟣 インフラ構成図
 
-![インフラ構成図](https://github.com/user-attachments/assets/64c69cf7-3e9c-4009-8754-336e8a84ca87)
+![インフラ構成図](https://github.com/user-attachments/assets/7dba9785-e7a2-4c84-8eaf-c09ea26517b1)
+
 
 ```yaml
 # docker-compose.yaml（Production Environment on AWS EC2）
