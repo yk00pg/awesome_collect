@@ -1053,6 +1053,7 @@ classDiagram
 ## 📎 Appendix
 - [開発メモ](https://befitting-mandible-2e9.notion.site/226a8c648d1a80468fabd1a68b5c2563?source=copy_link)（アイディア出しや要件定義など）
 - [紹介記事](https://qiita.com/yk00pg/items/4a8fa891095337a60761)（Qiita）
+- [バグ解消&機能改善記録](https://qiita.com/yk00pg/items/c8fa37d0f7fc814da44c)（Qiita）
 
 <br/>
 <br/>
