@@ -9,9 +9,6 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
     ports:
       - "8081:8080"
-    volumes:
-      - ./src:/app/src
-      - ./build/libs:/app/build/libs
 
   db:
     image: mysql:8.0.42
