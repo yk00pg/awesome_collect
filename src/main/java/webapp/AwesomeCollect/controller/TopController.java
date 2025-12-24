@@ -14,7 +14,7 @@ public class TopController {
 
   // トップページ（メインメニュー画面）を表示する。
   @GetMapping(MappingValues.TOP)
-  public String showHomeView(){
+  public String showTopPage(){
     return TemplateNames.TOP;
   }
 }
