@@ -50,6 +50,7 @@ public class DailyDoneService {
    * @param date   日付
    * @return できたこと表示用データオブジェクト
    */
+  @Transactional
   public DoneResponseDto prepareResponseDto(int userId, LocalDate date) {
     List<DailyDone> dailyDoneList = dailyDoneRepository.searchDailyDone(userId, date);
     if (dailyDoneList == null || dailyDoneList.isEmpty()) {
@@ -65,7 +66,6 @@ public class DailyDoneService {
    * @param dailyDoneList できたことリスト
    * @return できたこと表示用データオブジェクト
    */
-  @Transactional
   private @NotNull DoneResponseDto assembleCurrentResponseDto(
       List<DailyDone> dailyDoneList) {
 
@@ -89,6 +89,7 @@ public class DailyDoneService {
    * @param date   日付
    * @return できたこと入力用データオブジェクト
    */
+  @Transactional
   public DoneRequestDto prepareRequestDto(int userId, LocalDate date) {
     List<DailyDone> dailyDoneList = dailyDoneRepository.searchDailyDone(userId, date);
     if (dailyDoneList == null || dailyDoneList.isEmpty()) {
@@ -104,7 +105,6 @@ public class DailyDoneService {
    * @param dailyDoneList できたことリスト
    * @return できたこと入力用データオブジェクト
    */
-  @Transactional
   private @NotNull DoneRequestDto assembleCurrentRequestDto(
       List<DailyDone> dailyDoneList) {
 
@@ -127,6 +127,7 @@ public class DailyDoneService {
    * @param userId ユーザーID
    * @param dto    できたこと入力用データオブジェクト
    */
+  @Transactional
   public void saveDailyDone(int userId, DoneRequestDto dto) {
     List<List<String>> pureTagsList = JsonConverter.extractValues(dto.getTagsList());
 
@@ -170,7 +171,6 @@ public class DailyDoneService {
    * @param tagIdList タグIDリスト
    * @param index     リストのインデックス番号
    */
-  @Transactional
   private void registerDailyDone(
       int userId, DoneRequestDto dto, List<Integer> tagIdList, int index) {
 
@@ -189,7 +189,6 @@ public class DailyDoneService {
    *
    * @param doneId できたことID
    */
-  @Transactional
   private void deleteDailyDone(int doneId) {
     doneTagJunctionService.deleteRelationByActionId(doneId);
     dailyDoneRepository.deleteDailyDoneById(doneId);
@@ -204,7 +203,6 @@ public class DailyDoneService {
    * @param index     リストのインデックス番号
    * @param tagIdList タグIDリスト
    */
-  @Transactional
   private void updateDailyDone(
       int userId, DoneRequestDto dto, int doneId, int index, List<Integer> tagIdList) {
 

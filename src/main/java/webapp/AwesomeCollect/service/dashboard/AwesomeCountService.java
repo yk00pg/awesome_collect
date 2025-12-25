@@ -46,6 +46,7 @@ public class AwesomeCountService {
    * @param userId ユーザーID
    * @return えらい！ポイント表示用データオブジェクト
    */
+  @Transactional
   public AwesomePointDto prepareAwesomePointDto(int userId) {
     AwesomePointDto awesomePointDto = sessionManager.getCachedAwesomePointDto();
     Boolean hasNewRecord = sessionManager.hasUpdatedRecordCount();
@@ -68,7 +69,6 @@ public class AwesomeCountService {
    * @param userId ユーザーID
    * @return 累計えらい！ポイント
    */
-  @Transactional
   private int calculateTotalAwesome(int userId) {
     int todoPoint = awesomeCountRepository.countDailyTodoRecord(userId) * TODO;
     int donePoint = awesomeCountRepository.countDailyDoneRecord(userId) * DONE;
