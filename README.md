@@ -84,6 +84,7 @@ https://github.com/user-attachments/assets/f098c3ec-2882-4bb8-bb85-f70fc2ca7ddd
     - 言語: Java (Oracle OpenJDK 21.0.9)
     - フレームワーク: Spring Boot (3.4.7)
 - **認証:** Spring Security
+- **テスト:** JUnit5, Mockito
 - **データベース:** MySQL (8.0.42 / Docker, MyBatis)
 - **インフラ:**
     - Amazon VPC (仮想ネットワーク)
