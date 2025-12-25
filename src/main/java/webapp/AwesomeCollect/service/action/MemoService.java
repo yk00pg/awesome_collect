@@ -51,6 +51,7 @@ public class MemoService {
    * @param userId ユーザーId
    * @return メモ表示用データオブジェクト
    */
+  @Transactional
   public List<MemoResponseDto> prepareResponseDtoList(int userId) {
     List<Memo> memoList = memoRepository.searchMemo(userId);
     if (memoList == null || memoList.isEmpty()) {
@@ -87,6 +88,7 @@ public class MemoService {
    * @param userId ユーザーID
    * @return メモ表示用データオブジェクト
    */
+  @Transactional
   public MemoResponseDto prepareResponseDto(int memoId, int userId) {
     Memo memo = memoRepository.findMemoByIds(memoId, userId);
     if (memo == null) {
@@ -104,7 +106,6 @@ public class MemoService {
    * @param memoId メモID
    * @return メモ表示用データオブジェクト
    */
-  @Transactional
   private @NotNull MemoResponseDto assembleCurrentResponseDto(
       MemoResponseDto dto, int memoId) {
 
@@ -127,6 +128,7 @@ public class MemoService {
    * @param userId ユーザーID
    * @return メモ入力用データオブジェクト
    */
+  @Transactional
   public MemoRequestDto prepareRequestDto(int memoId, int userId) {
     if (memoId == 0) {
       return new MemoRequestDto();
@@ -147,7 +149,6 @@ public class MemoService {
    * @param memo   メモ
    * @return メモ入力用データオブジェクト
    */
-  @Transactional
   private @NotNull MemoRequestDto assembleCurrentRequestDto(int memoId, Memo memo) {
     List<Integer> tagIdList =
         memoTagJunctionService.prepareTagIdListByActionId(memoId);
@@ -165,6 +166,7 @@ public class MemoService {
    * @param dto    メモ入力用データオブジェクト
    * @return 保存結果オブジェクト
    */
+  @Transactional
   public SaveResult saveMemo(int userId, MemoRequestDto dto) {
     List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
     List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
@@ -189,7 +191,6 @@ public class MemoService {
    * @return 登録したメモID
    * @throws DuplicateException 同ユーザーが同じタイトルをすでに登録している場合
    */
-  @Transactional
   private int registerMemo(
       int userId, MemoRequestDto dto, List<Integer> tagIdList) {
 
@@ -217,7 +218,6 @@ public class MemoService {
    * @param memoId    メモID
    * @throws DuplicateException 同ユーザーが同じタイトルをすでに登録している場合
    */
-  @Transactional
   private void updateMemo(
       int userId, MemoRequestDto dto, List<Integer> tagIdList, int memoId)
       throws DuplicateException {

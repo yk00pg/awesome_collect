@@ -53,6 +53,7 @@ public class ArticleStockService {
    * @param userId ユーザーID
    * @return 記事ストック表示用データオブジェクト
    */
+  @Transactional
   public List<ArticleResponseDto> prepareResponseDtoList(int userId) {
     List<ArticleStock> articleStockList =
         articleStockRepository.searchArticleStock(userId);
@@ -90,6 +91,7 @@ public class ArticleStockService {
    * @param userId    ユーザーID
    * @return 記事ストック表示用データオブジェクト
    */
+  @Transactional
   public ArticleResponseDto prepareResponseDto(int articleId, int userId) {
     ArticleStock articleStock =
         articleStockRepository.findArticleStockByIds(articleId, userId);
@@ -108,7 +110,6 @@ public class ArticleStockService {
    * @param articleId 記事ストックID
    * @return 記事ストック表示用データオブジェクト
    */
-  @Transactional
   private @NotNull ArticleResponseDto assembleCurrentResponseDto(
       ArticleResponseDto dto, int articleId) {
 
@@ -130,6 +131,7 @@ public class ArticleStockService {
    * @param userId    ユーザーID
    * @return 記事ストック入力用データオブジェクト
    */
+  @Transactional
   public ArticleRequestDto prepareRequestDto(int articleId, int userId) {
     if (articleId == 0) {
       return new ArticleRequestDto();
@@ -151,7 +153,6 @@ public class ArticleStockService {
    * @param articleStock 記事ストック
    * @return 記事ストック入力用データオブジェクト
    */
-  @Transactional
   private @NotNull ArticleRequestDto assembleCurrentRequestDto(
       int articleId, ArticleStock articleStock) {
 
@@ -172,6 +173,7 @@ public class ArticleStockService {
    * @param dto    記事ストック入力用データオブジェクト
    * @return 保存結果
    */
+  @Transactional
   public SaveResult saveArticleStock(int userId, ArticleRequestDto dto) {
     List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
     List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
@@ -197,7 +199,6 @@ public class ArticleStockService {
    * @return 保存結果オブジェクト
    * @throws DuplicateException 同ユーザーが同じタイトルまたはURLをすでに登録している場合
    */
-  @Transactional
   private SaveResult registerArticleStock(
       int userId, ArticleRequestDto dto, List<Integer> tagIdList)
       throws DuplicateException {
@@ -230,7 +231,6 @@ public class ArticleStockService {
    * @return 保存結果オブジェクト
    * @throws DuplicateException 同ユーザーが同じタイトルまたはURLをすでに登録している場合
    */
-  @Transactional
   private SaveResult updateArticleStock(
       int userId, ArticleRequestDto dto, List<Integer> tagIdList, int articleId)
       throws DuplicateException {

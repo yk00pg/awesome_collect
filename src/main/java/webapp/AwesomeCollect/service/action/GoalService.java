@@ -52,6 +52,7 @@ public class GoalService {
    * @param userId ユーザーID
    * @return 目標表示用データオブジェクト
    */
+  @Transactional
   public List<GoalResponseDto> prepareResponseDtoList(int userId) {
     List<Goal> goalList = goalRepository.searchGoal(userId);
     if (goalList == null || goalList.isEmpty()) {
@@ -88,6 +89,7 @@ public class GoalService {
    * @param userId ユーザーID
    * @return 目標表示用データオブジェクト
    */
+  @Transactional
   public GoalResponseDto prepareResponseDto(int goalId, int userId) {
     Goal goal = goalRepository.findGoalByIds(goalId, userId);
     if (goal == null) {
@@ -105,7 +107,6 @@ public class GoalService {
    * @param goalId 目標ID
    * @return 目標表示用データオブジェクト
    */
-  @Transactional
   private @NotNull GoalResponseDto assembleCurrentResponseDto(
       GoalResponseDto dto, int goalId) {
 
@@ -127,6 +128,7 @@ public class GoalService {
    * @param userId ユーザーID
    * @return 目標入力用データオブジェクト
    */
+  @Transactional
   public GoalRequestDto prepareRequestDto(int goalId, int userId) {
     if (goalId == 0) {
       return new GoalRequestDto();
@@ -147,7 +149,6 @@ public class GoalService {
    * @param goal   目標
    * @return 目標入力用データオブジェクト
    */
-  @Transactional
   private @NotNull GoalRequestDto assembleCurrentRequestDto(int goalId, Goal goal) {
     List<Integer> tagIdList =
         goalTagJunctionService.prepareTagIdListByActionId(goalId);
@@ -165,6 +166,7 @@ public class GoalService {
    * @param dto    目標入力用データオブジェクト
    * @return 保存結果オブジェクト
    */
+  @Transactional
   public SaveResult saveGoal(int userId, GoalRequestDto dto) {
     List<String> pureTagList = JsonConverter.extractValues(dto.getTags());
     List<Integer> tagIdList = tagService.resolveTagIdList(userId, pureTagList);
@@ -191,7 +193,6 @@ public class GoalService {
    * @return 登録した目標ID
    * @throws DuplicateException 同ユーザーが同じタイトルをすでに登録している場合
    */
-  @Transactional
   private SaveResult registerGoal(
       int userId, GoalRequestDto dto, List<Integer> tagIdList)
       throws DuplicateException {
@@ -220,7 +221,6 @@ public class GoalService {
    * @return 保存結果オブジェクト
    * @throws DuplicateException 同ユーザーが同じタイトルをすでに登録している場合
    */
-  @Transactional
   private SaveResult updateGoal(
       int userId, GoalRequestDto dto, List<Integer> tagIdList, int goalId)
       throws DuplicateException {

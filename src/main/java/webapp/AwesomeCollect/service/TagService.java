@@ -64,6 +64,7 @@ public class TagService {
    * @param pureTagList 変換後のタグリスト
    * @return タグIDリスト
    */
+  @Transactional
   public List<Integer> resolveTagIdList(int userId, List<String> pureTagList) {
     return pureTagList == null
         ? null
@@ -79,7 +80,6 @@ public class TagService {
    * @param tagName タグ名
    * @return タグID
    */
-  @Transactional
   private int resolveTagId(int userId, String tagName) {
     Tag tag = new Tag(userId, tagName);
     Integer tagId = tagRepository.searchTagIdByUserIdAndTagName(tag);
