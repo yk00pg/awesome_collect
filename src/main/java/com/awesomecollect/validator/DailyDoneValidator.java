@@ -1,0 +1,118 @@
+package com.awesomecollect.validator;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+import com.awesomecollect.common.constant.MessageKeys;
+import com.awesomecollect.common.util.MessageUtil;
+import com.awesomecollect.dto.action.request.DoneRequestDto;
+
+/**
+ * できたことのカスタムバリデータクラス。<br>
+ * DTOアノテーションで制御できないバリデーションを確認する。
+ */
+@Component
+public class DailyDoneValidator implements Validator {
+
+  private final MessageUtil messageUtil;
+
+  private static final int MINUTES = 60;
+  private static final int HOURS = 24;
+
+  public DailyDoneValidator(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
+  }
+
+  @Override
+  public boolean supports(@NotNull Class<?> clazz) {
+    return DoneRequestDto.class.isAssignableFrom(clazz);
+  }
+
+  @Override
+  public void validate(@NotNull Object target, @NotNull Errors errors) {
+    DoneRequestDto dto = (DoneRequestDto) target;
+    validateDate(dto, errors);
+    validateContentList(dto, errors);
+    validateLearningTime(dto, errors);
+    validateTotalLearningTime(dto, errors);
+  }
+
+  // 未来の日付の場合はエラーに追加する。
+  private void validateDate(DoneRequestDto dto, Errors errors) {
+    if (dto.getDate().isAfter(LocalDate.now())) {
+      errors.rejectValue(
+          "date", "futureDate",
+          messageUtil.getMessage(MessageKeys.DATE_FUTURE));
+    }
+  }
+
+  // すべての内容が空欄の場合はエラーに追加する。
+  private void validateContentList(DoneRequestDto dto, Errors errors) {
+    if (dto.getContentList() == null ||
+        dto.getContentList().stream().allMatch(String :: isBlank)) {
+
+      errors.rejectValue(
+          "contentList", "blankContent",
+          messageUtil.getMessage(MessageKeys.CONTENT_BLANK));
+    } else {
+      validateContent(dto, errors);
+    }
+  }
+
+  // 内容が重複している場合はエラーに追加する。
+  private void validateContent(DoneRequestDto dto, Errors errors) {
+    List<String> contentList = dto.getContentList();
+    List<String> nonNullContentList =
+        new ArrayList<>(contentList.stream()
+            .filter(Objects :: nonNull)
+            .toList());
+
+    nonNullContentList.replaceAll(String :: strip);
+    HashSet<String> uniqueElements = new HashSet<>(nonNullContentList);
+    if (nonNullContentList.size() > uniqueElements.size()) {
+      errors.rejectValue(
+          "contentList", "duplicateContent",
+          messageUtil.getMessage(MessageKeys.CONTENT_DUPLICATE));
+    }
+  }
+
+  // 内容が入力されていて、学習時間が入力されていない場合はエラーに追加する。
+  private void validateLearningTime(DoneRequestDto dto, Errors errors) {
+    for (int i = 0; i < dto.getContentList().size(); i++) {
+      String content = dto.getContentList().get(i);
+
+      if (content != null && !content.isBlank()
+          && dto.getHoursList().get(i) == 0 && dto.getMinutesList().get(i) == 0) {
+        // エラーメッセージを重複して表示しないように、minutesListフィールドには追加しない。
+        errors.rejectValue(
+            "hoursList[" + i + "]", "blankLearningTime",
+            messageUtil.getMessage(MessageKeys.LEARNING_TIME_BLANK));
+      }
+    }
+  }
+
+  // 1日の学習時間の合計が24時間を超える場合はエラーに追加する。
+  private void validateTotalLearningTime(DoneRequestDto dto, Errors errors) {
+    int totalHours = dto.getHoursList().stream()
+        .filter(Objects :: nonNull)
+        .mapToInt(Integer :: intValue)
+        .sum();
+    int totalMinutes = dto.getMinutesList().stream()
+        .filter(Objects :: nonNull)
+        .mapToInt(Integer :: intValue)
+        .sum();
+
+    if ((totalHours * MINUTES) + totalMinutes > HOURS * MINUTES) {
+      // エラーメッセージを重複して表示しないように、minutesListフィールドには追加しない。
+      errors.rejectValue(
+          "hoursList", "exceededTotalLearningTime",
+          messageUtil.getMessage(MessageKeys.TOTAL_LEARNING_TIME_EXCEEDED));
+    }
+  }
+}

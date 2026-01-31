@@ -1,0 +1,101 @@
+package com.awesomecollect.dto.action.request;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
+import lombok.Data;
+import com.awesomecollect.entity.action.ArticleStock;
+
+/**
+ * 記事ストック入力用データオブジェクト。
+ */
+@Data
+public class ArticleRequestDto {
+
+  private static final int TITLE_MAX_SIZE = 100;
+  private static final int URL_MAX_SIZE = 2083;
+  private static final int MEMO_MAX_SIZE = 500;
+
+  private static final String STILL_NOT = "stillNot";
+  private static final String FINISHED = "finished";
+  private static final String STILL_NOT_LABEL = "これから読む";
+  private static final String FINISHED_LABEL = "もう読んだ！";
+  private static final String UNSET_LABEL = "未設定";
+
+  private int id;
+
+  @NotBlank(message = "{title.blank}")
+  @Size(max = TITLE_MAX_SIZE, message = "{title.size}")
+  private String title;
+
+  @Size(max = URL_MAX_SIZE, message = "{url.size}")
+  private String url;
+
+  @Size(max = MEMO_MAX_SIZE, message = "{memo.size}")
+  private String memo;
+
+  @NotBlank(message = "{status.blank}")
+  private String status;
+
+  private String tags;
+
+  // 進捗状況を日本語ラベルに変換する（Thymeleaf用）。
+  public String getStatusLabel(){
+    return switch (status){
+      case STILL_NOT -> STILL_NOT_LABEL;
+      case FINISHED -> FINISHED_LABEL;
+      default -> UNSET_LABEL;
+    };
+  }
+
+  /**
+   * 入力されたデータを新規登録用のエンティティに変換する。
+   *
+   * @param userId  ユーザーID
+   * @return  新規登録用のエンティティ
+   */
+  public ArticleStock toArticleStockForRegistration(int userId){
+    ArticleStock articleStock = new ArticleStock();
+    articleStock.setUserId(userId);
+    articleStock.setTitle(title);
+    articleStock.setUrl(url);
+    articleStock.setMemo(memo);
+    articleStock.setFinished(status.equals(FINISHED));
+    articleStock.setRegisteredAt(LocalDateTime.now());
+    return articleStock;
+  }
+
+  /**
+   * 入力されたデータを更新用のエンティティに変換する。
+   *
+   * @param userId  ユーザーID
+   * @return  更新用のエンティティ
+   */
+  public ArticleStock toArticleStockForUpdate(int userId){
+    ArticleStock articleStock = new ArticleStock();
+    articleStock.setId(id);
+    articleStock.setUserId(userId);
+    articleStock.setTitle(title);
+    articleStock.setUrl(url);
+    articleStock.setMemo(memo);
+    articleStock.setFinished(status.equals(FINISHED));
+    articleStock.setUpdatedAt(LocalDateTime.now());
+    return articleStock;
+  }
+
+  /**
+   * DBから取得した記事ストックを入力用データオブジェクトに変換する。
+   *
+   * @param articleStock  記事ストック
+   * @return  入力用データオブジェクト
+   */
+  public static ArticleRequestDto fromEntity(ArticleStock articleStock){
+    ArticleRequestDto dto = new ArticleRequestDto();
+    dto.id = articleStock.getId();
+    dto.title = articleStock.getTitle();
+    dto.url = articleStock.getUrl();
+    dto.memo = articleStock.getMemo();
+    dto.status = articleStock.isFinished() ? FINISHED : STILL_NOT;
+    return dto;
+  }
+}
