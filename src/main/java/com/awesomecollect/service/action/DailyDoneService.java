@@ -1,13 +1,7 @@
 package com.awesomecollect.service.action;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.awesomecollect.common.util.JsonConverter;
-import com.awesomecollect.common.util.SessionManager;
+import com.awesomecollect.controller.web.SessionManager;
 import com.awesomecollect.dto.action.request.DoneRequestDto;
 import com.awesomecollect.dto.action.response.DoneResponseDto;
 import com.awesomecollect.dto.dummy.DummyDoneDto;
@@ -17,6 +11,12 @@ import com.awesomecollect.repository.action.DailyDoneRepository;
 import com.awesomecollect.service.TagService;
 import com.awesomecollect.service.junction.DoneTagJunctionService;
 import com.awesomecollect.service.user.UserProgressService;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * できたことのサービスクラス。

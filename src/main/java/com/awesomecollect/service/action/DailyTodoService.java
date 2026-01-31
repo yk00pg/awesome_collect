@@ -1,16 +1,16 @@
 package com.awesomecollect.service.action;
 
-import java.time.LocalDate;
-import java.util.List;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import com.awesomecollect.common.util.SessionManager;
+import com.awesomecollect.controller.web.SessionManager;
 import com.awesomecollect.dto.action.request.TodoRequestDto;
 import com.awesomecollect.dto.action.response.TodoResponseDto;
 import com.awesomecollect.dto.dummy.DummyTodoDto;
 import com.awesomecollect.entity.action.DailyTodo;
 import com.awesomecollect.repository.action.DailyTodoRepository;
 import com.awesomecollect.service.user.UserProgressService;
+import java.time.LocalDate;
+import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * やることのサービスクラス。

@@ -1,14 +1,14 @@
 package com.awesomecollect.service.dashboard;
 
+import com.awesomecollect.controller.web.SessionManager;
+import com.awesomecollect.dto.dashboard.AwesomePointDto;
+import com.awesomecollect.repository.dashboard.AwesomeCountRepository;
+import com.awesomecollect.service.BonusAwesomeService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.awesomecollect.common.util.SessionManager;
-import com.awesomecollect.dto.dashboard.AwesomePointDto;
-import com.awesomecollect.repository.dashboard.AwesomeCountRepository;
-import com.awesomecollect.service.BonusAwesomeService;
 
 /**
  * えらい！ポイントのサービスクラス。

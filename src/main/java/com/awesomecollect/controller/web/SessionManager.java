@@ -1,10 +1,10 @@
-package com.awesomecollect.common.util;
+package com.awesomecollect.controller.web;
 
-import jakarta.servlet.http.HttpSession;
-import org.springframework.stereotype.Component;
 import com.awesomecollect.dto.dashboard.AwesomePointDto;
 import com.awesomecollect.dto.dashboard.LearningDaysDto;
 import com.awesomecollect.dto.dashboard.LearningTimeDto;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.stereotype.Component;
 
 /**
  * セッション情報を管理するクラス。

@@ -1,5 +1,12 @@
 package com.awesomecollect.service.dashboard;
 
+import com.awesomecollect.common.util.LearningTimeConverter;
+import com.awesomecollect.controller.web.SessionManager;
+import com.awesomecollect.dto.dashboard.LearningTimeDto;
+import com.awesomecollect.entity.dashboard.AvgLearningTime;
+import com.awesomecollect.entity.dashboard.TagLearningTime;
+import com.awesomecollect.entity.dashboard.TotalLearningTime;
+import com.awesomecollect.repository.dashboard.LearningTimeRepository;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -9,13 +16,6 @@ import java.util.stream.IntStream;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.awesomecollect.common.util.LearningTimeConverter;
-import com.awesomecollect.common.util.SessionManager;
-import com.awesomecollect.dto.dashboard.LearningTimeDto;
-import com.awesomecollect.entity.dashboard.AvgLearningTime;
-import com.awesomecollect.entity.dashboard.TagLearningTime;
-import com.awesomecollect.entity.dashboard.TotalLearningTime;
-import com.awesomecollect.repository.dashboard.LearningTimeRepository;
 
 /**
  * 学習時間のサービスクラス。

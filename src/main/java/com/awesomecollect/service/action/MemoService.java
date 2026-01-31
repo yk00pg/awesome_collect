@@ -1,13 +1,8 @@
 package com.awesomecollect.service.action;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.awesomecollect.common.SaveResult;
 import com.awesomecollect.common.util.JsonConverter;
-import com.awesomecollect.common.util.SessionManager;
+import com.awesomecollect.controller.web.SessionManager;
 import com.awesomecollect.dto.action.request.MemoRequestDto;
 import com.awesomecollect.dto.action.response.MemoResponseDto;
 import com.awesomecollect.dto.dummy.DummyMemoDto;
@@ -19,6 +14,11 @@ import com.awesomecollect.repository.action.MemoRepository;
 import com.awesomecollect.service.TagService;
 import com.awesomecollect.service.junction.MemoTagJunctionService;
 import com.awesomecollect.service.user.UserProgressService;
+import java.util.ArrayList;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * メモのサービスクラス。

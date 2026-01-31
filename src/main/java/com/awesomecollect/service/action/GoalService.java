@@ -1,14 +1,8 @@
 package com.awesomecollect.service.action;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.awesomecollect.common.SaveResult;
 import com.awesomecollect.common.util.JsonConverter;
-import com.awesomecollect.common.util.SessionManager;
+import com.awesomecollect.controller.web.SessionManager;
 import com.awesomecollect.dto.action.request.GoalRequestDto;
 import com.awesomecollect.dto.action.response.GoalResponseDto;
 import com.awesomecollect.dto.dummy.DummyGoalDto;
@@ -20,6 +14,12 @@ import com.awesomecollect.repository.action.GoalRepository;
 import com.awesomecollect.service.TagService;
 import com.awesomecollect.service.junction.GoalTagJunctionService;
 import com.awesomecollect.service.user.UserProgressService;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 目標のサービスクラス。
