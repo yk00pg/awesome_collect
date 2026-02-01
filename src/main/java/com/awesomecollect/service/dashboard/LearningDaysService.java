@@ -1,7 +1,6 @@
 package com.awesomecollect.service.dashboard;
 
 import com.awesomecollect.common.util.DateTimeFormatUtil;
-import com.awesomecollect.controller.web.SessionManager;
 import com.awesomecollect.dto.dashboard.LearningDaysDto;
 import com.awesomecollect.repository.dashboard.LearningDaysRepository;
 import java.time.LocalDate;
@@ -17,28 +16,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class LearningDaysService {
 
   private final LearningDaysRepository learningDaysRepository;
-  private final SessionManager sessionManager;
 
-  public LearningDaysService(
-      LearningDaysRepository learningDaysRepository, SessionManager sessionManager) {
-
+  public LearningDaysService(LearningDaysRepository learningDaysRepository) {
     this.learningDaysRepository = learningDaysRepository;
-    this.sessionManager = sessionManager;
   }
 
   /**
-   * セッション情報を確認し、学習日数更新情報がnullまたは更新有りあるいはセッションのDTOがnullの場合は、
-   * 累計学習日数、連続学習日数、最終学習日を算出し、DTOに詰めてセッション情報を更新する。
+   * 学習日数更新フラグがfalseで学習日数のキャッシュDTOがnullでない場合はそのままキャッシュDTOを返す。<br>
+   * そうでない場合は、累計学習日数、連続学習日数、最終学習日を算出し、DTOに詰めて返す。
    *
    * @param userId ユーザーID
+   * @param hasUpdatedLearnedDate 学習日数更新フラグ
+   * @param cachedLearningDaysDto 学習日数のキャッシュDTO
    * @return 学習日数表示用データオブジェクト
    */
   @Transactional
-  public LearningDaysDto prepareLearningDaysDto(int userId) {
-    Boolean hasUpdatedLearnedDate = sessionManager.hasUpdatedLearningDays();
-    LearningDaysDto learningDaysDto = sessionManager.getCachedLearningDaysDto();
+  public LearningDaysDto prepareLearningDaysDto(
+      int userId, Boolean hasUpdatedLearnedDate, LearningDaysDto cachedLearningDaysDto) {
 
-    if (hasUpdatedLearnedDate == null || hasUpdatedLearnedDate || learningDaysDto == null) {
+    if(!hasUpdatedLearnedDate && cachedLearningDaysDto != null) {
+      return cachedLearningDaysDto;
+    } else {
       int totalDays = learningDaysRepository.getTotalDays(userId);
       List<LocalDate> learningDateList = learningDaysRepository.searchLearningDateList(userId);
 
@@ -58,10 +56,7 @@ public class LearningDaysService {
         lastLearnedDate = DateTimeFormatUtil.formatDate(latestDate);
       }
 
-      learningDaysDto = new LearningDaysDto(totalDays, streakDays, lastLearnedDate);
-      sessionManager.setLearningDaysDto(learningDaysDto);
-      sessionManager.setHasUpdatedLearningDays(false);
+      return new LearningDaysDto(totalDays, streakDays, lastLearnedDate);
     }
-    return learningDaysDto;
   }
 }

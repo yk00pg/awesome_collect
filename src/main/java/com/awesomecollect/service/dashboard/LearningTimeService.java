@@ -1,7 +1,6 @@
 package com.awesomecollect.service.dashboard;
 
 import com.awesomecollect.common.util.LearningTimeConverter;
-import com.awesomecollect.controller.web.SessionManager;
 import com.awesomecollect.dto.dashboard.LearningTimeDto;
 import com.awesomecollect.entity.dashboard.AvgLearningTime;
 import com.awesomecollect.entity.dashboard.TagLearningTime;
@@ -24,31 +23,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class LearningTimeService {
 
   private final LearningTimeRepository learningTimeRepository;
-  private final SessionManager sessionManager;
 
   private static final String UNCATEGORIZED = "(未設定)";
 
-  public LearningTimeService(
-      LearningTimeRepository learningTimeRepository, SessionManager sessionManager) {
-
+  public LearningTimeService(LearningTimeRepository learningTimeRepository) {
     this.learningTimeRepository = learningTimeRepository;
-    this.sessionManager = sessionManager;
   }
 
   /**
-   * セッション情報を確認し、学習時間更新情報がnullまたは更新有りあるいはセッションのDTOがnullの場合は、
-   * 累計学習時間（時間、分）、日別学習時間、曜日別平均学習時間、月別学習時間、タグ別学習時間を算出し、
-   * DTOに詰めて、セッション情報を更新する。
+   * 学習時間更新フラグがfalseで学習時間のキャッシュDTOがnullでない場合は、キャッシュDTOをそのまま返す。<br>
+   * そうでない場合は、累計学習時間（時間、分）、日別学習時間、曜日別平均学習時間、月別学習時間、
+   * タグ別学習時間を算出し、DTOに詰めて返す。
    *
    * @param userId ユーザーID
+   * @param hasUpdatedTime 学習時間更新フラグ
+   * @param cachedLearningTimeDto 学習時間のキャッシュDTO
    * @return 学習時間表示用データオブジェクト
    */
   @Transactional
-  public LearningTimeDto prepareLearningTimeDto(int userId) {
-    Boolean hasUpdatedTime = sessionManager.hasUpdatedTime();
-    LearningTimeDto learningTimeDto = sessionManager.getCachedLearningTimeDto();
+  public LearningTimeDto prepareLearningTimeDto(
+      int userId, Boolean hasUpdatedTime, LearningTimeDto cachedLearningTimeDto) {
 
-    if (hasUpdatedTime == null || hasUpdatedTime || learningTimeDto == null) {
+    if (!hasUpdatedTime && cachedLearningTimeDto != null) {
+      return cachedLearningTimeDto;
+    } else {
       int totalTime = learningTimeRepository.getTotalHours(userId);
       int totalHours = LearningTimeConverter.toHoursPart(totalTime);
       int totalMinutes = LearningTimeConverter.toMinutesPart(totalTime);
@@ -62,14 +60,10 @@ public class LearningTimeService {
       List<TagLearningTime> topTenTagTotalTimeList =
           tagTotalTimeList.stream().limit(10).toList();
 
-      learningTimeDto = new LearningTimeDto(
+      return new LearningTimeDto(
           totalHours, totalMinutes, sevenDaysTimeList, dayOfWeekTimeList,
           sixMonthTimeList, topTenTagTotalTimeList, tagTotalTimeList);
-
-      sessionManager.setLearningTimeDto(learningTimeDto);
-      sessionManager.setHasUpdateTime(false);
     }
-    return learningTimeDto;
   }
 
   /**
