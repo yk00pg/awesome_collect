@@ -17,6 +17,16 @@
         - @Codebase を使ったリストアップにより、移動による影響範囲は9ファイル（ `SessionManager` + Service 8ファイル）と判明
             - 以降の作業により、Controllerにも影響が出る見込み
 
-#### 2. セッションの読み書きを Service から Controller に移動　**(TODO)**
+#### 2. セッションの読み書きを Service から Controller に移動　**(DONE)**
         - 確認時: Controller でセッション情報を取得し、結果を Service に渡す
         - 更新時: Service から結果を受け取り、Controller でセッションを更新する
+
+#### 3. `SessionManager` の中身を修正　**(TODO)**
+        - ゲッター系メソッドの型安全化（ `Boolean.TRUE.equals(...)`　）
+        - テスト実装やキー追加の可能性を考慮し、セッションキーを定数クラスとして切り出す
+
+### 気づき
+- ダミーデータ注入時に学習アクションごとにセッションの更新をしてしまっていたが、Controller に移動したことにより更新が1回で済むようになった
+- `hasUpdatedRecordCount` という形でレコード数更新フラグをセッションに保存しているが、Goal, ArticleStock のステータス更新も含むためリネームしたほうが良さそう
+- 一度に複数レコードを扱う可能性のある `DailyTodoController` / `DailyDoneController` においては、各更新フラグをもっと厳密に扱うべきかもしれない
+- ダッシュボードに表示するデータをキャッシュとしてセッション（HttpSession）に保存しているが、 Spring Cache（ `@EnableCaching`, `@Cachable` ）で扱うほうが良さそう
