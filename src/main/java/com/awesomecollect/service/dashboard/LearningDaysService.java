@@ -22,19 +22,20 @@ public class LearningDaysService {
   }
 
   /**
-   * 学習日数更新フラグがfalseで学習日数のキャッシュDTOがnullでない場合はそのままキャッシュDTOを返す。<br>
+   * 学習日数のキャッシュデータの保持フラグがtrueで学習日数のキャッシュDTOがnullでない場合は、
+   * そのままキャッシュDTOを返す。<br>
    * そうでない場合は、累計学習日数、連続学習日数、最終学習日を算出し、DTOに詰めて返す。
    *
    * @param userId ユーザーID
-   * @param hasUpdatedLearnedDate 学習日数更新フラグ
+   * @param hasCachedLearningDays 学習日数のキャッシュデータの保持フラグ
    * @param cachedLearningDaysDto 学習日数のキャッシュDTO
    * @return 学習日数表示用データオブジェクト
    */
   @Transactional
   public LearningDaysDto prepareLearningDaysDto(
-      int userId, Boolean hasUpdatedLearnedDate, LearningDaysDto cachedLearningDaysDto) {
+      int userId, boolean hasCachedLearningDays, LearningDaysDto cachedLearningDaysDto) {
 
-    if(!hasUpdatedLearnedDate && cachedLearningDaysDto != null) {
+    if(hasCachedLearningDays && cachedLearningDaysDto != null) {
       return cachedLearningDaysDto;
     } else {
       int totalDays = learningDaysRepository.getTotalDays(userId);

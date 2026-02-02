@@ -137,9 +137,9 @@ public class DailyDoneController {
     }
 
     dailyDoneService.saveDailyDone(userId, dto);
-    sessionManager.setHasUpdatedRecordCount(true);
-    sessionManager.setHasUpdatedLearningDays(true);
-    sessionManager.setHasUpdateTime(true);
+    sessionManager.disableCachedAwesomePoints();
+    sessionManager.disableCachedLearningDays();
+    sessionManager.disableCachedLearningTime();
 
     addAttributeBySaveType(dto, redirectAttributes);
 
@@ -173,9 +173,9 @@ public class DailyDoneController {
       RedirectAttributes redirectAttributes) {
 
     dailyDoneService.deleteDailyAllDoneByDate(customUserDetails.getId(), date);
-    sessionManager.setHasUpdatedRecordCount(true);
-    sessionManager.setHasUpdatedLearningDays(true);
-    sessionManager.setHasUpdateTime(true);
+    sessionManager.disableCachedAwesomePoints();
+    sessionManager.disableCachedLearningDays();
+    sessionManager.disableCachedLearningTime();
 
     redirectAttributes.addFlashAttribute(
         AttributeNames.SUCCESS_MESSAGE,

@@ -178,7 +178,8 @@ public class GoalController {
 
     boolean isRegistration = id == 0;
     if (isRegistration) {
-      sessionManager.setHasUpdatedRecordCount(true);
+      sessionManager.disableCachedAwesomePoints();
+
       redirectAttributes.addFlashAttribute(
           AttributeNames.SUCCESS_MESSAGE,
           messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
@@ -191,7 +192,8 @@ public class GoalController {
           messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
 
       if (saveResult.isUpdatedStatus()) {
-        sessionManager.setHasUpdatedRecordCount(true);
+        sessionManager.disableCachedAwesomePoints();
+
         redirectAttributes.addFlashAttribute(
             AttributeNames.ACHIEVEMENT_POPUP,
             messageUtil.getMessage(MessageKeys.ACHIEVED_AWESOME));
@@ -205,7 +207,7 @@ public class GoalController {
       @PathVariable int id, RedirectAttributes redirectAttributes) {
 
     goalService.deleteGoal(id);
-    sessionManager.setHasUpdatedRecordCount(true);
+    sessionManager.disableCachedAwesomePoints();
 
     redirectAttributes.addFlashAttribute(
         AttributeNames.SUCCESS_MESSAGE,

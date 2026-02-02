@@ -113,7 +113,7 @@ public class DailyTodoController {
     }
 
     dailyTodoService.saveDailyTodo(customUserDetails.getId(), dto);
-    sessionManager.setHasUpdatedRecordCount(true);
+    sessionManager.disableCachedAwesomePoints();
 
     addAttributeBySaveType(dto, redirectAttributes);
 
@@ -147,7 +147,7 @@ public class DailyTodoController {
       RedirectAttributes redirectAttributes) {
 
     dailyTodoService.deleteDailyAllTodo(customUserDetails.getId(), date);
-    sessionManager.setHasUpdatedRecordCount(true);
+    sessionManager.disableCachedAwesomePoints();
 
     redirectAttributes.addFlashAttribute(
         AttributeNames.SUCCESS_MESSAGE,

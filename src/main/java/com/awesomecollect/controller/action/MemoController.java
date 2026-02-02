@@ -163,7 +163,8 @@ public class MemoController {
   private void addAttributeBySaveType(int id, RedirectAttributes redirectAttributes) {
     boolean isRegistration = id == 0;
     if (isRegistration) {
-      sessionManager.setHasUpdatedRecordCount(true);
+      sessionManager.disableCachedAwesomePoints();
+
       redirectAttributes.addFlashAttribute(
           AttributeNames.SUCCESS_MESSAGE,
           messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
@@ -183,7 +184,7 @@ public class MemoController {
       @PathVariable int id, RedirectAttributes redirectAttributes) {
 
     memoService.deleteMemo(id);
-    sessionManager.setHasUpdatedRecordCount(true);
+    sessionManager.disableCachedAwesomePoints();
 
     redirectAttributes.addFlashAttribute(
         AttributeNames.SUCCESS_MESSAGE,

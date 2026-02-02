@@ -31,20 +31,21 @@ public class LearningTimeService {
   }
 
   /**
-   * 学習時間更新フラグがfalseで学習時間のキャッシュDTOがnullでない場合は、キャッシュDTOをそのまま返す。<br>
+   * 学習時間のキャッシュデータ保持フラグがtrueで学習時間のキャッシュDTOがnullでない場合は、
+   * キャッシュDTOをそのまま返す。<br>
    * そうでない場合は、累計学習時間（時間、分）、日別学習時間、曜日別平均学習時間、月別学習時間、
    * タグ別学習時間を算出し、DTOに詰めて返す。
    *
    * @param userId ユーザーID
-   * @param hasUpdatedTime 学習時間更新フラグ
+   * @param hasCachedLearningTime 学習時間のキャッシュデータ保持フラグ
    * @param cachedLearningTimeDto 学習時間のキャッシュDTO
    * @return 学習時間表示用データオブジェクト
    */
   @Transactional
   public LearningTimeDto prepareLearningTimeDto(
-      int userId, Boolean hasUpdatedTime, LearningTimeDto cachedLearningTimeDto) {
+      int userId, boolean hasCachedLearningTime, LearningTimeDto cachedLearningTimeDto) {
 
-    if (!hasUpdatedTime && cachedLearningTimeDto != null) {
+    if (hasCachedLearningTime && cachedLearningTimeDto != null) {
       return cachedLearningTimeDto;
     } else {
       int totalTime = learningTimeRepository.getTotalHours(userId);

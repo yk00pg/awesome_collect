@@ -36,20 +36,20 @@ public class AwesomeCountService {
   }
 
   /**
-   * レコード数更新フラグがfalseでえらいポイントのキャッシュDTOがnullでない場合は、
+   * えらいポイントのキャッシュデータ保持フラグがtrueでえらいポイントのキャッシュDTOがnullでない場合は、
    * そのままキャッシュDTOを返す。<br>
    * そうでない場合は、累計えらいポイントを算出し、分割したえらいポイントリストを作成してDTOに詰めて返す。
    *
    * @param userId ユーザーID
-   * @param hasNewRecord レコード数更新フラグ
+   * @param hasCachedAwesomePoints えらいポイントのキャッシュデータ保持フラグ
    * @param cachedAwesomePointDto えらいポイントのキャッシュDTO
    * @return えらいポイント表示用データオブジェクト
    */
   @Transactional
   public AwesomePointDto prepareAwesomePointDto(
-      int userId, Boolean hasNewRecord, AwesomePointDto cachedAwesomePointDto) {
+      int userId, boolean hasCachedAwesomePoints, AwesomePointDto cachedAwesomePointDto) {
 
-    if(!hasNewRecord && cachedAwesomePointDto != null) {
+    if(hasCachedAwesomePoints && cachedAwesomePointDto != null) {
       return cachedAwesomePointDto;
     } else {
       int totalAwesomePoint = calculateTotalAwesome(userId);

@@ -167,7 +167,8 @@ public class ArticleStockController {
 
     boolean isRegistration = id == 0;
     if (isRegistration) {
-      sessionManager.setHasUpdatedRecordCount(true);
+      sessionManager.disableCachedAwesomePoints();
+
       redirectAttributes.addFlashAttribute(
           AttributeNames.SUCCESS_MESSAGE,
           messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
@@ -180,7 +181,8 @@ public class ArticleStockController {
           messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
 
       if (saveResult.isUpdatedStatus()) {
-        sessionManager.setHasUpdatedRecordCount(true);
+        sessionManager.disableCachedAwesomePoints();
+
         redirectAttributes.addFlashAttribute(
             AttributeNames.ACHIEVEMENT_POPUP,
             messageUtil.getMessage(MessageKeys.FINISHED_AWESOME));
@@ -194,7 +196,7 @@ public class ArticleStockController {
       @PathVariable int id, RedirectAttributes redirectAttributes) {
 
     articleStockService.deleteArticleStock(id);
-    sessionManager.setHasUpdatedRecordCount(true);
+    sessionManager.disableCachedAwesomePoints();
 
     redirectAttributes.addFlashAttribute(
         AttributeNames.SUCCESS_MESSAGE,

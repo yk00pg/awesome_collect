@@ -86,15 +86,15 @@ public class DashboardController {
 
   // セッション情報をServiceに渡してえらいポイントのDTOを受け取り、内容に変更があればセッションを更新する。
   private @Nullable AwesomePointDto getAwesomePointDto(int userId) {
-    Boolean hasNewRecord = sessionManager.hasUpdatedRecordCount();
+    boolean hasCachedAwesomePoints = sessionManager.hasCachedAwesomePoints();
     AwesomePointDto cachedAwesomePointDto = sessionManager.getCachedAwesomePointDto();
 
     AwesomePointDto awesomePointDto =
         awesomeCountService.prepareAwesomePointDto(
-            userId, hasNewRecord, cachedAwesomePointDto);
+            userId, hasCachedAwesomePoints, cachedAwesomePointDto);
 
     if(!Objects.equals(cachedAwesomePointDto, awesomePointDto)) {
-      sessionManager.setHasUpdatedRecordCount(false);
+      sessionManager.enableCachedAwesomePoints();
       sessionManager.setAwesomePointDto(awesomePointDto);
     }
     return awesomePointDto;
@@ -102,32 +102,32 @@ public class DashboardController {
 
   // セッション情報をServiceに渡して学習日数のDTOを受け取り、内容に変更があればセッションを更新する。
   private @Nullable LearningDaysDto getLearningDaysDto(int userId) {
-    Boolean hasUpdatedLearnedDate = sessionManager.hasUpdatedLearningDays();
+    boolean hasCachedLearningDays = sessionManager.hasCachedLearningDays();
     LearningDaysDto cachedLearningDaysDto = sessionManager.getCachedLearningDaysDto();
 
     LearningDaysDto learningDaysDto =
         learningDaysService.prepareLearningDaysDto(
-            userId, hasUpdatedLearnedDate, cachedLearningDaysDto);
+            userId, hasCachedLearningDays, cachedLearningDaysDto);
 
     if(!Objects.equals(cachedLearningDaysDto, learningDaysDto)){
+      sessionManager.enableCachedLearningDays();
       sessionManager.setLearningDaysDto(learningDaysDto);
-      sessionManager.setHasUpdatedLearningDays(false);
     }
     return learningDaysDto;
   }
 
   // セッション情報をServiceに渡して学習時間のDTOを受け取り、内容に変更があればセッションを更新する。
   private @NotNull LearningTimeDto getLearningTimeDto(int userId) {
-    Boolean hasUpdatedTime = sessionManager.hasUpdatedTime();
+    boolean hasCachedLearningTime = sessionManager.hasCachedLearningTime();
     LearningTimeDto cachedLearningTimeDto = sessionManager.getCachedLearningTimeDto();
 
     LearningTimeDto learningTimeDto =
         learningTimeService.prepareLearningTimeDto(
-            userId, hasUpdatedTime, cachedLearningTimeDto);
+            userId, hasCachedLearningTime, cachedLearningTimeDto);
 
     if(!Objects.equals(cachedLearningTimeDto, learningTimeDto)){
+      sessionManager.enableCachedLearningTime();
       sessionManager.setLearningTimeDto(learningTimeDto);
-      sessionManager.setHasUpdateTime(false);
     }
 
     return learningTimeDto;

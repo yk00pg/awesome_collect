@@ -64,9 +64,9 @@ public class LoginController {
   public String guestLogin(HttpServletRequest request){
 
     UserInfo guestUser = guestUserService.createGuestUser();
-    sessionManager.setHasUpdatedRecordCount(true);
-    sessionManager.setHasUpdatedLearningDays(true);
-    sessionManager.setHasUpdateTime(true);
+    sessionManager.disableCachedAwesomePoints();
+    sessionManager.disableCachedLearningDays();
+    sessionManager.disableCachedLearningTime();
 
     UsernamePasswordAuthenticationToken authToken =
         new UsernamePasswordAuthenticationToken(guestUser.getLoginId(), GuestUser.PASSWORD);
