@@ -2,7 +2,6 @@ package com.awesomecollect.service.action;
 
 import com.awesomecollect.common.SaveResult;
 import com.awesomecollect.common.util.JsonConverter;
-import com.awesomecollect.controller.web.SessionManager;
 import com.awesomecollect.dto.action.request.ArticleRequestDto;
 import com.awesomecollect.dto.action.response.ArticleResponseDto;
 import com.awesomecollect.dto.dummy.DummyArticleStockDto;
@@ -31,19 +30,16 @@ public class ArticleStockService {
   private final ArticleTagJunctionService articleTagJunctionService;
   private final TagService tagService;
   private final UserProgressService userProgressService;
-  private final SessionManager sessionManager;
 
   public ArticleStockService(
       ArticleStockRepository articleStockRepository,
       ArticleTagJunctionService articleTagJunctionService,
-      TagService tagService, UserProgressService userProgressService,
-      SessionManager sessionManager) {
+      TagService tagService, UserProgressService userProgressService) {
 
     this.articleStockRepository = articleStockRepository;
     this.articleTagJunctionService = articleTagJunctionService;
     this.tagService = tagService;
     this.userProgressService = userProgressService;
-    this.sessionManager = sessionManager;
   }
 
   /**
@@ -185,7 +181,6 @@ public class ArticleStockService {
     } else {
       saveResult = updateArticleStock(userId, dto, tagIdList, articleId);
     }
-    sessionManager.setHasUpdatedRecordCount(true);
 
     return saveResult;
   }
@@ -286,12 +281,10 @@ public class ArticleStockService {
   public void deleteArticleStock(int articleId) {
     articleTagJunctionService.deleteRelationByActionId(articleId);
     articleStockRepository.deleteArticleStock(articleId);
-
-    sessionManager.setHasUpdatedRecordCount(true);
   }
 
   /**
-   * CSVファイルから読み込んだダミーデータをDBに登録し、セッションのレコード数更新情報を変更する。
+   * CSVファイルから読み込んだダミーデータをDBに登録する。
    *
    * @param guestUserId ゲストユーザーID
    * @param recordList  CSVファイルから読み込んだレコードリスト
@@ -307,7 +300,5 @@ public class ArticleStockService {
       articleTagJunctionService.registerNewRelations(
           articleStock.getId(), ArticleTagJunction::new, tagIdList);
     });
-
-    sessionManager.setHasUpdatedRecordCount(true);
   }
 }

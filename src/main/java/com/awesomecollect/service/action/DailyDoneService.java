@@ -1,7 +1,6 @@
 package com.awesomecollect.service.action;
 
 import com.awesomecollect.common.util.JsonConverter;
-import com.awesomecollect.controller.web.SessionManager;
 import com.awesomecollect.dto.action.request.DoneRequestDto;
 import com.awesomecollect.dto.action.response.DoneResponseDto;
 import com.awesomecollect.dto.dummy.DummyDoneDto;
@@ -28,18 +27,16 @@ public class DailyDoneService {
   private final DoneTagJunctionService doneTagJunctionService;
   private final TagService tagService;
   private final UserProgressService userProgressService;
-  private final SessionManager sessionManager;
 
   public DailyDoneService(
       DailyDoneRepository dailyDoneRepository,
       DoneTagJunctionService doneTagJunctionService, TagService tagService,
-      UserProgressService userProgressService, SessionManager sessionManager) {
+      UserProgressService userProgressService) {
 
     this.dailyDoneRepository = dailyDoneRepository;
     this.doneTagJunctionService = doneTagJunctionService;
     this.tagService = tagService;
     this.userProgressService = userProgressService;
-    this.sessionManager = sessionManager;
   }
 
   /**
@@ -121,8 +118,7 @@ public class DailyDoneService {
   }
 
   /**
-   * データの種類に応じてDBに保存（登録・更新・削除、内容が空の場合はスキップ）し、
-   * セッションのレコード数更新情報、学習日数更新情報、学習時間更新情報を変更する。
+   * データの種類に応じてDBに保存（登録・更新・削除、内容が空の場合はスキップ）する。
    *
    * @param userId ユーザーID
    * @param dto    できたこと入力用データオブジェクト
@@ -156,10 +152,6 @@ public class DailyDoneService {
         }
       }
     }
-
-    sessionManager.setHasUpdatedRecordCount(true);
-    sessionManager.setHasUpdatedLearningDays(true);
-    sessionManager.setHasUpdateTime(true);
   }
 
   /**
@@ -212,8 +204,7 @@ public class DailyDoneService {
   }
 
   /**
-   * 指定の日付のできたこと、紐付けられたタグとの関係情報をすべて削除し、
-   * セッションのレコード数更新情報、学習時間更新情報、学習日数更新情報を変更する。
+   * 指定の日付のできたこと、紐付けられたタグとの関係情報をすべて削除する。
    *
    * @param userId ユーザーID
    * @param date   日付
@@ -222,15 +213,10 @@ public class DailyDoneService {
   public void deleteDailyAllDoneByDate(int userId, LocalDate date) {
     doneTagJunctionService.deleteRelationByDate(userId, date);
     dailyDoneRepository.deleteDailyDoneByDate(userId, date);
-
-    sessionManager.setHasUpdatedRecordCount(true);
-    sessionManager.setHasUpdatedLearningDays(true);
-    sessionManager.setHasUpdateTime(true);
   }
 
   /**
-   * CSVファイルから読み込んだダミーデータをDBに登録し、
-   * セッションのレコード数更新情報、学習日数更新情報、学習時間更新情報を変更する。
+   * CSVファイルから読み込んだダミーデータをDBに登録する。
    *
    * @param guestUserId ゲストユーザーID
    * @param recordList  CSVファイルから読み込んだレコードリスト
@@ -254,9 +240,5 @@ public class DailyDoneService {
 
       referenceDate = date;
     }
-
-    sessionManager.setHasUpdatedRecordCount(true);
-    sessionManager.setHasUpdatedLearningDays(true);
-    sessionManager.setHasUpdateTime(true);
   }
 }

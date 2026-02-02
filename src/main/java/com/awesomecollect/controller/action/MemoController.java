@@ -1,5 +1,19 @@
 package com.awesomecollect.controller.action;
 
+import com.awesomecollect.common.SaveResult;
+import com.awesomecollect.common.constant.AttributeNames;
+import com.awesomecollect.common.constant.MappingValues;
+import com.awesomecollect.common.constant.MessageKeys;
+import com.awesomecollect.common.constant.TemplateNames;
+import com.awesomecollect.common.util.MessageUtil;
+import com.awesomecollect.common.util.RedirectUtil;
+import com.awesomecollect.controller.web.SessionManager;
+import com.awesomecollect.dto.action.request.MemoRequestDto;
+import com.awesomecollect.dto.action.response.MemoResponseDto;
+import com.awesomecollect.exception.DuplicateException;
+import com.awesomecollect.security.CustomUserDetails;
+import com.awesomecollect.service.TagService;
+import com.awesomecollect.service.action.MemoService;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,19 +26,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.awesomecollect.common.SaveResult;
-import com.awesomecollect.common.constant.AttributeNames;
-import com.awesomecollect.common.constant.MappingValues;
-import com.awesomecollect.common.constant.MessageKeys;
-import com.awesomecollect.common.constant.TemplateNames;
-import com.awesomecollect.common.util.MessageUtil;
-import com.awesomecollect.common.util.RedirectUtil;
-import com.awesomecollect.dto.action.request.MemoRequestDto;
-import com.awesomecollect.dto.action.response.MemoResponseDto;
-import com.awesomecollect.exception.DuplicateException;
-import com.awesomecollect.security.CustomUserDetails;
-import com.awesomecollect.service.TagService;
-import com.awesomecollect.service.action.MemoService;
 
 /**
  * メモのコントローラークラス。
@@ -35,13 +36,16 @@ public class MemoController {
   private final MemoService memoService;
   private final TagService tagService;
   private final MessageUtil messageUtil;
+  private final SessionManager sessionManager;
 
   public MemoController(
-      MemoService memoService, TagService tagService, MessageUtil messageUtil) {
+      MemoService memoService, TagService tagService,
+      MessageUtil messageUtil, SessionManager sessionManager) {
 
     this.memoService = memoService;
     this.tagService = tagService;
     this.messageUtil = messageUtil;
+    this.sessionManager = sessionManager;
   }
 
   // メモの一覧ページ（メモリスト）を表示する。
@@ -159,6 +163,7 @@ public class MemoController {
   private void addAttributeBySaveType(int id, RedirectAttributes redirectAttributes) {
     boolean isRegistration = id == 0;
     if (isRegistration) {
+      sessionManager.setHasUpdatedRecordCount(true);
       redirectAttributes.addFlashAttribute(
           AttributeNames.SUCCESS_MESSAGE,
           messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
@@ -172,12 +177,13 @@ public class MemoController {
     }
   }
 
-  // 指定のIDのメモを削除して一覧ページにリダイレクトする。
+  // 指定のIDのメモを削除してセッション情報を更新し、一覧ページにリダイレクトする。
   @DeleteMapping(MappingValues.MEMO_DETAIL_BY_ID)
   public String deleteMemo(
       @PathVariable int id, RedirectAttributes redirectAttributes) {
 
     memoService.deleteMemo(id);
+    sessionManager.setHasUpdatedRecordCount(true);
 
     redirectAttributes.addFlashAttribute(
         AttributeNames.SUCCESS_MESSAGE,

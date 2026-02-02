@@ -1,5 +1,19 @@
 package com.awesomecollect.controller.action;
 
+import com.awesomecollect.common.SaveResult;
+import com.awesomecollect.common.constant.AttributeNames;
+import com.awesomecollect.common.constant.MappingValues;
+import com.awesomecollect.common.constant.MessageKeys;
+import com.awesomecollect.common.constant.TemplateNames;
+import com.awesomecollect.common.util.MessageUtil;
+import com.awesomecollect.common.util.RedirectUtil;
+import com.awesomecollect.controller.web.SessionManager;
+import com.awesomecollect.dto.action.request.ArticleRequestDto;
+import com.awesomecollect.dto.action.response.ArticleResponseDto;
+import com.awesomecollect.exception.DuplicateException;
+import com.awesomecollect.security.CustomUserDetails;
+import com.awesomecollect.service.TagService;
+import com.awesomecollect.service.action.ArticleStockService;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,19 +26,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.awesomecollect.common.SaveResult;
-import com.awesomecollect.common.constant.AttributeNames;
-import com.awesomecollect.common.constant.MappingValues;
-import com.awesomecollect.common.constant.MessageKeys;
-import com.awesomecollect.common.constant.TemplateNames;
-import com.awesomecollect.common.util.MessageUtil;
-import com.awesomecollect.common.util.RedirectUtil;
-import com.awesomecollect.dto.action.request.ArticleRequestDto;
-import com.awesomecollect.dto.action.response.ArticleResponseDto;
-import com.awesomecollect.exception.DuplicateException;
-import com.awesomecollect.security.CustomUserDetails;
-import com.awesomecollect.service.TagService;
-import com.awesomecollect.service.action.ArticleStockService;
 
 /**
  * 記事ストックのコントローラークラス。
@@ -35,14 +36,16 @@ public class ArticleStockController {
   private final ArticleStockService articleStockService;
   private final TagService tagService;
   private final MessageUtil messageUtil;
+  private final SessionManager sessionManager;
 
   public ArticleStockController(
       ArticleStockService articleStockService, TagService tagService,
-      MessageUtil messageUtil) {
+      MessageUtil messageUtil, SessionManager sessionManager) {
 
     this.articleStockService = articleStockService;
     this.tagService = tagService;
     this.messageUtil = messageUtil;
+    this.sessionManager = sessionManager;
   }
 
   // 記事ストックの一覧ページ（記事ストックリスト）を表示する。
@@ -164,6 +167,7 @@ public class ArticleStockController {
 
     boolean isRegistration = id == 0;
     if (isRegistration) {
+      sessionManager.setHasUpdatedRecordCount(true);
       redirectAttributes.addFlashAttribute(
           AttributeNames.SUCCESS_MESSAGE,
           messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
@@ -176,6 +180,7 @@ public class ArticleStockController {
           messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
 
       if (saveResult.isUpdatedStatus()) {
+        sessionManager.setHasUpdatedRecordCount(true);
         redirectAttributes.addFlashAttribute(
             AttributeNames.ACHIEVEMENT_POPUP,
             messageUtil.getMessage(MessageKeys.FINISHED_AWESOME));
@@ -183,12 +188,13 @@ public class ArticleStockController {
     }
   }
 
-  // 指定のIDの目標を削除して一覧ページにリダイレクトする。
+  // 指定のIDの目標を削除してセッション情報を更新し、一覧ページにリダイレクトする。
   @DeleteMapping(MappingValues.ARTICLE_STOCK_DETAIL_BY_ID)
   public String deleteArticleStock(
       @PathVariable int id, RedirectAttributes redirectAttributes) {
 
     articleStockService.deleteArticleStock(id);
+    sessionManager.setHasUpdatedRecordCount(true);
 
     redirectAttributes.addFlashAttribute(
         AttributeNames.SUCCESS_MESSAGE,
