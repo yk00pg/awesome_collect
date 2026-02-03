@@ -147,6 +147,7 @@ public class GoalController {
       return TemplateNames.GOAL_EDIT;
     }
 
+    sessionManager.disableCachedAwesomePoints();
     addAttributeBySaveType(id, redirectAttributes, saveResult);
 
     return RedirectUtil.redirectView(MappingValues.GOAL_DETAIL, saveResult.id());
@@ -178,8 +179,6 @@ public class GoalController {
 
     boolean isRegistration = id == 0;
     if (isRegistration) {
-      sessionManager.disableCachedAwesomePoints();
-
       redirectAttributes.addFlashAttribute(
           AttributeNames.SUCCESS_MESSAGE,
           messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
@@ -192,8 +191,6 @@ public class GoalController {
           messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
 
       if (saveResult.isUpdatedStatus()) {
-        sessionManager.disableCachedAwesomePoints();
-
         redirectAttributes.addFlashAttribute(
             AttributeNames.ACHIEVEMENT_POPUP,
             messageUtil.getMessage(MessageKeys.ACHIEVED_AWESOME));

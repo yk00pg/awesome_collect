@@ -135,6 +135,7 @@ public class ArticleStockController {
       return TemplateNames.ARTICLE_STOCK_EDIT;
     }
 
+    sessionManager.disableCachedAwesomePoints();
     addAttributeBySaveType(id, redirectAttributes, saveResult);
 
     return RedirectUtil.redirectView(
@@ -167,8 +168,6 @@ public class ArticleStockController {
 
     boolean isRegistration = id == 0;
     if (isRegistration) {
-      sessionManager.disableCachedAwesomePoints();
-
       redirectAttributes.addFlashAttribute(
           AttributeNames.SUCCESS_MESSAGE,
           messageUtil.getMessage(MessageKeys.REGISTER_SUCCESS));
@@ -181,8 +180,6 @@ public class ArticleStockController {
           messageUtil.getMessage(MessageKeys.UPDATE_SUCCESS));
 
       if (saveResult.isUpdatedStatus()) {
-        sessionManager.disableCachedAwesomePoints();
-
         redirectAttributes.addFlashAttribute(
             AttributeNames.ACHIEVEMENT_POPUP,
             messageUtil.getMessage(MessageKeys.FINISHED_AWESOME));
