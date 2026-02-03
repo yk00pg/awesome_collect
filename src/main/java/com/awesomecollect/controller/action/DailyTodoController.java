@@ -1,5 +1,16 @@
 package com.awesomecollect.controller.action;
 
+import com.awesomecollect.common.constant.AttributeNames;
+import com.awesomecollect.common.constant.MappingValues;
+import com.awesomecollect.common.constant.MessageKeys;
+import com.awesomecollect.common.constant.TemplateNames;
+import com.awesomecollect.common.util.MessageUtil;
+import com.awesomecollect.common.util.RedirectUtil;
+import com.awesomecollect.controller.web.SessionManager;
+import com.awesomecollect.dto.action.request.TodoRequestDto;
+import com.awesomecollect.security.CustomUserDetails;
+import com.awesomecollect.service.action.DailyTodoService;
+import com.awesomecollect.validator.DailyTodoValidator;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,16 +26,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.awesomecollect.common.constant.AttributeNames;
-import com.awesomecollect.common.constant.MappingValues;
-import com.awesomecollect.common.constant.MessageKeys;
-import com.awesomecollect.common.constant.TemplateNames;
-import com.awesomecollect.common.util.MessageUtil;
-import com.awesomecollect.common.util.RedirectUtil;
-import com.awesomecollect.dto.action.request.TodoRequestDto;
-import com.awesomecollect.security.CustomUserDetails;
-import com.awesomecollect.service.action.DailyTodoService;
-import com.awesomecollect.validator.DailyTodoValidator;
 
 /**
  * やることのコントローラークラス。
@@ -35,14 +36,16 @@ public class DailyTodoController {
   private final DailyTodoService dailyTodoService;
   private final DailyTodoValidator dailyTodoValidator;
   private final MessageUtil messageUtil;
+  private final SessionManager sessionManager;
 
   public DailyTodoController(
       DailyTodoService dailyTodoService, DailyTodoValidator dailyTodoValidator,
-      MessageUtil messageUtil) {
+      MessageUtil messageUtil, SessionManager sessionManager) {
 
     this.dailyTodoService = dailyTodoService;
     this.dailyTodoValidator = dailyTodoValidator;
     this.messageUtil = messageUtil;
+    this.sessionManager = sessionManager;
   }
 
   // やること閲覧ページ（やることリスト）を表示する。
@@ -86,8 +89,8 @@ public class DailyTodoController {
   }
 
   /**
-   * 入力されたデータにバンディングエラーが発生した場合は編集ページに戻って
-   * エラーメッセージを表示し、そうでない場合はDBにデータを保存（登録・更新・削除）し、
+   * 入力されたデータにバンディングエラーが発生した場合は編集ページに戻ってエラーメッセージを表示し、
+   * そうでない場合はDBにデータを保存（登録・更新・削除）し、セッション情報を更新する。
    * 閲覧ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    *
    * @param date               日付
@@ -110,6 +113,8 @@ public class DailyTodoController {
     }
 
     dailyTodoService.saveDailyTodo(customUserDetails.getId(), dto);
+    sessionManager.disableCachedAwesomePoints();
+
     addAttributeBySaveType(dto, redirectAttributes);
 
     return RedirectUtil.redirectView(MappingValues.TODO, date);
@@ -134,7 +139,7 @@ public class DailyTodoController {
     }
   }
 
-  // 指定の日付のやることをすべて削除して閲覧ページにリダイレクトする。
+  // 指定の日付のやることをすべて削除してセッション情報を更新し、閲覧ページにリダイレクトする。
   @DeleteMapping(MappingValues.DAILY_TODO)
   public String deleteDailyAllTodo(
       @PathVariable LocalDate date,
@@ -142,6 +147,7 @@ public class DailyTodoController {
       RedirectAttributes redirectAttributes) {
 
     dailyTodoService.deleteDailyAllTodo(customUserDetails.getId(), date);
+    sessionManager.disableCachedAwesomePoints();
 
     redirectAttributes.addFlashAttribute(
         AttributeNames.SUCCESS_MESSAGE,

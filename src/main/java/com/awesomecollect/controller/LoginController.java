@@ -1,5 +1,16 @@
 package com.awesomecollect.controller;
 
+import com.awesomecollect.common.constant.AttributeNames;
+import com.awesomecollect.common.constant.GuestUser;
+import com.awesomecollect.common.constant.MappingValues;
+import com.awesomecollect.common.constant.MessageKeys;
+import com.awesomecollect.common.constant.TemplateNames;
+import com.awesomecollect.common.util.MessageUtil;
+import com.awesomecollect.common.util.RedirectUtil;
+import com.awesomecollect.controller.web.SessionManager;
+import com.awesomecollect.entity.user.UserInfo;
+import com.awesomecollect.security.CustomUserDetails;
+import com.awesomecollect.service.user.GuestUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,16 +23,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import com.awesomecollect.common.constant.AttributeNames;
-import com.awesomecollect.common.constant.GuestUser;
-import com.awesomecollect.common.constant.MappingValues;
-import com.awesomecollect.common.constant.MessageKeys;
-import com.awesomecollect.common.constant.TemplateNames;
-import com.awesomecollect.common.util.MessageUtil;
-import com.awesomecollect.common.util.RedirectUtil;
-import com.awesomecollect.entity.user.UserInfo;
-import com.awesomecollect.security.CustomUserDetails;
-import com.awesomecollect.service.user.GuestUserService;
 
 /**
  * ログインページのコントローラークラス。
@@ -33,6 +34,7 @@ public class LoginController {
   private final GuestUserService guestUserService;
   private final AuthenticationManager authenticationManager;
   private final MessageUtil messageUtil;
+  private final SessionManager sessionManager;
 
   // ログイン済みの場合はトップページに遷移し、そうでない場合はログインページを表示する。
   @GetMapping(MappingValues.LOGIN)
@@ -62,6 +64,9 @@ public class LoginController {
   public String guestLogin(HttpServletRequest request){
 
     UserInfo guestUser = guestUserService.createGuestUser();
+    sessionManager.disableCachedAwesomePoints();
+    sessionManager.disableCachedLearningDays();
+    sessionManager.disableCachedLearningTime();
 
     UsernamePasswordAuthenticationToken authToken =
         new UsernamePasswordAuthenticationToken(guestUser.getLoginId(), GuestUser.PASSWORD);

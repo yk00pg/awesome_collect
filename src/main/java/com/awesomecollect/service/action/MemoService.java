@@ -1,13 +1,7 @@
 package com.awesomecollect.service.action;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.awesomecollect.common.SaveResult;
 import com.awesomecollect.common.util.JsonConverter;
-import com.awesomecollect.common.util.SessionManager;
 import com.awesomecollect.dto.action.request.MemoRequestDto;
 import com.awesomecollect.dto.action.response.MemoResponseDto;
 import com.awesomecollect.dto.dummy.DummyMemoDto;
@@ -19,6 +13,11 @@ import com.awesomecollect.repository.action.MemoRepository;
 import com.awesomecollect.service.TagService;
 import com.awesomecollect.service.junction.MemoTagJunctionService;
 import com.awesomecollect.service.user.UserProgressService;
+import java.util.ArrayList;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * メモのサービスクラス。
@@ -30,18 +29,15 @@ public class MemoService {
   private final MemoTagJunctionService memoTagJunctionService;
   private final TagService tagService;
   private final UserProgressService userProgressService;
-  private final SessionManager sessionManager;
 
   public MemoService(
       MemoRepository memoRepository, MemoTagJunctionService memoTagJunctionService,
-      TagService tagService, UserProgressService userProgressService,
-      SessionManager sessionManager) {
+      TagService tagService, UserProgressService userProgressService) {
 
     this.memoRepository = memoRepository;
     this.memoTagJunctionService = memoTagJunctionService;
     this.tagService = tagService;
     this.userProgressService = userProgressService;
-    this.sessionManager = sessionManager;
   }
 
   /**
@@ -182,8 +178,7 @@ public class MemoService {
   }
 
   /**
-   * DTOをエンティティに変換してDBに登録し、タグ情報を登録する。<br>
-   * セッションのレコード数更新情報を変更し、ユーザーの進捗情報を更新する。
+   * DTOをエンティティに変換してDBに登録し、タグ情報を登録してユーザーの進捗情報を更新する。
    *
    * @param userId    ユーザーID
    * @param dto       メモ入力用データオブジェクト
@@ -203,7 +198,6 @@ public class MemoService {
     memoTagJunctionService.registerNewRelations(
         memo.getId(), MemoTagJunction :: new, tagIdList);
 
-    sessionManager.setHasUpdatedRecordCount(true);
     userProgressService.updateUserProgress(userId);
 
     return memo.getId();
@@ -238,8 +232,7 @@ public class MemoService {
   }
 
   /**
-   * 指定のIDのメモ、紐付けられたタグとの関係情報を削除し、
-   * セッションのレコード数更新情報を変更する。
+   * 指定のIDのメモ、紐付けられたタグとの関係情報を削除する。
    *
    * @param memoId メモID
    */
@@ -247,12 +240,10 @@ public class MemoService {
   public void deleteMemo(int memoId) {
     memoTagJunctionService.deleteRelationByActionId(memoId);
     memoRepository.deleteMemo(memoId);
-
-    sessionManager.setHasUpdatedRecordCount(true);
   }
 
   /**
-   * CSVファイルから読み込んだダミーデータをDBに登録し、セッションのレコード数更新情報を変更する。
+   * CSVファイルから読み込んだダミーデータをDBに登録する。
    *
    * @param guestUserId ゲストユーザーID
    * @param recordList  CSVファイルから読み込んだレコードリスト
@@ -268,7 +259,5 @@ public class MemoService {
       memoTagJunctionService.registerNewRelations(
           memo.getId(), MemoTagJunction :: new, tagIdList);
     });
-
-    sessionManager.setHasUpdatedRecordCount(true);
   }
 }

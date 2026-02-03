@@ -1,16 +1,15 @@
 package com.awesomecollect.service.action;
 
-import java.time.LocalDate;
-import java.util.List;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import com.awesomecollect.common.util.SessionManager;
 import com.awesomecollect.dto.action.request.TodoRequestDto;
 import com.awesomecollect.dto.action.response.TodoResponseDto;
 import com.awesomecollect.dto.dummy.DummyTodoDto;
 import com.awesomecollect.entity.action.DailyTodo;
 import com.awesomecollect.repository.action.DailyTodoRepository;
 import com.awesomecollect.service.user.UserProgressService;
+import java.time.LocalDate;
+import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * やることのサービスクラス。
@@ -20,15 +19,12 @@ public class DailyTodoService {
 
   private final DailyTodoRepository dailyTodoRepository;
   private final UserProgressService userProgressService;
-  private final SessionManager sessionManger;
 
   public DailyTodoService(
-      DailyTodoRepository dailyTodoRepository, UserProgressService userProgressService,
-      SessionManager sessionManger) {
+      DailyTodoRepository dailyTodoRepository, UserProgressService userProgressService) {
 
     this.dailyTodoRepository = dailyTodoRepository;
     this.userProgressService = userProgressService;
-    this.sessionManger = sessionManger;
   }
 
   /**
@@ -68,8 +64,7 @@ public class DailyTodoService {
   }
 
   /**
-   * データの種類を判別してDBに保存（登録・更新・削除、内容が空の場合はスキップ）し、
-   * セッションのレコード数更新情報を変更する。
+   * データの種類を判別してDBに保存（登録・更新・削除、内容が空の場合はスキップ）する。
    *
    * @param userId ユーザーID
    * @param dto    やること入力用データオブジェクト
@@ -98,8 +93,6 @@ public class DailyTodoService {
         }
       }
     }
-
-    sessionManger.setHasUpdatedRecordCount(true);
   }
 
   /**
@@ -119,18 +112,17 @@ public class DailyTodoService {
   }
 
   /**
-   * 指定の日付のやることをすべて削除し、セッションのレコード数更新情報を変更する。
+   * 指定の日付のやることをすべて削除する。
    *
    * @param userId ユーザーID
    * @param date   日付
    */
   public void deleteDailyAllTodo(int userId, LocalDate date) {
     dailyTodoRepository.deleteDailyTodoByDate(userId, date);
-    sessionManger.setHasUpdatedRecordCount(true);
   }
 
   /**
-   * CSVファイルから読み込んだダミーデータをDBに登録し、セッションのレコード数更新情報を変更する。
+   * CSVファイルから読み込んだダミーデータをDBに登録する。
    *
    * @param guestUserId ゲストユーザーID
    * @param recordList  CSVファイルから読み込んだレコードリスト
@@ -149,7 +141,5 @@ public class DailyTodoService {
 
       referenceDate = date;
     }
-
-    sessionManger.setHasUpdatedRecordCount(true);
   }
 }

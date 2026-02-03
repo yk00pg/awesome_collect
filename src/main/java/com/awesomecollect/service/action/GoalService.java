@@ -1,14 +1,7 @@
 package com.awesomecollect.service.action;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.awesomecollect.common.SaveResult;
 import com.awesomecollect.common.util.JsonConverter;
-import com.awesomecollect.common.util.SessionManager;
 import com.awesomecollect.dto.action.request.GoalRequestDto;
 import com.awesomecollect.dto.action.response.GoalResponseDto;
 import com.awesomecollect.dto.dummy.DummyGoalDto;
@@ -20,6 +13,12 @@ import com.awesomecollect.repository.action.GoalRepository;
 import com.awesomecollect.service.TagService;
 import com.awesomecollect.service.junction.GoalTagJunctionService;
 import com.awesomecollect.service.user.UserProgressService;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 目標のサービスクラス。
@@ -31,18 +30,15 @@ public class GoalService {
   private final GoalTagJunctionService goalTagJunctionService;
   private final TagService tagService;
   private final UserProgressService userProgressService;
-  private final SessionManager sessionManager;
 
   public GoalService(
       GoalRepository goalRepository, GoalTagJunctionService goalTagJunctionService,
-      TagService tagService, UserProgressService userProgressService,
-      SessionManager sessionManager) {
+      TagService tagService, UserProgressService userProgressService) {
 
     this.goalRepository = goalRepository;
     this.goalTagJunctionService = goalTagJunctionService;
     this.tagService = tagService;
     this.userProgressService = userProgressService;
-    this.sessionManager = sessionManager;
   }
 
   /**
@@ -160,7 +156,7 @@ public class GoalService {
   }
 
   /**
-   * データの種類に応じてDBに保存（登録・更新）し、セッションのレコード数更新情報を変更する。
+   * データの種類に応じてDBに保存（登録・更新）する。
    *
    * @param userId ユーザーID
    * @param dto    目標入力用データオブジェクト
@@ -178,8 +174,6 @@ public class GoalService {
     } else {
       saveResult = updateGoal(userId, dto, tagIdList, goalId);
     }
-
-    sessionManager.setHasUpdatedRecordCount(true);
 
     return saveResult;
   }
@@ -258,8 +252,7 @@ public class GoalService {
   }
 
   /**
-   * 指定のIDの目標、紐づけられたタグとの関係情報を削除し、
-   * セッションのレコード数更新情報を変更する。
+   * 指定のIDの目標、紐づけられたタグとの関係情報を削除する。
    *
    * @param goalId 目標ID
    */
@@ -267,12 +260,10 @@ public class GoalService {
   public void deleteGoal(int goalId) {
     goalTagJunctionService.deleteRelationByActionId(goalId);
     goalRepository.deleteGoal(goalId);
-
-    sessionManager.setHasUpdatedRecordCount(true);
   }
 
   /**
-   * CSVファイルから読み込んだダミーデータをDBに登録し、セッションのレコード数更新情報を変更する。
+   * CSVファイルから読み込んだダミーデータをDBに登録する。
    *
    * @param guestUserId ゲストユーザーID
    * @param recordList  CSVファイルから読み込んだレコードリスト
@@ -288,7 +279,5 @@ public class GoalService {
       goalTagJunctionService.registerNewRelations(
           goal.getId(), GoalTagJunction :: new, tagIdList);
     });
-
-    sessionManager.setHasUpdatedRecordCount(true);
   }
 }

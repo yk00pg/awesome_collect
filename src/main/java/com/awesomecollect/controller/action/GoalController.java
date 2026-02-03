@@ -1,5 +1,20 @@
 package com.awesomecollect.controller.action;
 
+import com.awesomecollect.common.SaveResult;
+import com.awesomecollect.common.constant.AttributeNames;
+import com.awesomecollect.common.constant.MappingValues;
+import com.awesomecollect.common.constant.MessageKeys;
+import com.awesomecollect.common.constant.TemplateNames;
+import com.awesomecollect.common.util.MessageUtil;
+import com.awesomecollect.common.util.RedirectUtil;
+import com.awesomecollect.controller.web.SessionManager;
+import com.awesomecollect.dto.action.request.GoalRequestDto;
+import com.awesomecollect.dto.action.response.GoalResponseDto;
+import com.awesomecollect.exception.DuplicateException;
+import com.awesomecollect.security.CustomUserDetails;
+import com.awesomecollect.service.TagService;
+import com.awesomecollect.service.action.GoalService;
+import com.awesomecollect.validator.GoalValidator;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,20 +29,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.awesomecollect.common.SaveResult;
-import com.awesomecollect.common.constant.AttributeNames;
-import com.awesomecollect.common.constant.MappingValues;
-import com.awesomecollect.common.constant.MessageKeys;
-import com.awesomecollect.common.constant.TemplateNames;
-import com.awesomecollect.common.util.MessageUtil;
-import com.awesomecollect.common.util.RedirectUtil;
-import com.awesomecollect.dto.action.request.GoalRequestDto;
-import com.awesomecollect.dto.action.response.GoalResponseDto;
-import com.awesomecollect.exception.DuplicateException;
-import com.awesomecollect.security.CustomUserDetails;
-import com.awesomecollect.service.TagService;
-import com.awesomecollect.service.action.GoalService;
-import com.awesomecollect.validator.GoalValidator;
 
 /**
  * 目標のコントローラークラス。
@@ -39,15 +40,17 @@ public class GoalController {
   private final TagService tagService;
   private final GoalValidator goalValidator;
   private final MessageUtil messageUtil;
+  private final SessionManager sessionManager;
 
   public GoalController(
-      GoalService goalService, TagService tagService,
-      GoalValidator goalValidator, MessageUtil messageUtil) {
+      GoalService goalService, TagService tagService, GoalValidator goalValidator,
+      MessageUtil messageUtil, SessionManager sessionManager) {
 
     this.goalService = goalService;
     this.tagService = tagService;
     this.goalValidator = goalValidator;
     this.messageUtil = messageUtil;
+    this.sessionManager = sessionManager;
   }
 
   // 目標の一覧ページ（目標リスト）を表示する。
@@ -110,8 +113,9 @@ public class GoalController {
 
   /**
    * 入力されたデータにバインディングエラーまたは例外が発生した場合はタグリストを詰め直して
-   * 編集ページに戻り、エラーメッセージを表示する。そうでない場合はDBにデータを
-   * 保存（登録・更新）し、詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
+   * 編集ページに戻り、エラーメッセージを表示する。<br>
+   * そうでない場合はDBにデータを保存（登録・更新）してセッション情報を更新し、
+   * 詳細ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    *
    * @param id                 目標ID
    * @param dto                目標入力用データオブジェクト
@@ -138,10 +142,12 @@ public class GoalController {
     }
 
     SaveResult saveResult = trySaveGoal(dto, result, model, userId);
+
     if (saveResult == null) {
       return TemplateNames.GOAL_EDIT;
     }
 
+    sessionManager.disableCachedAwesomePoints();
     addAttributeBySaveType(id, redirectAttributes, saveResult);
 
     return RedirectUtil.redirectView(MappingValues.GOAL_DETAIL, saveResult.id());
@@ -192,12 +198,13 @@ public class GoalController {
     }
   }
 
-  // 指定のIDの目標を削除して一覧ページにリダイレクトする。
+  // 指定のIDの目標を削除してセッション情報を更新し、一覧ページにリダイレクトする。
   @DeleteMapping(MappingValues.GOAL_DETAIL_BY_ID)
   public String deleteGoal(
       @PathVariable int id, RedirectAttributes redirectAttributes) {
 
     goalService.deleteGoal(id);
+    sessionManager.disableCachedAwesomePoints();
 
     redirectAttributes.addFlashAttribute(
         AttributeNames.SUCCESS_MESSAGE,

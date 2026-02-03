@@ -1,5 +1,18 @@
 package com.awesomecollect.controller.action;
 
+import com.awesomecollect.common.constant.AttributeNames;
+import com.awesomecollect.common.constant.MappingValues;
+import com.awesomecollect.common.constant.MessageKeys;
+import com.awesomecollect.common.constant.TemplateNames;
+import com.awesomecollect.common.util.MessageUtil;
+import com.awesomecollect.common.util.RedirectUtil;
+import com.awesomecollect.controller.web.SessionManager;
+import com.awesomecollect.dto.action.request.DoneRequestDto;
+import com.awesomecollect.security.CustomUserDetails;
+import com.awesomecollect.service.TagService;
+import com.awesomecollect.service.action.DailyDoneService;
+import com.awesomecollect.service.action.DailyTodoService;
+import com.awesomecollect.validator.DailyDoneValidator;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,18 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.awesomecollect.common.constant.AttributeNames;
-import com.awesomecollect.common.constant.MappingValues;
-import com.awesomecollect.common.constant.MessageKeys;
-import com.awesomecollect.common.constant.TemplateNames;
-import com.awesomecollect.common.util.MessageUtil;
-import com.awesomecollect.common.util.RedirectUtil;
-import com.awesomecollect.dto.action.request.DoneRequestDto;
-import com.awesomecollect.security.CustomUserDetails;
-import com.awesomecollect.service.TagService;
-import com.awesomecollect.service.action.DailyDoneService;
-import com.awesomecollect.service.action.DailyTodoService;
-import com.awesomecollect.validator.DailyDoneValidator;
 
 /**
  * できたことのコントローラークラス。
@@ -39,17 +40,19 @@ public class DailyDoneController {
   private final TagService tagService;
   private final DailyDoneValidator dailyDoneValidator;
   private final MessageUtil messageUtil;
+  private final SessionManager sessionManager;
 
   public DailyDoneController(
       DailyDoneService dailyDoneService, DailyTodoService dailyTodoService,
       TagService tagService, DailyDoneValidator dailyDoneValidator,
-      MessageUtil messageUtil) {
+      MessageUtil messageUtil, SessionManager sessionManager) {
 
     this.dailyDoneService = dailyDoneService;
     this.dailyTodoService = dailyTodoService;
     this.tagService = tagService;
     this.dailyDoneValidator = dailyDoneValidator;
     this.messageUtil = messageUtil;
+    this.sessionManager = sessionManager;
   }
 
   // できたこと閲覧ページ（できたことリスト）を表示する。
@@ -102,8 +105,8 @@ public class DailyDoneController {
   /**
    * 入力されたデータにバインディングエラーが発生した場合は参考用やることリストと
    * タグリストを詰め直して編集ページに戻ってエラーメッセージを表示し、
-   * そうでない場合はDBにデータを保存（登録・更新・削除）し、閲覧ページに遷移して
-   * 保存の種類に応じたサクセスメッセージを表示する。
+   * そうでない場合はDBにデータを保存（登録・更新・削除）し、セッション情報を更新する。<br>
+   * 閲覧ページに遷移して保存の種類に応じたサクセスメッセージを表示する。
    *
    * @param date               日付
    * @param dto                できたこと入力用データオブジェクト
@@ -134,6 +137,10 @@ public class DailyDoneController {
     }
 
     dailyDoneService.saveDailyDone(userId, dto);
+    sessionManager.disableCachedAwesomePoints();
+    sessionManager.disableCachedLearningDays();
+    sessionManager.disableCachedLearningTime();
+
     addAttributeBySaveType(dto, redirectAttributes);
 
     return RedirectUtil.redirectView(MappingValues.DONE, date);
@@ -158,7 +165,7 @@ public class DailyDoneController {
     }
   }
 
-  // 指定の日付のできたことをすべて削除して閲覧ページにリダイレクトする。
+  // 指定の日付のできたことをすべて削除してセッション情報を更新し、閲覧ページにリダイレクトする。
   @DeleteMapping(MappingValues.DAILY_DONE)
   public String deleteDailyAllDone(
       @PathVariable LocalDate date,
@@ -166,6 +173,9 @@ public class DailyDoneController {
       RedirectAttributes redirectAttributes) {
 
     dailyDoneService.deleteDailyAllDoneByDate(customUserDetails.getId(), date);
+    sessionManager.disableCachedAwesomePoints();
+    sessionManager.disableCachedLearningDays();
+    sessionManager.disableCachedLearningTime();
 
     redirectAttributes.addFlashAttribute(
         AttributeNames.SUCCESS_MESSAGE,

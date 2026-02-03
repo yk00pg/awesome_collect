@@ -1,14 +1,13 @@
 package com.awesomecollect.service.dashboard;
 
+import com.awesomecollect.dto.dashboard.AwesomePointDto;
+import com.awesomecollect.repository.dashboard.AwesomeCountRepository;
+import com.awesomecollect.service.BonusAwesomeService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.awesomecollect.common.util.SessionManager;
-import com.awesomecollect.dto.dashboard.AwesomePointDto;
-import com.awesomecollect.repository.dashboard.AwesomeCountRepository;
-import com.awesomecollect.service.BonusAwesomeService;
 
 /**
  * えらい！ポイントのサービスクラス。
@@ -16,7 +15,6 @@ import com.awesomecollect.service.BonusAwesomeService;
 @Service
 public class AwesomeCountService {
 
-  private final SessionManager sessionManager;
   private final AwesomeCountRepository awesomeCountRepository;
   private final BonusAwesomeService bonusAwesomeService;
 
@@ -30,36 +28,35 @@ public class AwesomeCountService {
   private static final int FINISHED = 5;
 
   public AwesomeCountService(
-      SessionManager sessionManager, AwesomeCountRepository awesomeCountRepository,
+      AwesomeCountRepository awesomeCountRepository,
       BonusAwesomeService bonusAwesomeService) {
 
-    this.sessionManager = sessionManager;
     this.awesomeCountRepository = awesomeCountRepository;
     this.bonusAwesomeService = bonusAwesomeService;
   }
 
   /**
-   * セッション情報を確認し、レコード数更新情報がnullまたは更新有りあるいはDTOがnullの場合は、
-   * 累計えらい！ポイントを算出し、分割したえらい！ポイントリストを作成してDTOに詰め、
-   * セッション情報を更新する。
+   * えらいポイントのキャッシュデータ保持フラグがtrueでえらいポイントのキャッシュDTOがnullでない場合は、
+   * そのままキャッシュDTOを返す。<br>
+   * そうでない場合は、累計えらいポイントを算出し、分割したえらいポイントリストを作成してDTOに詰めて返す。
    *
    * @param userId ユーザーID
-   * @return えらい！ポイント表示用データオブジェクト
+   * @param hasCachedAwesomePoints えらいポイントのキャッシュデータ保持フラグ
+   * @param cachedAwesomePointDto えらいポイントのキャッシュDTO
+   * @return えらいポイント表示用データオブジェクト
    */
   @Transactional
-  public AwesomePointDto prepareAwesomePointDto(int userId) {
-    AwesomePointDto awesomePointDto = sessionManager.getCachedAwesomePointDto();
-    Boolean hasNewRecord = sessionManager.hasUpdatedRecordCount();
+  public AwesomePointDto prepareAwesomePointDto(
+      int userId, boolean hasCachedAwesomePoints, AwesomePointDto cachedAwesomePointDto) {
 
-    if (hasNewRecord == null || hasNewRecord || awesomePointDto == null) {
+    if(hasCachedAwesomePoints && cachedAwesomePointDto != null) {
+      return cachedAwesomePointDto;
+    } else {
       int totalAwesomePoint = calculateTotalAwesome(userId);
       List<Integer> splitTotalAwesomeList = createSplitTotalAwesomeList(totalAwesomePoint);
 
-      awesomePointDto = new AwesomePointDto(totalAwesomePoint, splitTotalAwesomeList);
-      sessionManager.setAwesomePointDto(awesomePointDto);
-      sessionManager.setHasUpdatedRecordCount(false);
+      return new AwesomePointDto(totalAwesomePoint, splitTotalAwesomeList);
     }
-    return awesomePointDto;
   }
 
   /**
