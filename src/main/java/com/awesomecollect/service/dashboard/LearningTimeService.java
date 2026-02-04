@@ -31,6 +31,7 @@ public class LearningTimeService {
   }
 
   /**
+   * ダッシュボード表示用の学習時間データを用意。<br>
    * 学習時間のキャッシュデータ保持フラグがtrueで学習時間のキャッシュDTOがnullでない場合は、
    * キャッシュDTOをそのまま返す。<br>
    * そうでない場合は、累計学習時間（時間、分）、日別学習時間、曜日別平均学習時間、月別学習時間、
@@ -41,7 +42,7 @@ public class LearningTimeService {
    * @param cachedLearningTimeDto 学習時間のキャッシュDTO
    * @return 学習時間表示用データオブジェクト
    */
-  @Transactional
+  @Transactional(readOnly = true)
   public LearningTimeDto prepareLearningTimeDto(
       int userId, boolean hasCachedLearningTime, LearningTimeDto cachedLearningTimeDto) {
 

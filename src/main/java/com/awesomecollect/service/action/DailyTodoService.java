@@ -28,6 +28,7 @@ public class DailyTodoService {
   }
 
   /**
+   * 閲覧画面用データを用意する。<br>
    * ユーザーIDと日付を基にDBを確認し、やることが登録されていない場合は空の表示用データオブジェクトを、
    * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
    *
@@ -35,7 +36,7 @@ public class DailyTodoService {
    * @param date   日付
    * @return やること表示用データオブジェクト
    */
-  public TodoResponseDto prepareResponseDto(int userId, LocalDate date) {
+  public TodoResponseDto prepareResponseDtoForList(int userId, LocalDate date) {
     List<DailyTodo> dailyTodoList = dailyTodoRepository.searchDailyTodo(userId, date);
 
     if (dailyTodoList == null || dailyTodoList.isEmpty()) {
@@ -46,6 +47,7 @@ public class DailyTodoService {
   }
 
   /**
+   * 編集画面用データを用意する。<br>
    * ユーザーIDと日付を基にDBを確認し、やることが登録されていない場合は空の入力用データオブジェクトを、
    * 登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
    *
@@ -53,7 +55,7 @@ public class DailyTodoService {
    * @param date   日付
    * @return やること入力用データオブジェクト
    */
-  public TodoRequestDto prepareRequestDto(int userId, LocalDate date) {
+  public TodoRequestDto prepareRequestDtoForEdit(int userId, LocalDate date) {
     List<DailyTodo> dailyTodoList = dailyTodoRepository.searchDailyTodo(userId, date);
 
     if (dailyTodoList == null || dailyTodoList.isEmpty()) {
@@ -96,22 +98,6 @@ public class DailyTodoService {
   }
 
   /**
-   * DTOをエンティティに変換してDBに登録し、日ごとの初回登録時の場合はユーザーの進捗情報も併せて変更する。
-   *
-   * @param userId ユーザーID
-   * @param dto    やること入力用データオブジェクト
-   * @param index  リストのインデックス番号
-   */
-  private void registerDailyTodo(int userId, TodoRequestDto dto, int index) {
-    DailyTodo dailyTodo = dto.toDailyTodoForRegistration(userId, index);
-    dailyTodoRepository.registerDailyTodo(dailyTodo);
-
-    if (index == 0) {
-      userProgressService.updateUserProgress(userId);
-    }
-  }
-
-  /**
    * 指定の日付のやることをすべて削除する。
    *
    * @param userId ユーザーID
@@ -127,6 +113,7 @@ public class DailyTodoService {
    * @param guestUserId ゲストユーザーID
    * @param recordList  CSVファイルから読み込んだレコードリスト
    */
+  @Transactional
   public void registerDummyTodo(int guestUserId, List<DummyTodoDto> recordList){
     LocalDate referenceDate = LocalDate.now();
     for (int i = 0; i < recordList.size(); i++) {
@@ -140,6 +127,22 @@ public class DailyTodoService {
       dailyTodoRepository.registerDailyTodo(dailyTodo);
 
       referenceDate = date;
+    }
+  }
+
+  /**
+   * DTOをエンティティに変換してDBに登録し、日ごとの初回登録時の場合はユーザーの進捗情報も併せて変更する。
+   *
+   * @param userId ユーザーID
+   * @param dto    やること入力用データオブジェクト
+   * @param index  リストのインデックス番号
+   */
+  private void registerDailyTodo(int userId, TodoRequestDto dto, int index) {
+    DailyTodo dailyTodo = dto.toDailyTodoForRegistration(userId, index);
+    dailyTodoRepository.registerDailyTodo(dailyTodo);
+
+    if (index == 0) {
+      userProgressService.updateUserProgress(userId);
     }
   }
 }

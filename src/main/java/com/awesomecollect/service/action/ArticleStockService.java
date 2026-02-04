@@ -43,20 +43,67 @@ public class ArticleStockService {
   }
 
   /**
+   * 一覧画面用データを用意する。<br>
    * ユーザーIDを基にDBを確認し、記事ストックが登録されていない場合は空のリストを、
    * 登録されている場合は登録データを詰めた表示用データオブジェクトのリストを用意する。
    *
    * @param userId ユーザーID
    * @return 記事ストック表示用データオブジェクト
    */
-  @Transactional
-  public List<ArticleResponseDto> prepareResponseDtoList(int userId) {
+  @Transactional(readOnly = true)
+  public List<ArticleResponseDto> prepareResponseDtoListForList(int userId) {
     List<ArticleStock> articleStockList =
         articleStockRepository.searchArticleStock(userId);
     if (articleStockList == null || articleStockList.isEmpty()) {
       return new ArrayList<>();
     } else {
       return assembleCurrentResponseDtoList(articleStockList);
+    }
+  }
+
+  /**
+   * 詳細画面用データを用意する。<br>
+   * 記事ストックIDとユーザーIDを基にDBを確認し、記事ストックが登録されていない場合はnullを返し、
+   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
+   *
+   * @param articleId 記事ストックID
+   * @param userId    ユーザーID
+   * @return 記事ストック表示用データオブジェクト
+   */
+  @Transactional(readOnly = true)
+  public ArticleResponseDto prepareResponseDtoForDetails(int articleId, int userId) {
+    ArticleStock articleStock =
+        articleStockRepository.findArticleStockByIds(articleId, userId);
+    if (articleStock == null) {
+      return null;
+    } else {
+      return assembleCurrentResponseDto(
+          ArticleResponseDto.fromEntityForDetail(articleStock), articleId);
+    }
+  }
+
+  /**
+   * 編集画面用データを用意する。<br>
+   * 記事ストックIDが0の場合は空の入力用データオブジェクトを用意する。<br>
+   * そうでない場合は、記事ストックIDとユーザーIDを基にDBを確認し、記事ストックが登録されていない場合は
+   * nullを返し、登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   *
+   * @param articleId 記事ストックID
+   * @param userId    ユーザーID
+   * @return 記事ストック入力用データオブジェクト
+   */
+  @Transactional(readOnly = true)
+  public ArticleRequestDto prepareRequestDtoForEdit(int articleId, int userId) {
+    if (articleId == 0) {
+      return new ArticleRequestDto();
+    }
+
+    ArticleStock articleStock =
+        articleStockRepository.findArticleStockByIds(articleId, userId);
+    if (articleStock == null) {
+      return null;
+    } else {
+      return assembleCurrentRequestDto(articleId, articleStock);
     }
   }
 
@@ -80,26 +127,6 @@ public class ArticleStockService {
   }
 
   /**
-   * 記事ストックIDとユーザーIDを基にDBを確認し、記事ストックが登録されていない場合はnullを返し、
-   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
-   *
-   * @param articleId 記事ストックID
-   * @param userId    ユーザーID
-   * @return 記事ストック表示用データオブジェクト
-   */
-  @Transactional
-  public ArticleResponseDto prepareResponseDto(int articleId, int userId) {
-    ArticleStock articleStock =
-        articleStockRepository.findArticleStockByIds(articleId, userId);
-    if (articleStock == null) {
-      return null;
-    } else {
-      return assembleCurrentResponseDto(
-          ArticleResponseDto.fromEntityForDetail(articleStock), articleId);
-    }
-  }
-
-  /**
    * 記事ストックに紐付けられたタグ名リストを表示用データオブジェクトに設定する。
    *
    * @param dto       記事ストック表示用データオブジェクト
@@ -116,30 +143,6 @@ public class ArticleStockService {
 
     dto.setTagList(tagNameList);
     return dto;
-  }
-
-  /**
-   * 記事ストックIDが0の場合は空の入力用データオブジェクトを用意する。<br>
-   * そうでない場合は、記事ストックIDとユーザーIDを基にDBを確認し、記事ストックが登録されていない場合は
-   * nullを返し、登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
-   *
-   * @param articleId 記事ストックID
-   * @param userId    ユーザーID
-   * @return 記事ストック入力用データオブジェクト
-   */
-  @Transactional
-  public ArticleRequestDto prepareRequestDto(int articleId, int userId) {
-    if (articleId == 0) {
-      return new ArticleRequestDto();
-    }
-
-    ArticleStock articleStock =
-        articleStockRepository.findArticleStockByIds(articleId, userId);
-    if (articleStock == null) {
-      return null;
-    } else {
-      return assembleCurrentRequestDto(articleId, articleStock);
-    }
   }
 
   /**
@@ -163,7 +166,8 @@ public class ArticleStockService {
   }
 
   /**
-   * データの種類に応じてDBに保存（登録・更新）し、セッションのレコード数更新情報を変更する。
+   * DBに記事ストック、タグ、紐付けられたタグとの関係情報を保存する。<br>
+   * 記事ストックIDが0の場合は登録処理を、そうでない場合は更新処理を行う。
    *
    * @param userId ユーザーID
    * @param dto    記事ストック入力用データオブジェクト
@@ -183,6 +187,36 @@ public class ArticleStockService {
     }
 
     return saveResult;
+  }
+
+  /**
+   * 指定のIDの記事ストック、紐付けられたタグとの関係情報をDBから削除する。
+   *
+   * @param articleId 記事ストックID
+   */
+  @Transactional
+  public void deleteArticleStock(int articleId) {
+    articleTagJunctionService.deleteRelationByActionId(articleId);
+    articleStockRepository.deleteArticleStock(articleId);
+  }
+
+  /**
+   * CSVファイルから読み込んだダミーデータをDBに登録する。
+   *
+   * @param guestUserId ゲストユーザーID
+   * @param recordList  CSVファイルから読み込んだレコードリスト
+   */
+  @Transactional
+  public void registerDummyArticleStock(int guestUserId, List<DummyArticleStockDto> recordList){
+    recordList.forEach(dto ->{
+      ArticleStock articleStock = dto.toEntity(guestUserId);
+      articleStockRepository.registerArticleStock(articleStock);
+
+      List<Integer> tagIdList =
+          tagService.resolveTagIdList(guestUserId, dto.getTagList());
+      articleTagJunctionService.registerNewRelations(
+          articleStock.getId(), ArticleTagJunction::new, tagIdList);
+    });
   }
 
   /**
@@ -270,35 +304,5 @@ public class ArticleStockService {
       isFinishedUpdate = true;
     }
     return isFinishedUpdate;
-  }
-
-  /**
-   * 指定のIDの記事ストックを削除し、セッションのレコード数更新情報を変更する。
-   *
-   * @param articleId 記事ストックID
-   */
-  @Transactional
-  public void deleteArticleStock(int articleId) {
-    articleTagJunctionService.deleteRelationByActionId(articleId);
-    articleStockRepository.deleteArticleStock(articleId);
-  }
-
-  /**
-   * CSVファイルから読み込んだダミーデータをDBに登録する。
-   *
-   * @param guestUserId ゲストユーザーID
-   * @param recordList  CSVファイルから読み込んだレコードリスト
-   */
-  @Transactional
-  public void registerDummyArticleStock(int guestUserId, List<DummyArticleStockDto> recordList){
-    recordList.forEach(dto ->{
-      ArticleStock articleStock = dto.toEntity(guestUserId);
-      articleStockRepository.registerArticleStock(articleStock);
-
-      List<Integer> tagIdList =
-          tagService.resolveTagIdList(guestUserId, dto.getTagList());
-      articleTagJunctionService.registerNewRelations(
-          articleStock.getId(), ArticleTagJunction::new, tagIdList);
-    });
   }
 }

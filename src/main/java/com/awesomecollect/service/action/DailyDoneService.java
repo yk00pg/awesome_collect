@@ -40,6 +40,7 @@ public class DailyDoneService {
   }
 
   /**
+   * 閲覧画面用データを用意する。<br>
    * ユーザーIDと日付を基にDBを確認し、できたことが登録されていない場合は空の表示用データオブジェクトを、
    * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
    *
@@ -47,13 +48,32 @@ public class DailyDoneService {
    * @param date   日付
    * @return できたこと表示用データオブジェクト
    */
-  @Transactional
-  public DoneResponseDto prepareResponseDto(int userId, LocalDate date) {
+  @Transactional(readOnly = true)
+  public DoneResponseDto prepareResponseDtoForList(int userId, LocalDate date) {
     List<DailyDone> dailyDoneList = dailyDoneRepository.searchDailyDone(userId, date);
     if (dailyDoneList == null || dailyDoneList.isEmpty()) {
       return DoneResponseDto.createBlankDto(date);
     } else {
       return assembleCurrentResponseDto(dailyDoneList);
+    }
+  }
+
+  /**
+   * 編集画面用データを用意する。<br>
+   * ユーザーIDと日付を基にDBを確認し、できたことが登録されていない場合は空の入力用データオブジェクトを、
+   * 登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   *
+   * @param userId ユーザーID
+   * @param date   日付
+   * @return できたこと入力用データオブジェクト
+   */
+  @Transactional(readOnly = true)
+  public DoneRequestDto prepareRequestDtoForEdit(int userId, LocalDate date) {
+    List<DailyDone> dailyDoneList = dailyDoneRepository.searchDailyDone(userId, date);
+    if (dailyDoneList == null || dailyDoneList.isEmpty()) {
+      return DoneRequestDto.createBlankDto(date);
+    } else {
+      return assembleCurrentRequestDto(dailyDoneList);
     }
   }
 
@@ -76,24 +96,6 @@ public class DailyDoneService {
     DoneResponseDto dto = DoneResponseDto.fromDailyDone(dailyDoneList);
     dto.setTagsList(tagNamesList);
     return dto;
-  }
-
-  /**
-   * ユーザーIDと日付を基にDBを確認し、できたことが登録されていない場合は空の入力用データオブジェクトを、
-   * 登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
-   *
-   * @param userId ユーザーID
-   * @param date   日付
-   * @return できたこと入力用データオブジェクト
-   */
-  @Transactional
-  public DoneRequestDto prepareRequestDto(int userId, LocalDate date) {
-    List<DailyDone> dailyDoneList = dailyDoneRepository.searchDailyDone(userId, date);
-    if (dailyDoneList == null || dailyDoneList.isEmpty()) {
-      return DoneRequestDto.createBlankDto(date);
-    } else {
-      return assembleCurrentRequestDto(dailyDoneList);
-    }
   }
 
   /**
@@ -155,6 +157,45 @@ public class DailyDoneService {
   }
 
   /**
+   * 指定の日付のできたこと、紐付けられたタグとの関係情報をすべて削除する。
+   *
+   * @param userId ユーザーID
+   * @param date   日付
+   */
+  @Transactional
+  public void deleteDailyAllDoneByDate(int userId, LocalDate date) {
+    doneTagJunctionService.deleteRelationByDate(userId, date);
+    dailyDoneRepository.deleteDailyDoneByDate(userId, date);
+  }
+
+  /**
+   * CSVファイルから読み込んだダミーデータをDBに登録する。
+   *
+   * @param guestUserId ゲストユーザーID
+   * @param recordList  CSVファイルから読み込んだレコードリスト
+   */
+  @Transactional
+  public void registerDummyDone(int guestUserId, List<DummyDoneDto> recordList){
+    LocalDate referenceDate = LocalDate.now();
+    for (int i = 0; i < recordList.size(); i++) {
+      LocalDate date = referenceDate;
+      DummyDoneDto dto = recordList.get(i);
+      if(i == 0 || (!dto.getDate().equals(recordList.get(i - 1).getDate()))){
+        date = referenceDate.minusDays(1);
+      }
+
+      DailyDone dailyDone = dto.toEntity(guestUserId, date);
+      dailyDoneRepository.registerDailyDone(dailyDone);
+
+      List<Integer> tagIdList = tagService.resolveTagIdList(guestUserId, dto.getTagList());
+      doneTagJunctionService.registerNewRelations(
+          dailyDone.getId(), DoneTagJunction :: new, tagIdList);
+
+      referenceDate = date;
+    }
+  }
+
+  /**
    * DTOをエンティティに変換してDBに登録し、タグ情報を登録する。<br>
    * 日ごとの初回登録時の場合は、ユーザーの進捗情報も併せて更新する。
    *
@@ -201,44 +242,5 @@ public class DailyDoneService {
     DailyDone dailyDone = dto.toDailyDoneForUpdate(userId, index);
     dailyDoneRepository.updateDailyDone(dailyDone);
     doneTagJunctionService.updateRelations(doneId, DoneTagJunction :: new, tagIdList);
-  }
-
-  /**
-   * 指定の日付のできたこと、紐付けられたタグとの関係情報をすべて削除する。
-   *
-   * @param userId ユーザーID
-   * @param date   日付
-   */
-  @Transactional
-  public void deleteDailyAllDoneByDate(int userId, LocalDate date) {
-    doneTagJunctionService.deleteRelationByDate(userId, date);
-    dailyDoneRepository.deleteDailyDoneByDate(userId, date);
-  }
-
-  /**
-   * CSVファイルから読み込んだダミーデータをDBに登録する。
-   *
-   * @param guestUserId ゲストユーザーID
-   * @param recordList  CSVファイルから読み込んだレコードリスト
-   */
-  @Transactional
-  public void registerDummyDone(int guestUserId, List<DummyDoneDto> recordList){
-    LocalDate referenceDate = LocalDate.now();
-    for (int i = 0; i < recordList.size(); i++) {
-      LocalDate date = referenceDate;
-      DummyDoneDto dto = recordList.get(i);
-      if(i == 0 || (!dto.getDate().equals(recordList.get(i - 1).getDate()))){
-        date = referenceDate.minusDays(1);
-      }
-
-      DailyDone dailyDone = dto.toEntity(guestUserId, date);
-      dailyDoneRepository.registerDailyDone(dailyDone);
-
-      List<Integer> tagIdList = tagService.resolveTagIdList(guestUserId, dto.getTagList());
-      doneTagJunctionService.registerNewRelations(
-          dailyDone.getId(), DoneTagJunction :: new, tagIdList);
-
-      referenceDate = date;
-    }
   }
 }

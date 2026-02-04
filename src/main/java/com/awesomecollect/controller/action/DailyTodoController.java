@@ -57,7 +57,7 @@ public class DailyTodoController {
 
     model.addAttribute(
         AttributeNames.TODO_RESPONSE_DTO,
-        dailyTodoService.prepareResponseDto(customUserDetails.getId(), date));
+        dailyTodoService.prepareResponseDtoForList(customUserDetails.getId(), date));
 
     return TemplateNames.TODO;
   }
@@ -77,7 +77,7 @@ public class DailyTodoController {
 
     model.addAttribute(
         AttributeNames.TODO_REQUEST_DTO,
-        dailyTodoService.prepareRequestDto(customUserDetails.getId(), date));
+        dailyTodoService.prepareRequestDtoForEdit(customUserDetails.getId(), date));
 
     return TemplateNames.TODO_EDIT;
   }

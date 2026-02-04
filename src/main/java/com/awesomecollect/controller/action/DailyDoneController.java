@@ -64,7 +64,7 @@ public class DailyDoneController {
 
     model.addAttribute(
         AttributeNames.DONE_RESPONSE_DTO,
-        dailyDoneService.prepareResponseDto(customUserDetails.getId(), date));
+        dailyDoneService.prepareResponseDtoForList(customUserDetails.getId(), date));
 
     return TemplateNames.DONE;
   }
@@ -86,10 +86,10 @@ public class DailyDoneController {
 
     model.addAttribute(
         AttributeNames.TODO_RESPONSE_DTO,
-        dailyTodoService.prepareResponseDto(userId, date));
+        dailyTodoService.prepareResponseDtoForList(userId, date));
     model.addAttribute(
         AttributeNames.DONE_REQUEST_DTO,
-        dailyDoneService.prepareRequestDto(userId, date));
+        dailyDoneService.prepareRequestDtoForEdit(userId, date));
     model.addAttribute(
         AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 
@@ -129,7 +129,7 @@ public class DailyDoneController {
     if (result.hasErrors()) {
       model.addAttribute(
           AttributeNames.TODO_RESPONSE_DTO,
-          dailyTodoService.prepareResponseDto(userId, date));
+          dailyTodoService.prepareResponseDtoForList(userId, date));
       model.addAttribute(
           AttributeNames.TAG_NAME_LIST, tagService.getTagNameListByUserId(userId));
 

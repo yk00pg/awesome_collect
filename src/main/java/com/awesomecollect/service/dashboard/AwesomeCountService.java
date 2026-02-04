@@ -36,6 +36,7 @@ public class AwesomeCountService {
   }
 
   /**
+   * ダッシュボード表示用えらいポイントデータを用意する。<br>
    * えらいポイントのキャッシュデータ保持フラグがtrueでえらいポイントのキャッシュDTOがnullでない場合は、
    * そのままキャッシュDTOを返す。<br>
    * そうでない場合は、累計えらいポイントを算出し、分割したえらいポイントリストを作成してDTOに詰めて返す。
@@ -45,7 +46,7 @@ public class AwesomeCountService {
    * @param cachedAwesomePointDto えらいポイントのキャッシュDTO
    * @return えらいポイント表示用データオブジェクト
    */
-  @Transactional
+  @Transactional(readOnly = true)
   public AwesomePointDto prepareAwesomePointDto(
       int userId, boolean hasCachedAwesomePoints, AwesomePointDto cachedAwesomePointDto) {
 
