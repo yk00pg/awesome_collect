@@ -71,7 +71,7 @@ public class ArticleStockService {
    * @return 記事ストック表示用データオブジェクト
    */
   @Transactional(readOnly = true)
-  public ArticleResponseDto prepareResponseDto(int articleId, int userId) {
+  public ArticleResponseDto prepareResponseDtoForDetails(int articleId, int userId) {
     ArticleStock articleStock =
         articleStockRepository.findArticleStockByIds(articleId, userId);
     if (articleStock == null) {
@@ -93,7 +93,7 @@ public class ArticleStockService {
    * @return 記事ストック入力用データオブジェクト
    */
   @Transactional(readOnly = true)
-  public ArticleRequestDto prepareRequestDto(int articleId, int userId) {
+  public ArticleRequestDto prepareRequestDtoForEdit(int articleId, int userId) {
     if (articleId == 0) {
       return new ArticleRequestDto();
     }

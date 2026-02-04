@@ -69,7 +69,7 @@ public class ArticleStockController {
       Model model) {
 
     ArticleResponseDto articleResponseDto =
-        articleStockService.prepareResponseDto(id, customUserDetails.getId());
+        articleStockService.prepareResponseDtoForDetails(id, customUserDetails.getId());
 
     if (articleResponseDto == null) {
       return RedirectUtil.redirectView(MappingValues.ERROR_NOT_ACCESSIBLE);
@@ -88,7 +88,7 @@ public class ArticleStockController {
 
     int userId = customUserDetails.getId();
     ArticleRequestDto articleRequestDto =
-        articleStockService.prepareRequestDto(id, userId);
+        articleStockService.prepareRequestDtoForEdit(id, userId);
 
     if (articleRequestDto == null) {
       return RedirectUtil.redirectView(MappingValues.ERROR_NOT_ACCESSIBLE);
