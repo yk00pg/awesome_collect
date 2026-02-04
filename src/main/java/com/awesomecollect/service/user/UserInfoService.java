@@ -1,7 +1,5 @@
 package com.awesomecollect.service.user;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.awesomecollect.dto.user.UserBasicInfoDto;
 import com.awesomecollect.dto.user.UserInfoDto;
 import com.awesomecollect.dto.user.UserPasswordDto;
@@ -11,6 +9,8 @@ import com.awesomecollect.exception.DuplicateType;
 import com.awesomecollect.exception.IncorrectPasswordException;
 import com.awesomecollect.repository.user.UserInfoRepository;
 import com.awesomecollect.security.SecurityConfig;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * ユーザー情報のサービスクラス。
@@ -94,18 +94,6 @@ public class UserInfoService {
     userInfoRepository.updateUserInfo(userInfo);
   }
 
-  // ログインIDが重複しているか確認する。
-  private boolean isDuplicateLoginId(String loginId, int id) {
-    Integer recordId = userInfoRepository.findIdByLoginId(loginId);
-    return recordId != null && !recordId.equals(id);
-  }
-
-  // メールアドレスが重複しているか確認する。
-  private boolean isDuplicateEmail(String email, int id) {
-    Integer recordId = userInfoRepository.findIdByEmail(email);
-    return recordId != null && !recordId.equals(id);
-  }
-
   /**
    * 入力された現在のパスワードがDBに登録されているパスワードと不一致の場合は例外を投げ、
    * そうでない場合はエンティティに変換してDBのレコードを更新する。
@@ -125,6 +113,18 @@ public class UserInfoService {
     UserInfo userInfo =
         dto.toEntityForUpdate(id, securityConfig.passwordEncoder());
     userInfoRepository.updatePassword(userInfo);
+  }
+
+  // ログインIDが重複しているか確認する。
+  private boolean isDuplicateLoginId(String loginId, int id) {
+    Integer recordId = userInfoRepository.findIdByLoginId(loginId);
+    return recordId != null && !recordId.equals(id);
+  }
+
+  // メールアドレスが重複しているか確認する。
+  private boolean isDuplicateEmail(String email, int id) {
+    Integer recordId = userInfoRepository.findIdByEmail(email);
+    return recordId != null && !recordId.equals(id);
   }
 
   // 現在のパスワードが間違っているか確認する。
