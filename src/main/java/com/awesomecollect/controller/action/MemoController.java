@@ -56,7 +56,7 @@ public class MemoController {
 
     model.addAttribute(
         AttributeNames.MEMO_RESPONSE_DTO_LIST,
-        memoService.prepareResponseDtoList(customUserDetails.getId()));
+        memoService.prepareResponseDtoListForList(customUserDetails.getId()));
 
     return TemplateNames.MEMO;
   }
@@ -69,7 +69,7 @@ public class MemoController {
       Model model) {
 
     MemoResponseDto memoResponseDto =
-        memoService.prepareResponseDto(id, customUserDetails.getId());
+        memoService.prepareResponseDtoForDetails(id, customUserDetails.getId());
 
     if (memoResponseDto == null) {
       return RedirectUtil.redirectView(MappingValues.ERROR_NOT_ACCESSIBLE);
@@ -87,7 +87,7 @@ public class MemoController {
       Model model) {
 
     int userId = customUserDetails.getId();
-    MemoRequestDto memoRequestDto = memoService.prepareRequestDto(id, userId);
+    MemoRequestDto memoRequestDto = memoService.prepareRequestDtoForEdit(id, userId);
 
     if (memoRequestDto == null) {
       return RedirectUtil.redirectView(MappingValues.ERROR_NOT_ACCESSIBLE);

@@ -42,19 +42,64 @@ public class GoalService {
   }
 
   /**
+   * 一覧画面用データを用意する。<br>
    * ユーザーIDを基にDBを確認し、目標が登録されていない場合は空のリストを、
    * 登録されている場合は登録データを詰めた表示用データオブジェクトのリストを用意する。
    *
    * @param userId ユーザーID
    * @return 目標表示用データオブジェクト
    */
-  @Transactional
-  public List<GoalResponseDto> prepareResponseDtoList(int userId) {
+  @Transactional(readOnly = true)
+  public List<GoalResponseDto> prepareResponseDtoListForList(int userId) {
     List<Goal> goalList = goalRepository.searchGoal(userId);
     if (goalList == null || goalList.isEmpty()) {
       return new ArrayList<>();
     } else {
       return assembleCurrentResponseDtoList(goalList);
+    }
+  }
+
+  /**
+   * 詳細画面用データを用意する。<br>
+   * 目標IDとユーザーIDを基にDBを確認し、目標が登録されていない場合はnullを返し、
+   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
+   *
+   * @param goalId 目標ID
+   * @param userId ユーザーID
+   * @return 目標表示用データオブジェクト
+   */
+  @Transactional(readOnly = true)
+  public GoalResponseDto prepareResponseDtoForDetails(int goalId, int userId) {
+    Goal goal = goalRepository.findGoalByIds(goalId, userId);
+    if (goal == null) {
+      return null;
+    } else {
+      return assembleCurrentResponseDto(
+          GoalResponseDto.fromEntityForDetail(goal), goalId);
+    }
+  }
+
+  /**
+   * 編集画面用データを用意する。<br>
+   * 目標IDが0の場合は空の入力用データオブジェクトを用意する。<br>
+   * そうでない場合は、目標IDとユーザーIDを基にDBを確認し、目標が登録されていない場合は
+   * nullを返し、登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   *
+   * @param goalId 目標ID
+   * @param userId ユーザーID
+   * @return 目標入力用データオブジェクト
+   */
+  @Transactional(readOnly = true)
+  public GoalRequestDto prepareRequestDtoForEdit(int goalId, int userId) {
+    if (goalId == 0) {
+      return new GoalRequestDto();
+    }
+
+    Goal goal = goalRepository.findGoalByIds(goalId, userId);
+    if (goal == null) {
+      return null;
+    } else {
+      return assembleCurrentRequestDto(goalId, goal);
     }
   }
 
@@ -78,25 +123,6 @@ public class GoalService {
   }
 
   /**
-   * 目標IDとユーザーIDを基にDBを確認し、目標が登録されていない場合はnullを返し、
-   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
-   *
-   * @param goalId 目標ID
-   * @param userId ユーザーID
-   * @return 目標表示用データオブジェクト
-   */
-  @Transactional
-  public GoalResponseDto prepareResponseDto(int goalId, int userId) {
-    Goal goal = goalRepository.findGoalByIds(goalId, userId);
-    if (goal == null) {
-      return null;
-    } else {
-      return assembleCurrentResponseDto(
-          GoalResponseDto.fromEntityForDetail(goal), goalId);
-    }
-  }
-
-  /**
    * 目標に紐付けられたタグ名リストを表示用データオブジェクトに設定する。
    *
    * @param dto    目標表示用データオブジェクト
@@ -113,29 +139,6 @@ public class GoalService {
 
     dto.setTagList(tagNameList);
     return dto;
-  }
-
-  /**
-   * 目標IDが0の場合は空の入力用データオブジェクトを用意する。<br>
-   * そうでない場合は、目標IDとユーザーIDを基にDBを確認し、目標が登録されていない場合は
-   * nullを返し、登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
-   *
-   * @param goalId 目標ID
-   * @param userId ユーザーID
-   * @return 目標入力用データオブジェクト
-   */
-  @Transactional
-  public GoalRequestDto prepareRequestDto(int goalId, int userId) {
-    if (goalId == 0) {
-      return new GoalRequestDto();
-    }
-
-    Goal goal = goalRepository.findGoalByIds(goalId, userId);
-    if (goal == null) {
-      return null;
-    } else {
-      return assembleCurrentRequestDto(goalId, goal);
-    }
   }
 
   /**
@@ -156,7 +159,8 @@ public class GoalService {
   }
 
   /**
-   * データの種類に応じてDBに保存（登録・更新）する。
+   * DBに目標、タグ、紐付けられたタグとの関係情報を保存する。<br>
+   * 目標IDが0の場合は登録処理を、そうでない場合は更新処理を行う。
    *
    * @param userId ユーザーID
    * @param dto    目標入力用データオブジェクト
@@ -176,6 +180,36 @@ public class GoalService {
     }
 
     return saveResult;
+  }
+
+  /**
+   * 指定のIDの目標、紐付けられたタグとの関係情報をDBから削除する。
+   *
+   * @param goalId 目標ID
+   */
+  @Transactional
+  public void deleteGoal(int goalId) {
+    goalTagJunctionService.deleteRelationByActionId(goalId);
+    goalRepository.deleteGoal(goalId);
+  }
+
+  /**
+   * CSVファイルから読み込んだダミーデータをDBに登録する。
+   *
+   * @param guestUserId ゲストユーザーID
+   * @param recordList  CSVファイルから読み込んだレコードリスト
+   */
+  @Transactional
+  public void registerDummyGoal(int guestUserId, List<DummyGoalDto> recordList){
+    recordList.forEach(dto -> {
+      Goal goal = dto.toEntity(guestUserId);
+      goalRepository.registerGoal(goal);
+
+      List<Integer> tagIdList =
+          tagService.resolveTagIdList(guestUserId, dto.getTagList());
+      goalTagJunctionService.registerNewRelations(
+          goal.getId(), GoalTagJunction :: new, tagIdList);
+    });
   }
 
   /**
@@ -249,35 +283,5 @@ public class GoalService {
       isAchievedUpdate = true;
     }
     return isAchievedUpdate;
-  }
-
-  /**
-   * 指定のIDの目標、紐づけられたタグとの関係情報を削除する。
-   *
-   * @param goalId 目標ID
-   */
-  @Transactional
-  public void deleteGoal(int goalId) {
-    goalTagJunctionService.deleteRelationByActionId(goalId);
-    goalRepository.deleteGoal(goalId);
-  }
-
-  /**
-   * CSVファイルから読み込んだダミーデータをDBに登録する。
-   *
-   * @param guestUserId ゲストユーザーID
-   * @param recordList  CSVファイルから読み込んだレコードリスト
-   */
-  @Transactional
-  public void registerDummyGoal(int guestUserId, List<DummyGoalDto> recordList){
-    recordList.forEach(dto -> {
-      Goal goal = dto.toEntity(guestUserId);
-      goalRepository.registerGoal(goal);
-
-      List<Integer> tagIdList =
-          tagService.resolveTagIdList(guestUserId, dto.getTagList());
-      goalTagJunctionService.registerNewRelations(
-          goal.getId(), GoalTagJunction :: new, tagIdList);
-    });
   }
 }

@@ -56,7 +56,7 @@ public class ArticleStockController {
 
     model.addAttribute(
         AttributeNames.ARTICLE_RESPONSE_DTO_LIST,
-        articleStockService.prepareResponseDtoList(customUserDetails.getId()));
+        articleStockService.prepareResponseDtoListForList(customUserDetails.getId()));
 
     return TemplateNames.ARTICLE_STOCK;
   }

@@ -41,19 +41,64 @@ public class MemoService {
   }
 
   /**
+   * 一覧画面用データを用意する。<br>
    * ユーザーIDを基にDBを確認し、メモが登録されていない場合は空のリストを、
    * 登録されている場合は登録データを詰めた表示用データオブジェクトのリストを用意する。
    *
    * @param userId ユーザーId
    * @return メモ表示用データオブジェクト
    */
-  @Transactional
-  public List<MemoResponseDto> prepareResponseDtoList(int userId) {
+  @Transactional(readOnly = true)
+  public List<MemoResponseDto> prepareResponseDtoListForList(int userId) {
     List<Memo> memoList = memoRepository.searchMemo(userId);
     if (memoList == null || memoList.isEmpty()) {
       return new ArrayList<>();
     } else {
       return assembleCurrentResponseDtoList(memoList);
+    }
+  }
+
+  /**
+   * 詳細画面用データを用意する。<br>
+   * メモIDとユーザーIDを基にDBを確認し、メモが登録されていない場合はnullを返し、
+   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
+   *
+   * @param memoId メモID
+   * @param userId ユーザーID
+   * @return メモ表示用データオブジェクト
+   */
+  @Transactional(readOnly = true)
+  public MemoResponseDto prepareResponseDtoForDetails(int memoId, int userId) {
+    Memo memo = memoRepository.findMemoByIds(memoId, userId);
+    if (memo == null) {
+      return null;
+    } else {
+      return assembleCurrentResponseDto(
+          MemoResponseDto.fromEntityForDetail(memo), memoId);
+    }
+  }
+
+  /**
+   * 編集画面用データを用意する。<br>
+   * メモIDが0の場合は空の入力用データオブジェクトを用意する。<br>
+   * そうでない場合は、メモIDとユーザーIDを基にDBを確認し、メモが登録されていない場合は
+   * nullを返し、登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   *
+   * @param memoId メモID
+   * @param userId ユーザーID
+   * @return メモ入力用データオブジェクト
+   */
+  @Transactional(readOnly = true)
+  public MemoRequestDto prepareRequestDtoForEdit(int memoId, int userId) {
+    if (memoId == 0) {
+      return new MemoRequestDto();
+    }
+
+    Memo memo = memoRepository.findMemoByIds(memoId, userId);
+    if (memo == null) {
+      return null;
+    } else {
+      return assembleCurrentRequestDto(memoId, memo);
     }
   }
 
@@ -77,25 +122,6 @@ public class MemoService {
   }
 
   /**
-   * メモIDとユーザーIDを基にDBを確認し、メモが登録されていない場合はnullを返し、
-   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
-   *
-   * @param memoId メモID
-   * @param userId ユーザーID
-   * @return メモ表示用データオブジェクト
-   */
-  @Transactional
-  public MemoResponseDto prepareResponseDto(int memoId, int userId) {
-    Memo memo = memoRepository.findMemoByIds(memoId, userId);
-    if (memo == null) {
-      return null;
-    } else {
-      return assembleCurrentResponseDto(
-          MemoResponseDto.fromEntityForDetail(memo), memoId);
-    }
-  }
-
-  /**
    * メモに紐付けられたタグ名リストを表示用データオブジェクトに設定する。
    *
    * @param dto    メモ表示用データオブジェクト
@@ -112,30 +138,6 @@ public class MemoService {
 
     dto.setTagList(tagNameList);
     return dto;
-  }
-
-
-  /**
-   * メモIDが0の場合は空の入力用データオブジェクトを用意する。<br>
-   * そうでない場合は、メモIDとユーザーIDを基にDBを確認し、メモが登録されていない場合は
-   * nullを返し、登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
-   *
-   * @param memoId メモID
-   * @param userId ユーザーID
-   * @return メモ入力用データオブジェクト
-   */
-  @Transactional
-  public MemoRequestDto prepareRequestDto(int memoId, int userId) {
-    if (memoId == 0) {
-      return new MemoRequestDto();
-    }
-
-    Memo memo = memoRepository.findMemoByIds(memoId, userId);
-    if (memo == null) {
-      return null;
-    } else {
-      return assembleCurrentRequestDto(memoId, memo);
-    }
   }
 
   /**
@@ -156,7 +158,8 @@ public class MemoService {
   }
 
   /**
-   * データの種類に応じてDBに保存（登録・更新）し、セッションのレコード数更新情報を変更する。
+   * DBにメモ、タグ、紐付けられたタグとの関係情報を保存する。<br>
+   * メモIDが0の場合は登録処理を、そうでない場合は更新処理を行う。
    *
    * @param userId ユーザーID
    * @param dto    メモ入力用データオブジェクト
@@ -175,6 +178,36 @@ public class MemoService {
     }
 
     return new SaveResult(memoId, false);
+  }
+
+  /**
+   * 指定のIDのメモ、紐付けられたタグとの関係情報を削除する。
+   *
+   * @param memoId メモID
+   */
+  @Transactional
+  public void deleteMemo(int memoId) {
+    memoTagJunctionService.deleteRelationByActionId(memoId);
+    memoRepository.deleteMemo(memoId);
+  }
+
+  /**
+   * CSVファイルから読み込んだダミーデータをDBに登録する。
+   *
+   * @param guestUserId ゲストユーザーID
+   * @param recordList  CSVファイルから読み込んだレコードリスト
+   */
+  @Transactional
+  public void registerDummyMemo(int guestUserId, List<DummyMemoDto> recordList){
+    recordList.forEach(dto -> {
+      Memo memo = dto.toEntity(guestUserId);
+      memoRepository.registerMemo(memo);
+
+      List<Integer> tagIdList =
+          tagService.resolveTagIdList(guestUserId, dto.getTagList());
+      memoTagJunctionService.registerNewRelations(
+          memo.getId(), MemoTagJunction :: new, tagIdList);
+    });
   }
 
   /**
@@ -229,35 +262,5 @@ public class MemoService {
   private boolean isDuplicateTitle(int memoId, int userId, String title) {
     Integer recordId = memoRepository.findIdByUserIdAndTitle(userId, title.strip());
     return recordId != null && !recordId.equals(memoId);
-  }
-
-  /**
-   * 指定のIDのメモ、紐付けられたタグとの関係情報を削除する。
-   *
-   * @param memoId メモID
-   */
-  @Transactional
-  public void deleteMemo(int memoId) {
-    memoTagJunctionService.deleteRelationByActionId(memoId);
-    memoRepository.deleteMemo(memoId);
-  }
-
-  /**
-   * CSVファイルから読み込んだダミーデータをDBに登録する。
-   *
-   * @param guestUserId ゲストユーザーID
-   * @param recordList  CSVファイルから読み込んだレコードリスト
-   */
-  @Transactional
-  public void registerDummyMemo(int guestUserId, List<DummyMemoDto> recordList){
-    recordList.forEach(dto -> {
-      Memo memo = dto.toEntity(guestUserId);
-      memoRepository.registerMemo(memo);
-
-      List<Integer> tagIdList =
-          tagService.resolveTagIdList(guestUserId, dto.getTagList());
-      memoTagJunctionService.registerNewRelations(
-          memo.getId(), MemoTagJunction :: new, tagIdList);
-    });
   }
 }
