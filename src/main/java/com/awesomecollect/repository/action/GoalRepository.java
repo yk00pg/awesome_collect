@@ -1,9 +1,10 @@
 package com.awesomecollect.repository.action;
 
-import java.util.List;
-import org.springframework.stereotype.Repository;
 import com.awesomecollect.entity.action.Goal;
 import com.awesomecollect.mapper.action.GoalMapper;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
 /**
  * 目標のリポジトリクラス。
@@ -25,8 +26,8 @@ public class GoalRepository {
     return mapper.selectGoal(userId);
   }
 
-  public Goal findGoalByIds(int goalId, int userId) {
-    return mapper.selectGoalByIds(goalId, userId);
+  public Optional<Goal> findGoalByIds(int goalId, int userId) {
+    return Optional.ofNullable(mapper.selectGoalByIds(goalId, userId));
   }
 
   public Integer findIdByUserIdAndTitle(int userId, String title) {

@@ -63,8 +63,8 @@ public class ArticleStockService {
 
   /**
    * 詳細画面用データを用意する。<br>
-   * 記事ストックIDとユーザーIDを基にDBを確認し、記事ストックが登録されていない場合はnullを返し、
-   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
+   * 記事ストックIDとユーザーIDを基にDBを確認し、記事ストックが登録されている場合は
+   * 登録データを詰めた表示用データオブジェクトを返し、登録されていない場合はnullを返す。
    *
    * @param articleId 記事ストックID
    * @param userId    ユーザーID
@@ -72,21 +72,17 @@ public class ArticleStockService {
    */
   @Transactional(readOnly = true)
   public ArticleResponseDto prepareResponseDtoForDetails(int articleId, int userId) {
-    ArticleStock articleStock =
-        articleStockRepository.findArticleStockByIds(articleId, userId);
-    if (articleStock == null) {
-      return null;
-    } else {
-      return assembleCurrentResponseDto(
-          ArticleResponseDto.fromEntityForDetail(articleStock), articleId);
-    }
+    return articleStockRepository.findArticleStockByIds(articleId, userId)
+        .map(articleStock -> assembleCurrentResponseDto(
+            ArticleResponseDto.fromEntityForDetail(articleStock), articleId))
+        .orElse(null);
   }
 
   /**
    * 編集画面用データを用意する。<br>
    * 記事ストックIDが0の場合は空の入力用データオブジェクトを用意する。<br>
-   * そうでない場合は、記事ストックIDとユーザーIDを基にDBを確認し、記事ストックが登録されていない場合は
-   * nullを返し、登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   * そうでない場合は、記事ストックIDとユーザーIDを基にDBを確認し、記事ストックが登録されている場合は
+   * 登録データを詰めた入力用データオブジェクトを返し、登録されていない場合はnullを返す。
    *
    * @param articleId 記事ストックID
    * @param userId    ユーザーID
@@ -98,13 +94,9 @@ public class ArticleStockService {
       return new ArticleRequestDto();
     }
 
-    ArticleStock articleStock =
-        articleStockRepository.findArticleStockByIds(articleId, userId);
-    if (articleStock == null) {
-      return null;
-    } else {
-      return assembleCurrentRequestDto(articleId, articleStock);
-    }
+    return articleStockRepository.findArticleStockByIds(articleId, userId)
+        .map(articleStock -> assembleCurrentRequestDto(articleId, articleStock))
+        .orElse(null);
   }
 
   /**
@@ -295,14 +287,18 @@ public class ArticleStockService {
 
   // 閲覧状況が更新されたか確認し、読了へ更新された場合はステータス更新日時を設定する。
   private boolean checkUpdatedStatus(int userId, int articleId, ArticleStock articleStock) {
-    boolean isFinishedUpdate = false;
-    ArticleStock currentRecord = articleStockRepository.findArticleStockByIds(articleId, userId);
-    if (currentRecord.getStatusUpdatedAt() == null
-        && !currentRecord.isFinished() && articleStock.isFinished()) {
+    boolean isFinishedUpdate =
+        articleStockRepository.findArticleStockByIds(articleId, userId)
+            .filter(currentArticleStock ->
+                currentArticleStock.getStatusUpdatedAt() == null
+                    && !currentArticleStock.isFinished()
+                    && articleStock.isFinished())
+            .isPresent();
 
+    if (isFinishedUpdate) {
       articleStock.setStatusUpdatedAt(LocalDateTime.now());
-      isFinishedUpdate = true;
     }
+
     return isFinishedUpdate;
   }
 }

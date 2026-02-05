@@ -42,7 +42,7 @@ public class DailyDoneService {
   /**
    * 閲覧画面用データを用意する。<br>
    * ユーザーIDと日付を基にDBを確認し、できたことが登録されていない場合は空の表示用データオブジェクトを、
-   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
+   * 登録されている場合は登録データを詰めた表示用データオブジェクトを返す。
    *
    * @param userId ユーザーID
    * @param date   日付
@@ -51,11 +51,10 @@ public class DailyDoneService {
   @Transactional(readOnly = true)
   public DoneResponseDto prepareResponseDtoForList(int userId, LocalDate date) {
     List<DailyDone> dailyDoneList = dailyDoneRepository.searchDailyDone(userId, date);
-    if (dailyDoneList == null || dailyDoneList.isEmpty()) {
-      return DoneResponseDto.createBlankDto(date);
-    } else {
-      return assembleCurrentResponseDto(dailyDoneList);
-    }
+
+    return dailyDoneList.isEmpty()
+        ? DoneResponseDto.createBlankDto(date)
+        : assembleCurrentResponseDto(dailyDoneList);
   }
 
   /**
@@ -70,11 +69,10 @@ public class DailyDoneService {
   @Transactional(readOnly = true)
   public DoneRequestDto prepareRequestDtoForEdit(int userId, LocalDate date) {
     List<DailyDone> dailyDoneList = dailyDoneRepository.searchDailyDone(userId, date);
-    if (dailyDoneList == null || dailyDoneList.isEmpty()) {
-      return DoneRequestDto.createBlankDto(date);
-    } else {
-      return assembleCurrentRequestDto(dailyDoneList);
-    }
+
+    return dailyDoneList.isEmpty()
+        ? DoneRequestDto.createBlankDto(date)
+        : assembleCurrentRequestDto(dailyDoneList);
   }
 
   /**

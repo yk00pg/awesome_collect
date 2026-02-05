@@ -1,9 +1,10 @@
 package com.awesomecollect.repository.action;
 
-import java.util.List;
-import org.springframework.stereotype.Repository;
 import com.awesomecollect.entity.action.ArticleStock;
 import com.awesomecollect.mapper.action.ArticleStockMapper;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
 /**
  * 記事ストックのリポジトリクラス。
@@ -25,8 +26,8 @@ public class ArticleStockRepository {
     return mapper.selectArticleStock(userId);
   }
 
-  public ArticleStock findArticleStockByIds(int articleId, int userId) {
-    return mapper.selectArticleStockByIds(articleId, userId);
+  public Optional<ArticleStock> findArticleStockByIds(int articleId, int userId) {
+    return Optional.ofNullable(mapper.selectArticleStockByIds(articleId, userId));
   }
 
   public Integer findIdByUserIdAndTitle(int userId, String title) {
