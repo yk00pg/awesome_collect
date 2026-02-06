@@ -34,6 +34,7 @@ public interface UserInfoMapper {
       SELECT EXISTS(
         SELECT 1 FROM user_info
         WHERE login_id=#{loginId}
+        )
       """)
   boolean existsUserInfoByLoginId(String loginId);
 
