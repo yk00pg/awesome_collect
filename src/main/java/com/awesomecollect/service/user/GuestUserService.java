@@ -1,5 +1,11 @@
 package com.awesomecollect.service.user;
 
+import com.awesomecollect.common.constant.GuestUser;
+import com.awesomecollect.entity.user.UserInfo;
+import com.awesomecollect.provider.param.ExpiredGuestUserParams;
+import com.awesomecollect.repository.user.UserInfoRepository;
+import com.awesomecollect.repository.user.UserProgressRepository;
+import com.awesomecollect.service.DummyDataService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -9,12 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.awesomecollect.common.constant.GuestUser;
-import com.awesomecollect.entity.user.UserInfo;
-import com.awesomecollect.provider.param.ExpiredGuestUserParams;
-import com.awesomecollect.repository.user.UserInfoRepository;
-import com.awesomecollect.repository.user.UserProgressRepository;
-import com.awesomecollect.service.DummyDataService;
 
 /**
  * ゲストユーザーのサービスクラス。
@@ -42,7 +42,7 @@ public class GuestUserService {
     String randomId = UUID.randomUUID().toString().substring(0, 8);
     String loginId = GuestUser.LOGIN_ID + randomId;
 
-    while(userInfoRepository.findUserInfoByLoginId(loginId) != null){
+    while(userInfoRepository.existsUserInfoByLoginId(loginId)){
       randomId = UUID.randomUUID().toString().substring(0, 8);
       loginId = GuestUser.LOGIN_ID + randomId;
     }

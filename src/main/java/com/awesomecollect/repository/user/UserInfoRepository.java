@@ -1,9 +1,10 @@
 package com.awesomecollect.repository.user;
 
-import java.util.List;
-import org.springframework.stereotype.Repository;
 import com.awesomecollect.entity.user.UserInfo;
 import com.awesomecollect.mapper.user.UserInfoMapper;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
 /**
  * ユーザー情報のリポジトリクラス。
@@ -21,16 +22,16 @@ public class UserInfoRepository {
     return mapper.searchGuestUserId();
   }
 
-  public UserInfo findUserInfoByBinaryLoginId(String loginId){
-    return mapper.findUserInfoByBinaryLoginId(loginId);
+  public Optional<UserInfo> findUserInfoByBinaryLoginId(String loginId){
+    return Optional.ofNullable(mapper.findUserInfoByBinaryLoginId(loginId));
   }
 
   public UserInfo findUserInfoById(int id){
     return mapper.findUserInfoById(id);
   }
 
-  public UserInfo findUserInfoByLoginId(String loginId){
-    return mapper.findUserInfoByLoginId(loginId);
+  public boolean existsUserInfoByLoginId(String loginId){
+    return mapper.existsUserInfoByLoginId(loginId);
   }
 
   public Integer findIdByLoginId(String loginId){
