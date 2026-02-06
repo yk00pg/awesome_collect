@@ -1,11 +1,10 @@
 package com.awesomecollect.security;
 
+import com.awesomecollect.repository.user.UserInfoRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.awesomecollect.entity.user.UserInfo;
-import com.awesomecollect.repository.user.UserInfoRepository;
 
 /**
  * ログイン認証のサービスクラス。
@@ -28,11 +27,8 @@ public class CustomUserDetailsService implements UserDetailsService {
    */
   @Override
   public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-    UserInfo userInfo = userInfoRepository.findUserInfoByBinaryLoginId(loginId);
-    if(userInfo == null){
-      throw new UsernameNotFoundException("failure.loginID");
-    }
-
-    return new CustomUserDetails(userInfo);
+    return userInfoRepository.findUserInfoByBinaryLoginId(loginId)
+        .map(CustomUserDetails :: new)
+        .orElseThrow(() -> new UsernameNotFoundException("failure.loginId"));
   }
 }

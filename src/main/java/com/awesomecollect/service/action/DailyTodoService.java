@@ -30,7 +30,7 @@ public class DailyTodoService {
   /**
    * 閲覧画面用データを用意する。<br>
    * ユーザーIDと日付を基にDBを確認し、やることが登録されていない場合は空の表示用データオブジェクトを、
-   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
+   * 登録されている場合は登録データを詰めた表示用データオブジェクトを返す。
    *
    * @param userId ユーザーID
    * @param date   日付
@@ -39,11 +39,9 @@ public class DailyTodoService {
   public TodoResponseDto prepareResponseDtoForList(int userId, LocalDate date) {
     List<DailyTodo> dailyTodoList = dailyTodoRepository.searchDailyTodo(userId, date);
 
-    if (dailyTodoList == null || dailyTodoList.isEmpty()) {
-      return TodoResponseDto.createBlankDto(date);
-    } else {
-      return TodoResponseDto.fromDailyTodo(dailyTodoList);
-    }
+    return dailyTodoList.isEmpty()
+        ? TodoResponseDto.createBlankDto(date)
+        : TodoResponseDto.fromDailyTodo(dailyTodoList);
   }
 
   /**
@@ -58,11 +56,9 @@ public class DailyTodoService {
   public TodoRequestDto prepareRequestDtoForEdit(int userId, LocalDate date) {
     List<DailyTodo> dailyTodoList = dailyTodoRepository.searchDailyTodo(userId, date);
 
-    if (dailyTodoList == null || dailyTodoList.isEmpty()) {
-      return TodoRequestDto.createBlankDto(date);
-    } else {
-      return TodoRequestDto.fromDailyTodo(dailyTodoList);
-    }
+    return dailyTodoList.isEmpty()
+        ? TodoRequestDto.createBlankDto(date)
+        : TodoRequestDto.fromDailyTodo(dailyTodoList);
   }
 
   /**

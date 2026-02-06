@@ -1,5 +1,6 @@
 package com.awesomecollect.mapper.user;
 
+import com.awesomecollect.entity.user.UserInfo;
 import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -7,7 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import com.awesomecollect.entity.user.UserInfo;
 
 @Mapper
 public interface UserInfoMapper {
@@ -31,10 +31,11 @@ public interface UserInfoMapper {
   UserInfo findUserInfoById(int id);
 
   @Select("""
-      SELECT * FROM user_info
-      WHERE login_id=#{loginId}
+      SELECT EXISTS(
+        SELECT 1 FROM user_info
+        WHERE login_id=#{loginId}
       """)
-  UserInfo findUserInfoByLoginId(String loginId);
+  boolean existsUserInfoByLoginId(String loginId);
 
   @Select("""
       SELECT id FROM user_info

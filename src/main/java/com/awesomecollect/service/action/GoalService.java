@@ -15,6 +15,7 @@ import com.awesomecollect.service.junction.GoalTagJunctionService;
 import com.awesomecollect.service.user.UserProgressService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -52,17 +53,15 @@ public class GoalService {
   @Transactional(readOnly = true)
   public List<GoalResponseDto> prepareResponseDtoListForList(int userId) {
     List<Goal> goalList = goalRepository.searchGoal(userId);
-    if (goalList == null || goalList.isEmpty()) {
-      return new ArrayList<>();
-    } else {
-      return assembleCurrentResponseDtoList(goalList);
-    }
+    return goalList.isEmpty()
+        ? Collections.emptyList()
+        : assembleCurrentResponseDtoList(goalList);
   }
 
   /**
    * 詳細画面用データを用意する。<br>
-   * 目標IDとユーザーIDを基にDBを確認し、目標が登録されていない場合はnullを返し、
-   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
+   * 目標IDとユーザーIDを基にDBを確認し、目標が登録されている場合は登録データを詰めた
+   * 表示用データオブジェクトを返し、登録されていない場合はnullを返す。
    *
    * @param goalId 目標ID
    * @param userId ユーザーID
@@ -70,20 +69,17 @@ public class GoalService {
    */
   @Transactional(readOnly = true)
   public GoalResponseDto prepareResponseDtoForDetails(int goalId, int userId) {
-    Goal goal = goalRepository.findGoalByIds(goalId, userId);
-    if (goal == null) {
-      return null;
-    } else {
-      return assembleCurrentResponseDto(
-          GoalResponseDto.fromEntityForDetail(goal), goalId);
-    }
+    return goalRepository.findGoalByIds(goalId, userId)
+        .map(goal -> assembleCurrentResponseDto(
+            GoalResponseDto.fromEntityForDetail(goal), goalId))
+        .orElse(null);
   }
 
   /**
    * 編集画面用データを用意する。<br>
    * 目標IDが0の場合は空の入力用データオブジェクトを用意する。<br>
-   * そうでない場合は、目標IDとユーザーIDを基にDBを確認し、目標が登録されていない場合は
-   * nullを返し、登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   * そうでない場合は、目標IDとユーザーIDを基にDBを確認し、目標が登録されている場合は
+   * 登録データを詰めた入力用データオブジェクトを返し、登録されていない場合はnullを返す。
    *
    * @param goalId 目標ID
    * @param userId ユーザーID
@@ -95,12 +91,9 @@ public class GoalService {
       return new GoalRequestDto();
     }
 
-    Goal goal = goalRepository.findGoalByIds(goalId, userId);
-    if (goal == null) {
-      return null;
-    } else {
-      return assembleCurrentRequestDto(goalId, goal);
-    }
+    return goalRepository.findGoalByIds(goalId, userId)
+        .map(goal -> assembleCurrentRequestDto(goalId, goal))
+        .orElse(null);
   }
 
   /**
@@ -274,14 +267,17 @@ public class GoalService {
 
   // 進捗状況が更新されたか確認し、達成へ更新された場合はステータス更新日時を設定する。
   private boolean checkUpdatedStatus(int userId, int goalId, Goal goal) {
-    boolean isAchievedUpdate = false;
-    Goal currentGoal = goalRepository.findGoalByIds(goalId, userId);
-    if (currentGoal.getUpdatedAt() == null
-        && !currentGoal.isAchieved() && goal.isAchieved()) {
+    boolean isAchievedUpdate =
+        goalRepository.findGoalByIds(goalId, userId)
+            .filter(currentGoal -> currentGoal.getUpdatedAt() == null
+                && !currentGoal.isAchieved()
+                && goal.isAchieved())
+            .isPresent();
 
+    if(isAchievedUpdate) {
       goal.setStatusUpdatedAt(LocalDateTime.now());
-      isAchievedUpdate = true;
     }
+
     return isAchievedUpdate;
   }
 }

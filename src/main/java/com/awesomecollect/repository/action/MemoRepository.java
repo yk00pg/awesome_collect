@@ -1,9 +1,10 @@
 package com.awesomecollect.repository.action;
 
-import java.util.List;
-import org.springframework.stereotype.Repository;
 import com.awesomecollect.entity.action.Memo;
 import com.awesomecollect.mapper.action.MemoMapper;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
 /**
  * メモのリポジトリクラス。
@@ -25,8 +26,8 @@ public class MemoRepository {
     return mapper.selectMemo(userId);
   }
 
-  public Memo findMemoByIds(int memoId, int userId) {
-    return mapper.selectMemoByIds(memoId, userId);
+  public Optional<Memo> findMemoByIds(int memoId, int userId) {
+    return Optional.ofNullable(mapper.selectMemoByIds(memoId, userId));
   }
 
   public Integer findIdByUserIdAndTitle(int userId, String title) {

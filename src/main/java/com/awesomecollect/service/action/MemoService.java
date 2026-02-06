@@ -14,6 +14,7 @@ import com.awesomecollect.service.TagService;
 import com.awesomecollect.service.junction.MemoTagJunctionService;
 import com.awesomecollect.service.user.UserProgressService;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -51,17 +52,15 @@ public class MemoService {
   @Transactional(readOnly = true)
   public List<MemoResponseDto> prepareResponseDtoListForList(int userId) {
     List<Memo> memoList = memoRepository.searchMemo(userId);
-    if (memoList == null || memoList.isEmpty()) {
-      return new ArrayList<>();
-    } else {
-      return assembleCurrentResponseDtoList(memoList);
-    }
+    return memoList.isEmpty()
+        ? Collections.emptyList()
+        : assembleCurrentResponseDtoList(memoList);
   }
 
   /**
    * 詳細画面用データを用意する。<br>
-   * メモIDとユーザーIDを基にDBを確認し、メモが登録されていない場合はnullを返し、
-   * 登録されている場合は登録データを詰めた表示用データオブジェクトを用意する。
+   * メモIDとユーザーIDを基にDBを確認し、メモが登録されている場合は登録データを詰めた
+   * 表示用データオブジェクトを返し、登録されていない場合はnullを返す。
    *
    * @param memoId メモID
    * @param userId ユーザーID
@@ -69,20 +68,17 @@ public class MemoService {
    */
   @Transactional(readOnly = true)
   public MemoResponseDto prepareResponseDtoForDetails(int memoId, int userId) {
-    Memo memo = memoRepository.findMemoByIds(memoId, userId);
-    if (memo == null) {
-      return null;
-    } else {
-      return assembleCurrentResponseDto(
-          MemoResponseDto.fromEntityForDetail(memo), memoId);
-    }
+    return memoRepository.findMemoByIds(memoId, userId)
+        .map(memo -> assembleCurrentResponseDto(
+            MemoResponseDto.fromEntityForDetail(memo), memoId))
+        .orElse(null);
   }
 
   /**
    * 編集画面用データを用意する。<br>
    * メモIDが0の場合は空の入力用データオブジェクトを用意する。<br>
-   * そうでない場合は、メモIDとユーザーIDを基にDBを確認し、メモが登録されていない場合は
-   * nullを返し、登録されている場合は登録データを詰めた入力用データオブジェクトを用意する。
+   * そうでない場合は、メモIDとユーザーIDを基にDBを確認し、メモが登録されている場合は
+   * 登録データを詰めた入力用データオブジェクトを返し、登録されていない場合はnullを返す。
    *
    * @param memoId メモID
    * @param userId ユーザーID
@@ -94,12 +90,9 @@ public class MemoService {
       return new MemoRequestDto();
     }
 
-    Memo memo = memoRepository.findMemoByIds(memoId, userId);
-    if (memo == null) {
-      return null;
-    } else {
-      return assembleCurrentRequestDto(memoId, memo);
-    }
+    return memoRepository.findMemoByIds(memoId, userId)
+        .map(memo -> assembleCurrentRequestDto(memoId, memo))
+        .orElse(null);
   }
 
   /**
