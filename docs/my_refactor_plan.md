@@ -95,12 +95,12 @@
 - Service 側で `orElseThrow` / `orElse(null)` / `ifPresentOrElse` 等を使い、見つからない場合の処理を明示的に書く
 
 ### タスク
-#### 1. Repository の `find` 系メソッドの戻り値を `Optional<T>` に変更 **(TODO)**
+#### 1. Repository の `find` 系メソッドの戻り値を `Optional<T>` に変更 **(DONE)**
         - エンティティ取得系メソッドを優先
             - 学習アクション周り -> ユーザー周りの順に着手
         - ID取得系メソッドは今のままで良さそう
 
-#### 2. Service で見つからない場合（存在しない場合）の処理を明示的に記述 **(TODO)**
+#### 2. Service で見つからない場合（存在しない場合）の処理を明示的に記述 **(DONE)**
 
 ### 気づき
 - `GoalService.checkUpdatedStatus` のように副作用を伴う処理は、`Optional` の `.map()` / `.filter()` とは分けて扱うべき
@@ -115,3 +115,7 @@
             - 「在庫がある場合はラピングして、ない場合は売り切れ札をつけるんだね、よし」
 - 戻り値が `List` の場合は、もともと `List` という箱に入れられているようなものなので、 `Optional` にする必要はない
     - 「コレクションを返すメソッドは `null` ではなく空コレクションを返すべき」という原則からも `Oprional` でラップする必要はない
+- `.orElse(value)` : 値を直接渡す
+    - `.orElse(defaultValue)`
+- `.orElseThrow(Supplier)` : 例外を生成するラムダを渡す（Supplier: 引数なしで値を返すラムダ）
+    - `.orElseThrow(() -> new SomeExecption("message")`
