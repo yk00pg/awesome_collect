@@ -131,3 +131,6 @@
 ### タスク
 - `Clock` を DI し、`LocalDateTime.now()` / `LocalDate.now()` を直接読んでいる部分を `LocalDateTime.now(clock)` / `LocalDate.now(clock)` に変更する **(DONE)**
     - DTO は依存性を持たないという原則があるため、Service に DI して DTO に引数で渡す設計に変更する
+
+### 気づき
+- Spring では Clock を自動で Bean 登録しないので、`@Configuration` をつけた設定クラスを作成し、 `@Bean` をつけて CLock の戻り値を定義する必要がある
