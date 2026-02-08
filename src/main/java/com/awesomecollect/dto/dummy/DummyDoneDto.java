@@ -1,14 +1,14 @@
 package com.awesomecollect.dto.dummy;
 
+import com.awesomecollect.common.constant.CsvHeader;
+import com.awesomecollect.common.util.LearningTimeConverter;
+import com.awesomecollect.entity.action.DailyDone;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import lombok.Data;
 import org.apache.commons.csv.CSVRecord;
-import com.awesomecollect.common.constant.CsvHeader;
-import com.awesomecollect.common.util.LearningTimeConverter;
-import com.awesomecollect.entity.action.DailyDone;
 
 /**
  * ダミーデータ用できたことデータオブジェクト。
@@ -27,17 +27,18 @@ public class DummyDoneDto {
    * ダミーデータ用データオブジェクトをエンティティに変換する。
    *
    * @param guestUserId ゲストユーザーID
-   * @param date  日付
+   * @param date 日付
+   * @param date 現在の日時
    * @return  できたこと
    */
-  public DailyDone toEntity(int guestUserId, LocalDate date){
+  public DailyDone toEntity(int guestUserId, LocalDate date, LocalDateTime now){
     DailyDone dailyDone = new DailyDone();
     dailyDone.setUserId(guestUserId);
     dailyDone.setDate(date);
     dailyDone.setContent(content);
     dailyDone.setMinutes(LearningTimeConverter.toTotalMinutes(hours, minutes));
     dailyDone.setMemo(memo);
-    dailyDone.setRegisteredAt(LocalDateTime.now());
+    dailyDone.setRegisteredAt(now);
     return dailyDone;
   }
 

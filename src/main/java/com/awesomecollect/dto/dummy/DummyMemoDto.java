@@ -1,12 +1,12 @@
 package com.awesomecollect.dto.dummy;
 
+import com.awesomecollect.common.constant.CsvHeader;
+import com.awesomecollect.entity.action.Memo;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import lombok.Data;
 import org.apache.commons.csv.CSVRecord;
-import com.awesomecollect.common.constant.CsvHeader;
-import com.awesomecollect.entity.action.Memo;
 
 /**
  * ダミーデータ用メモデータオブジェクト
@@ -22,14 +22,15 @@ public class DummyMemoDto {
    * ダミーデータ用データオブジェクトをエンティティに変換する。
    *
    * @param guestUserId ゲストユーザーID
+   * @param now 現在の日時
    * @return  メモ
    */
-  public Memo toEntity(int guestUserId){
+  public Memo toEntity(int guestUserId, LocalDateTime now){
     Memo memo = new Memo();
     memo.setUserId(guestUserId);
     memo.setTitle(title);
     memo.setContent(content);
-    memo.setRegisteredAt(LocalDateTime.now());
+    memo.setRegisteredAt(now);
     return memo;
   }
 

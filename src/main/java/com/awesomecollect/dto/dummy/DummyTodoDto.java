@@ -1,11 +1,11 @@
 package com.awesomecollect.dto.dummy;
 
+import com.awesomecollect.common.constant.CsvHeader;
+import com.awesomecollect.entity.action.DailyTodo;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Data;
 import org.apache.commons.csv.CSVRecord;
-import com.awesomecollect.common.constant.CsvHeader;
-import com.awesomecollect.entity.action.DailyTodo;
 
 /**
  * ダミーデータ用やることデータオブジェクト。
@@ -21,14 +21,15 @@ public class DummyTodoDto {
    *
    * @param guestUserId ゲストユーザーID
    * @param date  日付
+   * @param now 現在の日時
    * @return  やること
    */
-  public DailyTodo toEntity(int guestUserId, LocalDate date){
+  public DailyTodo toEntity(int guestUserId, LocalDate date, LocalDateTime now){
     DailyTodo dailyTodo = new DailyTodo();
     dailyTodo.setUserId(guestUserId);
     dailyTodo.setDate(date);
     dailyTodo.setContent(content);
-    dailyTodo.setRegisteredAt(LocalDateTime.now());
+    dailyTodo.setRegisteredAt(now);
     return dailyTodo;
   }
 

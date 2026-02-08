@@ -6,6 +6,7 @@ import com.awesomecollect.entity.dashboard.AvgLearningTime;
 import com.awesomecollect.entity.dashboard.TagLearningTime;
 import com.awesomecollect.entity.dashboard.TotalLearningTime;
 import com.awesomecollect.repository.dashboard.LearningTimeRepository;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -23,11 +24,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class LearningTimeService {
 
   private final LearningTimeRepository learningTimeRepository;
+  private final Clock clock;
 
   private static final String UNCATEGORIZED = "(未設定)";
 
-  public LearningTimeService(LearningTimeRepository learningTimeRepository) {
+  public LearningTimeService(LearningTimeRepository learningTimeRepository, Clock clock) {
     this.learningTimeRepository = learningTimeRepository;
+    this.clock = clock;
   }
 
   /**
@@ -53,7 +56,7 @@ public class LearningTimeService {
       int totalHours = LearningTimeConverter.toHoursPart(totalTime);
       int totalMinutes = LearningTimeConverter.toMinutesPart(totalTime);
 
-      LocalDate today = LocalDate.now();
+      LocalDate today = LocalDate.now(clock);
       List<TotalLearningTime> sevenDaysTimeList = getDailyTotalTimeList(userId, today);
       List<AvgLearningTime> dayOfWeekTimeList = getDayOfWeekAvgTimeList(userId);
       List<TotalLearningTime> sixMonthTimeList = getMonthlyTotalTimeList(userId, today);

@@ -13,6 +13,7 @@ import com.awesomecollect.repository.action.ArticleStockRepository;
 import com.awesomecollect.service.TagService;
 import com.awesomecollect.service.junction.ArticleTagJunctionService;
 import com.awesomecollect.service.user.UserProgressService;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,16 +31,18 @@ public class ArticleStockService {
   private final ArticleTagJunctionService articleTagJunctionService;
   private final TagService tagService;
   private final UserProgressService userProgressService;
+  private final Clock clock;
 
   public ArticleStockService(
       ArticleStockRepository articleStockRepository,
-      ArticleTagJunctionService articleTagJunctionService,
-      TagService tagService, UserProgressService userProgressService) {
+      ArticleTagJunctionService articleTagJunctionService, TagService tagService,
+      UserProgressService userProgressService, Clock clock) {
 
     this.articleStockRepository = articleStockRepository;
     this.articleTagJunctionService = articleTagJunctionService;
     this.tagService = tagService;
     this.userProgressService = userProgressService;
+    this.clock = clock;
   }
 
   /**
@@ -201,7 +204,7 @@ public class ArticleStockService {
   @Transactional
   public void registerDummyArticleStock(int guestUserId, List<DummyArticleStockDto> recordList){
     recordList.forEach(dto ->{
-      ArticleStock articleStock = dto.toEntity(guestUserId);
+      ArticleStock articleStock = dto.toEntity(guestUserId, LocalDateTime.now(clock));
       articleStockRepository.registerArticleStock(articleStock);
 
       List<Integer> tagIdList =
@@ -232,7 +235,8 @@ public class ArticleStockService {
       throw new DuplicateException(DuplicateType.URL);
     }
 
-    ArticleStock articleStock = dto.toArticleStockForRegistration(userId);
+    ArticleStock articleStock =
+        dto.toArticleStockForRegistration(userId, LocalDateTime.now(clock));
     articleStockRepository.registerArticleStock(articleStock);
     articleTagJunctionService.registerNewRelations(
         articleStock.getId(), ArticleTagJunction :: new, tagIdList);
@@ -264,7 +268,8 @@ public class ArticleStockService {
       throw new DuplicateException(DuplicateType.URL);
     }
 
-    ArticleStock articleStock = dto.toArticleStockForUpdate(userId);
+    ArticleStock articleStock =
+        dto.toArticleStockForUpdate(userId, LocalDateTime.now(clock));
     boolean isFinishedUpdate = checkUpdatedStatus(userId, articleId, articleStock);
 
     articleStockRepository.updateArticleStock(articleStock);
@@ -296,7 +301,7 @@ public class ArticleStockService {
             .isPresent();
 
     if (isFinishedUpdate) {
-      articleStock.setStatusUpdatedAt(LocalDateTime.now());
+      articleStock.setStatusUpdatedAt(LocalDateTime.now(clock));
     }
 
     return isFinishedUpdate;

@@ -1,11 +1,12 @@
 package com.awesomecollect.service.user;
 
-import java.time.LocalDate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.awesomecollect.entity.user.UserProgress;
 import com.awesomecollect.repository.user.UserProgressRepository;
 import com.awesomecollect.service.BonusAwesomeService;
+import java.time.Clock;
+import java.time.LocalDate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * ユーザー進捗状況のサービスクラス。
@@ -15,12 +16,15 @@ public class UserProgressService {
 
   private final UserProgressRepository userProgressRepository;
   private final BonusAwesomeService bonusAwesomeService;
+  private final Clock clock;
 
   public UserProgressService(
-      UserProgressRepository userProgressRepository, BonusAwesomeService bonusAwesomeService){
+      UserProgressRepository userProgressRepository,
+      BonusAwesomeService bonusAwesomeService, Clock clock){
 
     this.userProgressRepository = userProgressRepository;
     this.bonusAwesomeService = bonusAwesomeService;
+    this.clock = clock;
   }
 
   /**
@@ -31,7 +35,7 @@ public class UserProgressService {
   public void createUserProgress(int userId){
     UserProgress userProgress = new UserProgress();
     userProgress.setUserId(userId);
-    userProgress.setRegisteredDate(LocalDate.now());
+    userProgress.setRegisteredDate(LocalDate.now(clock));
 
     userProgressRepository.registerUserProgress(userProgress);
   }
@@ -46,7 +50,7 @@ public class UserProgressService {
   public void updateUserProgress(int userId) {
     UserProgress userProgress = userProgressRepository.findUserProgressByUserId(userId);
 
-    LocalDate today = LocalDate.now();
+    LocalDate today = LocalDate.now(clock);
     LocalDate yesterday = today.minusDays(1);
     LocalDate lastActionDate = userProgress.getLastActionDate();
     int currentStreak = userProgress.getCurrentStreak();

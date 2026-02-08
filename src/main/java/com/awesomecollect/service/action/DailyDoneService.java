@@ -10,7 +10,9 @@ import com.awesomecollect.repository.action.DailyDoneRepository;
 import com.awesomecollect.service.TagService;
 import com.awesomecollect.service.junction.DoneTagJunctionService;
 import com.awesomecollect.service.user.UserProgressService;
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -27,16 +29,18 @@ public class DailyDoneService {
   private final DoneTagJunctionService doneTagJunctionService;
   private final TagService tagService;
   private final UserProgressService userProgressService;
+  private final Clock clock;
 
   public DailyDoneService(
       DailyDoneRepository dailyDoneRepository,
       DoneTagJunctionService doneTagJunctionService, TagService tagService,
-      UserProgressService userProgressService) {
+      UserProgressService userProgressService, Clock clock) {
 
     this.dailyDoneRepository = dailyDoneRepository;
     this.doneTagJunctionService = doneTagJunctionService;
     this.tagService = tagService;
     this.userProgressService = userProgressService;
+    this.clock = clock;
   }
 
   /**
@@ -174,7 +178,7 @@ public class DailyDoneService {
    */
   @Transactional
   public void registerDummyDone(int guestUserId, List<DummyDoneDto> recordList){
-    LocalDate referenceDate = LocalDate.now();
+    LocalDate referenceDate = LocalDate.now(clock);
     for (int i = 0; i < recordList.size(); i++) {
       LocalDate date = referenceDate;
       DummyDoneDto dto = recordList.get(i);
@@ -182,7 +186,7 @@ public class DailyDoneService {
         date = referenceDate.minusDays(1);
       }
 
-      DailyDone dailyDone = dto.toEntity(guestUserId, date);
+      DailyDone dailyDone = dto.toEntity(guestUserId, date, LocalDateTime.now(clock));
       dailyDoneRepository.registerDailyDone(dailyDone);
 
       List<Integer> tagIdList = tagService.resolveTagIdList(guestUserId, dto.getTagList());
@@ -205,7 +209,7 @@ public class DailyDoneService {
   private void registerDailyDone(
       int userId, DoneRequestDto dto, List<Integer> tagIdList, int index) {
 
-    DailyDone dailyDone = dto.toDailyDoneForRegistration(userId, index);
+    DailyDone dailyDone = dto.toDailyDoneForRegistration(userId, index, LocalDateTime.now(clock));
     dailyDoneRepository.registerDailyDone(dailyDone);
     doneTagJunctionService.registerNewRelations(
         dailyDone.getId(), DoneTagJunction :: new, tagIdList);
@@ -237,7 +241,7 @@ public class DailyDoneService {
   private void updateDailyDone(
       int userId, DoneRequestDto dto, int doneId, int index, List<Integer> tagIdList) {
 
-    DailyDone dailyDone = dto.toDailyDoneForUpdate(userId, index);
+    DailyDone dailyDone = dto.toDailyDoneForUpdate(userId, index, LocalDateTime.now(clock));
     dailyDoneRepository.updateDailyDone(dailyDone);
     doneTagJunctionService.updateRelations(doneId, DoneTagJunction :: new, tagIdList);
   }

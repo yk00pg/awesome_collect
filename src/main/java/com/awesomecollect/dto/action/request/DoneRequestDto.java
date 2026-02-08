@@ -1,5 +1,8 @@
 package com.awesomecollect.dto.action.request;
 
+import com.awesomecollect.common.util.LearningTimeConverter;
+import com.awesomecollect.dto.action.response.TodoResponseDto;
+import com.awesomecollect.entity.action.DailyDone;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -10,9 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-import com.awesomecollect.common.util.LearningTimeConverter;
-import com.awesomecollect.dto.action.response.TodoResponseDto;
-import com.awesomecollect.entity.action.DailyDone;
 
 /**
  * できたこと入力用データオブジェクト。
@@ -71,9 +71,10 @@ public class DoneRequestDto {
    *
    * @param userId  ユーザーID
    * @param index インデックス番号
+   * @param now 現在の日時
    * @return  新規登録用のエンティティ
    */
-  public DailyDone toDailyDoneForRegistration(int userId, int index){
+  public DailyDone toDailyDoneForRegistration(int userId, int index, LocalDateTime now){
     DailyDone dailyDone = new DailyDone();
     dailyDone.setUserId(userId);
     dailyDone.setDate(this.date);
@@ -82,7 +83,7 @@ public class DoneRequestDto {
         LearningTimeConverter.toTotalMinutes(
             hoursList.get(index), minutesList.get(index)));
     dailyDone.setMemo(memoList.get(index).trim());
-    dailyDone.setRegisteredAt(LocalDateTime.now());
+    dailyDone.setRegisteredAt(now);
     return dailyDone;
   }
 
@@ -91,9 +92,10 @@ public class DoneRequestDto {
    *
    * @param userId  ユーザーID
    * @param index インデックス番号
+   * @param now 現在の日時
    * @return  更新用のエンティティ
    */
-  public DailyDone toDailyDoneForUpdate(int userId, int index){
+  public DailyDone toDailyDoneForUpdate(int userId, int index, LocalDateTime now){
     DailyDone dailyDone = new DailyDone();
     dailyDone.setId(idList.get(index));
     dailyDone.setUserId(userId);
@@ -103,7 +105,7 @@ public class DoneRequestDto {
         LearningTimeConverter.toTotalMinutes(
             hoursList.get(index), minutesList.get(index)));
     dailyDone.setMemo(memoList.get(index).trim());
-    dailyDone.setUpdatedAt(LocalDateTime.now());
+    dailyDone.setUpdatedAt(now);
     return dailyDone;
   }
 

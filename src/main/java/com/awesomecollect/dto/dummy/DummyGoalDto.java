@@ -1,12 +1,12 @@
 package com.awesomecollect.dto.dummy;
 
+import com.awesomecollect.common.constant.CsvHeader;
+import com.awesomecollect.entity.action.Goal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import lombok.Data;
 import org.apache.commons.csv.CSVRecord;
-import com.awesomecollect.common.constant.CsvHeader;
-import com.awesomecollect.entity.action.Goal;
 
 /**
  * ダミーデータ用目標データオブジェクト。
@@ -25,15 +25,16 @@ public class DummyGoalDto {
    * ダミーデータ用データオブジェクトをエンティティに変換する。
    *
    * @param guestUserId ゲストユーザーID
+   * @param now 現在の日時
    * @return  目標
    */
-  public Goal toEntity(int guestUserId){
+  public Goal toEntity(int guestUserId, LocalDateTime now){
     Goal goal = new Goal();
     goal.setUserId(guestUserId);
     goal.setTitle(title);
     goal.setContent(content);
     goal.setAchieved(status.equals(ACHIEVED));
-    goal.setRegisteredAt(LocalDateTime.now());
+    goal.setRegisteredAt(now);
     return goal;
   }
 

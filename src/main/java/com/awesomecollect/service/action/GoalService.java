@@ -13,6 +13,7 @@ import com.awesomecollect.repository.action.GoalRepository;
 import com.awesomecollect.service.TagService;
 import com.awesomecollect.service.junction.GoalTagJunctionService;
 import com.awesomecollect.service.user.UserProgressService;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,15 +32,17 @@ public class GoalService {
   private final GoalTagJunctionService goalTagJunctionService;
   private final TagService tagService;
   private final UserProgressService userProgressService;
+  private final Clock clock;
 
   public GoalService(
       GoalRepository goalRepository, GoalTagJunctionService goalTagJunctionService,
-      TagService tagService, UserProgressService userProgressService) {
+      TagService tagService, UserProgressService userProgressService, Clock clock) {
 
     this.goalRepository = goalRepository;
     this.goalTagJunctionService = goalTagJunctionService;
     this.tagService = tagService;
     this.userProgressService = userProgressService;
+    this.clock = clock;
   }
 
   /**
@@ -195,7 +198,7 @@ public class GoalService {
   @Transactional
   public void registerDummyGoal(int guestUserId, List<DummyGoalDto> recordList){
     recordList.forEach(dto -> {
-      Goal goal = dto.toEntity(guestUserId);
+      Goal goal = dto.toEntity(guestUserId, LocalDateTime.now(clock));
       goalRepository.registerGoal(goal);
 
       List<Integer> tagIdList =
@@ -222,7 +225,7 @@ public class GoalService {
       throw new DuplicateException(DuplicateType.TITLE);
     }
 
-    Goal goal = dto.toGoalForRegistration(userId);
+    Goal goal = dto.toGoalForRegistration(userId, LocalDateTime.now(clock));
     goalRepository.registerGoal(goal);
     goalTagJunctionService.registerNewRelations(
         goal.getId(), GoalTagJunction :: new, tagIdList);
@@ -250,7 +253,7 @@ public class GoalService {
       throw new DuplicateException(DuplicateType.TITLE);
     }
 
-    Goal goal = dto.toGoalForUpdate(userId);
+    Goal goal = dto.toGoalForUpdate(userId, LocalDateTime.now(clock));
     boolean isAchievedUpdate = checkUpdatedStatus(userId, goalId, goal);
 
     goalRepository.updateGoal(goal);
@@ -275,7 +278,7 @@ public class GoalService {
             .isPresent();
 
     if(isAchievedUpdate) {
-      goal.setStatusUpdatedAt(LocalDateTime.now());
+      goal.setStatusUpdatedAt(LocalDateTime.now(clock));
     }
 
     return isAchievedUpdate;

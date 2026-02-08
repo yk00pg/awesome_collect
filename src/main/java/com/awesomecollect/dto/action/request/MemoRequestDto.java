@@ -1,10 +1,10 @@
 package com.awesomecollect.dto.action.request;
 
+import com.awesomecollect.entity.action.Memo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import lombok.Data;
-import com.awesomecollect.entity.action.Memo;
 
 /**
  * メモ入力用データオブジェクト。
@@ -29,14 +29,15 @@ public class MemoRequestDto {
    * 入力されたデータを新規登録用のエンティティに変換する。
    *
    * @param userId  ユーザーID
+   * @param now 現在の日時
    * @return  新規登録用のエンティティ
    */
-  public Memo toMemoForRegistration(int userId){
+  public Memo toMemoForRegistration(int userId, LocalDateTime now){
     Memo memo = new Memo();
     memo.setUserId(userId);
     memo.setTitle(title);
     memo.setContent(content);
-    memo.setRegisteredAt(LocalDateTime.now());
+    memo.setRegisteredAt(now);
     return memo;
   }
 
@@ -44,15 +45,16 @@ public class MemoRequestDto {
    * 入力されたデータを更新用のエンティティに変換する。
    *
    * @param userId  ユーザーID
+   * @param now 現在の日時
    * @return  更新用のエンティティ
    */
-  public Memo toMemoForUpdate(int userId){
+  public Memo toMemoForUpdate(int userId, LocalDateTime now){
     Memo memo = new Memo();
     memo.setId(id);
     memo.setUserId(userId);
     memo.setTitle(title);
     memo.setContent(content);
-    memo.setUpdatedAt(LocalDateTime.now());
+    memo.setUpdatedAt(now);
     return memo;
   }
 
