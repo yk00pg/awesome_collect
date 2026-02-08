@@ -129,5 +129,5 @@
 - `Clock` を DI、日付/時間取得を抽象化する
 
 ### タスク
-- `Clock` を DI し、`LocalDateTime.now()` / `LocalDate.now()` を直接読んでいる部分を `LocalDateTime.now(clock)` / `LocalDate.now(clock)` に変更する **(TODO)**
+- `Clock` を DI し、`LocalDateTime.now()` / `LocalDate.now()` を直接読んでいる部分を `LocalDateTime.now(clock)` / `LocalDate.now(clock)` に変更する **(DONE)**
     - DTO は依存性を持たないという原則があるため、Service に DI して DTO に引数で渡す設計に変更する
