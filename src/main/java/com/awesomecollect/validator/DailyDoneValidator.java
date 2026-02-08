@@ -1,5 +1,9 @@
 package com.awesomecollect.validator;
 
+import com.awesomecollect.common.constant.MessageKeys;
+import com.awesomecollect.common.util.MessageUtil;
+import com.awesomecollect.dto.action.request.DoneRequestDto;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -9,9 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import com.awesomecollect.common.constant.MessageKeys;
-import com.awesomecollect.common.util.MessageUtil;
-import com.awesomecollect.dto.action.request.DoneRequestDto;
 
 /**
  * できたことのカスタムバリデータクラス。<br>
@@ -21,12 +22,14 @@ import com.awesomecollect.dto.action.request.DoneRequestDto;
 public class DailyDoneValidator implements Validator {
 
   private final MessageUtil messageUtil;
+  private final Clock clock;
 
   private static final int MINUTES = 60;
   private static final int HOURS = 24;
 
-  public DailyDoneValidator(MessageUtil messageUtil) {
+  public DailyDoneValidator(MessageUtil messageUtil, Clock clock) {
     this.messageUtil = messageUtil;
+    this.clock = clock;
   }
 
   @Override
@@ -45,7 +48,7 @@ public class DailyDoneValidator implements Validator {
 
   // 未来の日付の場合はエラーに追加する。
   private void validateDate(DoneRequestDto dto, Errors errors) {
-    if (dto.getDate().isAfter(LocalDate.now())) {
+    if (dto.getDate().isAfter(LocalDate.now(clock))) {
       errors.rejectValue(
           "date", "futureDate",
           messageUtil.getMessage(MessageKeys.DATE_FUTURE));

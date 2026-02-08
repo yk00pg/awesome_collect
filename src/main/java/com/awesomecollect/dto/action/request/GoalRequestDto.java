@@ -1,10 +1,10 @@
 package com.awesomecollect.dto.action.request;
 
+import com.awesomecollect.entity.action.Goal;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import lombok.Data;
-import com.awesomecollect.entity.action.Goal;
 
 /**
  * 目標入力用データオブジェクト。
@@ -49,15 +49,16 @@ public class GoalRequestDto {
    * 入力されたデータを新規登録用のエンティティに変換する。
    *
    * @param userId  ユーザーID
+   * @param now 現在の日時
    * @return  新規登録用のエンティティ
    */
-  public Goal toGoalForRegistration(int userId){
+  public Goal toGoalForRegistration(int userId, LocalDateTime now){
     Goal goal = new Goal();
     goal.setUserId(userId);
     goal.setTitle(title);
     goal.setContent(content);
     goal.setAchieved(status.equals(ACHIEVED));
-    goal.setRegisteredAt(LocalDateTime.now());
+    goal.setRegisteredAt(now);
     return goal;
   }
 
@@ -65,16 +66,17 @@ public class GoalRequestDto {
    * 入力されたデータを更新用のエンティティに変換する。
    *
    * @param userId  ユーザーID
+   * @param now 現在の日時
    * @return  更新用のエンティティ
    */
-  public Goal toGoalForUpdate(int userId){
+  public Goal toGoalForUpdate(int userId, LocalDateTime now){
     Goal goal = new Goal();
     goal.setId(id);
     goal.setUserId(userId);
     goal.setTitle(title);
     goal.setContent(content);
     goal.setAchieved(status.equals(ACHIEVED));
-    goal.setUpdatedAt(LocalDateTime.now());
+    goal.setUpdatedAt(now);
     return goal;
   }
 

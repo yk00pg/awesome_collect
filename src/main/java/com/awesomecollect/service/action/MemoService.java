@@ -13,6 +13,8 @@ import com.awesomecollect.repository.action.MemoRepository;
 import com.awesomecollect.service.TagService;
 import com.awesomecollect.service.junction.MemoTagJunctionService;
 import com.awesomecollect.service.user.UserProgressService;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,15 +32,17 @@ public class MemoService {
   private final MemoTagJunctionService memoTagJunctionService;
   private final TagService tagService;
   private final UserProgressService userProgressService;
+  private final Clock clock;
 
   public MemoService(
       MemoRepository memoRepository, MemoTagJunctionService memoTagJunctionService,
-      TagService tagService, UserProgressService userProgressService) {
+      TagService tagService, UserProgressService userProgressService, Clock clock) {
 
     this.memoRepository = memoRepository;
     this.memoTagJunctionService = memoTagJunctionService;
     this.tagService = tagService;
     this.userProgressService = userProgressService;
+    this.clock = clock;
   }
 
   /**
@@ -193,7 +197,7 @@ public class MemoService {
   @Transactional
   public void registerDummyMemo(int guestUserId, List<DummyMemoDto> recordList){
     recordList.forEach(dto -> {
-      Memo memo = dto.toEntity(guestUserId);
+      Memo memo = dto.toEntity(guestUserId, LocalDateTime.now(clock));
       memoRepository.registerMemo(memo);
 
       List<Integer> tagIdList =
@@ -219,7 +223,7 @@ public class MemoService {
       throw new DuplicateException(DuplicateType.TITLE);
     }
 
-    Memo memo = dto.toMemoForRegistration(userId);
+    Memo memo = dto.toMemoForRegistration(userId, LocalDateTime.now(clock));
     memoRepository.registerMemo(memo);
     memoTagJunctionService.registerNewRelations(
         memo.getId(), MemoTagJunction :: new, tagIdList);
@@ -246,7 +250,7 @@ public class MemoService {
       throw new DuplicateException(DuplicateType.TITLE);
     }
 
-    Memo memo = dto.toMemoForUpdate(userId);
+    Memo memo = dto.toMemoForUpdate(userId, LocalDateTime.now(clock));
     memoRepository.updateMemo(memo);
     memoTagJunctionService.updateRelations(memoId, MemoTagJunction :: new, tagIdList);
   }

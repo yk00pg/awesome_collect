@@ -6,7 +6,9 @@ import com.awesomecollect.dto.dummy.DummyTodoDto;
 import com.awesomecollect.entity.action.DailyTodo;
 import com.awesomecollect.repository.action.DailyTodoRepository;
 import com.awesomecollect.service.user.UserProgressService;
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +21,15 @@ public class DailyTodoService {
 
   private final DailyTodoRepository dailyTodoRepository;
   private final UserProgressService userProgressService;
+  private final Clock clock;
 
   public DailyTodoService(
-      DailyTodoRepository dailyTodoRepository, UserProgressService userProgressService) {
+      DailyTodoRepository dailyTodoRepository, UserProgressService userProgressService,
+      Clock clock) {
 
     this.dailyTodoRepository = dailyTodoRepository;
     this.userProgressService = userProgressService;
+    this.clock = clock;
   }
 
   /**
@@ -87,7 +92,8 @@ public class DailyTodoService {
         if (dto.isDeletable(i)) {
           dailyTodoRepository.deleteDailyTodoById(todoId);
         } else {
-          dailyTodoRepository.updateDailyTodo(dto.toDailyTodoForUpdate(userId, i));
+          dailyTodoRepository.updateDailyTodo(
+              dto.toDailyTodoForUpdate(userId, i, LocalDateTime.now(clock)));
         }
       }
     }
@@ -111,7 +117,7 @@ public class DailyTodoService {
    */
   @Transactional
   public void registerDummyTodo(int guestUserId, List<DummyTodoDto> recordList){
-    LocalDate referenceDate = LocalDate.now();
+    LocalDate referenceDate = LocalDate.now(clock);
     for (int i = 0; i < recordList.size(); i++) {
       LocalDate date = referenceDate;
       DummyTodoDto dto = recordList.get(i);
@@ -119,7 +125,7 @@ public class DailyTodoService {
         date = referenceDate.minusDays(1);
       }
 
-      DailyTodo dailyTodo = dto.toEntity(guestUserId, date);
+      DailyTodo dailyTodo = dto.toEntity(guestUserId, date, LocalDateTime.now(clock));
       dailyTodoRepository.registerDailyTodo(dailyTodo);
 
       referenceDate = date;
@@ -134,7 +140,7 @@ public class DailyTodoService {
    * @param index  リストのインデックス番号
    */
   private void registerDailyTodo(int userId, TodoRequestDto dto, int index) {
-    DailyTodo dailyTodo = dto.toDailyTodoForRegistration(userId, index);
+    DailyTodo dailyTodo = dto.toDailyTodoForRegistration(userId, index, LocalDateTime.now(clock));
     dailyTodoRepository.registerDailyTodo(dailyTodo);
 
     if (index == 0) {

@@ -1,5 +1,6 @@
 package com.awesomecollect.dto.action.request;
 
+import com.awesomecollect.entity.action.DailyTodo;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
@@ -8,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-import com.awesomecollect.entity.action.DailyTodo;
 
 /**
  * やること入力用データオブジェクト。
@@ -46,14 +46,15 @@ public class TodoRequestDto {
    *
    * @param userId  ユーザーID
    * @param index インデックス番号
+   * @param now 現在の日時
    * @return  新規登録用のエンティティ
    */
-  public DailyTodo toDailyTodoForRegistration(int userId, int index){
+  public DailyTodo toDailyTodoForRegistration(int userId, int index, LocalDateTime now){
     DailyTodo dailyTodo = new DailyTodo();
     dailyTodo.setUserId(userId);
     dailyTodo.setDate(date);
     dailyTodo.setContent(contentList.get(index));
-    dailyTodo.setRegisteredAt(LocalDateTime.now());
+    dailyTodo.setRegisteredAt(now);
     return dailyTodo;
   }
 
@@ -62,15 +63,16 @@ public class TodoRequestDto {
    *
    * @param userId  ユーザーID
    * @param index インデックス番号
+   * @param now 現在の日時
    * @return  更新用のエンティティ
    */
-  public DailyTodo toDailyTodoForUpdate(int userId, int index){
+  public DailyTodo toDailyTodoForUpdate(int userId, int index, LocalDateTime now){
     DailyTodo dailyTodo = new DailyTodo();
     dailyTodo.setId(idList.get(index));
     dailyTodo.setUserId(userId);
     dailyTodo.setDate(date);
     dailyTodo.setContent(contentList.get(index));
-    dailyTodo.setUpdatedAt(LocalDateTime.now());
+    dailyTodo.setUpdatedAt(now);
     return dailyTodo;
   }
 

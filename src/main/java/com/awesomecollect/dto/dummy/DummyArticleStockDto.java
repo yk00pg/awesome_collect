@@ -1,12 +1,12 @@
 package com.awesomecollect.dto.dummy;
 
+import com.awesomecollect.common.constant.CsvHeader;
+import com.awesomecollect.entity.action.ArticleStock;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import lombok.Data;
 import org.apache.commons.csv.CSVRecord;
-import com.awesomecollect.common.constant.CsvHeader;
-import com.awesomecollect.entity.action.ArticleStock;
 
 /**
  * ダミーデータ用記事ストックデータオブジェクト。
@@ -26,16 +26,17 @@ public class DummyArticleStockDto {
    * ダミーデータ用データオブジェクトをエンティティに変換する。
    *
    * @param guestUserId ゲストユーザーID
+   * @param now 現在の日時
    * @return  記事ストック
    */
-  public ArticleStock toEntity(int guestUserId){
+  public ArticleStock toEntity(int guestUserId, LocalDateTime now){
     ArticleStock articleStock = new ArticleStock();
     articleStock.setUserId(guestUserId);
     articleStock.setTitle(title);
     articleStock.setUrl(url);
     articleStock.setMemo(memo);
     articleStock.setFinished(status.equals(FINISHED));
-    articleStock.setRegisteredAt(LocalDateTime.now());
+    articleStock.setRegisteredAt(now);
     return articleStock;
   }
 

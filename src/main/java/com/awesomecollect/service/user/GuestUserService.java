@@ -6,6 +6,7 @@ import com.awesomecollect.provider.param.ExpiredGuestUserParams;
 import com.awesomecollect.repository.user.UserInfoRepository;
 import com.awesomecollect.repository.user.UserProgressRepository;
 import com.awesomecollect.service.DummyDataService;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +30,7 @@ public class GuestUserService {
   private final PasswordEncoder passwordEncoder;
   private final DummyDataService dummyDataService;
   private final DeleteUserDataService deleteUserDataService;
+  private final Clock clock;
 
   private static final Logger logger = LoggerFactory.getLogger(GuestUserService.class);
 
@@ -79,7 +81,7 @@ public class GuestUserService {
 
     List<Integer> expiredGuestUserIdList =
         userProgressRepository.searchExpiredUserIdByUserId(
-            new ExpiredGuestUserParams(guestUserIdList, LocalDate.now().minusDays(1)));
+            new ExpiredGuestUserParams(guestUserIdList, LocalDate.now(clock).minusDays(1)));
 
     for(int expiredGuestUserId: expiredGuestUserIdList) {
       deleteUserDataService.deleteUserData(expiredGuestUserId);

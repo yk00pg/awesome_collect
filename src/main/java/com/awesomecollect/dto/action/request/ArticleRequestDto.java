@@ -1,10 +1,10 @@
 package com.awesomecollect.dto.action.request;
 
+import com.awesomecollect.entity.action.ArticleStock;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import lombok.Data;
-import com.awesomecollect.entity.action.ArticleStock;
 
 /**
  * 記事ストック入力用データオブジェクト。
@@ -52,16 +52,17 @@ public class ArticleRequestDto {
    * 入力されたデータを新規登録用のエンティティに変換する。
    *
    * @param userId  ユーザーID
+   * @param now 現在の日時
    * @return  新規登録用のエンティティ
    */
-  public ArticleStock toArticleStockForRegistration(int userId){
+  public ArticleStock toArticleStockForRegistration(int userId, LocalDateTime now){
     ArticleStock articleStock = new ArticleStock();
     articleStock.setUserId(userId);
     articleStock.setTitle(title);
     articleStock.setUrl(url);
     articleStock.setMemo(memo);
     articleStock.setFinished(status.equals(FINISHED));
-    articleStock.setRegisteredAt(LocalDateTime.now());
+    articleStock.setRegisteredAt(now);
     return articleStock;
   }
 
@@ -69,9 +70,10 @@ public class ArticleRequestDto {
    * 入力されたデータを更新用のエンティティに変換する。
    *
    * @param userId  ユーザーID
+   * @param now 現在の日時
    * @return  更新用のエンティティ
    */
-  public ArticleStock toArticleStockForUpdate(int userId){
+  public ArticleStock toArticleStockForUpdate(int userId, LocalDateTime now){
     ArticleStock articleStock = new ArticleStock();
     articleStock.setId(id);
     articleStock.setUserId(userId);
@@ -79,7 +81,7 @@ public class ArticleRequestDto {
     articleStock.setUrl(url);
     articleStock.setMemo(memo);
     articleStock.setFinished(status.equals(FINISHED));
-    articleStock.setUpdatedAt(LocalDateTime.now());
+    articleStock.setUpdatedAt(now);
     return articleStock;
   }
 
