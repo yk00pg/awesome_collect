@@ -46,7 +46,7 @@ class UserProgressServiceTest {
   private static final int CURRENT_STREAK = 6;
   private static final int LONGEST_STREAK = 6;
   private static final int STREAK_BONUS_COUNT = 10;
-  
+
   private static final LocalDate TODAY = LocalDate.of(2026,2,9);
   private static final LocalDate YESTERDAY = LocalDate.of(2026,2,8);
   private static final LocalDate TWO_DAYS_AGO = LocalDate.of(2026,2,7);
