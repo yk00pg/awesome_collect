@@ -160,21 +160,21 @@
 | 一昨日 | +1 | 今日 | 1 | アクション登録 |
 | null（初回） | 1 | 今日 | 1 | アクション登録 |
 
-#### 2. `GoalService` のユニットテストを作成 **(TODO)**
-- `GoalRepository` , `GoalTagJunctionService` , `TagService` をモック化
+#### 2. `GoalService` のユニットテストを作成 **(DONE)**
+- `GoalRepository` , `GoalTagJunctionService` , `TagService` , `UserProgressService` をモック化
 - 固定日時の `Clock` を注入
 - テストケースは以下を想定
 
-    - 目標・タグ・紐付けられたタグとの関係情報を保存
+    - 目標・タグ・紐付けられたタグとの関係情報を保存 **(DONE)**
         - 登録: 重複タイトル検知、目標・タグとの関係情報を登録、登録日時付与、ユーザー進捗状況更新
         - 更新: 重複タイトル検知、目標・タグとの関係情報を更新、達成状況変更時の日時付与
-    - 目標・紐付けられたタグとの関係情報を削除
-    - 一覧画面/詳細画面/編集画面用データ取得 **(N2H)**
+    - 目標・紐付けられたタグとの関係情報を削除 **(DONE)**
+    - 一覧画面/詳細画面/編集画面用データ取得 **(N2H)** **(DONE)**
         - 一覧画面用: 空リスト or エンティティリスト
         - 詳細画面用: エンティティ or null
         - 編集画面用: 空エンティティ or エンティティ or null
-    - 紐付けられたタグ・タグ名の取得 **(N2H)**
-    - ダミーデータの登録 **(N2H)**
+    - 紐付けられたタグ・タグ名の取得 **(N2H)** **(DONE)**
+    - ダミーデータの登録 **(N2H)** **(DONE)**
 
 ### 気づき
 - `@SpringBootTest` （統合テスト）の場合は `@TestConfiguration` でテスト用設定ファイルを作成し、`Clock` の `@Bean` を上書き定義して日時を固定することができる
@@ -182,3 +182,32 @@
     - コンストラクタが `Mock` のみの場合は `@InjectMocks` で自動注入できる
     - コンストラクタに実インスタンスが含まれる場合は、手動インスタンス化 + `@BeforeEach` で明示的に渡す
     - `stub(when)` はテスト対象メソッドを呼び出す前に定義する必要がある
+- `ArgumentCaptor` を使うとモックオブジェクトに渡す引数をキャプチャすることができる
+    - 以下のように組み合わせて使うことで正しい引数を渡してメソッドが呼び出されたかを検証できる
+        - `verify` で呼ばれたことを検証
+        - `ArgumentCaptor` + `getValue()` + `assertEquals()` で渡された引数の中身が期待どおりかを検証
+    - `ArgumentCaptor.captor()` は内部で `ArgumentMatcher` として扱われる
+        - `veryfy` / `when` 内でひとつでも `ArgumentMatcher` を使う場合、そのメソッドの全引数にマッチャーを指定する必要がある
+            - 混在させると "Invalid use of argument matchers!" になる
+            - 生の値は `eq()` などで囲うことでマッチャー引数として使用できる
+- 削除処理など、実行される順序が重要な処理の場合、 `InOrder` を使うことで順序も含めて検証することができる
+    - `InOrder inOrder = inOrder();` で順序を検証する対象のモックを指定
+    - `inOrder.verify(mock).method();` で「書いた順序に呼ばれた」ことを検証
+
+    ```Java
+        // mockA.method() → mockB.method()　の順で呼ばれたことを検証
+        InOrder inOrder = inOrder(mockA, mockB);
+        inOrder.verify(mockA).method();
+        inOrder.verify(mockB).method();
+
+        // mockA.methodA() → mockA.methodB() の順で呼ばれたことを検証
+        InOrder inOrder = inOrder.(mockA);
+        inOrder.verify(mockA).methodA();
+        inOrder.verify(mockA).methodB();
+
+        // mockA.methodA() → mockB.method() → mockA.methodB() の順で呼ばれたことを検証
+        InOrder inOrder = inOrder(mockA, mockB);
+        inOrder.verify(mockA).methodA();
+        inOrder.verify(mockB).method();
+        inOrder.verify(mockA).methodB();
+    ```
