@@ -13,27 +13,27 @@
 
 ### タスク
 #### 1. `SessionManager` を "com.awesomecollect.common.util" から "com.awesomecollect.controller.web" に移動　**(DONE)**
-        - IDEにて実施し、importも安全に変更
-        - @Codebase を使ったリストアップにより、移動による影響範囲は9ファイル（ `SessionManager` + Service 8ファイル）と判明
-            - 以降の作業により、Controllerにも影響が出る見込み
+- IDEにて実施し、importも安全に変更
+- @Codebase を使ったリストアップにより、移動による影響範囲は9ファイル（ `SessionManager` + Service 8ファイル）と判明
+- 以降の作業により、Controllerにも影響が出る見込み
 
 #### 2. セッションの読み書きを Service から Controller に移動　**(DONE)**
-        - 確認時: Controller でセッション情報を取得し、結果を Service に渡す
-        - 更新時: Service から結果を受け取り、Controller でセッションを更新する
+- 確認時: Controller でセッション情報を取得し、結果を Service に渡す
+- 更新時: Service から結果を受け取り、Controller でセッションを更新する
 
 #### 3. `SessionManager` の中身を修正　**(DONE)**
-        - ゲッター系メソッドの型安全化（ `Boolean.TRUE.equals(...)`　）
-            - `Boolean.TRUE.equals(...)` では　null は false とみなされるが、更新フラグでは null を true とみなしたいので、フラグの名前と true / false の振り方を変更する
-                - ex: （現在） `hasUpdatedRecordCount` null / true のときは新たにデータを集計し、false のときはキャッシュデータを使う
-                      （修正） `hasCachedAwesomePoint` true のときは キャッシュデータを使い、null / false のときは新たにデータを集計する
-        - セッター系メソッド（フラグ）を true / false に分け、それぞれ `enableXxx` / `disableXxx` とすることでフラグの状態をわかりやすくする
-        - テスト実装やキー追加の可能性を考慮し、セッションキーを定数クラスとして切り出す
+- ゲッター系メソッドの型安全化（ `Boolean.TRUE.equals(...)`　）
+    - `Boolean.TRUE.equals(...)` では　null は false とみなされるが、更新フラグでは null を true とみなしたいので、フラグの名前と true / false の振り方を変更する
+        - ex: （現在） `hasUpdatedRecordCount` null / true のときは新たにデータを集計し、false のときはキャッシュデータを使う
+                （修正） `hasCachedAwesomePoint` true のときは キャッシュデータを使い、null / false のときは新たにデータを集計する
+- セッター系メソッド（フラグ）を true / false に分け、それぞれ `enableXxx` / `disableXxx` とすることでフラグの状態をわかりやすくする
+- テスト実装やキー追加の可能性を考慮し、セッションキーを定数クラスとして切り出す
 
 #### 4. キャッシュ使用フラグの更新場所を整理 **(PENDING)**
-        - 登録内容更新時のフラグ更新を厳密に棲み分ける
-            - `DailyTodoController` のレコード数変更時
-            - `DailyDoneController` のレコード数変更時、学習時間変更時、学習日数変更時、タグ変更時
-            - `GaolController` / `ArticleStockController` のステータス更新時
+- 登録内容更新時のフラグ更新を厳密に棲み分ける
+    - `DailyTodoController` のレコード数変更時
+    - `DailyDoneController` のレコード数変更時、学習時間変更時、学習日数変更時、タグ変更時
+    - `GaolController` / `ArticleStockController` のステータス更新時
 
 ### 気づき
 - ダミーデータ注入時に学習アクションごとにセッションの更新をしてしまっていたが、Controller に移動したことにより更新が1回で済むようになった
@@ -56,12 +56,12 @@
 
 ### タスク
 #### 1. クエリ系（参照）メソッドのトランザクションを変更 **(DONE)**
-        - `@Transactional(readOnly = true)` に変更し、読み取り専用であることを明示する
+- `@Transactional(readOnly = true)` に変更し、読み取り専用であることを明示する
 
 #### 2. メソッドの並びを変更 **(DONE)**
-        - 上部: クエリ系（参照）: 一覧画面用DTOの用意、詳細画面用DTOの用意、編集画面用DTOの用意、
-        - 下部: コマンド系（更新）: 保存、削除、ダミーデータ登録
-        - private メソッドは 呼び出し元で判断し、まとめて public の下に置く
+- 上部: クエリ系（参照）: 一覧画面用DTOの用意、詳細画面用DTOの用意、編集画面用DTOの用意、
+- 下部: コマンド系（更新）: 保存、削除、ダミーデータ登録
+- private メソッドは 呼び出し元で判断し、まとめて public の下に置く
 
 #### 3. JavaDoc にユースケース名を追記 **(DONE)**
 
@@ -78,7 +78,7 @@
 
 ### タスク
 #### 1. クエリ系（参照）メソッドのトランザクションを変更 **(DONE)**
-        - `@Transactional(readOnly = true)` に変更し、読み取り専用であることを明示する
+- `@Transactional(readOnly = true)` に変更し、読み取り専用であることを明示する
 
 #### 2. 学習アクション周りと同様にメソッドをユースケースで切り分けて整理 **(DONE)**
 
@@ -96,9 +96,9 @@
 
 ### タスク
 #### 1. Repository の `find` 系メソッドの戻り値を `Optional<T>` に変更 **(DONE)**
-        - エンティティ取得系メソッドを優先
-            - 学習アクション周り -> ユーザー周りの順に着手
-        - ID取得系メソッドは今のままで良さそう
+- エンティティ取得系メソッドを優先
+    - 学習アクション周り -> ユーザー周りの順に着手
+- ID取得系メソッドは今のままで良さそう
 
 #### 2. Service で見つからない場合（存在しない場合）の処理を明示的に記述 **(DONE)**
 
@@ -134,3 +134,80 @@
 
 ### 気づき
 - Spring では Clock を自動で Bean 登録しないので、`@Configuration` をつけた設定クラスを作成し、 `@Bean` をつけて CLock の戻り値を定義する必要がある
+
+## 6. 仕様が複雑な領域のテストを強化
+
+### レビューの解釈
+- 現状、ビジネスロジックとして複雑な `UserProgressService` や `GoalService` に対するテストがない
+
+### 修正案
+- `UserProgressService` のストリーク計算・ボーナス付与のロジックを、小さなメソッドに切り出してユニットテストを書く
+- `GoalService` では、仕様がブレやすい部分を中心にテストシナリオを作る
+    - 重複タイトル検知
+    - 目標達成状態変更時の日時付与
+    - タグの紐付け・削除
+
+### タスク
+#### 1. `UserProgressService` のユニットテストを作成 **(DONE)**
+- `UserProgressRepository` , `BonusAwesomeService` をモック化
+- 固定日時の `Clock` を注入
+- テストケースは以下 + 「最長記録日数が更新される/されないケース」を想定
+
+| 最終記録日 | 累計記録日数の更新 | 最終記録日の更新 | 連続記録日数の更新 | 連続記録ボーナス獲得回数の更新 |
+| :-- | :-- | :-- | :-- | :-- |
+| 今日 | — | — | — | — |
+| 昨日 | +1 | 今日 | +1 | アクション登録 + n日連続アクション登録(3, 7, 30の倍数) |
+| 一昨日 | +1 | 今日 | 1 | アクション登録 |
+| null（初回） | 1 | 今日 | 1 | アクション登録 |
+
+#### 2. `GoalService` のユニットテストを作成 **(DONE)**
+- `GoalRepository` , `GoalTagJunctionService` , `TagService` , `UserProgressService` をモック化
+- 固定日時の `Clock` を注入
+- テストケースは以下を想定
+
+    - 目標・タグ・紐付けられたタグとの関係情報を保存 **(DONE)**
+        - 登録: 重複タイトル検知、目標・タグとの関係情報を登録、登録日時付与、ユーザー進捗状況更新
+        - 更新: 重複タイトル検知、目標・タグとの関係情報を更新、達成状況変更時の日時付与
+    - 目標・紐付けられたタグとの関係情報を削除 **(DONE)**
+    - 一覧画面/詳細画面/編集画面用データ取得 **(N2H)** **(DONE)**
+        - 一覧画面用: 空リスト or エンティティリスト
+        - 詳細画面用: エンティティ or null
+        - 編集画面用: 空エンティティ or エンティティ or null
+    - 紐付けられたタグ・タグ名の取得 **(N2H)** **(DONE)**
+    - ダミーデータの登録 **(N2H)** **(DONE)**
+
+### 気づき
+- `@SpringBootTest` （統合テスト）の場合は `@TestConfiguration` でテスト用設定ファイルを作成し、`Clock` の `@Bean` を上書き定義して日時を固定することができる
+- `Mockito` を使った単体テストでは、フィールドで実インスタンスとして定義して、`@BeforeEach` で `Mock` とともに渡す
+    - コンストラクタが `Mock` のみの場合は `@InjectMocks` で自動注入できる
+    - コンストラクタに実インスタンスが含まれる場合は、手動インスタンス化 + `@BeforeEach` で明示的に渡す
+    - `stub(when)` はテスト対象メソッドを呼び出す前に定義する必要がある
+- `ArgumentCaptor` を使うとモックオブジェクトに渡す引数をキャプチャすることができる
+    - 以下のように組み合わせて使うことで正しい引数を渡してメソッドが呼び出されたかを検証できる
+        - `verify` で呼ばれたことを検証
+        - `ArgumentCaptor` + `getValue()` + `assertEquals()` で渡された引数の中身が期待どおりかを検証
+    - `ArgumentCaptor.captor()` は内部で `ArgumentMatcher` として扱われる
+        - `veryfy` / `when` 内でひとつでも `ArgumentMatcher` を使う場合、そのメソッドの全引数にマッチャーを指定する必要がある
+            - 混在させると "Invalid use of argument matchers!" になる
+            - 生の値は `eq()` などで囲うことでマッチャー引数として使用できる
+- 削除処理など、実行される順序が重要な処理の場合、 `InOrder` を使うことで順序も含めて検証することができる
+    - `InOrder inOrder = inOrder();` で順序を検証する対象のモックを指定
+    - `inOrder.verify(mock).method();` で「書いた順序に呼ばれた」ことを検証
+
+    ```Java
+        // mockA.method() → mockB.method()　の順で呼ばれたことを検証
+        InOrder inOrder = inOrder(mockA, mockB);
+        inOrder.verify(mockA).method();
+        inOrder.verify(mockB).method();
+
+        // mockA.methodA() → mockA.methodB() の順で呼ばれたことを検証
+        InOrder inOrder = inOrder.(mockA);
+        inOrder.verify(mockA).methodA();
+        inOrder.verify(mockA).methodB();
+
+        // mockA.methodA() → mockB.method() → mockA.methodB() の順で呼ばれたことを検証
+        InOrder inOrder = inOrder(mockA, mockB);
+        inOrder.verify(mockA).methodA();
+        inOrder.verify(mockB).method();
+        inOrder.verify(mockA).methodB();
+    ```
